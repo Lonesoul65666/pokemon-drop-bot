@@ -1,0 +1,1716 @@
+[
+  {
+    "id": "me-discovery-booster-box",
+    "name": "Mega Evolution: Mega Discovery Booster Box (36-Pack)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "mega evolution mega discovery.*booster box",
+      "booster box.*mega evolution mega discovery"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 161.64,
+    "maxMarketBuyPrice": 180,
+    "estimatedMarketValue": 210,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "me-discovery-booster-case",
+    "name": "Mega Evolution: Mega Discovery Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*mega evolution mega discovery.*booster",
+      "mega evolution mega discovery.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 970,
+    "maxMarketBuyPrice": 1044,
+    "estimatedMarketValue": 1260,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "me-discovery-etb",
+    "name": "Mega Discovery ETB (Mega Lucario)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "(mega discovery|discovery).*etb",
+      "etb.*(mega discovery|discovery)",
+      "lucario.*mega.*etb"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 70,
+    "estimatedMarketValue": 85,
+    "priority": "GRAIL",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "me-pitch-black-booster-box",
+    "name": "Mega Evolution: Pitch Black Booster Box (36-Pack)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "mega evolution pitch black.*booster box",
+      "booster box.*mega evolution pitch black"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 161.64,
+    "maxMarketBuyPrice": 190,
+    "estimatedMarketValue": 220,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "me-pitch-black-booster-case",
+    "name": "Mega Evolution: Pitch Black Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*mega evolution pitch black.*booster",
+      "mega evolution pitch black.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 970,
+    "maxMarketBuyPrice": 1102,
+    "estimatedMarketValue": 1320,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "me-pitch-black-etb",
+    "name": "Mega Evolution: Pitch Black ETB",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "pitch black.*etb",
+      "etb.*pitch black"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 70,
+    "estimatedMarketValue": 80,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "me-phantasmal-flames-booster-box",
+    "name": "Mega Evolution: Phantasmal Flames Booster Box (36-Pack)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "mega evolution phantasmal flames.*booster box",
+      "booster box.*mega evolution phantasmal flames"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 161.64,
+    "maxMarketBuyPrice": 260,
+    "estimatedMarketValue": 390,
+    "priority": "GRAIL",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "me-phantasmal-flames-booster-case",
+    "name": "Mega Evolution: Phantasmal Flames Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*mega evolution phantasmal flames.*booster",
+      "mega evolution phantasmal flames.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 970,
+    "maxMarketBuyPrice": 1508,
+    "estimatedMarketValue": 2340,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "me-phantasmal-flames-etb",
+    "name": "Mega Evolution: Phantasmal Flames ETB",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "phantasmal flames.*etb",
+      "etb.*phantasmal flames"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 95,
+    "estimatedMarketValue": 145,
+    "priority": "GRAIL",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "me-perfect-order-booster-box",
+    "name": "Mega Evolution: Perfect Order Booster Box (36-Pack)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "mega evolution perfect order.*booster box",
+      "booster box.*mega evolution perfect order"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 161.64,
+    "maxMarketBuyPrice": 175,
+    "estimatedMarketValue": 190,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "me-perfect-order-booster-case",
+    "name": "Mega Evolution: Perfect Order Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*mega evolution perfect order.*booster",
+      "mega evolution perfect order.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 970,
+    "maxMarketBuyPrice": 1015,
+    "estimatedMarketValue": 1140,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "me-perfect-order-etb",
+    "name": "Mega Evolution: Perfect Order ETB",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "perfect order.*etb",
+      "etb.*perfect order"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 58,
+    "estimatedMarketValue": 65,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "me-chaos-rising-booster-box",
+    "name": "Mega Evolution: Chaos Rising Booster Box (36-Pack)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "mega evolution chaos rising.*booster box",
+      "booster box.*mega evolution chaos rising"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 161.64,
+    "maxMarketBuyPrice": 175,
+    "estimatedMarketValue": 190,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "me-chaos-rising-booster-case",
+    "name": "Mega Evolution: Chaos Rising Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*mega evolution chaos rising.*booster",
+      "mega evolution chaos rising.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 970,
+    "maxMarketBuyPrice": 1015,
+    "estimatedMarketValue": 1140,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "me-chaos-rising-etb",
+    "name": "Mega Evolution: Chaos Rising ETB",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "chaos rising.*etb",
+      "etb.*chaos rising"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 58,
+    "estimatedMarketValue": 65,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "me-delta-reign-booster-box",
+    "name": "Mega Evolution: Delta Reign Booster Box (36-Pack)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "mega evolution delta reign.*booster box",
+      "booster box.*mega evolution delta reign"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 161.64,
+    "maxMarketBuyPrice": 165,
+    "estimatedMarketValue": 180,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "me-delta-reign-booster-case",
+    "name": "Mega Evolution: Delta Reign Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*mega evolution delta reign.*booster",
+      "mega evolution delta reign.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 970,
+    "maxMarketBuyPrice": 957,
+    "estimatedMarketValue": 1080,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "me-delta-reign-etb",
+    "name": "Mega Evolution: Delta Reign ETB",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "delta reign.*etb",
+      "etb.*delta reign"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 55,
+    "estimatedMarketValue": 60,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "me-ascended-heroes-etb",
+    "name": "Mega Evolution: Ascended Heroes ETB",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "ascended heroes.*etb",
+      "etb.*ascended heroes"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 75,
+    "estimatedMarketValue": 90,
+    "priority": "GRAIL",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "me-ascended-heroes-bundle",
+    "name": "Mega Evolution: Ascended Heroes 6-Pack Booster Bundle",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "Booster Bundle",
+    "image": "",
+    "matchers": [
+      "mega evolution ascended heroes.*booster bundle",
+      "booster bundle.*mega evolution ascended heroes"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 32,
+    "maxMarketBuyPrice": 35,
+    "estimatedMarketValue": 45,
+    "priority": "GRAIL",
+    "cooldownMins": 45,
+    "active": true
+  },
+  {
+    "id": "me-30th-celebration-etb",
+    "name": "30th Celebration ETB",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "30th.*(celebration|anniversary).*etb",
+      "etb.*30th"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 52,
+    "estimatedMarketValue": 55,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "me-30th-celebration-bundle",
+    "name": "30th Celebration 6-Pack Booster Bundle",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "Booster Bundle",
+    "image": "",
+    "matchers": [
+      "30th celebration.*booster bundle",
+      "booster bundle.*30th celebration"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 32,
+    "maxMarketBuyPrice": 35,
+    "estimatedMarketValue": 45,
+    "priority": "GRAIL",
+    "cooldownMins": 45,
+    "active": true
+  },
+  {
+    "id": "sv-base-booster-box",
+    "name": "Scarlet & Violet Base Booster Box (36-Pack)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "scarlet  violet base.*booster box",
+      "booster box.*scarlet  violet base"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 161.64,
+    "maxMarketBuyPrice": 135,
+    "estimatedMarketValue": 145,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "sv-base-booster-case",
+    "name": "Scarlet & Violet Base Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*scarlet  violet base.*booster",
+      "scarlet  violet base.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 970,
+    "maxMarketBuyPrice": 783,
+    "estimatedMarketValue": 870,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "sv-base-koraidon-etb",
+    "name": "Scarlet & Violet Base ETB (Koraidon)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "scarlet.*violet.*(base)?.*koraidon.*etb",
+      "koraidon.*etb"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 48,
+    "estimatedMarketValue": 55,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "sv-base-miraidon-etb",
+    "name": "Scarlet & Violet Base ETB (Miraidon)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "scarlet.*violet.*(base)?.*miraidon.*etb",
+      "miraidon.*etb"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 48,
+    "estimatedMarketValue": 55,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "sv-paldea-evolved-booster-box",
+    "name": "Paldea Evolved Booster Box (36-Pack)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "paldea evolved.*booster box",
+      "booster box.*paldea evolved"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 161.64,
+    "maxMarketBuyPrice": 185,
+    "estimatedMarketValue": 210,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "sv-paldea-evolved-booster-case",
+    "name": "Paldea Evolved Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*paldea evolved.*booster",
+      "paldea evolved.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 970,
+    "maxMarketBuyPrice": 1073,
+    "estimatedMarketValue": 1260,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "sv-paldea-evolved-etb",
+    "name": "Paldea Evolved ETB",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "paldea evolved.*etb",
+      "etb.*paldea evolved"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 58,
+    "estimatedMarketValue": 65,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "sv-obsidian-flames-booster-box",
+    "name": "Obsidian Flames Booster Box (36-Pack)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "obsidian flames.*booster box",
+      "booster box.*obsidian flames"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 161.64,
+    "maxMarketBuyPrice": 140,
+    "estimatedMarketValue": 150,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "sv-obsidian-flames-booster-case",
+    "name": "Obsidian Flames Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*obsidian flames.*booster",
+      "obsidian flames.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 970,
+    "maxMarketBuyPrice": 812,
+    "estimatedMarketValue": 900,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "sv-obsidian-flames-etb",
+    "name": "Obsidian Flames ETB",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "obsidian flames.*etb",
+      "etb.*obsidian flames"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 50,
+    "estimatedMarketValue": 55,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "sv-151-etb",
+    "name": "Scarlet & Violet: 151 ETB",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "(151).*etb",
+      "etb.*(151)"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 85,
+    "estimatedMarketValue": 110,
+    "priority": "GRAIL",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "sv-151-bundle",
+    "name": "Scarlet & Violet: 151 6-Pack Booster Bundle",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Booster Bundle",
+    "image": "",
+    "matchers": [
+      "scarlet  violet 151.*booster bundle",
+      "booster bundle.*scarlet  violet 151"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 32,
+    "maxMarketBuyPrice": 90,
+    "estimatedMarketValue": 162,
+    "priority": "GRAIL",
+    "cooldownMins": 45,
+    "active": true
+  },
+  {
+    "id": "sv-paradox-rift-booster-box",
+    "name": "Paradox Rift Booster Box (36-Pack)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "paradox rift.*booster box",
+      "booster box.*paradox rift"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 161.64,
+    "maxMarketBuyPrice": 145,
+    "estimatedMarketValue": 160,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "sv-paradox-rift-booster-case",
+    "name": "Paradox Rift Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*paradox rift.*booster",
+      "paradox rift.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 970,
+    "maxMarketBuyPrice": 841,
+    "estimatedMarketValue": 960,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "sv-paradox-rift-roaring-etb",
+    "name": "Paradox Rift ETB (Roaring Moon)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "paradox rift.*roaring.*etb",
+      "roaring moon.*etb"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 50,
+    "estimatedMarketValue": 55,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "sv-paradox-rift-valiant-etb",
+    "name": "Paradox Rift ETB (Iron Valiant)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "paradox rift.*valiant.*etb",
+      "iron valiant.*etb"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 50,
+    "estimatedMarketValue": 55,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "sv-paldean-fates-etb",
+    "name": "Paldean Fates ETB",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "paldean fates.*etb",
+      "etb.*paldean fates"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 55,
+    "estimatedMarketValue": 65,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "sv-paldean-fates-bundle",
+    "name": "Paldean Fates 6-Pack Booster Bundle",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Booster Bundle",
+    "image": "",
+    "matchers": [
+      "paldean fates.*booster bundle",
+      "booster bundle.*paldean fates"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 32,
+    "maxMarketBuyPrice": 32,
+    "estimatedMarketValue": 42,
+    "priority": "GRAIL",
+    "cooldownMins": 45,
+    "active": true
+  },
+  {
+    "id": "sv-temporal-forces-booster-box",
+    "name": "Temporal Forces Booster Box (36-Pack)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "temporal forces.*booster box",
+      "booster box.*temporal forces"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 161.64,
+    "maxMarketBuyPrice": 150,
+    "estimatedMarketValue": 165,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "sv-temporal-forces-booster-case",
+    "name": "Temporal Forces Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*temporal forces.*booster",
+      "temporal forces.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 970,
+    "maxMarketBuyPrice": 870,
+    "estimatedMarketValue": 990,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "sv-temporal-forces-wake-etb",
+    "name": "Temporal Forces ETB (Walking Wake)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "temporal forces.*wake.*etb",
+      "walking wake.*etb"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 50,
+    "estimatedMarketValue": 55,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "sv-temporal-forces-leaves-etb",
+    "name": "Temporal Forces ETB (Iron Leaves)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "temporal forces.*leaves.*etb",
+      "iron leaves.*etb"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 50,
+    "estimatedMarketValue": 55,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "sv-twilight-masquerade-booster-box",
+    "name": "Twilight Masquerade Booster Box (36-Pack)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "twilight masquerade.*booster box",
+      "booster box.*twilight masquerade"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 161.64,
+    "maxMarketBuyPrice": 165,
+    "estimatedMarketValue": 185,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "sv-twilight-masquerade-booster-case",
+    "name": "Twilight Masquerade Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*twilight masquerade.*booster",
+      "twilight masquerade.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 970,
+    "maxMarketBuyPrice": 957,
+    "estimatedMarketValue": 1110,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "sv-twilight-masquerade-etb",
+    "name": "Twilight Masquerade ETB",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "twilight masquerade.*etb",
+      "etb.*twilight masquerade"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 55,
+    "estimatedMarketValue": 60,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "sv-shrouded-fable-etb",
+    "name": "Shrouded Fable ETB",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "shrouded fable.*etb",
+      "etb.*shrouded fable"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 48,
+    "estimatedMarketValue": 55,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "sv-shrouded-fable-bundle",
+    "name": "Shrouded Fable 6-Pack Booster Bundle",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Booster Bundle",
+    "image": "",
+    "matchers": [
+      "shrouded fable.*booster bundle",
+      "booster bundle.*shrouded fable"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 32,
+    "maxMarketBuyPrice": 28,
+    "estimatedMarketValue": 35,
+    "priority": "GRAIL",
+    "cooldownMins": 45,
+    "active": true
+  },
+  {
+    "id": "sv-stellar-crown-booster-box",
+    "name": "Stellar Crown Booster Box (36-Pack)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "stellar crown.*booster box",
+      "booster box.*stellar crown"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 161.64,
+    "maxMarketBuyPrice": 145,
+    "estimatedMarketValue": 160,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "sv-stellar-crown-booster-case",
+    "name": "Stellar Crown Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*stellar crown.*booster",
+      "stellar crown.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 970,
+    "maxMarketBuyPrice": 841,
+    "estimatedMarketValue": 960,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "sv-stellar-crown-etb",
+    "name": "Stellar Crown ETB",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "stellar crown.*etb",
+      "etb.*stellar crown"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 50,
+    "estimatedMarketValue": 55,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "sv-surging-sparks-booster-box",
+    "name": "Surging Sparks Booster Box (36-Pack)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "surging sparks.*booster box",
+      "booster box.*surging sparks"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 161.64,
+    "maxMarketBuyPrice": 210,
+    "estimatedMarketValue": 255,
+    "priority": "GRAIL",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "sv-surging-sparks-booster-case",
+    "name": "Surging Sparks Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*surging sparks.*booster",
+      "surging sparks.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 970,
+    "maxMarketBuyPrice": 1218,
+    "estimatedMarketValue": 1530,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "sv-surging-sparks-etb",
+    "name": "Surging Sparks ETB",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "surging sparks.*etb",
+      "etb.*surging sparks"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 62,
+    "estimatedMarketValue": 75,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "sv-prismatic-evolutions-etb",
+    "name": "Prismatic Evolutions ETB",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "prismatic evolutions.*etb",
+      "etb.*prismatic evolutions"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 85,
+    "estimatedMarketValue": 105,
+    "priority": "GRAIL",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "sv-prismatic-evolutions-bundle",
+    "name": "Prismatic Evolutions 6-Pack Booster Bundle",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Booster Bundle",
+    "image": "",
+    "matchers": [
+      "prismatic evolutions.*booster bundle",
+      "booster bundle.*prismatic evolutions"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 32,
+    "maxMarketBuyPrice": 75,
+    "estimatedMarketValue": 120,
+    "priority": "GRAIL",
+    "cooldownMins": 45,
+    "active": true
+  },
+  {
+    "id": "sv-journey-together-booster-box",
+    "name": "Journey Together Booster Box (36-Pack)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "journey together.*booster box",
+      "booster box.*journey together"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 161.64,
+    "maxMarketBuyPrice": 175,
+    "estimatedMarketValue": 200,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "sv-journey-together-booster-case",
+    "name": "Journey Together Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*journey together.*booster",
+      "journey together.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 970,
+    "maxMarketBuyPrice": 1015,
+    "estimatedMarketValue": 1200,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "sv-journey-together-etb",
+    "name": "Journey Together ETB",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "journey together.*etb",
+      "etb.*journey together"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 58,
+    "estimatedMarketValue": 65,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "sv-destined-rivals-booster-box",
+    "name": "Destined Rivals Booster Box (36-Pack)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "destined rivals.*booster box",
+      "booster box.*destined rivals"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 161.64,
+    "maxMarketBuyPrice": 275,
+    "estimatedMarketValue": 410,
+    "priority": "GRAIL",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "sv-destined-rivals-booster-case",
+    "name": "Destined Rivals Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*destined rivals.*booster",
+      "destined rivals.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 970,
+    "maxMarketBuyPrice": 1595,
+    "estimatedMarketValue": 2460,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "sv-destined-rivals-etb",
+    "name": "Destined Rivals ETB",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "destined rivals.*etb",
+      "etb.*destined rivals"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 54.99,
+    "maxMarketBuyPrice": 75,
+    "estimatedMarketValue": 115,
+    "priority": "GRAIL",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "swsh-battle-styles-booster-box",
+    "name": "Battle Styles Booster Box (36-Pack)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "battle styles.*booster box",
+      "booster box.*battle styles"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 143.64,
+    "maxMarketBuyPrice": 140,
+    "estimatedMarketValue": 160,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "swsh-battle-styles-booster-case",
+    "name": "Battle Styles Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*battle styles.*booster",
+      "battle styles.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 860,
+    "maxMarketBuyPrice": 812,
+    "estimatedMarketValue": 960,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "swsh-battle-styles-single-etb",
+    "name": "Battle Styles ETB (Single Strike Red)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "battle styles.*single.*etb",
+      "single strike.*etb"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 49.99,
+    "maxMarketBuyPrice": 48,
+    "estimatedMarketValue": 55,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "swsh-battle-styles-rapid-etb",
+    "name": "Battle Styles ETB (Rapid Strike Blue)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "battle styles.*rapid.*etb",
+      "rapid strike.*etb"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 49.99,
+    "maxMarketBuyPrice": 48,
+    "estimatedMarketValue": 55,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "swsh-chilling-reign-booster-box",
+    "name": "Chilling Reign Booster Box (36-Pack)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "chilling reign.*booster box",
+      "booster box.*chilling reign"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 143.64,
+    "maxMarketBuyPrice": 210,
+    "estimatedMarketValue": 260,
+    "priority": "GRAIL",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "swsh-chilling-reign-booster-case",
+    "name": "Chilling Reign Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*chilling reign.*booster",
+      "chilling reign.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 860,
+    "maxMarketBuyPrice": 1218,
+    "estimatedMarketValue": 1560,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "swsh-chilling-reign-shadow-etb",
+    "name": "Chilling Reign ETB (Shadow Rider)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "chilling reign.*shadow.*etb",
+      "shadow rider.*etb"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 49.99,
+    "maxMarketBuyPrice": 60,
+    "estimatedMarketValue": 75,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "swsh-chilling-reign-ice-etb",
+    "name": "Chilling Reign ETB (Ice Rider)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "chilling reign.*ice.*etb",
+      "ice rider.*etb"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 49.99,
+    "maxMarketBuyPrice": 60,
+    "estimatedMarketValue": 75,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "swsh-evolving-skies-booster-box",
+    "name": "Evolving Skies Booster Box (36-Pack)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "evolving skies.*booster box",
+      "booster box.*evolving skies"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 143.64,
+    "maxMarketBuyPrice": 650,
+    "estimatedMarketValue": 920,
+    "priority": "GRAIL",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "swsh-evolving-skies-booster-case",
+    "name": "Evolving Skies Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*evolving skies.*booster",
+      "evolving skies.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 860,
+    "maxMarketBuyPrice": 3770,
+    "estimatedMarketValue": 5520,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "swsh-evolving-skies-etb",
+    "name": "Evolving Skies ETB",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "evolving skies.*etb",
+      "etb.*evolving skies"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 49.99,
+    "maxMarketBuyPrice": 120,
+    "estimatedMarketValue": 180,
+    "priority": "GRAIL",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "swsh-celebrations-etb",
+    "name": "Celebrations 25th Anniversary ETB",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "celebrations.*25th.*etb",
+      "celebrations.*etb"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 49.99,
+    "maxMarketBuyPrice": 80,
+    "estimatedMarketValue": 95,
+    "priority": "GRAIL",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "swsh-fusion-strike-booster-box",
+    "name": "Fusion Strike Booster Box (36-Pack)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "fusion strike.*booster box",
+      "booster box.*fusion strike"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 143.64,
+    "maxMarketBuyPrice": 220,
+    "estimatedMarketValue": 280,
+    "priority": "GRAIL",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "swsh-fusion-strike-booster-case",
+    "name": "Fusion Strike Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*fusion strike.*booster",
+      "fusion strike.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 860,
+    "maxMarketBuyPrice": 1276,
+    "estimatedMarketValue": 1680,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "swsh-fusion-strike-etb",
+    "name": "Fusion Strike ETB",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "fusion strike.*etb",
+      "etb.*fusion strike"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 49.99,
+    "maxMarketBuyPrice": 60,
+    "estimatedMarketValue": 75,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "swsh-brilliant-stars-booster-box",
+    "name": "Brilliant Stars Booster Box (36-Pack)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "brilliant stars.*booster box",
+      "booster box.*brilliant stars"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 143.64,
+    "maxMarketBuyPrice": 190,
+    "estimatedMarketValue": 230,
+    "priority": "GRAIL",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "swsh-brilliant-stars-booster-case",
+    "name": "Brilliant Stars Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*brilliant stars.*booster",
+      "brilliant stars.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 860,
+    "maxMarketBuyPrice": 1102,
+    "estimatedMarketValue": 1380,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "swsh-brilliant-stars-etb",
+    "name": "Brilliant Stars ETB",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "brilliant stars.*etb",
+      "etb.*brilliant stars"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 49.99,
+    "maxMarketBuyPrice": 55,
+    "estimatedMarketValue": 65,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "swsh-astral-radiance-booster-box",
+    "name": "Astral Radiance Booster Box (36-Pack)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "astral radiance.*booster box",
+      "booster box.*astral radiance"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 143.64,
+    "maxMarketBuyPrice": 170,
+    "estimatedMarketValue": 190,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "swsh-astral-radiance-booster-case",
+    "name": "Astral Radiance Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*astral radiance.*booster",
+      "astral radiance.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 860,
+    "maxMarketBuyPrice": 986,
+    "estimatedMarketValue": 1140,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "swsh-astral-radiance-etb",
+    "name": "Astral Radiance ETB",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "astral radiance.*etb",
+      "etb.*astral radiance"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 49.99,
+    "maxMarketBuyPrice": 52,
+    "estimatedMarketValue": 60,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "swsh-pokemon-go-etb",
+    "name": "Pokémon GO ETB",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "(pokemon|pokémon) go.*etb",
+      "etb.*(pokemon|pokémon) go"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 49.99,
+    "maxMarketBuyPrice": 55,
+    "estimatedMarketValue": 65,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "swsh-lost-origin-booster-box",
+    "name": "Lost Origin Booster Box (36-Pack)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "lost origin.*booster box",
+      "booster box.*lost origin"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 143.64,
+    "maxMarketBuyPrice": 190,
+    "estimatedMarketValue": 240,
+    "priority": "GRAIL",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "swsh-lost-origin-booster-case",
+    "name": "Lost Origin Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*lost origin.*booster",
+      "lost origin.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 860,
+    "maxMarketBuyPrice": 1102,
+    "estimatedMarketValue": 1440,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "swsh-lost-origin-etb",
+    "name": "Lost Origin ETB",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "lost origin.*etb",
+      "etb.*lost origin"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 49.99,
+    "maxMarketBuyPrice": 55,
+    "estimatedMarketValue": 70,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "swsh-silver-tempest-booster-box",
+    "name": "Silver Tempest Booster Box (36-Pack)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "Booster Box",
+    "image": "",
+    "matchers": [
+      "silver tempest.*booster box",
+      "booster box.*silver tempest"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 143.64,
+    "maxMarketBuyPrice": 175,
+    "estimatedMarketValue": 195,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true
+  },
+  {
+    "id": "swsh-silver-tempest-booster-case",
+    "name": "Silver Tempest Sealed Booster Case (6 Boxes / 216 Packs)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "Master Case",
+    "image": "",
+    "matchers": [
+      "case.*silver tempest.*booster",
+      "silver tempest.*booster.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 860,
+    "maxMarketBuyPrice": 1015,
+    "estimatedMarketValue": 1170,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
+    "id": "swsh-silver-tempest-etb",
+    "name": "Silver Tempest ETB",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "silver tempest.*etb",
+      "etb.*silver tempest"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 49.99,
+    "maxMarketBuyPrice": 52,
+    "estimatedMarketValue": 60,
+    "priority": "STANDARD",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "swsh-crown-zenith-etb",
+    "name": "Crown Zenith ETB (Lucario)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB",
+    "image": "",
+    "matchers": [
+      "crown zenith.*etb",
+      "etb.*crown zenith",
+      "lucario.*crown zenith.*etb"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 49.99,
+    "maxMarketBuyPrice": 75,
+    "estimatedMarketValue": 95,
+    "priority": "GRAIL",
+    "cooldownMins": 30,
+    "active": true,
+    "owned": false
+  },
+  {
+    "id": "swsh-crown-zenith-bundle",
+    "name": "Crown Zenith 6-Pack Booster Bundle",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "Booster Bundle",
+    "image": "",
+    "matchers": [
+      "crown zenith.*booster bundle",
+      "booster bundle.*crown zenith"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 32,
+    "maxMarketBuyPrice": 38,
+    "estimatedMarketValue": 50,
+    "priority": "GRAIL",
+    "cooldownMins": 45,
+    "active": true
+  }
+]
