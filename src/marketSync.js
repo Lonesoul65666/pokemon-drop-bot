@@ -4,95 +4,149 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MarketSyncService = void 0;
-const fs_extra_1 = __importDefault(require("fs-extra"));
+const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const axios_1 = __importDefault(require("axios"));
-const CACHE_FILE = path_1.default.resolve(process.cwd(), 'data', 'market_cache.json');
-const SYNC_INTERVAL_MS = 1000 * 60 * 30; // 30 minutes
+const POLICIES_PATH = path_1.default.resolve(process.cwd(), 'policies.json');
+const CACHE_PATH = path_1.default.resolve(process.cwd(), 'marketCache.json');
+const SYNC_INTERVAL_MS = 1000 * 60 * 60 * 6; // Refresh every 6 hours (4x daily)
+function cleanSearchQuery(name) {
+    return name
+        .replace(/\(36-Pack\)/gi, '')
+        .replace(/\(6 Boxes \/ 216 Packs\)/gi, '')
+        .replace(/\(10 ETBs\)/gi, '')
+        .replace(/6-Pack /gi, '')
+        .replace(/Sealed /gi, '')
+        .replace(/Mega Evolution:/gi, '')
+        .replace(/Scarlet & Violet:/gi, '')
+        .replace(/25th Anniversary/gi, '')
+        .trim();
+}
 class MarketSyncService {
-    cache = new Map();
-    constructor() {
-        this.loadCache();
-    }
-    loadCache() {
+    isSyncing = false;
+    async runSyncCycle() {
+        if (this.isSyncing)
+            return;
+        this.isSyncing = true;
         try {
-            if (fs_extra_1.default.existsSync(CACHE_FILE)) {
-                const raw = fs_extra_1.default.readJsonSync(CACHE_FILE);
-                Object.entries(raw).forEach(([k, v]) => this.cache.set(k, v));
-            }
-        }
-        catch (err) {
-            console.error('[MarketSync] Failed to read market cache:', err);
-        }
-    }
-    async persistCache() {
-        try {
-            await fs_extra_1.default.ensureDir(path_1.default.dirname(CACHE_FILE));
-            const serialized = Object.fromEntries(this.cache.entries());
-            await fs_extra_1.default.writeJson(CACHE_FILE, serialized, { spaces: 2 });
-        }
-        catch (err) {
-            console.error('[MarketSync] Failed to persist market cache:', err);
-        }
-    }
-    async fetchMarketPrice(setSlug, format) {
-        try {
-            const query = encodeURIComponent(`${setSlug.replace(/-/g, ' ')} ${format.replace(/_/g, ' ')}`);
-            const res = await axios_1.default.get(`https://www.pricecharting.com/api/product?q=${query}`, {
-                timeout: 6000,
-                headers: { 'User-Agent': 'DropBot-Commander/2.0' }
-            });
-            return res.data?.price ? res.data.price / 100 : null;
-        }
-        catch {
-            return null;
-        }
-    }
-    async runSyncCycle(trackedProducts) {
-        console.log(`[MarketSync] Running price sync for ${trackedProducts.length} tracked items...`);
-        for (const prod of trackedProducts) {
-            const livePrice = await this.fetchMarketPrice(prod.setSlug, prod.format);
-            if (!livePrice)
-                continue;
-            const existing = this.cache.get(prod.id) || {
-                productId: prod.id,
-                msrp: prod.msrp,
-                currentMarket: livePrice,
-                deltaVsMsrpPct: 0,
-                lastSync: new Date().toISOString(),
-                history: [],
-                asset: {
-                    format: prod.format,
-                    setSlug: prod.setSlug,
-                    localPath: `/art/${prod.setSlug}-${prod.format}.webp`
+            if (!fs_1.default.existsSync(POLICIES_PATH))
+                return;
+            const policies = JSON.parse(fs_1.default.readFileSync(POLICIES_PATH, 'utf-8'));
+            let cache = {};
+            if (fs_1.default.existsSync(CACHE_PATH)) {
+                try {
+                    cache = JSON.parse(fs_1.default.readFileSync(CACHE_PATH, 'utf-8'));
                 }
-            };
-            existing.currentMarket = livePrice;
-            existing.deltaVsMsrpPct = Number((((livePrice - prod.msrp) / prod.msrp) * 100).toFixed(2));
-            existing.lastSync = new Date().toISOString();
-            existing.history.push({
-                timestamp: existing.lastSync,
-                marketPrice: livePrice,
-                source: 'pricecharting'
-            });
-            if (existing.history.length > 30) {
-                existing.history.shift();
+                catch (e) { }
             }
-            this.cache.set(prod.id, existing);
-            await new Promise(r => setTimeout(r, 1200));
+            console.log(`[MarketSync] Running automated 6-hour TCGPlayer Market Baseline refresh for ${policies.length} items...`);
+            const singles = policies.filter(p => p.formFactor !== 'Master Case' && p.formFactor !== 'ETB Case');
+            const cases = policies.filter(p => p.formFactor === 'Master Case' || p.formFactor === 'ETB Case');
+            const basePriceMap = new Map();
+            let updatedCount = 0;
+            // Pass 1: Sync all single boxes, ETBs, and bundles via TCGPlayer API
+            for (const p of singles) {
+                try {
+                    const q = cleanSearchQuery(p.name);
+                    const url = `https://mp-search-api.tcgplayer.com/v1/search/request?q=${encodeURIComponent(q)}&isList=false`;
+                    const body = {
+                        algorithm: "sales_synonym_v2",
+                        from: 0,
+                        size: 10,
+                        filters: { term: { productLineName: ["pokemon"] }, range: {}, match: {} },
+                        listingSearch: { context: { cart: {} }, filters: { term: { sellerStatus: "Live", channelId: 0 }, range: { quantity: { gte: 1 } }, exclude: { channelExclusion: 0 } } },
+                        context: { cart: {}, shippingCountry: "US" },
+                        settings: { useFuzzySearch: false, didYouMean: {} },
+                        sort: {}
+                    };
+                    const res = await axios_1.default.post(url, body, {
+                        timeout: 7000,
+                        headers: { 'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0' }
+                    });
+                    const results = res.data?.results?.[0]?.results || [];
+                    for (const item of results) {
+                        if (item.customAttributes?.number)
+                            continue;
+                        const title = (item.productName || '').toLowerCase();
+                        if (title.includes('code card') || title.includes('empty') || title.includes('sleeves'))
+                            continue;
+                        const isMatch = (p.formFactor === 'Booster Box' && title.includes('booster box') && !title.includes('case')) ||
+                            (p.formFactor === 'ETB' && (title.includes('elite trainer') || title.includes('etb')) && !title.includes('case') && !title.includes('center')) ||
+                            (p.formFactor === 'Booster Bundle' && title.includes('bundle') && !title.includes('case'));
+                        if (isMatch) {
+                            const mkt = parseFloat(item.marketPrice || item.lowestPrice || 0);
+                            if (mkt > 10) {
+                                const rounded = Math.round(mkt * 100) / 100;
+                                p.estimatedMarketValue = rounded;
+                                basePriceMap.set(p.id, rounded);
+                                const prodId = Math.floor(Number(item.productId));
+                                const existing = cache[p.id] || {};
+                                const hasLiveStoreDrop = existing.inStock === true && existing.lowestStore && !existing.lowestStore.includes('TCGPlayer') && !existing.lowestStore.includes('Catalog');
+                                cache[p.id] = {
+                                    ...existing,
+                                    lowestPrice: hasLiveStoreDrop ? existing.lowestPrice : rounded,
+                                    lowestStore: hasLiveStoreDrop ? existing.lowestStore : 'TCGPlayer SKU Baseline',
+                                    lowestUrl: hasLiveStoreDrop ? existing.lowestUrl : `https://www.tcgplayer.com/product/${prodId}`,
+                                    inStock: hasLiveStoreDrop ? true : false,
+                                    rollingAverage: rounded,
+                                    lastUpdated: new Date().toISOString()
+                                };
+                                updatedCount++;
+                            }
+                            break;
+                        }
+                    }
+                }
+                catch (e) { }
+                await new Promise(r => setTimeout(r, 350));
+            }
+            // Pass 2: Sync Master Cases & 10-ETB Cases (inherit live multiplier from parent Box/ETB so cases are always accurate)
+            for (const c of cases) {
+                const parentId = c.id.replace(/-case$/, '').replace(/-booster-case$/, '-booster-box');
+                const parentMkt = basePriceMap.get(parentId);
+                if (parentMkt) {
+                    const mult = c.formFactor === 'Master Case' ? 6 : 10;
+                    const caseMkt = Math.round(parentMkt * mult);
+                    c.estimatedMarketValue = caseMkt;
+                    const existing = cache[c.id] || {};
+                    const hasLiveStoreDrop = existing.inStock === true && existing.lowestStore && !existing.lowestStore.includes('TCGPlayer') && !existing.lowestStore.includes('Catalog');
+                    cache[c.id] = {
+                        ...existing,
+                        lowestPrice: hasLiveStoreDrop ? existing.lowestPrice : caseMkt,
+                        lowestStore: hasLiveStoreDrop ? existing.lowestStore : 'TCGPlayer Case Baseline',
+                        rollingAverage: caseMkt,
+                        lastUpdated: new Date().toISOString()
+                    };
+                    updatedCount++;
+                }
+            }
+            // Safely update estimatedMarketValue in policies.json while preserving live user slider changes!
+            const freshPoliciesOnDisk = JSON.parse(fs_1.default.readFileSync(POLICIES_PATH, 'utf-8'));
+            const syncedMap = new Map(policies.map(x => [x.id, x.estimatedMarketValue]));
+            freshPoliciesOnDisk.forEach(fp => {
+                if (syncedMap.has(fp.id)) {
+                    fp.estimatedMarketValue = syncedMap.get(fp.id);
+                }
+            });
+            const tmpPol = POLICIES_PATH + '.tmp';
+            fs_1.default.writeFileSync(tmpPol, JSON.stringify(freshPoliciesOnDisk, null, 2), 'utf-8');
+            fs_1.default.renameSync(tmpPol, POLICIES_PATH);
+            const tmpCache = CACHE_PATH + '.tmp';
+            fs_1.default.writeFileSync(tmpCache, JSON.stringify(cache, null, 2), 'utf-8');
+            fs_1.default.renameSync(tmpCache, CACHE_PATH);
+            console.log(`[MarketSync] Automated baseline refresh complete (${updatedCount} SKUs synced to latest market value).`);
         }
-        await this.persistCache();
-        console.log('[MarketSync] Market cache updated successfully.');
+        catch (err) {
+            console.error('[MarketSync] Refresh warning:', err.message);
+        }
+        finally {
+            this.isSyncing = false;
+        }
     }
-    startWorker(trackedProducts) {
-        this.runSyncCycle(trackedProducts);
-        setInterval(() => this.runSyncCycle(trackedProducts), SYNC_INTERVAL_MS);
-    }
-    getProductMetrics(id) {
-        return this.cache.get(id);
-    }
-    getAllMetrics() {
-        return Object.fromEntries(this.cache.entries());
+    startWorker(_trackedProducts) {
+        // Wait 60 seconds after boot before first background sync so initial startup is instant, then run every 6 hours
+        setTimeout(() => this.runSyncCycle(), 60 * 1000);
+        setInterval(() => this.runSyncCycle(), SYNC_INTERVAL_MS);
     }
 }
 exports.MarketSyncService = MarketSyncService;

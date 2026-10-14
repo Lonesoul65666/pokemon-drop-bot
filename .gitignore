@@ -1,6 +1,6 @@
-node_modules/
+﻿node_modules/
 .env
-*.tmp
 *.log
-marketCache.json
-art/
+*.tmp
+*.cjs
+.pm2/

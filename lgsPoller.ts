@@ -5,11 +5,7 @@ import { processIncomingDrop } from './listener';
 
 dns.setDefaultResultOrder('ipv4first');
 
-// ==========================================
-// 1. PROXY ROTATOR PIPELINE
-// 10 Dedicated Webshare Proxies
-// ==========================================
-const USE_PROXIES = true; 
+const USE_PROXIES = true;
 const PROXY_LIST: string[] = [
   'http://uowcnblq:a5qiuyuv2hfk@45.38.107.97:6014',
   'http://uowcnblq:a5qiuyuv2hfk@64.137.96.74:6641',
@@ -24,46 +20,41 @@ const PROXY_LIST: string[] = [
 ];
 
 let proxyIndex = 0;
-function getNextProxy(): HttpsProxyAgent<string> | undefined {
+export function getNextProxy(): HttpsProxyAgent<string> | undefined {
   if (!USE_PROXIES || PROXY_LIST.length === 0) return undefined;
   const proxyUrl = PROXY_LIST[proxyIndex];
   proxyIndex = (proxyIndex + 1) % PROXY_LIST.length;
   return new HttpsProxyAgent(proxyUrl);
 }
 
-// ==========================================
-// 2. THE 20-STORE DRAGNET (MAXIMUM 250 LIMIT)
-// ==========================================
 interface MonitoredStore {
   name: string;
   baseUrl: string;
   collectionPath: string;
 }
 
+// 20 High-Volume US Sealed Discounters (Using verified collection slugs + root /products.json fallback)
 const MONITORED_STORES: MonitoredStore[] = [
-  // Core 10
-  { name: 'MinMaxGames', baseUrl: 'https://minmaxgames.com', collectionPath: '/collections/pokemon/products.json?limit=250' },
-  { name: 'Safari Zone', baseUrl: 'https://safari-zone.com', collectionPath: '/collections/pokemon/products.json?limit=250' },
-  { name: 'Smoke & Mirrors', baseUrl: 'https://smokeandmirrorshobby.com', collectionPath: '/collections/pokemon-sealed-products/products.json?limit=250' },
-  { name: 'TCG Stadium', baseUrl: 'https://tcg-stadium.com', collectionPath: '/collections/english-sealed-products/products.json?limit=250' },
-  { name: 'Forge & Fire', baseUrl: 'https://forgeandfiregaming.com', collectionPath: '/collections/pokemon/products.json?limit=250' },
-  { name: 'Rip N Ship Arena', baseUrl: 'https://www.ripnshiparena.com', collectionPath: '/collections/pokemon/products.json?limit=250' },
-  { name: 'Zulu\'s Games', baseUrl: 'https://zulusgames.com', collectionPath: '/collections/pokemon/products.json?limit=250' },
-  { name: 'Josh\'s Cards', baseUrl: 'https://joshscards.com', collectionPath: '/collections/pokemon-tcg/products.json?limit=250' },
+  { name: 'Forge & Fire', baseUrl: 'https://forgeandfiregaming.com', collectionPath: '/products.json?limit=250' },
+  { name: 'Smoke & Mirrors', baseUrl: 'https://smokeandmirrorshobby.com', collectionPath: '/products.json?limit=250' },
+  { name: 'Safari Zone', baseUrl: 'https://safari-zone.com', collectionPath: '/products.json?limit=250' },
+  { name: 'Zulus Games', baseUrl: 'https://zulusgames.com', collectionPath: '/collections/pokemon/products.json?limit=250' },
   { name: 'Gamers Guild AZ', baseUrl: 'https://gamersguildaz.com', collectionPath: '/collections/pokemon/products.json?limit=250' },
+  { name: 'MinMaxGames', baseUrl: 'https://minmaxgames.com', collectionPath: '/collections/pokemon/products.json?limit=250' },
   { name: 'Card Shop Live', baseUrl: 'https://cardshoplive.com', collectionPath: '/collections/pokemon/products.json?limit=250' },
-  
-  // The Expansion 10
-  { name: 'Football Pete', baseUrl: 'https://footballpete.com', collectionPath: '/collections/pokemon/products.json?limit=250' },
-  { name: 'Prodigy Games', baseUrl: 'https://prodigygames.com', collectionPath: '/collections/pokemon/products.json?limit=250' },
-  { name: 'Gamers Nerd Deck', baseUrl: 'https://gamersnerddeck.com', collectionPath: '/collections/pokemon/products.json?limit=250' },
-  { name: 'Double Sleeved', baseUrl: 'https://doublesleeved.co.uk', collectionPath: '/collections/pokemon/products.json?limit=250' },
-  { name: 'Spooky Ninja', baseUrl: 'https://spookyninja.com', collectionPath: '/collections/pokemon/products.json?limit=250' },
-  { name: 'Collector Store', baseUrl: 'https://collectorstore.com', collectionPath: '/collections/pokemon/products.json?limit=250' },
-  { name: 'CoreTCG', baseUrl: 'https://coretcg.com', collectionPath: '/collections/pokemon/products.json?limit=250' },
-  { name: 'Silver Moon', baseUrl: 'https://silvermooncards.com', collectionPath: '/collections/pokemon/products.json?limit=250' },
-  { name: 'The Lotusbox', baseUrl: 'https://thelotusbox.com', collectionPath: '/collections/pokemon/products.json?limit=250' },
-  { name: 'Rare Candy', baseUrl: 'https://rarecandy.com', collectionPath: '/collections/pokemon/products.json?limit=250' }
+  { name: 'Joshs Cards', baseUrl: 'https://joshscards.com', collectionPath: '/products.json?limit=250' },
+  { name: 'Flipside Gaming', baseUrl: 'https://www.flipsidegaming.com', collectionPath: '/collections/pokemon-sealed-product/products.json?limit=250' },
+  { name: 'Full Grip Games', baseUrl: 'https://www.fullgripgames.com', collectionPath: '/products.json?limit=250' },
+  { name: 'Over The Brick', baseUrl: 'https://overthebrick.com', collectionPath: '/collections/pokemon/products.json?limit=250' },
+  { name: 'Knight & Day Games', baseUrl: 'https://knightanddaygames.com', collectionPath: '/products.json?limit=250' },
+  { name: 'PokeNE', baseUrl: 'https://www.pokene.com', collectionPath: '/products.json?limit=250' },
+  { name: 'TCG Stadium', baseUrl: 'https://tcg-stadium.com', collectionPath: '/products.json?limit=250' },
+  { name: 'Rip N Ship Arena', baseUrl: 'https://www.ripnshiparena.com', collectionPath: '/collections/pokemon/products.json?limit=250' },
+  { name: 'Collector Store', baseUrl: 'https://collectorstore.com', collectionPath: '/products.json?limit=250' },
+  { name: 'Prodigy Games', baseUrl: 'https://prodigygames.com', collectionPath: '/products.json?limit=250' },
+  { name: 'Silver Moon', baseUrl: 'https://silvermooncards.com', collectionPath: '/products.json?limit=250' },
+  { name: 'The Lotusbox', baseUrl: 'https://thelotusbox.com', collectionPath: '/products.json?limit=250' },
+  { name: 'Rare Candy', baseUrl: 'https://rarecandy.com', collectionPath: '/products.json?limit=250' }
 ];
 
 const seenVariantMap = new Map<number, string>();
@@ -77,13 +68,14 @@ function getRandomJitter(min: number, max: number) {
 }
 
 export async function pollShopifyStores(): Promise<void> {
-  console.log(`\n[${new Date().toLocaleTimeString()}] Executing Staggered LGS Sweep (${MONITORED_STORES.length} endpoints, 250 items deep)...`);
+  let activeStoresHit = 0;
+  let totalProductsScanned = 0;
 
   for (const store of MONITORED_STORES) {
     try {
       const endpoint = `${store.baseUrl}${store.collectionPath}`;
-      
       const currentProxy = getNextProxy();
+
       const res = await axios.get(endpoint, {
         timeout: 8000,
         httpsAgent: currentProxy,
@@ -94,17 +86,21 @@ export async function pollShopifyStores(): Promise<void> {
       });
 
       const products = res.data?.products || [];
+      if (products.length > 0) {
+        activeStoresHit++;
+        totalProductsScanned += products.length;
+      }
 
       for (const prod of products) {
         const updatedTime = prod.updated_at;
 
         for (const variant of prod.variants || []) {
-          // NOTE: We only ingest ACTIVE, IN-STOCK items. Sold out items are ignored.
           if (variant.available) {
             const cachedUpdate = seenVariantMap.get(variant.id);
+            const stateKey = `${updatedTime}_${variant.price}`;
 
-            if (!cachedUpdate || cachedUpdate !== updatedTime) {
-              seenVariantMap.set(variant.id, updatedTime);
+            if (!cachedUpdate || cachedUpdate !== stateKey) {
+              seenVariantMap.set(variant.id, stateKey);
 
               const priceNum = parseFloat(variant.price);
               const fullTitle = `${prod.title} ${variant.title !== 'Default Title' ? variant.title : ''}`.trim();
@@ -125,15 +121,13 @@ export async function pollShopifyStores(): Promise<void> {
         }
       }
     } catch (err: any) {
-      if (err.response?.status !== 404 && err.response?.status !== 430) {
-        // Suppress general errors so it doesn't flood the console if a proxy hangs
-      }
+      // Silently skip single proxy hiccups
     }
 
-    await sleep(getRandomJitter(500, 1500));
+    await sleep(getRandomJitter(400, 1100));
   }
 
-  const restTime = getRandomJitter(15000, 25000);
-  console.log(`[${new Date().toLocaleTimeString()}] Sweep complete. Resting ${(restTime / 1000).toFixed(1)}s...`);
+  console.log(`[${new Date().toLocaleTimeString()}] LGS Sweep Complete: ${activeStoresHit}/${MONITORED_STORES.length} stores responded (${totalProductsScanned} listings checked).`);
+  const restTime = getRandomJitter(15000, 22000);
   setTimeout(pollShopifyStores, restTime);
 }

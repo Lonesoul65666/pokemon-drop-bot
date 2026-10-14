@@ -11,8 +11,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
-    "maxMarketBuyPrice": 180,
-    "estimatedMarketValue": 210,
+    "maxMarketBuyPrice": 250,
+    "estimatedMarketValue": 293.99,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true
@@ -29,8 +29,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 970,
-    "maxMarketBuyPrice": 1044,
-    "estimatedMarketValue": 1260,
+    "maxMarketBuyPrice": 1214,
+    "estimatedMarketValue": 1349.31,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -42,18 +42,40 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "(mega discovery|discovery).*etb",
-      "etb.*(mega discovery|discovery)",
-      "lucario.*mega.*etb"
+      "(mega discovery|discovery).*(etb|elite trainer)",
+      "(etb|elite trainer).*(mega discovery|discovery)",
+      "lucario.*mega.*(etb|elite trainer)"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 70,
-    "estimatedMarketValue": 85,
+    "maxMarketBuyPrice": 116,
+    "estimatedMarketValue": 128.9,
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": true
+  },
+  {
+    "id": "me-discovery-etb-case",
+    "name": "Mega Discovery ETB (Mega Lucario) Sealed Case (10 ETBs)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*(mega discovery|discovery).*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*(mega discovery|discovery)",
+      "case.*lucario.*mega.*(etb|elite trainer)",
+      "(mega discovery|discovery).*(etb|elite trainer).*case",
+      "(etb|elite trainer).*(mega discovery|discovery).*case",
+      "lucario.*mega.*(etb|elite trainer).*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 540,
+    "estimatedMarketValue": 599.9,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "me-pitch-black-booster-box",
@@ -67,8 +89,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
-    "maxMarketBuyPrice": 190,
-    "estimatedMarketValue": 220,
+    "maxMarketBuyPrice": 150,
+    "estimatedMarketValue": 183.69,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true
@@ -85,8 +107,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 970,
-    "maxMarketBuyPrice": 1102,
-    "estimatedMarketValue": 1320,
+    "maxMarketBuyPrice": 999,
+    "estimatedMarketValue": 1109.79,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -98,8 +120,8 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "pitch black.*etb",
-      "etb.*pitch black"
+      "pitch black.*(etb|elite trainer)",
+      "(etb|elite trainer).*pitch black"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
@@ -108,7 +130,27 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": true
+  },
+  {
+    "id": "me-pitch-black-etb-case",
+    "name": "Mega Evolution: Pitch Black ETB Sealed Case (10 ETBs)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*pitch black.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*pitch black",
+      "pitch black.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*pitch black.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 677,
+    "estimatedMarketValue": 752.45,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "me-phantasmal-flames-booster-box",
@@ -122,8 +164,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
-    "maxMarketBuyPrice": 260,
-    "estimatedMarketValue": 390,
+    "maxMarketBuyPrice": 250,
+    "estimatedMarketValue": 398.21,
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true
@@ -140,8 +182,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 970,
-    "maxMarketBuyPrice": 1508,
-    "estimatedMarketValue": 2340,
+    "maxMarketBuyPrice": 1688,
+    "estimatedMarketValue": 1875,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -153,17 +195,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "phantasmal flames.*etb",
-      "etb.*phantasmal flames"
+      "phantasmal flames.*(etb|elite trainer)",
+      "(etb|elite trainer).*phantasmal flames"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 95,
+    "maxMarketBuyPrice": 125,
     "estimatedMarketValue": 145,
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": true
+  },
+  {
+    "id": "me-phantasmal-flames-etb-case",
+    "name": "Mega Evolution: Phantasmal Flames ETB Sealed Case (10 ETBs)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*phantasmal flames.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*phantasmal flames",
+      "phantasmal flames.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*phantasmal flames.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 1330,
+    "estimatedMarketValue": 1477.81,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "me-perfect-order-booster-box",
@@ -177,8 +239,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
-    "maxMarketBuyPrice": 175,
-    "estimatedMarketValue": 190,
+    "maxMarketBuyPrice": 150,
+    "estimatedMarketValue": 175.4,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true
@@ -195,8 +257,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 970,
-    "maxMarketBuyPrice": 1015,
-    "estimatedMarketValue": 1140,
+    "maxMarketBuyPrice": 816,
+    "estimatedMarketValue": 906.14,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -208,17 +270,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "perfect order.*etb",
-      "etb.*perfect order"
+      "perfect order.*(etb|elite trainer)",
+      "(etb|elite trainer).*perfect order"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 58,
+    "maxMarketBuyPrice": 65,
     "estimatedMarketValue": 65,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": true
+  },
+  {
+    "id": "me-perfect-order-etb-case",
+    "name": "Mega Evolution: Perfect Order ETB Sealed Case (10 ETBs)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*perfect order.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*perfect order",
+      "perfect order.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*perfect order.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 600,
+    "estimatedMarketValue": 666.66,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "me-chaos-rising-booster-box",
@@ -232,8 +314,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
-    "maxMarketBuyPrice": 175,
-    "estimatedMarketValue": 190,
+    "maxMarketBuyPrice": 150,
+    "estimatedMarketValue": 185.38,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true
@@ -250,8 +332,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 970,
-    "maxMarketBuyPrice": 1015,
-    "estimatedMarketValue": 1140,
+    "maxMarketBuyPrice": 777,
+    "estimatedMarketValue": 863.44,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -263,17 +345,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "chaos rising.*etb",
-      "etb.*chaos rising"
+      "chaos rising.*(etb|elite trainer)",
+      "(etb|elite trainer).*chaos rising"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 58,
+    "maxMarketBuyPrice": 65,
     "estimatedMarketValue": 65,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": true
+  },
+  {
+    "id": "me-chaos-rising-etb-case",
+    "name": "Mega Evolution: Chaos Rising ETB Sealed Case (10 ETBs)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*chaos rising.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*chaos rising",
+      "chaos rising.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*chaos rising.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 624,
+    "estimatedMarketValue": 693.05,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "me-delta-reign-booster-box",
@@ -287,8 +389,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
-    "maxMarketBuyPrice": 165,
-    "estimatedMarketValue": 180,
+    "maxMarketBuyPrice": 175,
+    "estimatedMarketValue": 249.51,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true
@@ -305,8 +407,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 970,
-    "maxMarketBuyPrice": 957,
-    "estimatedMarketValue": 1080,
+    "maxMarketBuyPrice": 1445,
+    "estimatedMarketValue": 1605,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -318,17 +420,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "delta reign.*etb",
-      "etb.*delta reign"
+      "delta reign.*(etb|elite trainer)",
+      "(etb|elite trainer).*delta reign"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 55,
+    "maxMarketBuyPrice": 110,
     "estimatedMarketValue": 60,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "me-delta-reign-etb-case",
+    "name": "Mega Evolution: Delta Reign ETB Sealed Case (10 ETBs)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*delta reign.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*delta reign",
+      "delta reign.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*delta reign.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 1091,
+    "estimatedMarketValue": 1211.81,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "me-ascended-heroes-etb",
@@ -337,17 +459,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "ascended heroes.*etb",
-      "etb.*ascended heroes"
+      "ascended heroes.*(etb|elite trainer)",
+      "(etb|elite trainer).*ascended heroes"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 75,
-    "estimatedMarketValue": 90,
+    "maxMarketBuyPrice": 120,
+    "estimatedMarketValue": 43.01,
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": true
+  },
+  {
+    "id": "me-ascended-heroes-etb-case",
+    "name": "Mega Evolution: Ascended Heroes ETB Sealed Case (10 ETBs)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*ascended heroes.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*ascended heroes",
+      "ascended heroes.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*ascended heroes.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 1478,
+    "estimatedMarketValue": 1642.65,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "me-ascended-heroes-bundle",
@@ -362,7 +504,7 @@
     "minStock": 1,
     "msrpCeiling": 32,
     "maxMarketBuyPrice": 35,
-    "estimatedMarketValue": 45,
+    "estimatedMarketValue": 80.94,
     "priority": "GRAIL",
     "cooldownMins": 45,
     "active": true
@@ -374,17 +516,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "30th.*(celebration|anniversary).*etb",
-      "etb.*30th"
+      "30th.*(celebration|anniversary).*(etb|elite trainer)",
+      "(etb|elite trainer).*30th"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 52,
+    "maxMarketBuyPrice": 120,
     "estimatedMarketValue": 55,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "me-30th-celebration-etb-case",
+    "name": "30th Celebration ETB Sealed Case (10 ETBs)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*30th.*(celebration|anniversary).*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*30th",
+      "30th.*(celebration|anniversary).*(etb|elite trainer).*case",
+      "(etb|elite trainer).*30th.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 1400,
+    "estimatedMarketValue": 1547.21,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "me-30th-celebration-bundle",
@@ -399,7 +561,7 @@
     "minStock": 1,
     "msrpCeiling": 32,
     "maxMarketBuyPrice": 35,
-    "estimatedMarketValue": 45,
+    "estimatedMarketValue": 72.99,
     "priority": "GRAIL",
     "cooldownMins": 45,
     "active": true
@@ -416,8 +578,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
-    "maxMarketBuyPrice": 135,
-    "estimatedMarketValue": 145,
+    "maxMarketBuyPrice": 250,
+    "estimatedMarketValue": 292.65,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true
@@ -434,8 +596,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 970,
-    "maxMarketBuyPrice": 783,
-    "estimatedMarketValue": 870,
+    "maxMarketBuyPrice": 1540,
+    "estimatedMarketValue": 1710.62,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -447,17 +609,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "scarlet.*violet.*(base)?.*koraidon.*etb",
-      "koraidon.*etb"
+      "scarlet.*violet.*(base)?.*koraidon.*(etb|elite trainer)",
+      "koraidon.*(etb|elite trainer)"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 48,
-    "estimatedMarketValue": 55,
+    "maxMarketBuyPrice": 120,
+    "estimatedMarketValue": 129.17,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "sv-base-koraidon-etb-case",
+    "name": "Scarlet & Violet Base ETB (Koraidon) Sealed Case (10 ETBs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*scarlet.*violet.*(base)?.*koraidon.*(etb|elite trainer)",
+      "case.*koraidon.*(etb|elite trainer)",
+      "scarlet.*violet.*(base)?.*koraidon.*(etb|elite trainer).*case",
+      "koraidon.*(etb|elite trainer).*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 1260,
+    "estimatedMarketValue": 1399.49,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "sv-base-miraidon-etb",
@@ -466,17 +648,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "scarlet.*violet.*(base)?.*miraidon.*etb",
-      "miraidon.*etb"
+      "scarlet.*violet.*(base)?.*miraidon.*(etb|elite trainer)",
+      "miraidon.*(etb|elite trainer)"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 48,
-    "estimatedMarketValue": 55,
+    "maxMarketBuyPrice": 120,
+    "estimatedMarketValue": 143.51,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "sv-base-miraidon-etb-case",
+    "name": "Scarlet & Violet Base ETB (Miraidon) Sealed Case (10 ETBs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*scarlet.*violet.*(base)?.*miraidon.*(etb|elite trainer)",
+      "case.*miraidon.*(etb|elite trainer)",
+      "scarlet.*violet.*(base)?.*miraidon.*(etb|elite trainer).*case",
+      "miraidon.*(etb|elite trainer).*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 1260,
+    "estimatedMarketValue": 1399.49,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "sv-paldea-evolved-booster-box",
@@ -490,8 +692,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
-    "maxMarketBuyPrice": 185,
-    "estimatedMarketValue": 210,
+    "maxMarketBuyPrice": 228,
+    "estimatedMarketValue": 253.33,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true
@@ -508,8 +710,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 970,
-    "maxMarketBuyPrice": 1073,
-    "estimatedMarketValue": 1260,
+    "maxMarketBuyPrice": 2925,
+    "estimatedMarketValue": 3250,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -521,17 +723,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "paldea evolved.*etb",
-      "etb.*paldea evolved"
+      "paldea evolved.*(etb|elite trainer)",
+      "(etb|elite trainer).*paldea evolved"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 58,
+    "maxMarketBuyPrice": 120,
     "estimatedMarketValue": 65,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "sv-paldea-evolved-etb-case",
+    "name": "Paldea Evolved ETB Sealed Case (10 ETBs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*paldea evolved.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*paldea evolved",
+      "paldea evolved.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*paldea evolved.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 1887,
+    "estimatedMarketValue": 2096.49,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "sv-obsidian-flames-booster-box",
@@ -545,8 +767,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
-    "maxMarketBuyPrice": 140,
-    "estimatedMarketValue": 150,
+    "maxMarketBuyPrice": 331,
+    "estimatedMarketValue": 367.65,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true
@@ -563,8 +785,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 970,
-    "maxMarketBuyPrice": 812,
-    "estimatedMarketValue": 900,
+    "maxMarketBuyPrice": 2211,
+    "estimatedMarketValue": 2456.26,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -576,17 +798,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "obsidian flames.*etb",
-      "etb.*obsidian flames"
+      "obsidian flames.*(etb|elite trainer)",
+      "(etb|elite trainer).*obsidian flames"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 50,
+    "maxMarketBuyPrice": 120,
     "estimatedMarketValue": 55,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "sv-obsidian-flames-etb-case",
+    "name": "Obsidian Flames ETB Sealed Case (10 ETBs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*obsidian flames.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*obsidian flames",
+      "obsidian flames.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*obsidian flames.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 2819,
+    "estimatedMarketValue": 3132.63,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "sv-151-etb",
@@ -595,17 +837,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "(151).*etb",
-      "etb.*(151)"
+      "(151).*(etb|elite trainer)",
+      "(etb|elite trainer).*(151)"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 85,
-    "estimatedMarketValue": 110,
+    "maxMarketBuyPrice": 300,
+    "estimatedMarketValue": 1003.69,
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "sv-151-etb-case",
+    "name": "Scarlet & Violet: 151 ETB Sealed Case (10 ETBs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*(151).*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*(151)",
+      "(151).*(etb|elite trainer).*case",
+      "(etb|elite trainer).*(151).*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 9033,
+    "estimatedMarketValue": 10037,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "sv-151-bundle",
@@ -620,7 +882,7 @@
     "minStock": 1,
     "msrpCeiling": 32,
     "maxMarketBuyPrice": 90,
-    "estimatedMarketValue": 162,
+    "estimatedMarketValue": 167.09,
     "priority": "GRAIL",
     "cooldownMins": 45,
     "active": true
@@ -637,8 +899,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
-    "maxMarketBuyPrice": 145,
-    "estimatedMarketValue": 160,
+    "maxMarketBuyPrice": 176,
+    "estimatedMarketValue": 195,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true
@@ -655,8 +917,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 970,
-    "maxMarketBuyPrice": 841,
-    "estimatedMarketValue": 960,
+    "maxMarketBuyPrice": 1665,
+    "estimatedMarketValue": 1849.68,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -668,17 +930,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "paradox rift.*roaring.*etb",
-      "roaring moon.*etb"
+      "paradox rift.*roaring.*(etb|elite trainer)",
+      "roaring moon.*(etb|elite trainer)"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 50,
-    "estimatedMarketValue": 55,
+    "maxMarketBuyPrice": 125,
+    "estimatedMarketValue": 134.07,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "sv-paradox-rift-roaring-etb-case",
+    "name": "Paradox Rift ETB (Roaring Moon) Sealed Case (10 ETBs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*paradox rift.*roaring.*(etb|elite trainer)",
+      "case.*roaring moon.*(etb|elite trainer)",
+      "paradox rift.*roaring.*(etb|elite trainer).*case",
+      "roaring moon.*(etb|elite trainer).*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 1207,
+    "estimatedMarketValue": 1341,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "sv-paradox-rift-valiant-etb",
@@ -687,17 +969,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "paradox rift.*valiant.*etb",
-      "iron valiant.*etb"
+      "paradox rift.*valiant.*(etb|elite trainer)",
+      "iron valiant.*(etb|elite trainer)"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 50,
-    "estimatedMarketValue": 55,
+    "maxMarketBuyPrice": 125,
+    "estimatedMarketValue": 135.78,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "sv-paradox-rift-valiant-etb-case",
+    "name": "Paradox Rift ETB (Iron Valiant) Sealed Case (10 ETBs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*paradox rift.*valiant.*(etb|elite trainer)",
+      "case.*iron valiant.*(etb|elite trainer)",
+      "paradox rift.*valiant.*(etb|elite trainer).*case",
+      "iron valiant.*(etb|elite trainer).*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 1260,
+    "estimatedMarketValue": 1400,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "sv-paldean-fates-etb",
@@ -706,17 +1008,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "paldean fates.*etb",
-      "etb.*paldean fates"
+      "paldean fates.*(etb|elite trainer)",
+      "(etb|elite trainer).*paldean fates"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 55,
+    "maxMarketBuyPrice": 125,
     "estimatedMarketValue": 65,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "sv-paldean-fates-etb-case",
+    "name": "Paldean Fates ETB Sealed Case (10 ETBs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*paldean fates.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*paldean fates",
+      "paldean fates.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*paldean fates.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 2444,
+    "estimatedMarketValue": 2715,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "sv-paldean-fates-bundle",
@@ -731,7 +1053,7 @@
     "minStock": 1,
     "msrpCeiling": 32,
     "maxMarketBuyPrice": 32,
-    "estimatedMarketValue": 42,
+    "estimatedMarketValue": 179.75,
     "priority": "GRAIL",
     "cooldownMins": 45,
     "active": true
@@ -748,8 +1070,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
-    "maxMarketBuyPrice": 150,
-    "estimatedMarketValue": 165,
+    "maxMarketBuyPrice": 171,
+    "estimatedMarketValue": 189.71,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true
@@ -766,8 +1088,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 970,
-    "maxMarketBuyPrice": 870,
-    "estimatedMarketValue": 990,
+    "maxMarketBuyPrice": 1097,
+    "estimatedMarketValue": 1219.11,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -779,17 +1101,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "temporal forces.*wake.*etb",
-      "walking wake.*etb"
+      "temporal forces.*wake.*(etb|elite trainer)",
+      "walking wake.*(etb|elite trainer)"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 50,
-    "estimatedMarketValue": 55,
+    "maxMarketBuyPrice": 125,
+    "estimatedMarketValue": 144.16,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "sv-temporal-forces-wake-etb-case",
+    "name": "Temporal Forces ETB (Walking Wake) Sealed Case (10 ETBs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*temporal forces.*wake.*(etb|elite trainer)",
+      "case.*walking wake.*(etb|elite trainer)",
+      "temporal forces.*wake.*(etb|elite trainer).*case",
+      "walking wake.*(etb|elite trainer).*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 450,
+    "estimatedMarketValue": 500,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "sv-temporal-forces-leaves-etb",
@@ -798,17 +1140,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "temporal forces.*leaves.*etb",
-      "iron leaves.*etb"
+      "temporal forces.*leaves.*(etb|elite trainer)",
+      "iron leaves.*(etb|elite trainer)"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 50,
-    "estimatedMarketValue": 55,
+    "maxMarketBuyPrice": 125,
+    "estimatedMarketValue": 125.63,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "sv-temporal-forces-leaves-etb-case",
+    "name": "Temporal Forces ETB (Iron Leaves) Sealed Case (10 ETBs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*temporal forces.*leaves.*(etb|elite trainer)",
+      "case.*iron leaves.*(etb|elite trainer)",
+      "temporal forces.*leaves.*(etb|elite trainer).*case",
+      "iron leaves.*(etb|elite trainer).*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 1166,
+    "estimatedMarketValue": 1295.95,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "sv-twilight-masquerade-booster-box",
@@ -822,8 +1184,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
-    "maxMarketBuyPrice": 165,
-    "estimatedMarketValue": 185,
+    "maxMarketBuyPrice": 306,
+    "estimatedMarketValue": 339.88,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true
@@ -840,8 +1202,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 970,
-    "maxMarketBuyPrice": 957,
-    "estimatedMarketValue": 1110,
+    "maxMarketBuyPrice": 1997,
+    "estimatedMarketValue": 2219.2,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -853,17 +1215,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "twilight masquerade.*etb",
-      "etb.*twilight masquerade"
+      "twilight masquerade.*(etb|elite trainer)",
+      "(etb|elite trainer).*twilight masquerade"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 55,
+    "maxMarketBuyPrice": 125,
     "estimatedMarketValue": 60,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "sv-twilight-masquerade-etb-case",
+    "name": "Twilight Masquerade ETB Sealed Case (10 ETBs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*twilight masquerade.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*twilight masquerade",
+      "twilight masquerade.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*twilight masquerade.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 1096,
+    "estimatedMarketValue": 1217.71,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "sv-shrouded-fable-etb",
@@ -872,17 +1254,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "shrouded fable.*etb",
-      "etb.*shrouded fable"
+      "shrouded fable.*(etb|elite trainer)",
+      "(etb|elite trainer).*shrouded fable"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 48,
+    "maxMarketBuyPrice": 125,
     "estimatedMarketValue": 55,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "sv-shrouded-fable-etb-case",
+    "name": "Shrouded Fable ETB Sealed Case (10 ETBs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*shrouded fable.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*shrouded fable",
+      "shrouded fable.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*shrouded fable.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 1045,
+    "estimatedMarketValue": 1161.07,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "sv-shrouded-fable-bundle",
@@ -897,7 +1299,7 @@
     "minStock": 1,
     "msrpCeiling": 32,
     "maxMarketBuyPrice": 28,
-    "estimatedMarketValue": 35,
+    "estimatedMarketValue": 58.11,
     "priority": "GRAIL",
     "cooldownMins": 45,
     "active": true
@@ -914,8 +1316,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
-    "maxMarketBuyPrice": 145,
-    "estimatedMarketValue": 160,
+    "maxMarketBuyPrice": 271,
+    "estimatedMarketValue": 300.65,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true
@@ -932,7 +1334,7 @@
     ],
     "minStock": 1,
     "msrpCeiling": 970,
-    "maxMarketBuyPrice": 841,
+    "maxMarketBuyPrice": 864,
     "estimatedMarketValue": 960,
     "priority": "GRAIL",
     "cooldownMins": 60,
@@ -945,17 +1347,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "stellar crown.*etb",
-      "etb.*stellar crown"
+      "stellar crown.*(etb|elite trainer)",
+      "(etb|elite trainer).*stellar crown"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 50,
+    "maxMarketBuyPrice": 125,
     "estimatedMarketValue": 55,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "sv-stellar-crown-etb-case",
+    "name": "Stellar Crown ETB Sealed Case (10 ETBs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*stellar crown.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*stellar crown",
+      "stellar crown.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*stellar crown.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 1341,
+    "estimatedMarketValue": 1489.98,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "sv-surging-sparks-booster-box",
@@ -969,8 +1391,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
-    "maxMarketBuyPrice": 210,
-    "estimatedMarketValue": 255,
+    "maxMarketBuyPrice": 275,
+    "estimatedMarketValue": 305.2,
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true
@@ -987,8 +1409,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 970,
-    "maxMarketBuyPrice": 1218,
-    "estimatedMarketValue": 1530,
+    "maxMarketBuyPrice": 1337,
+    "estimatedMarketValue": 1486.08,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -1000,17 +1422,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "surging sparks.*etb",
-      "etb.*surging sparks"
+      "surging sparks.*(etb|elite trainer)",
+      "(etb|elite trainer).*surging sparks"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 62,
+    "maxMarketBuyPrice": 110,
     "estimatedMarketValue": 75,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "sv-surging-sparks-etb-case",
+    "name": "Surging Sparks ETB Sealed Case (10 ETBs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*surging sparks.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*surging sparks",
+      "surging sparks.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*surging sparks.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 1169,
+    "estimatedMarketValue": 1298.68,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "sv-prismatic-evolutions-etb",
@@ -1019,17 +1461,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "prismatic evolutions.*etb",
-      "etb.*prismatic evolutions"
+      "prismatic evolutions.*(etb|elite trainer)",
+      "(etb|elite trainer).*prismatic evolutions"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 85,
+    "maxMarketBuyPrice": 110,
     "estimatedMarketValue": 105,
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": true
+  },
+  {
+    "id": "sv-prismatic-evolutions-etb-case",
+    "name": "Prismatic Evolutions ETB Sealed Case (10 ETBs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*prismatic evolutions.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*prismatic evolutions",
+      "prismatic evolutions.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*prismatic evolutions.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 1135,
+    "estimatedMarketValue": 1261.23,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "sv-prismatic-evolutions-bundle",
@@ -1044,7 +1506,7 @@
     "minStock": 1,
     "msrpCeiling": 32,
     "maxMarketBuyPrice": 75,
-    "estimatedMarketValue": 120,
+    "estimatedMarketValue": 79.86,
     "priority": "GRAIL",
     "cooldownMins": 45,
     "active": true
@@ -1061,8 +1523,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
-    "maxMarketBuyPrice": 175,
-    "estimatedMarketValue": 200,
+    "maxMarketBuyPrice": 182,
+    "estimatedMarketValue": 192.45,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true
@@ -1079,8 +1541,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 970,
-    "maxMarketBuyPrice": 1015,
-    "estimatedMarketValue": 1200,
+    "maxMarketBuyPrice": 980,
+    "estimatedMarketValue": 1088.72,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -1092,17 +1554,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "journey together.*etb",
-      "etb.*journey together"
+      "journey together.*(etb|elite trainer)",
+      "(etb|elite trainer).*journey together"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 58,
+    "maxMarketBuyPrice": 125,
     "estimatedMarketValue": 65,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "sv-journey-together-etb-case",
+    "name": "Journey Together ETB Sealed Case (10 ETBs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*journey together.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*journey together",
+      "journey together.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*journey together.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 1209,
+    "estimatedMarketValue": 1343.3,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "sv-destined-rivals-booster-box",
@@ -1116,8 +1598,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
-    "maxMarketBuyPrice": 275,
-    "estimatedMarketValue": 410,
+    "maxMarketBuyPrice": 369,
+    "estimatedMarketValue": 404.65,
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true
@@ -1134,8 +1616,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 970,
-    "maxMarketBuyPrice": 1595,
-    "estimatedMarketValue": 2460,
+    "maxMarketBuyPrice": 2264,
+    "estimatedMarketValue": 2515.5,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -1147,17 +1629,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "destined rivals.*etb",
-      "etb.*destined rivals"
+      "destined rivals.*(etb|elite trainer)",
+      "(etb|elite trainer).*destined rivals"
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 75,
+    "maxMarketBuyPrice": 125,
     "estimatedMarketValue": 115,
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "sv-destined-rivals-etb-case",
+    "name": "Destined Rivals ETB Sealed Case (10 ETBs)",
+    "era": "Scarlet & Violet (2023-2025)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*destined rivals.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*destined rivals",
+      "destined rivals.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*destined rivals.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 549.9,
+    "maxMarketBuyPrice": 1095,
+    "estimatedMarketValue": 1216.96,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "swsh-battle-styles-booster-box",
@@ -1171,8 +1673,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 143.64,
-    "maxMarketBuyPrice": 140,
-    "estimatedMarketValue": 160,
+    "maxMarketBuyPrice": 253,
+    "estimatedMarketValue": 280.73,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true
@@ -1189,8 +1691,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 860,
-    "maxMarketBuyPrice": 812,
-    "estimatedMarketValue": 960,
+    "maxMarketBuyPrice": 1080,
+    "estimatedMarketValue": 1199.99,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -1202,17 +1704,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "battle styles.*single.*etb",
-      "single strike.*etb"
+      "battle styles.*single.*(etb|elite trainer)",
+      "single strike.*(etb|elite trainer)"
     ],
     "minStock": 1,
     "msrpCeiling": 49.99,
-    "maxMarketBuyPrice": 48,
-    "estimatedMarketValue": 55,
+    "maxMarketBuyPrice": 125,
+    "estimatedMarketValue": 131.16,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "swsh-battle-styles-single-etb-case",
+    "name": "Battle Styles ETB (Single Strike Red) Sealed Case (10 ETBs)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*battle styles.*single.*(etb|elite trainer)",
+      "case.*single strike.*(etb|elite trainer)",
+      "battle styles.*single.*(etb|elite trainer).*case",
+      "single strike.*(etb|elite trainer).*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 499.9,
+    "maxMarketBuyPrice": 1181,
+    "estimatedMarketValue": 1312,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "swsh-battle-styles-rapid-etb",
@@ -1221,17 +1743,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "battle styles.*rapid.*etb",
-      "rapid strike.*etb"
+      "battle styles.*rapid.*(etb|elite trainer)",
+      "rapid strike.*(etb|elite trainer)"
     ],
     "minStock": 1,
     "msrpCeiling": 49.99,
-    "maxMarketBuyPrice": 48,
-    "estimatedMarketValue": 55,
+    "maxMarketBuyPrice": 121,
+    "estimatedMarketValue": 133.94,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "swsh-battle-styles-rapid-etb-case",
+    "name": "Battle Styles ETB (Rapid Strike Blue) Sealed Case (10 ETBs)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*battle styles.*rapid.*(etb|elite trainer)",
+      "case.*rapid strike.*(etb|elite trainer)",
+      "battle styles.*rapid.*(etb|elite trainer).*case",
+      "rapid strike.*(etb|elite trainer).*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 499.9,
+    "maxMarketBuyPrice": 1205,
+    "estimatedMarketValue": 1339,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "swsh-chilling-reign-booster-box",
@@ -1245,8 +1787,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 143.64,
-    "maxMarketBuyPrice": 210,
-    "estimatedMarketValue": 260,
+    "maxMarketBuyPrice": 412,
+    "estimatedMarketValue": 457.8,
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true
@@ -1263,8 +1805,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 860,
-    "maxMarketBuyPrice": 1218,
-    "estimatedMarketValue": 1560,
+    "maxMarketBuyPrice": 2981,
+    "estimatedMarketValue": 3312.49,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -1276,17 +1818,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "chilling reign.*shadow.*etb",
-      "shadow rider.*etb"
+      "chilling reign.*shadow.*(etb|elite trainer)",
+      "shadow rider.*(etb|elite trainer)"
     ],
     "minStock": 1,
     "msrpCeiling": 49.99,
-    "maxMarketBuyPrice": 60,
-    "estimatedMarketValue": 75,
+    "maxMarketBuyPrice": 137,
+    "estimatedMarketValue": 152.04,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "swsh-chilling-reign-shadow-etb-case",
+    "name": "Chilling Reign ETB (Shadow Rider) Sealed Case (10 ETBs)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*chilling reign.*shadow.*(etb|elite trainer)",
+      "case.*shadow rider.*(etb|elite trainer)",
+      "chilling reign.*shadow.*(etb|elite trainer).*case",
+      "shadow rider.*(etb|elite trainer).*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 499.9,
+    "maxMarketBuyPrice": 311,
+    "estimatedMarketValue": 345,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "swsh-chilling-reign-ice-etb",
@@ -1295,17 +1857,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "chilling reign.*ice.*etb",
-      "ice rider.*etb"
+      "chilling reign.*ice.*(etb|elite trainer)",
+      "ice rider.*(etb|elite trainer)"
     ],
     "minStock": 1,
     "msrpCeiling": 49.99,
-    "maxMarketBuyPrice": 60,
-    "estimatedMarketValue": 75,
+    "maxMarketBuyPrice": 127,
+    "estimatedMarketValue": 141.41,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "swsh-chilling-reign-ice-etb-case",
+    "name": "Chilling Reign ETB (Ice Rider) Sealed Case (10 ETBs)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*chilling reign.*ice.*(etb|elite trainer)",
+      "case.*ice rider.*(etb|elite trainer)",
+      "chilling reign.*ice.*(etb|elite trainer).*case",
+      "ice rider.*(etb|elite trainer).*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 499.9,
+    "maxMarketBuyPrice": 311,
+    "estimatedMarketValue": 345,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "swsh-evolving-skies-booster-box",
@@ -1319,8 +1901,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 143.64,
-    "maxMarketBuyPrice": 650,
-    "estimatedMarketValue": 920,
+    "maxMarketBuyPrice": 1670,
+    "estimatedMarketValue": 2226.06,
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true
@@ -1337,8 +1919,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 860,
-    "maxMarketBuyPrice": 3770,
-    "estimatedMarketValue": 5520,
+    "maxMarketBuyPrice": 13941,
+    "estimatedMarketValue": 15490,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -1350,8 +1932,8 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "evolving skies.*etb",
-      "etb.*evolving skies"
+      "evolving skies.*(etb|elite trainer)",
+      "(etb|elite trainer).*evolving skies"
     ],
     "minStock": 1,
     "msrpCeiling": 49.99,
@@ -1363,23 +1945,63 @@
     "owned": false
   },
   {
+    "id": "swsh-evolving-skies-etb-case",
+    "name": "Evolving Skies ETB Sealed Case (10 ETBs)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*evolving skies.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*evolving skies",
+      "evolving skies.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*evolving skies.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 499.9,
+    "maxMarketBuyPrice": 5040,
+    "estimatedMarketValue": 5600,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
+  },
+  {
     "id": "swsh-celebrations-etb",
     "name": "Celebrations 25th Anniversary ETB",
     "era": "Sword & Shield Vault (2021-2023)",
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "celebrations.*25th.*etb",
-      "celebrations.*etb"
+      "celebrations.*25th.*(etb|elite trainer)",
+      "celebrations.*(etb|elite trainer)"
     ],
     "minStock": 1,
     "msrpCeiling": 49.99,
-    "maxMarketBuyPrice": 80,
+    "maxMarketBuyPrice": 300,
     "estimatedMarketValue": 95,
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "swsh-celebrations-etb-case",
+    "name": "Celebrations 25th Anniversary ETB Sealed Case (10 ETBs)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*celebrations.*25th.*(etb|elite trainer)",
+      "case.*celebrations.*(etb|elite trainer)",
+      "celebrations.*25th.*(etb|elite trainer).*case",
+      "celebrations.*(etb|elite trainer).*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 499.9,
+    "maxMarketBuyPrice": 855,
+    "estimatedMarketValue": 950,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "swsh-fusion-strike-booster-box",
@@ -1393,8 +2015,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 143.64,
-    "maxMarketBuyPrice": 220,
-    "estimatedMarketValue": 280,
+    "maxMarketBuyPrice": 731,
+    "estimatedMarketValue": 974.54,
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true
@@ -1411,8 +2033,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 860,
-    "maxMarketBuyPrice": 1276,
-    "estimatedMarketValue": 1680,
+    "maxMarketBuyPrice": 5800,
+    "estimatedMarketValue": 6443.99,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -1424,17 +2046,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "fusion strike.*etb",
-      "etb.*fusion strike"
+      "fusion strike.*(etb|elite trainer)",
+      "(etb|elite trainer).*fusion strike"
     ],
     "minStock": 1,
     "msrpCeiling": 49.99,
-    "maxMarketBuyPrice": 60,
+    "maxMarketBuyPrice": 300,
     "estimatedMarketValue": 75,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "swsh-fusion-strike-etb-case",
+    "name": "Fusion Strike ETB Sealed Case (10 ETBs)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*fusion strike.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*fusion strike",
+      "fusion strike.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*fusion strike.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 499.9,
+    "maxMarketBuyPrice": 3240,
+    "estimatedMarketValue": 3599.95,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "swsh-brilliant-stars-booster-box",
@@ -1448,8 +2090,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 143.64,
-    "maxMarketBuyPrice": 190,
-    "estimatedMarketValue": 230,
+    "maxMarketBuyPrice": 420,
+    "estimatedMarketValue": 559.45,
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true
@@ -1466,8 +2108,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 860,
-    "maxMarketBuyPrice": 1102,
-    "estimatedMarketValue": 1380,
+    "maxMarketBuyPrice": 3410,
+    "estimatedMarketValue": 3789.37,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -1479,17 +2121,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "brilliant stars.*etb",
-      "etb.*brilliant stars"
+      "brilliant stars.*(etb|elite trainer)",
+      "(etb|elite trainer).*brilliant stars"
     ],
     "minStock": 1,
     "msrpCeiling": 49.99,
-    "maxMarketBuyPrice": 55,
+    "maxMarketBuyPrice": 300,
     "estimatedMarketValue": 65,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "swsh-brilliant-stars-etb-case",
+    "name": "Brilliant Stars ETB Sealed Case (10 ETBs)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*brilliant stars.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*brilliant stars",
+      "brilliant stars.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*brilliant stars.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 499.9,
+    "maxMarketBuyPrice": 788,
+    "estimatedMarketValue": 875,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "swsh-astral-radiance-booster-box",
@@ -1503,8 +2165,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 143.64,
-    "maxMarketBuyPrice": 170,
-    "estimatedMarketValue": 190,
+    "maxMarketBuyPrice": 309,
+    "estimatedMarketValue": 411.83,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true
@@ -1521,8 +2183,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 860,
-    "maxMarketBuyPrice": 986,
-    "estimatedMarketValue": 1140,
+    "maxMarketBuyPrice": 2259,
+    "estimatedMarketValue": 2509.86,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -1534,17 +2196,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "astral radiance.*etb",
-      "etb.*astral radiance"
+      "astral radiance.*(etb|elite trainer)",
+      "(etb|elite trainer).*astral radiance"
     ],
     "minStock": 1,
     "msrpCeiling": 49.99,
-    "maxMarketBuyPrice": 52,
+    "maxMarketBuyPrice": 180,
     "estimatedMarketValue": 60,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "swsh-astral-radiance-etb-case",
+    "name": "Astral Radiance ETB Sealed Case (10 ETBs)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*astral radiance.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*astral radiance",
+      "astral radiance.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*astral radiance.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 499.9,
+    "maxMarketBuyPrice": 1559,
+    "estimatedMarketValue": 1732.49,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "swsh-pokemon-go-etb",
@@ -1553,17 +2235,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "(pokemon|pokémon) go.*etb",
-      "etb.*(pokemon|pokémon) go"
+      "(pokemon|pokémon) go.*(etb|elite trainer)",
+      "(etb|elite trainer).*(pokemon|pokémon) go"
     ],
     "minStock": 1,
     "msrpCeiling": 49.99,
-    "maxMarketBuyPrice": 55,
+    "maxMarketBuyPrice": 125,
     "estimatedMarketValue": 65,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "swsh-pokemon-go-etb-case",
+    "name": "Pokémon GO ETB Sealed Case (10 ETBs)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*(pokemon|pokémon) go.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*(pokemon|pokémon) go",
+      "(pokemon|pokémon) go.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*(pokemon|pokémon) go.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 499.9,
+    "maxMarketBuyPrice": 1276,
+    "estimatedMarketValue": 1418.29,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "swsh-lost-origin-booster-box",
@@ -1577,8 +2279,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 143.64,
-    "maxMarketBuyPrice": 190,
-    "estimatedMarketValue": 240,
+    "maxMarketBuyPrice": 550,
+    "estimatedMarketValue": 733.13,
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true
@@ -1595,8 +2297,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 860,
-    "maxMarketBuyPrice": 1102,
-    "estimatedMarketValue": 1440,
+    "maxMarketBuyPrice": 17999,
+    "estimatedMarketValue": 19998.95,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -1608,17 +2310,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "lost origin.*etb",
-      "etb.*lost origin"
+      "lost origin.*(etb|elite trainer)",
+      "(etb|elite trainer).*lost origin"
     ],
     "minStock": 1,
     "msrpCeiling": 49.99,
-    "maxMarketBuyPrice": 55,
+    "maxMarketBuyPrice": 125,
     "estimatedMarketValue": 70,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "swsh-lost-origin-etb-case",
+    "name": "Lost Origin ETB Sealed Case (10 ETBs)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*lost origin.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*lost origin",
+      "lost origin.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*lost origin.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 499.9,
+    "maxMarketBuyPrice": 1799,
+    "estimatedMarketValue": 1998.45,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "swsh-silver-tempest-booster-box",
@@ -1632,8 +2354,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 143.64,
-    "maxMarketBuyPrice": 175,
-    "estimatedMarketValue": 195,
+    "maxMarketBuyPrice": 392,
+    "estimatedMarketValue": 523.25,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true
@@ -1650,8 +2372,8 @@
     ],
     "minStock": 1,
     "msrpCeiling": 860,
-    "maxMarketBuyPrice": 1015,
-    "estimatedMarketValue": 1170,
+    "maxMarketBuyPrice": 2668,
+    "estimatedMarketValue": 2964.99,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -1663,17 +2385,37 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "silver tempest.*etb",
-      "etb.*silver tempest"
+      "silver tempest.*(etb|elite trainer)",
+      "(etb|elite trainer).*silver tempest"
     ],
     "minStock": 1,
     "msrpCeiling": 49.99,
-    "maxMarketBuyPrice": 52,
+    "maxMarketBuyPrice": 125,
     "estimatedMarketValue": 60,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "swsh-silver-tempest-etb-case",
+    "name": "Silver Tempest ETB Sealed Case (10 ETBs)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*silver tempest.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*silver tempest",
+      "silver tempest.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*silver tempest.*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 499.9,
+    "maxMarketBuyPrice": 1305,
+    "estimatedMarketValue": 1449.97,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "swsh-crown-zenith-etb",
@@ -1682,18 +2424,40 @@
     "formFactor": "ETB",
     "image": "",
     "matchers": [
-      "crown zenith.*etb",
-      "etb.*crown zenith",
-      "lucario.*crown zenith.*etb"
+      "crown zenith.*(etb|elite trainer)",
+      "(etb|elite trainer).*crown zenith",
+      "lucario.*crown zenith.*(etb|elite trainer)"
     ],
     "minStock": 1,
     "msrpCeiling": 49.99,
-    "maxMarketBuyPrice": 75,
-    "estimatedMarketValue": 95,
+    "maxMarketBuyPrice": 300,
+    "estimatedMarketValue": 450,
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true,
     "owned": false
+  },
+  {
+    "id": "swsh-crown-zenith-etb-case",
+    "name": "Crown Zenith ETB (Lucario) Sealed Case (10 ETBs)",
+    "era": "Sword & Shield Vault (2021-2023)",
+    "formFactor": "ETB Case",
+    "image": "",
+    "matchers": [
+      "case.*crown zenith.*(etb|elite trainer)",
+      "case.*(etb|elite trainer).*crown zenith",
+      "case.*lucario.*crown zenith.*(etb|elite trainer)",
+      "crown zenith.*(etb|elite trainer).*case",
+      "(etb|elite trainer).*crown zenith.*case",
+      "lucario.*crown zenith.*(etb|elite trainer).*case"
+    ],
+    "minStock": 1,
+    "msrpCeiling": 499.9,
+    "maxMarketBuyPrice": 3330,
+    "estimatedMarketValue": 3699.59,
+    "priority": "GRAIL",
+    "cooldownMins": 60,
+    "active": true
   },
   {
     "id": "swsh-crown-zenith-bundle",
@@ -1708,7 +2472,7 @@
     "minStock": 1,
     "msrpCeiling": 32,
     "maxMarketBuyPrice": 38,
-    "estimatedMarketValue": 50,
+    "estimatedMarketValue": 219.72,
     "priority": "GRAIL",
     "cooldownMins": 45,
     "active": true
