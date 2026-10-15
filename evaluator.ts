@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import { WATCH_POLICIES, PolicyRule, GLOBAL_JUNK_EXCLUSIONS } from './policies';
 import { recordObservation, getTelemetry } from './marketTelemetry';
 
@@ -16,10 +18,33 @@ export interface EvaluationResult {
   rule?: PolicyRule;
   discountPct?: number;
   savingsDollars?: number;
-  isPriceDropOverride?: boolean;
+  alertType?: 'NEW_DROP' | 'PRICE_DROP' | 'RESTOCK_REPEAT';
+  previousPrice?: number;
+  previousTimeStr?: string;
 }
 
-const cooldownMap = new Map<string, { timestamp: number; lastPrice: number }>();
+interface AlertMemoryEntry {
+  lastPrice: number;
+  lowestAlertedPrice: number;
+  timestamp: number;
+  timeStr: string;
+  alertCount: number;
+}
+
+const ALERT_STATE_PATH = path.resolve(process.cwd(), 'alertState.json');
+let alertMemory: Record<string, AlertMemoryEntry> = {};
+
+try {
+  if (fs.existsSync(ALERT_STATE_PATH)) {
+    alertMemory = JSON.parse(fs.readFileSync(ALERT_STATE_PATH, 'utf-8'));
+  }
+} catch (e) {}
+
+function saveAlertMemory() {
+  try {
+    fs.writeFileSync(ALERT_STATE_PATH, JSON.stringify(alertMemory, null, 2), 'utf-8');
+  } catch (e) {}
+}
 
 export function evaluateItem(item: RawRestockItem): EvaluationResult {
   const cleanTitle = item.title.trim();
@@ -34,7 +59,6 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
     const isMatched = rule.matchers.some((regex) => regex.test(cleanTitle));
     if (!isMatched) continue;
 
-    // Prevent single ETB or Booster Box rules from matching "Case" listings
     if ((rule.formFactor === 'ETB' || rule.formFactor === 'Booster Box' || rule.formFactor === 'Booster Bundle') && /\bcase\b/i.test(cleanTitle)) {
       continue;
     }
@@ -60,29 +84,42 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       };
     }
 
-    const cooldownKey = `${rule.id}_${item.retailer}`;
-    const prevAlert = cooldownMap.get(cooldownKey);
+    // Persistent Deduplication per (Rule + Retailer)
+    const stateKey = `${rule.id}__${item.retailer}`;
+    const prev = alertMemory[stateKey];
     const now = Date.now();
-    let isPriceDropOverride = false;
+    const currentPrice = item.price ?? effectiveCeiling;
 
-    if (prevAlert) {
-      const elapsedMins = (now - prevAlert.timestamp) / (1000 * 60);
-      const currentPrice = item.price ?? effectiveCeiling;
-      // Allow immediate re-alert if price dropped by at least $4 since last alert!
-      if (elapsedMins < rule.cooldownMins && currentPrice >= prevAlert.lastPrice - 4) {
+    let alertType: 'NEW_DROP' | 'PRICE_DROP' | 'RESTOCK_REPEAT' = 'NEW_DROP';
+    let previousPrice: number | undefined = undefined;
+    let previousTimeStr: string | undefined = undefined;
+
+    if (prev) {
+      const elapsedHours = (now - prev.timestamp) / (1000 * 60 * 60);
+      const isSignificantPriceDrop = currentPrice <= prev.lowestAlertedPrice - 3.00;
+
+      // Block same-price repeats for 12 full hours! Only allow through immediately if the price dropped by $3+
+      if (!isSignificantPriceDrop && elapsedHours < 12) {
         return {
           action: 'IGNORE',
-          reason: `Cooldown active for ${rule.name} at ${item.retailer} (${Math.round(rule.cooldownMins - elapsedMins)}m left).`,
+          reason: `Deduplicated repeat: ${rule.name} at ${item.retailer} already alerted at $${prev.lastPrice.toFixed(2)} (${prev.timeStr}).`,
           rule
         };
       }
-      if (elapsedMins < rule.cooldownMins && currentPrice < prevAlert.lastPrice - 4) {
-        isPriceDropOverride = true;
-      }
+
+      previousPrice = prev.lastPrice;
+      previousTimeStr = prev.timeStr;
+      alertType = isSignificantPriceDrop ? 'PRICE_DROP' : 'RESTOCK_REPEAT';
     }
 
-    const currentPrice = item.price ?? effectiveCeiling;
-    cooldownMap.set(cooldownKey, { timestamp: now, lastPrice: currentPrice });
+    alertMemory[stateKey] = {
+      lastPrice: currentPrice,
+      lowestAlertedPrice: prev ? Math.min(prev.lowestAlertedPrice, currentPrice) : currentPrice,
+      timestamp: now,
+      timeStr: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      alertCount: (prev?.alertCount || 0) + 1
+    };
+    saveAlertMemory();
 
     const liveTel = getTelemetry()[rule.id];
     const marketVal = (liveTel && liveTel.rollingAverage > 0) ? liveTel.rollingAverage : (rule.estimatedMarketValue || effectiveCeiling);
@@ -91,11 +128,13 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
 
     return {
       action: 'BUY',
-      reason: `Matched policy "${rule.name}" at $${currentPrice.toFixed(2)} (${discountPct}% under market)`,
+      reason: `[${alertType}] Matched "${rule.name}" at $${currentPrice.toFixed(2)} (${discountPct}% under market)`,
       rule,
       discountPct,
       savingsDollars,
-      isPriceDropOverride
+      alertType,
+      previousPrice,
+      previousTimeStr
     };
   }
 

@@ -7,7 +7,7 @@ export async function processIncomingDrop(item: RawRestockItem): Promise<void> {
 
   if (result.action === 'BUY' && result.rule) {
     const r: any = result.rule;
-    console.log(`[INGEST] "${item.title}" ($${item.price?.toFixed(2)}) from ${item.retailer} -> 🎯 BUY [ALERTING DISCORD] | ${result.reason}`);
+    console.log(`[INGEST] "${item.title}" ($${item.price?.toFixed(2)}) from ${item.retailer} -> 🎯 BUY [${result.alertType}] | ${result.reason}`);
 
     await sendAlert({
       title: item.title,
@@ -25,7 +25,9 @@ export async function processIncomingDrop(item: RawRestockItem): Promise<void> {
       discountPct: result.discountPct,
       savingsDollars: result.savingsDollars,
       ownedInVault: Boolean(r.owned),
-      isPriceDropOverride: result.isPriceDropOverride
+      alertType: result.alertType,
+      previousPrice: result.previousPrice,
+      previousTimeStr: result.previousTimeStr
     });
   } else {
     console.log(`[INGEST] "${item.title}" ($${item.price?.toFixed(2)}) from ${item.retailer} -> IGNORE [RUN AWAY] | ${result.reason}`);

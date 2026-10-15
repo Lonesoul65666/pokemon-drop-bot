@@ -33,7 +33,6 @@ interface MonitoredStore {
   collectionPath: string;
 }
 
-// 20 High-Volume US Sealed Discounters (Using verified collection slugs + root /products.json fallback)
 const MONITORED_STORES: MonitoredStore[] = [
   { name: 'Forge & Fire', baseUrl: 'https://forgeandfiregaming.com', collectionPath: '/products.json?limit=250' },
   { name: 'Smoke & Mirrors', baseUrl: 'https://smokeandmirrorshobby.com', collectionPath: '/products.json?limit=250' },
@@ -57,7 +56,8 @@ const MONITORED_STORES: MonitoredStore[] = [
   { name: 'Rare Candy', baseUrl: 'https://rarecandy.com', collectionPath: '/products.json?limit=250' }
 ];
 
-const seenVariantMap = new Map<number, string>();
+// Track variant availability + price (NEVER trigger just because Shopify POS touched updated_at!)
+const variantStateMap = new Map<number, { price: number; oosStrikes: number }>();
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -92,37 +92,50 @@ export async function pollShopifyStores(): Promise<void> {
       }
 
       for (const prod of products) {
-        const updatedTime = prod.updated_at;
-
         for (const variant of prod.variants || []) {
+          const priceNum = parseFloat(variant.price);
+          if (!priceNum || priceNum <= 0) continue;
+
           if (variant.available) {
-            const cachedUpdate = seenVariantMap.get(variant.id);
-            const stateKey = `${updatedTime}_${variant.price}`;
+            const prev = variantStateMap.get(variant.id);
 
-            if (!cachedUpdate || cachedUpdate !== stateKey) {
-              seenVariantMap.set(variant.id, stateKey);
+            // Only emit to evaluator if:
+            // 1) Never seen in stock during this session, OR
+            // 2) Price dropped by at least $1.00 while in stock
+            if (!prev || priceNum < prev.price - 0.99) {
+              variantStateMap.set(variant.id, { price: priceNum, oosStrikes: 0 });
 
-              const priceNum = parseFloat(variant.price);
               const fullTitle = `${prod.title} ${variant.title !== 'Default Title' ? variant.title : ''}`.trim();
               const fastCheckoutUrl = `${store.baseUrl}/cart/${variant.id}:1`;
+              const realQty = typeof variant.inventory_quantity === 'number' && variant.inventory_quantity > 0
+                ? variant.inventory_quantity
+                : undefined;
 
               await processIncomingDrop({
                 title: fullTitle,
                 retailer: store.name,
                 url: fastCheckoutUrl,
                 price: priceNum,
-                stock: variant.inventory_quantity || 1,
+                stock: realQty,
                 itemId: String(variant.id),
               });
+            } else {
+              // Still sitting in stock at the same (or higher) price -> reset OOS strikes and DO NOT re-emit!
+              prev.oosStrikes = 0;
             }
           } else {
-            seenVariantMap.delete(variant.id);
+            // Require 3 consecutive Out-Of-Stock sweeps (~1 minute) before clearing from memory so brief flickers don't re-alert
+            const prev = variantStateMap.get(variant.id);
+            if (prev) {
+              prev.oosStrikes += 1;
+              if (prev.oosStrikes >= 3) {
+                variantStateMap.delete(variant.id);
+              }
+            }
           }
         }
       }
-    } catch (err: any) {
-      // Silently skip single proxy hiccups
-    }
+    } catch (err: any) {}
 
     await sleep(getRandomJitter(400, 1100));
   }

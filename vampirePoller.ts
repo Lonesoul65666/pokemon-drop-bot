@@ -4,9 +4,8 @@ import { processIncomingDrop } from './listener';
 import { WATCH_POLICIES } from './policies';
 
 const seenRedditIds = new Set<string>();
-const seenTcgPrices = new Map<string, number>();
+const lowestTcgSeenMap = new Map<string, { lowestPrice: number; timestamp: number }>();
 
-// A. Vampiric Reddit Deal Monitor (Catches Target, Best Buy, Walmart, Costco, Pokemon Center & LGS drops posted to r/PKMNTCGDeals)
 export async function pollRedditDeals(): Promise<void> {
   try {
     const proxy = getNextProxy();
@@ -14,7 +13,7 @@ export async function pollRedditDeals(): Promise<void> {
       timeout: 8000,
       httpsAgent: proxy,
       headers: {
-        'User-Agent': 'Windows:DropBotCommander:v2.1 (by /u/Lonesoul65666)',
+        'User-Agent': 'Windows:DropBotCommander:v2.6 (by /u/Lonesoul65666)',
         Accept: 'application/json'
       }
     });
@@ -25,7 +24,6 @@ export async function pollRedditDeals(): Promise<void> {
       if (!post || seenRedditIds.has(post.id)) continue;
       seenRedditIds.add(post.id);
 
-      // Only evaluate fresh posts from the last 2 hours
       const ageSeconds = (Date.now() / 1000) - (post.created_utc || 0);
       if (ageSeconds > 7200) continue;
 
@@ -36,7 +34,6 @@ export async function pollRedditDeals(): Promise<void> {
       const price = parseFloat(priceMatch[1]);
       const dealUrl = post.url_overridden_by_dest || `https://www.reddit.com${post.permalink}`;
 
-      // Extract retailer tag like [Target] or [Best Buy] if present
       const storeMatch = title.match(/^\[([^\]]+)\]/);
       const retailer = storeMatch ? `${storeMatch[1]} (via PKMNTCGDeals)` : 'r/PKMNTCGDeals Alert';
 
@@ -45,18 +42,15 @@ export async function pollRedditDeals(): Promise<void> {
         retailer,
         url: dealUrl,
         price,
-        stock: 1,
+        stock: undefined,
         itemId: `reddit_${post.id}`
       });
     }
-  } catch (e) {
-    // Ignore transient Reddit rate limits
-  }
+  } catch (e) {}
 
-  setTimeout(pollRedditDeals, 60000); // Check every 60 seconds
+  setTimeout(pollRedditDeals, 60000);
 }
 
-// B. TCGPlayer Lowest-Listing Undercut Sniper (Catches individual sellers listing below your Max Buy Trigger)
 let tcgCursor = 0;
 export async function pollTcgPlayerUndercuts(): Promise<void> {
   const activePolicies = WATCH_POLICIES.filter((p: any) => p.active !== false);
@@ -65,7 +59,6 @@ export async function pollTcgPlayerUndercuts(): Promise<void> {
     return;
   }
 
-  // Check 4 items per cycle so we sweep the catalog smoothly without rate-limiting
   for (let i = 0; i < 4; i++) {
     const policy = activePolicies[tcgCursor % activePolicies.length];
     tcgCursor = (tcgCursor + 1) % activePolicies.length;
@@ -103,18 +96,20 @@ export async function pollTcgPlayerUndercuts(): Promise<void> {
         const lowestPrice = parseFloat(item.lowestPriceWithShipping || item.lowestPrice || 0);
         if (!lowestPrice || lowestPrice <= 0) continue;
 
-        // Only process if the price changed or hasn't been seen at this level
-        const prevPrice = seenTcgPrices.get(policy.id);
-        if (prevPrice !== lowestPrice) {
-          seenTcgPrices.set(policy.id, lowestPrice);
+        const prev = lowestTcgSeenMap.get(policy.id);
+        const hoursSinceLast = prev ? (Date.now() - prev.timestamp) / (1000 * 60 * 60) : 999;
+
+        // Only emit if we haven't seen this item in 12+ hours OR a seller listed it at least $3 cheaper than the session low!
+        if (!prev || lowestPrice <= prev.lowestPrice - 3 || hoursSinceLast >= 12) {
+          lowestTcgSeenMap.set(policy.id, { lowestPrice, timestamp: Date.now() });
           const prodId = Math.floor(Number(item.productId));
           await processIncomingDrop({
             title: prodTitle,
             retailer: 'TCGPlayer Verified Seller',
             url: `https://www.tcgplayer.com/product/${prodId}`,
             price: lowestPrice,
-            stock: 1,
-            itemId: `tcg_${prodId}_${lowestPrice}`
+            stock: undefined,
+            itemId: `tcg_${prodId}`
           });
         }
         break;
@@ -122,5 +117,5 @@ export async function pollTcgPlayerUndercuts(): Promise<void> {
     } catch (e) {}
   }
 
-  setTimeout(pollTcgPlayerUndercuts, 15000);
+  setTimeout(pollTcgPlayerUndercuts, 20000);
 }

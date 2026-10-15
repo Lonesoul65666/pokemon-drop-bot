@@ -10,8 +10,7 @@ const lgsPoller_1 = require("./lgsPoller");
 const listener_1 = require("./listener");
 const policies_1 = require("./policies");
 const seenRedditIds = new Set();
-const seenTcgPrices = new Map();
-// A. Vampiric Reddit Deal Monitor (Catches Target, Best Buy, Walmart, Costco, Pokemon Center & LGS drops posted to r/PKMNTCGDeals)
+const lowestTcgSeenMap = new Map();
 async function pollRedditDeals() {
     try {
         const proxy = (0, lgsPoller_1.getNextProxy)();
@@ -19,7 +18,7 @@ async function pollRedditDeals() {
             timeout: 8000,
             httpsAgent: proxy,
             headers: {
-                'User-Agent': 'Windows:DropBotCommander:v2.1 (by /u/Lonesoul65666)',
+                'User-Agent': 'Windows:DropBotCommander:v2.6 (by /u/Lonesoul65666)',
                 Accept: 'application/json'
             }
         });
@@ -29,7 +28,6 @@ async function pollRedditDeals() {
             if (!post || seenRedditIds.has(post.id))
                 continue;
             seenRedditIds.add(post.id);
-            // Only evaluate fresh posts from the last 2 hours
             const ageSeconds = (Date.now() / 1000) - (post.created_utc || 0);
             if (ageSeconds > 7200)
                 continue;
@@ -39,7 +37,6 @@ async function pollRedditDeals() {
                 continue;
             const price = parseFloat(priceMatch[1]);
             const dealUrl = post.url_overridden_by_dest || `https://www.reddit.com${post.permalink}`;
-            // Extract retailer tag like [Target] or [Best Buy] if present
             const storeMatch = title.match(/^\[([^\]]+)\]/);
             const retailer = storeMatch ? `${storeMatch[1]} (via PKMNTCGDeals)` : 'r/PKMNTCGDeals Alert';
             await (0, listener_1.processIncomingDrop)({
@@ -47,17 +44,14 @@ async function pollRedditDeals() {
                 retailer,
                 url: dealUrl,
                 price,
-                stock: 1,
+                stock: undefined,
                 itemId: `reddit_${post.id}`
             });
         }
     }
-    catch (e) {
-        // Ignore transient Reddit rate limits
-    }
-    setTimeout(pollRedditDeals, 60000); // Check every 60 seconds
+    catch (e) { }
+    setTimeout(pollRedditDeals, 60000);
 }
-// B. TCGPlayer Lowest-Listing Undercut Sniper (Catches individual sellers listing below your Max Buy Trigger)
 let tcgCursor = 0;
 async function pollTcgPlayerUndercuts() {
     const activePolicies = policies_1.WATCH_POLICIES.filter((p) => p.active !== false);
@@ -65,7 +59,6 @@ async function pollTcgPlayerUndercuts() {
         setTimeout(pollTcgPlayerUndercuts, 30000);
         return;
     }
-    // Check 4 items per cycle so we sweep the catalog smoothly without rate-limiting
     for (let i = 0; i < 4; i++) {
         const policy = activePolicies[tcgCursor % activePolicies.length];
         tcgCursor = (tcgCursor + 1) % activePolicies.length;
@@ -100,18 +93,19 @@ async function pollTcgPlayerUndercuts() {
                 const lowestPrice = parseFloat(item.lowestPriceWithShipping || item.lowestPrice || 0);
                 if (!lowestPrice || lowestPrice <= 0)
                     continue;
-                // Only process if the price changed or hasn't been seen at this level
-                const prevPrice = seenTcgPrices.get(policy.id);
-                if (prevPrice !== lowestPrice) {
-                    seenTcgPrices.set(policy.id, lowestPrice);
+                const prev = lowestTcgSeenMap.get(policy.id);
+                const hoursSinceLast = prev ? (Date.now() - prev.timestamp) / (1000 * 60 * 60) : 999;
+                // Only emit if we haven't seen this item in 12+ hours OR a seller listed it at least $3 cheaper than the session low!
+                if (!prev || lowestPrice <= prev.lowestPrice - 3 || hoursSinceLast >= 12) {
+                    lowestTcgSeenMap.set(policy.id, { lowestPrice, timestamp: Date.now() });
                     const prodId = Math.floor(Number(item.productId));
                     await (0, listener_1.processIncomingDrop)({
                         title: prodTitle,
                         retailer: 'TCGPlayer Verified Seller',
                         url: `https://www.tcgplayer.com/product/${prodId}`,
                         price: lowestPrice,
-                        stock: 1,
-                        itemId: `tcg_${prodId}_${lowestPrice}`
+                        stock: undefined,
+                        itemId: `tcg_${prodId}`
                     });
                 }
                 break;
@@ -119,5 +113,5 @@ async function pollTcgPlayerUndercuts() {
         }
         catch (e) { }
     }
-    setTimeout(pollTcgPlayerUndercuts, 15000);
+    setTimeout(pollTcgPlayerUndercuts, 20000);
 }

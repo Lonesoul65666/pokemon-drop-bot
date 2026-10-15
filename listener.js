@@ -8,7 +8,7 @@ async function processIncomingDrop(item) {
     const result = (0, evaluator_1.evaluateItem)(item);
     if (result.action === 'BUY' && result.rule) {
         const r = result.rule;
-        console.log(`[INGEST] "${item.title}" ($${item.price?.toFixed(2)}) from ${item.retailer} -> 🎯 BUY [ALERTING DISCORD] | ${result.reason}`);
+        console.log(`[INGEST] "${item.title}" ($${item.price?.toFixed(2)}) from ${item.retailer} -> 🎯 BUY [${result.alertType}] | ${result.reason}`);
         await (0, notifier_1.sendAlert)({
             title: item.title,
             retailer: item.retailer,
@@ -25,7 +25,9 @@ async function processIncomingDrop(item) {
             discountPct: result.discountPct,
             savingsDollars: result.savingsDollars,
             ownedInVault: Boolean(r.owned),
-            isPriceDropOverride: result.isPriceDropOverride
+            alertType: result.alertType,
+            previousPrice: result.previousPrice,
+            previousTimeStr: result.previousTimeStr
         });
     }
     else {
