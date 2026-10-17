@@ -35,7 +35,11 @@ async function processIncomingDrop(item) {
             ownedInVault: Boolean(r.owned),
             alertType: result.alertType,
             previousPrice: result.previousPrice,
-            previousTimeStr: result.previousTimeStr
+            previousTimeStr: result.previousTimeStr,
+            bigBoxTier: result.bigBoxTier,
+            bigBoxBadge: result.bigBoxBadge,
+            marketplaceWarning: result.marketplaceWarning,
+            priorityFront: result.priorityFront
         });
     }
     else if (result.rule && !result.reason.includes('Deduplicated')) {

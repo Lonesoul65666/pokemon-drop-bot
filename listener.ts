@@ -35,7 +35,11 @@ export async function processIncomingDrop(item: RawRestockItem): Promise<void> {
       ownedInVault: Boolean(r.owned),
       alertType: result.alertType,
       previousPrice: result.previousPrice,
-      previousTimeStr: result.previousTimeStr
+      previousTimeStr: result.previousTimeStr,
+      bigBoxTier: result.bigBoxTier,
+      bigBoxBadge: result.bigBoxBadge,
+      marketplaceWarning: result.marketplaceWarning,
+      priorityFront: result.priorityFront
     });
   } else if (result.rule && !result.reason.includes('Deduplicated')) {
     // Only log tracked Pokemon SKUs so you can see live store prices vs. your slider targets without non-Pokemon clutter!

@@ -105,6 +105,37 @@ export const PC_EXCLUSIVE_EXCLUSION_TERMS = [
   'stamped'
 ];
 
+export const BIG_BOX_RETAILER_PATTERNS = [
+  { name: 'Pokemon Center', regex: /pokemon\s*center|pokémon\s*center|pokemoncenter\.com/i },
+  { name: 'Target', regex: /\btarget\b|target\.com/i },
+  { name: 'Best Buy', regex: /best\s*buy|bestbuy\.com/i },
+  { name: 'Walmart', regex: /\bwalmart\b|walmart\.com/i },
+  { name: 'Amazon', regex: /\bamazon\b|amazon\.com|\ba\.co\b/i },
+  { name: 'GameStop', regex: /gamestop|gamestop\.com/i },
+  { name: 'Costco', regex: /\bcostco\b|costco\.com/i },
+  { name: "Sam's Club", regex: /sam'?s\s*club|samsclub\.com/i },
+  { name: 'Barnes & Noble', regex: /barnes\s*(&|and)\s*noble|\bb&n\b|barnesandnoble\.com/i }
+];
+
+export function detectBigBoxRetailer(retailer?: string, url?: string): string | null {
+  const combined = `${retailer || ''} ${url || ''}`;
+  for (const pat of BIG_BOX_RETAILER_PATTERNS) {
+    if (pat.regex.test(combined)) {
+      return pat.name;
+    }
+  }
+  return null;
+}
+
+export function isPokemonCenterSource(retailer?: string, url?: string): boolean {
+  return /pokemon\s*center|pokémon\s*center|pokemoncenter\.com/i.test(`${retailer || ''} ${url || ''}`);
+}
+
+export function hasPcExclusiveTerms(title?: string, handle?: string): boolean {
+  const combinedLower = ` ${title || ''} ${handle || ''} `.toLowerCase();
+  return PC_EXCLUSIVE_EXCLUSION_TERMS.some(term => combinedLower.includes(term));
+}
+
 export const MIN_PLAUSIBLE_PRICE_FLOORS: Record<string, number> = {
   'Booster Box': 95,
   'ETB': 32,
@@ -150,7 +181,14 @@ export function isValidSkuForFormFactor(
   title: string,
   formFactor?: string,
   price?: number,
-  options?: { ruleId?: string; targetName?: string; handle?: string }
+  options?: {
+    ruleId?: string;
+    targetName?: string;
+    handle?: string;
+    retailer?: string;
+    sourceUrl?: string;
+    allowPcRetailUnlock?: boolean;
+  }
 ): boolean {
   const combinedLower = ` ${title} ${options?.handle || ''} `.toLowerCase();
   const targetLower = `${options?.targetName || ''} ${options?.ruleId || ''}`.toLowerCase();
@@ -161,12 +199,19 @@ export function isValidSkuForFormFactor(
     }
   }
 
-  // Strict Standard vs. Pokemon Center Exclusive Firewall for all non-PC ETB targets
+  // Strict Standard vs. Pokemon Center Exclusive Firewall for all non-PC ETB targets,
+  // EXCEPT when allowPcRetailUnlock is enabled AND the drop originates from pokemoncenter.com (at retail <= $75) or is priced <= $69.99 at retail.
   const isEtbContext = formFactor === 'ETB' || formFactor === 'ETB Case' || /\b(etb|elite trainer)\b/i.test(combinedLower);
   if (isEtbContext) {
     const isTargetExplicitPc = PC_EXCLUSIVE_EXCLUSION_TERMS.some(term => targetLower.includes(term));
-    if (!isTargetExplicitPc && PC_EXCLUSIVE_EXCLUSION_TERMS.some(term => combinedLower.includes(term))) {
-      return false;
+    const hasPcTerm = PC_EXCLUSIVE_EXCLUSION_TERMS.some(term => combinedLower.includes(term));
+    if (!isTargetExplicitPc && hasPcTerm) {
+      const fromPcCom = isPokemonCenterSource(options?.retailer, options?.sourceUrl || options?.handle);
+      const isRetailPcPrice = price !== undefined && Number.isFinite(price) && price <= 69.99;
+      const isPcComRetailDrop = fromPcCom && (price === undefined || price <= 75);
+      if (!(options?.allowPcRetailUnlock && (isPcComRetailDrop || isRetailPcPrice))) {
+        return false;
+      }
     }
   }
 

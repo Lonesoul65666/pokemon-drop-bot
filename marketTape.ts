@@ -32,6 +32,8 @@ export interface SalesHistoryEvent {
   durationMins?: number;
   status: 'ACTIVE' | 'CLEARED';
   velocity: VelocityTier;
+  bigBoxTier?: string;
+  bigBoxBadge?: string;
 }
 
 export interface DailyTargetSnapshot {
@@ -272,6 +274,8 @@ export function recordTapeRestock(params: {
   landedPrice?: number;
   marketPrice: number;
   url: string;
+  bigBoxTier?: string;
+  bigBoxBadge?: string;
 }) {
   const now = Date.now();
   const discountPct = params.marketPrice > 0
@@ -291,6 +295,8 @@ export function recordTapeRestock(params: {
     existing.marketPrice = params.marketPrice;
     existing.discountPct = discountPct;
     existing.url = params.url || existing.url;
+    if (params.bigBoxTier) existing.bigBoxTier = params.bigBoxTier;
+    if (params.bigBoxBadge) existing.bigBoxBadge = params.bigBoxBadge;
   } else {
     salesHistory.unshift({
       id: `${params.targetId}__${params.store}__${now}`,
@@ -306,7 +312,9 @@ export function recordTapeRestock(params: {
       restockedAt: now,
       lastSeenAt: now,
       status: 'ACTIVE',
-      velocity: 'ACTIVE'
+      velocity: 'ACTIVE',
+      bigBoxTier: params.bigBoxTier,
+      bigBoxBadge: params.bigBoxBadge
     });
   }
 
@@ -594,7 +602,10 @@ export function computeFullMarketTape() {
     let verdictBadge = '🟡 HOLD / WAIT FOR DIP';
     let verdictTone: TargetTapeMetrics['verdictTone'] = 'slate';
 
-    if (isDistributorWave) {
+    if (liveEntry && liveEntry.inStock && liveEntry.bigBoxBadge && (liveEntry.bigBoxTier === 'PC_EXCLUSIVE_MSRP' || liveEntry.bigBoxTier === 'MSRP_TIER_A')) {
+      verdictBadge = `${liveEntry.bigBoxBadge} @ ${liveEntry.retailer}`;
+      verdictTone = 'emerald';
+    } else if (isDistributorWave) {
       verdictBadge = `🌊 DISTRO WAVE (${waveStores48h.length} Stores) • WAIT FOR UNDERCUT`;
       verdictTone = 'purple';
     } else if (liveEntry && liveEntry.inStock && liveEntry.price <= pol.maxMarketBuyPrice) {

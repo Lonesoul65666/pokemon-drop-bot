@@ -1,1 +1,17 @@
-{}
+{
+  "me-pitch-black-etb": {
+    "ruleId": "me-pitch-black-etb",
+    "ruleName": "Mega Evolution: Pitch Black ETB",
+    "formFactor": "ETB",
+    "title": "Pitch Black Elite Trainer Box ME05: Pitch Black",
+    "retailer": "TCGPlayer Verified Seller",
+    "price": 64,
+    "landedPrice": 64,
+    "isPreOrder": false,
+    "url": "https://www.tcgplayer.com/product/692947?Language=English",
+    "itemId": "tcg_692947",
+    "inStock": true,
+    "updatedAt": 1792213440449,
+    "timeStr": "12:04 AM"
+  }
+}

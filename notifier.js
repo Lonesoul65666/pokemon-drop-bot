@@ -63,9 +63,15 @@ async function processDiscordQueue() {
         isProcessingDiscordQueue = false;
     }
 }
-function enqueueDiscordWebhook(url, payload, method = 'POST') {
+function enqueueDiscordWebhook(url, payload, method = 'POST', priorityFront = false) {
     return new Promise((resolve, reject) => {
-        discordWebhookQueue.push({ method, url, payload, resolve, reject, retries: 0 });
+        const job = { method, url, payload, resolve, reject, retries: 0 };
+        if (priorityFront) {
+            discordWebhookQueue.unshift(job);
+        }
+        else {
+            discordWebhookQueue.push(job);
+        }
         processDiscordQueue().catch(() => { });
     });
 }
@@ -76,8 +82,17 @@ function getRetailerShippingNote(retailer, price, estimatedShipping) {
     if (estimatedShipping === 0 || price >= 150)
         return '+FREE Shipping';
     const r = retailer.toLowerCase();
-    if (r.includes('target') || r.includes('best buy') || r.includes('walmart') || r.includes('amazon') || r.includes('costco')) {
-        return price >= 35 ? '+FREE Shipping' : '+$5.99 Shipping';
+    if (r.includes('target') ||
+        r.includes('best buy') ||
+        r.includes('walmart') ||
+        r.includes('amazon') ||
+        r.includes('costco') ||
+        r.includes('gamestop') ||
+        r.includes("sam's club") ||
+        r.includes('sams club') ||
+        r.includes('barnes') ||
+        r.includes('pokemon center')) {
+        return price >= 35 ? '+FREE Shipping' : `+$${(estimatedShipping ?? 5.99).toFixed(2)} Shipping`;
     }
     return `+$${(estimatedShipping ?? 6.99).toFixed(2)} Est. LGS Ship`;
 }
@@ -97,6 +112,9 @@ function recordDropHistory(drop) {
             landedPrice: drop.landedPrice,
             freeShipNote: drop.freeShipNote,
             isPreOrder: Boolean(drop.isPreOrder),
+            bigBoxTier: drop.bigBoxTier,
+            bigBoxBadge: drop.bigBoxBadge,
+            marketplaceWarning: drop.marketplaceWarning,
             marketValue: drop.marketValue || 0,
             discountPct: drop.discountPct || 0,
             url: drop.url,
@@ -178,7 +196,15 @@ async function sendAlert(drop) {
     const flashEscalation = (0, marketTape_1.getFlashClearEscalation)(drop.ruleId, priceVal);
     let tierBadge = '🟡 SOLID DEAL — UNDER TARGET';
     let embedColor = 0xf59e0b;
-    if (flashEscalation.isHighVelocityRepeat && flashEscalation.badgeText) {
+    if (drop.bigBoxTier === 'PC_EXCLUSIVE_MSRP' && drop.bigBoxBadge) {
+        tierBadge = drop.bigBoxBadge;
+        embedColor = 0x38bdf8;
+    }
+    else if (drop.bigBoxTier === 'MSRP_TIER_A' && drop.bigBoxBadge) {
+        tierBadge = drop.bigBoxBadge;
+        embedColor = 0x10b981;
+    }
+    else if (flashEscalation.isHighVelocityRepeat && flashEscalation.badgeText) {
         tierBadge = flashEscalation.badgeText;
         embedColor = 0xe11d48;
     }
@@ -194,7 +220,11 @@ async function sendAlert(drop) {
         tierBadge = `🔴 HEAVY ALPHA — ${discount}% UNDER MARKET (Save $${savings.toFixed(0)})`;
         embedColor = 0xe60012;
     }
-    let headerPrefix = drop.isPreOrder ? '⏳ PRE-ORDER:' : (flashEscalation.isHighVelocityRepeat ? '⚡ FLASH REPEAT:' : '🚨 IN STOCK:');
+    let headerPrefix = drop.bigBoxTier === 'PC_EXCLUSIVE_MSRP'
+        ? '💎 PC EXCLUSIVE MSRP:'
+        : (drop.bigBoxTier === 'MSRP_TIER_A'
+            ? '🎯 RETAIL MSRP DROP:'
+            : (drop.isPreOrder ? '⏳ PRE-ORDER:' : (flashEscalation.isHighVelocityRepeat ? '⚡ FLASH REPEAT:' : '🚨 IN STOCK:')));
     let signalLine = drop.isPreOrder ? 'Pre-order allocation live (Strict MSRP+5% cap enforced)' : 'Fresh restock detected';
     if (drop.alertType === 'PRICE_DROP' && drop.previousPrice) {
         const cut = (drop.previousPrice - priceVal).toFixed(2);
@@ -211,6 +241,9 @@ async function sendAlert(drop) {
     }
     if (drop.freeShipNote) {
         signalLine += `\n📦 **${drop.freeShipNote}**`;
+    }
+    if (drop.marketplaceWarning) {
+        signalLine += `\n**${drop.marketplaceWarning}**`;
     }
     const vaultBadge = drop.ownedInVault
         ? '🟣 In Vault (Passing to Crew)'
@@ -251,7 +284,7 @@ async function sendAlert(drop) {
     }
     try {
         // Use ?wait=true so Discord returns the message ID, allowing us to auto-edit it when the item sells out!
-        const data = await enqueueDiscordWebhook(`${webhookUrl}?wait=true`, { embeds: [embed] }, 'POST');
+        const data = await enqueueDiscordWebhook(`${webhookUrl}?wait=true`, { embeds: [embed] }, 'POST', Boolean(drop.priorityFront));
         if (data?.id && drop.itemId) {
             activeDiscordMessages.set(String(drop.itemId), {
                 messageId: data.id,

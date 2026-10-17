@@ -467,16 +467,22 @@
       const entries = Object.values(telemetry || {});
       const skuCount = entries.length;
       const sc = document.getElementById("streamCounter");
-      if (sc) sc.innerHTML = "&#9679; 31 LGS + TCGPlayer + Wholesale Live &bull; " + skuCount + " SKUs Indexed";
+      if (sc) sc.innerHTML = "&#9679; 31 LGS + 9 Big-Box + TCGPlayer Live &bull; " + skuCount + " SKUs Indexed";
       policies.forEach((p, index) => {
         const tel = telemetry[p.id];
         const ls = liveStock[p.id];
         const telBanner = document.getElementById("tel_banner_" + index);
         if (!telBanner) return;
 
-        if (ls && ls.inStock && ls.price <= Math.max(p.msrpCeiling || 0, p.maxMarketBuyPrice || 0)) {
+        if (ls && ls.inStock && ls.price <= Math.max(p.msrpCeiling || 0, p.maxMarketBuyPrice || 0, ls.bigBoxTier === "PC_EXCLUSIVE_MSRP" ? 70 : 0)) {
           const qtyBadge = (typeof ls.stock === "number" && ls.stock > 0) ? (" &bull; " + ls.stock + " left") : "";
           const preBadge = ls.isPreOrder ? " <span class=\"px-1.5 py-0.5 rounded bg-purple-900/70 text-purple-200 text-[9px] font-extrabold\">&#9203; PRE-ORDER</span>" : "";
+          const bbBadge = ls.bigBoxBadge
+            ? (" <span class=\"px-1.5 py-0.5 rounded " + (ls.bigBoxTier === "3P_TIER_B" ? "bg-amber-900/80 text-amber-200 border border-amber-600/50" : "bg-cyan-900/80 text-cyan-200 border border-cyan-500/50") + " text-[9px] font-extrabold\">" + ls.bigBoxBadge + "</span>")
+            : "";
+          const warnSub = ls.marketplaceWarning
+            ? "<div class=\"text-[10px] text-amber-300 font-bold mt-0.5\">" + ls.marketplaceWarning + "</div>"
+            : "";
           const shipSub = ls.freeShipNote
             ? "<div class=\"text-[10px] text-amber-300 font-semibold mt-0.5\">&#128230; " + ls.freeShipNote + "</div>"
             : (ls.landedPrice && ls.landedPrice > ls.price ? "<div class=\"text-[10px] text-slate-400\">Landed (1x): $" + Number(ls.landedPrice).toFixed(2) + "</div>" : "");
@@ -491,7 +497,7 @@
               "</div>"
             : "<a href=\"" + ls.url + "\" target=\"_blank\" class=\"px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-[11px] font-bold tracking-tight inline-flex items-center gap-1 shrink-0\">Checkout &#8599;</a>";
 
-          telBanner.innerHTML = "<div class=\"min-w-0 pr-2\"><div class=\"text-[10px] text-emerald-400 font-bold uppercase\">&#9679; Live In-Stock Now (" + (ls.timeStr || "Live") + qtyBadge + ")" + preBadge + "</div><div class=\"text-xs text-white font-bold\">$" + Number(ls.price).toFixed(2) + " <span class=\"text-slate-300 font-normal\">at " + ls.retailer + "</span></div>" + shipSub + "</div>" + actionBtns;
+          telBanner.innerHTML = "<div class=\"min-w-0 pr-2\"><div class=\"text-[10px] text-emerald-400 font-bold uppercase\">&#9679; Live In-Stock Now (" + (ls.timeStr || "Live") + qtyBadge + ")" + preBadge + bbBadge + "</div><div class=\"text-xs text-white font-bold\">$" + Number(ls.price).toFixed(2) + " <span class=\"text-slate-300 font-normal\">at " + ls.retailer + "</span></div>" + shipSub + warnSub + "</div>" + actionBtns;
           telBanner.className = "mb-3 px-3 py-2 bg-emerald-950/50 border border-emerald-500/60 rounded-lg flex items-center justify-between gap-2 flex-wrap";
         } else if (tel && tel.lowestPrice > 0) {
           const isLiveStock = tel.inStock === true && tel.lowestStore && !tel.lowestStore.includes("Market") && !tel.lowestStore.includes("TCGPlayer") && !tel.lowestStore.includes("Catalog");
@@ -531,7 +537,7 @@
               "<span class=\"px-2 py-1 rounded bg-purple-600/30 text-purple-200 text-[10px] font-bold shrink-0\">WAIT FOR UNDERCUT</span>" +
             "</div>"
           ).join("")
-        : "<div class=\"p-3 rounded-lg bg-slate-950/70 border border-slate-800 text-xs text-slate-400\">No 3+ store Distributor Waves detected in the last 48 hours. Monitoring 31 USD Shopify stores for synchronized allocations.</div>";
+        : "<div class=\"p-3 rounded-lg bg-slate-950/70 border border-slate-800 text-xs text-slate-400\">No 3+ store Distributor Waves detected in the last 48 hours. Monitoring 31 USD Shopify stores + 9 Big-Box retailers for synchronized allocations.</div>";
 
       const honeyHtml = honeyStores.length > 0
         ? honeyStores.slice(0, 6).map((s, idx) =>
@@ -549,10 +555,13 @@
         const velBadge = ev.status === "CLEARED"
           ? "<span class=\"px-2 py-0.5 rounded bg-rose-950/80 border border-rose-700/50 text-rose-300 text-[10px] font-bold\">" + ev.velocity + " (" + (ev.durationMins || 1) + "m)</span>"
           : "<span class=\"px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-700/50 text-emerald-300 text-[10px] font-bold\">ACTIVE SHELF</span>";
+        const bbTag = ev.bigBoxBadge
+          ? (" <span class=\"px-1.5 py-0.5 rounded bg-cyan-950/90 border border-cyan-600/50 text-cyan-300 text-[9px] font-extrabold\">" + ev.bigBoxBadge + "</span>")
+          : "";
         return (
           "<div class=\"p-2.5 rounded-lg bg-slate-950/80 border border-slate-800 flex items-center justify-between gap-2 text-xs\">" +
             "<div class=\"min-w-0\">" +
-              "<div class=\"font-bold text-white truncate\">" + ev.targetName + "</div>" +
+              "<div class=\"font-bold text-white truncate\">" + ev.targetName + bbTag + "</div>" +
               "<div class=\"text-[11px] text-slate-400\">" + ev.store + " &bull; $" + Number(ev.price).toFixed(2) + " (" + (ev.discountPct || 0) + "% Under Mkt)</div>" +
             "</div>" +
             velBadge +

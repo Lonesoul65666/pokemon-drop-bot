@@ -1,1 +1,40 @@
-[]
+[
+  {
+    "timestamp": 1792213440459,
+    "timeStr": "12:04 AM",
+    "title": "Mega Evolution: Pitch Black ETB",
+    "rawTitle": "Pitch Black Elite Trainer Box ME05: Pitch Black",
+    "retailer": "TCGPlayer Verified Seller",
+    "price": 64,
+    "landedPrice": 64,
+    "isPreOrder": false,
+    "marketValue": 69.8,
+    "discountPct": 8,
+    "url": "https://www.tcgplayer.com/product/692947?Language=English",
+    "formFactor": "ETB",
+    "ruleId": "me-pitch-black-etb",
+    "alertType": "NEW_DROP",
+    "soldOut": false
+  },
+  {
+    "timestamp": 1792213420611,
+    "timeStr": "12:03 AM",
+    "title": "Mega Evolution: Pitch Black ETB",
+    "rawTitle": "Pokemon Mega Evolution Pitch Black Elite Trainer Box (Fall Break Sale)",
+    "retailer": "Trading Card Market",
+    "price": 65,
+    "landedPrice": 71.99,
+    "freeShipNote": "Buy 3x to hit $150 Free Shipping -> $65.00/ea landed",
+    "isPreOrder": false,
+    "marketValue": 67.5,
+    "discountPct": 4,
+    "url": "https://tradingcardmarket.com/cart/47765907603508:1",
+    "productUrl": "https://tradingcardmarket.com/products/pokemon-mega-evolution-pitch-black-elite-trainer-box",
+    "cart1xUrl": "https://tradingcardmarket.com/cart/47765907603508:1",
+    "cart2xUrl": "https://tradingcardmarket.com/cart/47765907603508:2",
+    "formFactor": "ETB",
+    "ruleId": "me-pitch-black-etb",
+    "alertType": "NEW_DROP",
+    "soldOut": false
+  }
+]

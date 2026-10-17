@@ -31,7 +31,11 @@ exports.STORE_SHIPPING_RULES = {
     'walmart': { freeShipThreshold: 35, flatShipping: 5.99 },
     'best buy': { freeShipThreshold: 35, flatShipping: 5.99 },
     'amazon': { freeShipThreshold: 35, flatShipping: 5.99 },
+    'gamestop': { freeShipThreshold: 59, flatShipping: 6.99 },
     'costco': { freeShipThreshold: 0, flatShipping: 0 },
+    "sam's club": { freeShipThreshold: 50, flatShipping: 4.99 },
+    'sams club': { freeShipThreshold: 50, flatShipping: 4.99 },
+    'barnes & noble': { freeShipThreshold: 40, flatShipping: 5.99 },
     'pokemon center': { freeShipThreshold: 20, flatShipping: 6.99 },
     // Existing 14 Verified USD Shopify LGS Stores
     'smoke & mirrors': { freeShipThreshold: 150, flatShipping: 6.99 },
@@ -134,6 +138,10 @@ function markLiveStockOut(itemId) {
 function evaluateItem(item) {
     const cleanTitle = item.title.trim();
     const isPreOrder = Boolean(item.isPreOrder || /pre-?order|pre-?sale/i.test(`${cleanTitle} ${item.url}`));
+    const handleAndUrl = `${item.url || ''} ${item.productUrl || ''}`;
+    const bigBoxName = (0, policies_1.detectBigBoxRetailer)(item.retailer, handleAndUrl);
+    const isPcSource = (0, policies_1.isPokemonCenterSource)(item.retailer, handleAndUrl);
+    const hasPcTerm = (0, policies_1.hasPcExclusiveTerms)(cleanTitle, handleAndUrl);
     for (const junkRegex of policies_1.GLOBAL_JUNK_EXCLUSIONS) {
         if (junkRegex.test(cleanTitle)) {
             return { action: 'IGNORE', reason: `Filtered out by global exclusion (${junkRegex})` };
@@ -146,7 +154,10 @@ function evaluateItem(item) {
         if (!(0, policies_1.isValidSkuForFormFactor)(cleanTitle, rule.formFactor, item.price, {
             ruleId: rule.id,
             targetName: rule.name,
-            handle: `${item.url || ''} ${item.productUrl || ''}`
+            handle: handleAndUrl,
+            retailer: item.retailer,
+            sourceUrl: item.url,
+            allowPcRetailUnlock: true
         })) {
             continue;
         }
@@ -155,11 +166,16 @@ function evaluateItem(item) {
         if (item.price !== undefined && (item.price < minFloor || item.price > maxCeiling)) {
             continue;
         }
+        // Identify Pokemon Center Exclusive Retail Unlock (pokemoncenter.com or <= $69.99 retail PC ETB)
+        const isEtbRule = rule.formFactor === 'ETB' || rule.formFactor === 'ETB Case';
+        const isPcExclusiveRetailDrop = isEtbRule && ((isPcSource && (item.price === undefined || item.price <= 75)) ||
+            (hasPcTerm && item.price !== undefined && item.price <= 69.99));
         const liveTelPre = (0, marketTelemetry_1.getTelemetry)()[rule.id];
         const currentMarketRef = (liveTelPre && liveTelPre.rollingAverage > 0)
             ? Math.min(maxCeiling, liveTelPre.rollingAverage)
             : Math.min(maxCeiling, rule.estimatedMarketValue || rule.msrpCeiling);
-        if (item.price && item.price >= minFloor && item.price <= maxCeiling) {
+        // Only record into standard SKU telemetry/snapshots if it is NOT a PC Exclusive variant
+        if (!hasPcTerm && !isPcSource && item.price && item.price >= minFloor && item.price <= maxCeiling) {
             (0, marketTelemetry_1.recordObservation)(rule.id, item.price, item.retailer, item.productUrl || item.url, rule.msrpCeiling);
             (0, marketTape_1.recordDailySnapshot)(rule.id, item.price, item.retailer, currentMarketRef);
         }
@@ -170,13 +186,42 @@ function evaluateItem(item) {
             return { action: 'IGNORE', reason: `Stock (${item.stock}) below minStock (${rule.minStock}).`, rule };
         }
         const policyMaxBuy = Math.max(rule.msrpCeiling, rule.maxMarketBuyPrice);
-        // Pre-order strict ceiling: Math.min(policy.maxBuy, Math.round(policy.msrp * 1.05))
-        const effectiveCeiling = isPreOrder
+        // Pre-order strict ceiling: Math.min(policy.maxBuy, Math.round(policy.msrp * 1.05)), except PC Exclusive retail drops up to $69.99
+        let effectiveCeiling = isPreOrder
             ? Math.min(policyMaxBuy, Math.round(rule.msrpCeiling * 1.05))
             : policyMaxBuy;
+        if (isPcExclusiveRetailDrop) {
+            effectiveCeiling = Math.max(effectiveCeiling, 69.99);
+        }
         const dropPrice = item.price ?? effectiveCeiling;
         const shipProfile = getStoreShippingProfile(item.retailer);
-        const isFreeShip = Boolean(item.freeShipping || dropPrice >= shipProfile.freeShipThreshold);
+        let bigBoxTier = undefined;
+        let bigBoxBadge = undefined;
+        let marketplaceWarning = undefined;
+        let priorityFront = false;
+        const isTierAMsrp = Boolean(bigBoxName && dropPrice <= rule.msrpCeiling * 1.08);
+        if (isPcExclusiveRetailDrop) {
+            bigBoxTier = 'PC_EXCLUSIVE_MSRP';
+            bigBoxBadge = '💎 POKÉMON CENTER EXCLUSIVE MSRP DROP';
+            priorityFront = true;
+        }
+        else if (isTierAMsrp) {
+            bigBoxTier = 'MSRP_TIER_A';
+            bigBoxBadge = '🎯 TRUE RETAIL MSRP DROP';
+            priorityFront = true;
+        }
+        else if (bigBoxName && dropPrice > rule.msrpCeiling * 1.08) {
+            bigBoxTier = '3P_TIER_B';
+            bigBoxBadge = '⚠️ BIG-BOX 3P UNDERCUT';
+            if (/walmart|amazon|target|best\s*buy|marketplace/i.test(`${bigBoxName} ${item.retailer} ${handleAndUrl}`)) {
+                marketplaceWarning = '⚠️ 3P MARKETPLACE CHECK: Price is above MSRP — verify Sold & Shipped by 1st-Party Retailer before buying';
+            }
+        }
+        // Tier A (True Retail MSRP) and PC Exclusive Retail Drops force $0 shipping
+        const isFreeShip = Boolean(isPcExclusiveRetailDrop ||
+            isTierAMsrp ||
+            item.freeShipping ||
+            dropPrice >= shipProfile.freeShipThreshold);
         const estimatedShipping = isFreeShip ? 0 : shipProfile.flatShipping;
         const landedPrice = Math.round((dropPrice + estimatedShipping) * 100) / 100;
         let freeShipNote = undefined;
@@ -212,7 +257,9 @@ function evaluateItem(item) {
             price: currentPrice,
             landedPrice,
             marketPrice: currentMarketRef,
-            url: item.productUrl || item.url
+            url: item.productUrl || item.url,
+            bigBoxTier,
+            bigBoxBadge
         });
         // Valid drop (<= maxBuy): sync immediately to liveStock.json so "In Stock Now" dashboard view stays accurate even if deduplicated for Discord!
         upsertLiveStock({
@@ -225,6 +272,9 @@ function evaluateItem(item) {
             landedPrice,
             freeShipNote,
             isPreOrder,
+            bigBoxTier,
+            bigBoxBadge,
+            marketplaceWarning,
             url: item.url,
             productUrl: item.productUrl,
             cart1xUrl: item.cart1xUrl,
@@ -281,7 +331,7 @@ function evaluateItem(item) {
         const discountPct = marketVal > 0 ? Math.round(((marketVal - effectiveComparePrice) / marketVal) * 100) : 0;
         return {
             action: 'BUY',
-            reason: `[${alertType}]${isPreOrder ? ' [⏳ PRE-ORDER]' : ''} Matched "${rule.name}" at $${currentPrice.toFixed(2)} (Landed: $${landedPrice.toFixed(2)} • ${discountPct}% under market)`,
+            reason: `[${alertType}]${bigBoxBadge ? ` [${bigBoxBadge}]` : ''}${isPreOrder ? ' [⏳ PRE-ORDER]' : ''} Matched "${rule.name}" at $${currentPrice.toFixed(2)} (Landed: $${landedPrice.toFixed(2)} • ${discountPct}% under market)`,
             rule,
             discountPct,
             savingsDollars,
@@ -291,7 +341,11 @@ function evaluateItem(item) {
             landedPrice,
             estimatedShipping,
             freeShipNote,
-            isPreOrder
+            isPreOrder,
+            bigBoxTier,
+            bigBoxBadge,
+            marketplaceWarning,
+            priorityFront
         };
     }
     return { action: 'IGNORE', reason: 'No matching policy rule found.' };

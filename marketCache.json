@@ -40,9 +40,17 @@
     "lowestPrice": 175,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Mega%20Evolution%3A%20Pitch%20Black%20Booster%20Box%20(36-Pack)&view=grid",
-    "rollingAverage": 175,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 185,
+    "observationsCount": 7,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      185,
+      185,
+      185,
+      185,
+      185,
+      185
+    ]
   },
   "me-pitch-black-booster-case": {
     "ruleId": "me-pitch-black-booster-case",
@@ -55,12 +63,40 @@
   },
   "me-pitch-black-etb": {
     "ruleId": "me-pitch-black-etb",
-    "lowestPrice": 75,
-    "lowestStore": "TCGPlayer Baseline",
-    "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Mega%20Evolution%3A%20Pitch%20Black%20ETB&view=grid",
-    "rollingAverage": 75,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "lowestPrice": 64,
+    "lowestStore": "TCGPlayer Verified Seller",
+    "lowestUrl": "https://www.tcgplayer.com/product/692947?Language=English",
+    "rollingAverage": 70.71,
+    "observationsCount": 26,
+    "lastUpdated": 1792213388770,
+    "lastSeen": 1792213440449,
+    "samples": [
+      69.99,
+      65,
+      79.99,
+      70,
+      64,
+      69.99,
+      65,
+      79.99,
+      70,
+      69.99,
+      65,
+      79.99,
+      70,
+      69.99,
+      70,
+      79.99,
+      65,
+      69.99,
+      65,
+      79.99,
+      70,
+      69.99,
+      70,
+      79.99,
+      65
+    ]
   },
   "me-pitch-black-etb-case": {
     "ruleId": "me-pitch-black-etb-case",
@@ -110,11 +146,20 @@
   "me-perfect-order-booster-box": {
     "ruleId": "me-perfect-order-booster-box",
     "lowestPrice": 168,
-    "lowestStore": "TCGPlayer Baseline",
-    "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Mega%20Evolution%3A%20Perfect%20Order%20Booster%20Box%20(36-Pack)&view=grid",
+    "lowestStore": "Trading Card Market",
+    "lowestUrl": "https://tradingcardmarket.com/products/pokemon-mega-evolution-perfect-order-booster-box",
     "rollingAverage": 168,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "observationsCount": 7,
+    "lastUpdated": 1792213388770,
+    "lastSeen": 1792214387110,
+    "samples": [
+      168,
+      168,
+      168,
+      168,
+      168,
+      168
+    ]
   },
   "me-perfect-order-booster-case": {
     "ruleId": "me-perfect-order-booster-case",
@@ -130,9 +175,35 @@
     "lowestPrice": 62,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Mega%20Evolution%3A%20Perfect%20Order%20ETB&view=grid",
-    "rollingAverage": 62,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 69.97,
+    "observationsCount": 25,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      69.85,
+      69.99,
+      70,
+      70,
+      69.85,
+      69.99,
+      70,
+      70,
+      69.85,
+      69.99,
+      70,
+      70,
+      69.85,
+      69.99,
+      70,
+      70,
+      69.85,
+      69.99,
+      70,
+      70,
+      69.85,
+      69.99,
+      70,
+      70
+    ]
   },
   "me-perfect-order-etb-case": {
     "ruleId": "me-perfect-order-etb-case",
@@ -148,9 +219,23 @@
     "lowestPrice": 172,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Mega%20Evolution%3A%20Chaos%20Rising%20Booster%20Box%20(36-Pack)&view=grid",
-    "rollingAverage": 172,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 179,
+    "observationsCount": 13,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      179.99,
+      178,
+      179.99,
+      178,
+      179.99,
+      178,
+      179.99,
+      178,
+      179.99,
+      178,
+      179.99,
+      178
+    ]
   },
   "me-chaos-rising-booster-case": {
     "ruleId": "me-chaos-rising-booster-case",
@@ -166,9 +251,42 @@
     "lowestPrice": 64,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Mega%20Evolution%3A%20Chaos%20Rising%20ETB&view=grid",
-    "rollingAverage": 64,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 74.02,
+    "observationsCount": 32,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      87.56,
+      69.99,
+      77.99,
+      70,
+      70,
+      87.56,
+      69.99,
+      77.99,
+      70,
+      70,
+      87.56,
+      69.99,
+      77.99,
+      70,
+      70,
+      87.56,
+      69.99,
+      77.99,
+      70,
+      70,
+      70,
+      87.56,
+      69.99,
+      77.99,
+      70,
+      70,
+      87.56,
+      69.99,
+      77.99,
+      70,
+      70
+    ]
   },
   "me-chaos-rising-etb-case": {
     "ruleId": "me-chaos-rising-etb-case",
@@ -184,27 +302,87 @@
     "lowestPrice": 225,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Mega%20Evolution%3A%20Delta%20Rayquaza%20(Delta%20Reign)%20Booster%20Box%20(36-Pack)&view=grid",
-    "rollingAverage": 225,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 245.98,
+    "observationsCount": 25,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      249.95,
+      249.99,
+      229.99,
+      250,
+      249.95,
+      249.99,
+      229.99,
+      250,
+      249.95,
+      249.99,
+      229.99,
+      250,
+      249.95,
+      249.99,
+      229.99,
+      250,
+      249.95,
+      249.99,
+      229.99,
+      250,
+      249.95,
+      249.99,
+      229.99,
+      250
+    ]
   },
   "me-delta-reign-booster-case": {
     "ruleId": "me-delta-reign-booster-case",
     "lowestPrice": 1350,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Mega%20Evolution%3A%20Delta%20Rayquaza%20(Delta%20Reign)%20Sealed%20Booster%20Case%20(6%20Boxes%20%2F%20216%20Packs)&view=grid",
-    "rollingAverage": 1350,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 1498.95,
+    "observationsCount": 7,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      1498.95,
+      1498.95,
+      1498.95,
+      1498.95,
+      1498.95,
+      1498.95
+    ]
   },
   "me-delta-reign-etb": {
     "ruleId": "me-delta-reign-etb",
     "lowestPrice": 95,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Mega%20Evolution%3A%20Delta%20Rayquaza%20(Delta%20Reign)%20ETB&view=grid",
-    "rollingAverage": 95,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 103.29,
+    "observationsCount": 25,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      104.99,
+      109.99,
+      99.99,
+      98.99,
+      104.99,
+      98.99,
+      109.99,
+      99.99,
+      104.99,
+      98.99,
+      109.99,
+      99.99,
+      104.99,
+      98.99,
+      109.99,
+      99.99,
+      104.99,
+      98.99,
+      109.99,
+      99.99,
+      104.99,
+      98.99,
+      109.99,
+      99.99
+    ]
   },
   "me-delta-reign-etb-case": {
     "ruleId": "me-delta-reign-etb-case",
@@ -229,9 +407,17 @@
     "lowestPrice": 680,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Mega%20Evolution%3A%20Ascended%20Heroes%20ETB%20Sealed%20Case%20(10%20ETBs)&view=grid",
-    "rollingAverage": 680,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 2149.9,
+    "observationsCount": 7,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      2149.9,
+      2149.9,
+      2149.9,
+      2149.9,
+      2149.9,
+      2149.9
+    ]
   },
   "me-ascended-heroes-bundle": {
     "ruleId": "me-ascended-heroes-bundle",
@@ -256,18 +442,35 @@
     "lowestPrice": 850,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=30th%20Celebration%20ETB%20Sealed%20Case%20(10%20ETBs)&view=grid",
-    "rollingAverage": 850,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 1573.18,
+    "observationsCount": 8,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      1599.9,
+      1412.88,
+      1599.9,
+      1599.9,
+      1599.9,
+      1599.9,
+      1599.9
+    ]
   },
   "me-30th-celebration-bundle": {
     "ruleId": "me-30th-celebration-bundle",
     "lowestPrice": 48,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=30th%20Celebration%206-Pack%20Booster%20Bundle&view=grid",
-    "rollingAverage": 48,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 72.49,
+    "observationsCount": 7,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      72.49,
+      72.49,
+      72.49,
+      72.49,
+      72.49,
+      72.49
+    ]
   },
   "sv-base-booster-box": {
     "ruleId": "sv-base-booster-box",
@@ -580,9 +783,29 @@
     "lowestPrice": 62,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Twilight%20Masquerade%20ETB&view=grid",
-    "rollingAverage": 62,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 103.12,
+    "observationsCount": 19,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      99.99,
+      109.99,
+      100,
+      99.99,
+      109.99,
+      100,
+      99.99,
+      109.99,
+      100,
+      99.99,
+      109.99,
+      100,
+      99.99,
+      109.99,
+      100,
+      109.99,
+      99.99,
+      100
+    ]
   },
   "sv-twilight-masquerade-etb-case": {
     "ruleId": "sv-twilight-masquerade-etb-case",
@@ -616,9 +839,23 @@
     "lowestPrice": 28,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Shrouded%20Fable%206-Pack%20Booster%20Bundle&view=grid",
-    "rollingAverage": 28,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 60.5,
+    "observationsCount": 13,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      57.99,
+      63,
+      57.99,
+      63,
+      57.99,
+      63,
+      57.99,
+      63,
+      57.99,
+      63,
+      57.99,
+      63
+    ]
   },
   "sv-stellar-crown-booster-box": {
     "ruleId": "sv-stellar-crown-booster-box",
@@ -694,39 +931,133 @@
   },
   "sv-prismatic-evolutions-etb": {
     "ruleId": "sv-prismatic-evolutions-etb",
-    "lowestPrice": 135,
-    "lowestStore": "TCGPlayer Baseline",
-    "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Prismatic%20Evolutions%20ETB&view=grid",
-    "rollingAverage": 135,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "lowestPrice": 124.99,
+    "lowestStore": "AllPokeTCG",
+    "lowestUrl": "https://allpoketcg.com/products/prismatic-evolutions-elite-trainer-box-pokemon-scarlet-and-violet",
+    "rollingAverage": 135.09,
+    "observationsCount": 37,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      179.99,
+      127.99,
+      129.99,
+      124.99,
+      124.99,
+      140,
+      127.99,
+      179.99,
+      129.99,
+      124.99,
+      124.99,
+      140,
+      179.99,
+      127.99,
+      129.99,
+      124.99,
+      124.99,
+      140,
+      179.99,
+      127.99,
+      129.99,
+      124.99,
+      124.99,
+      140,
+      179.99,
+      127.99,
+      129.99,
+      124.99,
+      124.99,
+      140,
+      179.99,
+      127.99,
+      124.99,
+      129.99,
+      124.99,
+      140
+    ],
+    "lastSeen": 1792214386523
   },
   "sv-prismatic-evolutions-etb-case": {
     "ruleId": "sv-prismatic-evolutions-etb-case",
     "lowestPrice": 1350,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Prismatic%20Evolutions%20ETB%20Sealed%20Case%20(10%20ETBs)&view=grid",
-    "rollingAverage": 1350,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 1999.99,
+    "observationsCount": 7,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      1999.99,
+      1999.99,
+      1999.99,
+      1999.99,
+      1999.99,
+      1999.99
+    ]
   },
   "sv-prismatic-evolutions-bundle": {
     "ruleId": "sv-prismatic-evolutions-bundle",
     "lowestPrice": 58,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Prismatic%20Evolutions%206-Pack%20Booster%20Bundle&view=grid",
-    "rollingAverage": 58,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 79.99,
+    "observationsCount": 7,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      79.99,
+      79.99,
+      79.99,
+      79.99,
+      79.99,
+      79.99
+    ]
   },
   "sv-journey-together-booster-box": {
     "ruleId": "sv-journey-together-booster-box",
-    "lowestPrice": 195,
-    "lowestStore": "TCGPlayer Baseline",
-    "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Journey%20Together%20Booster%20Box%20(36-Pack)&view=grid",
-    "rollingAverage": 195,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "lowestPrice": 185.99,
+    "lowestStore": "PKMN Colosseum",
+    "lowestUrl": "https://pkmncolosseum.com/products/sealed-journey-together-booster-box-non-enhanced",
+    "rollingAverage": 215.19,
+    "observationsCount": 37,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      232.99,
+      185.99,
+      209.99,
+      199.99,
+      240,
+      220,
+      199.99,
+      232.99,
+      185.99,
+      209.99,
+      220,
+      240,
+      199.99,
+      232.99,
+      185.99,
+      209.99,
+      240,
+      220,
+      199.99,
+      232.99,
+      185.99,
+      209.99,
+      240,
+      220,
+      199.99,
+      232.99,
+      185.99,
+      209.99,
+      240,
+      220,
+      199.99,
+      209.99,
+      232.99,
+      185.99,
+      240,
+      220
+    ],
+    "lastSeen": 1792214386026
   },
   "sv-journey-together-booster-case": {
     "ruleId": "sv-journey-together-booster-case",
@@ -778,18 +1109,34 @@
     "lowestPrice": 95,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Destined%20Rivals%20ETB&view=grid",
-    "rollingAverage": 95,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 115,
+    "observationsCount": 7,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      115,
+      115,
+      115,
+      115,
+      115,
+      115
+    ]
   },
   "sv-destined-rivals-etb-case": {
     "ruleId": "sv-destined-rivals-etb-case",
     "lowestPrice": 950,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Destined%20Rivals%20ETB%20Sealed%20Case%20(10%20ETBs)&view=grid",
-    "rollingAverage": 950,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 1299.99,
+    "observationsCount": 7,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      1299.99,
+      1299.99,
+      1299.99,
+      1299.99,
+      1299.99,
+      1299.99
+    ]
   },
   "swsh-battle-styles-booster-box": {
     "ruleId": "swsh-battle-styles-booster-box",
@@ -850,9 +1197,17 @@
     "lowestPrice": 295,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Chilling%20Reign%20Booster%20Box%20(36-Pack)&view=grid",
-    "rollingAverage": 295,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 459.99,
+    "observationsCount": 7,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      459.99,
+      459.99,
+      459.99,
+      459.99,
+      459.99,
+      459.99
+    ]
   },
   "swsh-chilling-reign-booster-case": {
     "ruleId": "swsh-chilling-reign-booster-case",
@@ -865,12 +1220,21 @@
   },
   "swsh-chilling-reign-shadow-etb": {
     "ruleId": "swsh-chilling-reign-shadow-etb",
-    "lowestPrice": 151.84,
-    "lowestStore": "TCGPlayer Baseline",
-    "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Chilling%20Reign%20ETB%20(Shadow%20Rider)&view=grid",
-    "rollingAverage": 151.84,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "lowestPrice": 146.99,
+    "lowestStore": "PKMN Colosseum",
+    "lowestUrl": "https://pkmncolosseum.com/products/chilling-reign-shadow-rider-calyrex-elite-trainer-box-preorder-ships-6-18-limit-one-of-each",
+    "rollingAverage": 146.99,
+    "observationsCount": 7,
+    "lastUpdated": 1792213388770,
+    "lastSeen": 1792214386023,
+    "samples": [
+      146.99,
+      146.99,
+      146.99,
+      146.99,
+      146.99,
+      146.99
+    ]
   },
   "swsh-chilling-reign-shadow-etb-case": {
     "ruleId": "swsh-chilling-reign-shadow-etb-case",
@@ -883,12 +1247,21 @@
   },
   "swsh-chilling-reign-ice-etb": {
     "ruleId": "swsh-chilling-reign-ice-etb",
-    "lowestPrice": 141.41,
-    "lowestStore": "TCGPlayer Baseline",
-    "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Chilling%20Reign%20ETB%20(Ice%20Rider)&view=grid",
-    "rollingAverage": 141.41,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "lowestPrice": 139.99,
+    "lowestStore": "PKMN Colosseum",
+    "lowestUrl": "https://pkmncolosseum.com/products/chilling-reign-ice-rider-calyrex-elite-trainer-box-preorder-ships-6-18-limit-one-of-each",
+    "rollingAverage": 139.99,
+    "observationsCount": 7,
+    "lastUpdated": 1792213388770,
+    "lastSeen": 1792214386024,
+    "samples": [
+      139.99,
+      139.99,
+      139.99,
+      139.99,
+      139.99,
+      139.99
+    ]
   },
   "swsh-chilling-reign-ice-etb-case": {
     "ruleId": "swsh-chilling-reign-ice-etb-case",
@@ -940,9 +1313,29 @@
     "lowestPrice": 115,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Celebrations%2025th%20Anniversary%20ETB&view=grid",
-    "rollingAverage": 115,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 349.68,
+    "observationsCount": 19,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      338.99,
+      359.99,
+      350,
+      338.99,
+      359.99,
+      350,
+      338.99,
+      359.99,
+      350,
+      338.99,
+      359.99,
+      350,
+      338.99,
+      359.99,
+      350,
+      359.99,
+      338.99,
+      350
+    ]
   },
   "swsh-celebrations-etb-case": {
     "ruleId": "swsh-celebrations-etb-case",
@@ -958,9 +1351,17 @@
     "lowestPrice": 420,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Fusion%20Strike%20Booster%20Box%20(36-Pack)&view=grid",
-    "rollingAverage": 420,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 965.99,
+    "observationsCount": 7,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      965.99,
+      965.99,
+      965.99,
+      965.99,
+      965.99,
+      965.99
+    ]
   },
   "swsh-fusion-strike-booster-case": {
     "ruleId": "swsh-fusion-strike-booster-case",
@@ -976,9 +1377,23 @@
     "lowestPrice": 98,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Fusion%20Strike%20ETB&view=grid",
-    "rollingAverage": 98,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 360,
+    "observationsCount": 13,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      359.99,
+      360,
+      359.99,
+      360,
+      359.99,
+      360,
+      359.99,
+      360,
+      359.99,
+      360,
+      359.99,
+      360
+    ]
   },
   "swsh-fusion-strike-etb-case": {
     "ruleId": "swsh-fusion-strike-etb-case",
@@ -994,9 +1409,23 @@
     "lowestPrice": 285,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Brilliant%20Stars%20Booster%20Box%20(36-Pack)&view=grid",
-    "rollingAverage": 285,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 563.99,
+    "observationsCount": 13,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      552.99,
+      574.99,
+      552.99,
+      574.99,
+      552.99,
+      574.99,
+      552.99,
+      574.99,
+      552.99,
+      574.99,
+      574.99,
+      552.99
+    ]
   },
   "swsh-brilliant-stars-booster-case": {
     "ruleId": "swsh-brilliant-stars-booster-case",
@@ -1048,9 +1477,17 @@
     "lowestPrice": 58,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Astral%20Radiance%20ETB&view=grid",
-    "rollingAverage": 58,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 132.99,
+    "observationsCount": 7,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      132.99,
+      132.99,
+      132.99,
+      132.99,
+      132.99,
+      132.99
+    ]
   },
   "swsh-astral-radiance-etb-case": {
     "ruleId": "swsh-astral-radiance-etb-case",
@@ -1066,9 +1503,17 @@
     "lowestPrice": 58,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Pok%C3%A9mon%20GO%20ETB&view=grid",
-    "rollingAverage": 58,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 159.99,
+    "observationsCount": 7,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      159.99,
+      159.99,
+      159.99,
+      159.99,
+      159.99,
+      159.99
+    ]
   },
   "swsh-pokemon-go-etb-case": {
     "ruleId": "swsh-pokemon-go-etb-case",
@@ -1084,9 +1529,23 @@
     "lowestPrice": 340,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Lost%20Origin%20Booster%20Box%20(36-Pack)&view=grid",
-    "rollingAverage": 340,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 750.5,
+    "observationsCount": 13,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      725.99,
+      775,
+      725.99,
+      775,
+      725.99,
+      775,
+      725.99,
+      775,
+      725.99,
+      775,
+      725.99,
+      775
+    ]
   },
   "swsh-lost-origin-booster-case": {
     "ruleId": "swsh-lost-origin-booster-case",
@@ -1102,9 +1561,17 @@
     "lowestPrice": 72,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Lost%20Origin%20ETB&view=grid",
-    "rollingAverage": 72,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 220,
+    "observationsCount": 7,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      220,
+      220,
+      220,
+      220,
+      220,
+      220
+    ]
   },
   "swsh-lost-origin-etb-case": {
     "ruleId": "swsh-lost-origin-etb-case",
@@ -1120,9 +1587,17 @@
     "lowestPrice": 245,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Silver%20Tempest%20Booster%20Box%20(36-Pack)&view=grid",
-    "rollingAverage": 245,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 514.99,
+    "observationsCount": 7,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      514.99,
+      514.99,
+      514.99,
+      514.99,
+      514.99,
+      514.99
+    ]
   },
   "swsh-silver-tempest-booster-case": {
     "ruleId": "swsh-silver-tempest-booster-case",
@@ -1138,9 +1613,17 @@
     "lowestPrice": 58,
     "lowestStore": "TCGPlayer Baseline",
     "lowestUrl": "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=Silver%20Tempest%20ETB&view=grid",
-    "rollingAverage": 58,
-    "observationsCount": 1,
-    "lastUpdated": 1792213388770
+    "rollingAverage": 159.99,
+    "observationsCount": 7,
+    "lastUpdated": 1792213388770,
+    "samples": [
+      159.99,
+      159.99,
+      159.99,
+      159.99,
+      159.99,
+      159.99
+    ]
   },
   "swsh-silver-tempest-etb-case": {
     "ruleId": "swsh-silver-tempest-etb-case",

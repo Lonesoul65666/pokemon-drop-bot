@@ -1,1 +1,16 @@
-{}
+{
+  "me-pitch-black-etb__Trading Card Market": {
+    "lastPrice": 65,
+    "lowestAlertedPrice": 65,
+    "timestamp": 1792213420544,
+    "timeStr": "12:03 AM",
+    "alertCount": 1
+  },
+  "me-pitch-black-etb__TCGPlayer Verified Seller": {
+    "lastPrice": 64,
+    "lowestAlertedPrice": 64,
+    "timestamp": 1792213440449,
+    "timeStr": "12:04 AM",
+    "alertCount": 1
+  }
+}

@@ -1,7 +1,13 @@
 import axios from 'axios';
 import { getNextProxy } from './lgsPoller';
 import { processIncomingDrop } from './listener';
-import { WATCH_POLICIES, getMinPlausiblePriceFloor, getMaxPlausiblePriceCeiling, isValidSkuForFormFactor } from './policies';
+import {
+  WATCH_POLICIES,
+  getMinPlausiblePriceFloor,
+  getMaxPlausiblePriceCeiling,
+  isValidSkuForFormFactor,
+  detectBigBoxRetailer
+} from './policies';
 import { isValidCompTitle } from './marketComps';
 import { markLiveStockOut } from './evaluator';
 
@@ -11,15 +17,47 @@ const seenBigBoxOffers = new Map<string, number>();
 
 const TRACKALACKER_PAGES = [
   { slug: 'pokemon-30th-celebration-elite-trainer-box', title: 'Pokemon 30th Celebration Elite Trainer Box', formFactor: 'ETB' },
+  { slug: 'pokemon-30th-celebration-booster-bundle', title: 'Pokemon 30th Celebration Booster Bundle', formFactor: 'Booster Bundle' },
+  { slug: 'pokemon-mega-evolution-phantasmal-flames-elite-trainer-box', title: 'Mega Evolution Phantasmal Flames Elite Trainer Box', formFactor: 'ETB' },
+  { slug: 'pokemon-mega-evolution-phantasmal-flames-booster-box', title: 'Mega Evolution Phantasmal Flames Booster Box', formFactor: 'Booster Box' },
+  { slug: 'pokemon-mega-evolution-ascended-heroes-elite-trainer-box', title: 'Mega Evolution Ascended Heroes Elite Trainer Box', formFactor: 'ETB' },
+  { slug: 'pokemon-mega-evolution-ascended-heroes-booster-bundle', title: 'Mega Evolution Ascended Heroes Booster Bundle', formFactor: 'Booster Bundle' },
+  { slug: 'pokemon-mega-evolution-mega-discovery-elite-trainer-box', title: 'Mega Evolution Mega Discovery Elite Trainer Box', formFactor: 'ETB' },
+  { slug: 'pokemon-mega-evolution-mega-discovery-booster-box', title: 'Mega Evolution Mega Discovery Booster Box', formFactor: 'Booster Box' },
   { slug: 'pokemon-prismatic-evolutions-elite-trainer-box', title: 'Pokemon Prismatic Evolutions Elite Trainer Box', formFactor: 'ETB' },
+  { slug: 'pokemon-prismatic-evolutions-pokemon-center-elite-trainer-box', title: 'Pokemon Prismatic Evolutions Pokemon Center Elite Trainer Box', formFactor: 'ETB' },
   { slug: 'pokemon-prismatic-evolutions-booster-bundle', title: 'Pokemon Prismatic Evolutions Booster Bundle', formFactor: 'Booster Bundle' },
   { slug: 'pokemon-scarlet-and-violet-151-booster-bundle', title: 'Pokemon Scarlet & Violet 151 Booster Bundle', formFactor: 'Booster Bundle' },
   { slug: 'pokemon-scarlet-and-violet-151-elite-trainer-box', title: 'Pokemon Scarlet & Violet 151 Elite Trainer Box', formFactor: 'ETB' },
+  { slug: 'pokemon-scarlet-and-violet-151-pokemon-center-elite-trainer-box', title: 'Pokemon Scarlet & Violet 151 Pokemon Center Elite Trainer Box', formFactor: 'ETB' },
   { slug: 'pokemon-destined-rivals-elite-trainer-box', title: 'Pokemon Destined Rivals Elite Trainer Box', formFactor: 'ETB' },
+  { slug: 'pokemon-destined-rivals-pokemon-center-elite-trainer-box', title: 'Pokemon Destined Rivals Pokemon Center Elite Trainer Box', formFactor: 'ETB' },
   { slug: 'pokemon-destined-rivals-booster-box', title: 'Pokemon Destined Rivals Booster Box', formFactor: 'Booster Box' },
+  { slug: 'pokemon-journey-together-elite-trainer-box', title: 'Pokemon Journey Together Elite Trainer Box', formFactor: 'ETB' },
+  { slug: 'pokemon-journey-together-pokemon-center-elite-trainer-box', title: 'Pokemon Journey Together Pokemon Center Elite Trainer Box', formFactor: 'ETB' },
+  { slug: 'pokemon-journey-together-booster-box', title: 'Pokemon Journey Together Booster Box', formFactor: 'Booster Box' },
   { slug: 'pokemon-surging-sparks-elite-trainer-box', title: 'Pokemon Surging Sparks Elite Trainer Box', formFactor: 'ETB' },
-  { slug: 'pokemon-surging-sparks-booster-box', title: 'Pokemon Surging Sparks Booster Box', formFactor: 'Booster Box' }
+  { slug: 'pokemon-surging-sparks-pokemon-center-elite-trainer-box', title: 'Pokemon Surging Sparks Pokemon Center Elite Trainer Box', formFactor: 'ETB' },
+  { slug: 'pokemon-surging-sparks-booster-box', title: 'Pokemon Surging Sparks Booster Box', formFactor: 'Booster Box' },
+  { slug: 'pokemon-surging-sparks-booster-bundle', title: 'Pokemon Surging Sparks Booster Bundle', formFactor: 'Booster Bundle' },
+  { slug: 'pokemon-paldean-fates-elite-trainer-box', title: 'Pokemon Paldean Fates Elite Trainer Box', formFactor: 'ETB' },
+  { slug: 'pokemon-paldean-fates-booster-bundle', title: 'Pokemon Paldean Fates Booster Bundle', formFactor: 'Booster Bundle' },
+  { slug: 'pokemon-black-bolt-elite-trainer-box', title: 'Pokemon Black Bolt Elite Trainer Box', formFactor: 'ETB' },
+  { slug: 'pokemon-white-flare-elite-trainer-box', title: 'Pokemon White Flare Elite Trainer Box', formFactor: 'ETB' },
+  { slug: 'pokemon-twilight-masquerade-booster-box', title: 'Pokemon Twilight Masquerade Booster Box', formFactor: 'Booster Box' },
+  { slug: 'pokemon-paldea-evolved-booster-box', title: 'Pokemon Paldea Evolved Booster Box', formFactor: 'Booster Box' },
+  { slug: 'pokemon-crown-zenith-elite-trainer-box', title: 'Pokemon Crown Zenith Elite Trainer Box', formFactor: 'ETB' }
 ];
+
+const SUPPORTED_BIG_BOX_REGEX = /target|best\s*buy|pokemon\s*center|pokémon\s*center|pokemoncenter|walmart|amazon|gamestop|costco|sam'?s\s*club|samsclub|barnes\s*(&|and)\s*noble|\bb&n\b/i;
+
+function normalizeBigBoxRetailerLabel(rawSeller: string, rawUrl?: string, sourceSuffix = 'Big-Box Restock'): string {
+  const detected = detectBigBoxRetailer(rawSeller, rawUrl);
+  if (detected) {
+    return `${detected} (${sourceSuffix})`;
+  }
+  return `${rawSeller.trim()} (${sourceSuffix})`;
+}
 
 async function smartGet(url: string, headers: Record<string, string>, timeout = 8000) {
   try {
@@ -53,44 +91,90 @@ export async function pollBigBoxAggregators(): Promise<void> {
     }, 8000);
 
     const html: string = res.data || '';
+    const extractedOffers: Array<{ seller: string; price: number; link: string; rawText: string }> = [];
+
+    // 1. Parse JSON-LD InStock Offer Blocks
     const offerBlocks = [...html.matchAll(/\{[^{}]*"availability"\s*:\s*"https?:\/\/schema\.org\/InStock"[^{}]*\}/gi)];
     for (const m of offerBlocks) {
       const raw = m[0];
       const priceMatch = raw.match(/"price"\s*:\s*"?([0-9]+(?:\.[0-9]{1,2})?)"?/i);
       const sellerMatch = raw.match(/"name"\s*:\s*"([^"]+)"/i);
       const urlMatch = raw.match(/"url"\s*:\s*"([^"]+)"/i);
-
       if (priceMatch) {
-        const price = parseFloat(priceMatch[1]);
-        if (!isValidSkuForFormFactor(target.title, target.formFactor, price)) continue;
+        extractedOffers.push({
+          seller: sellerMatch ? sellerMatch[1] : 'Big-Box Retailer',
+          price: parseFloat(priceMatch[1]),
+          link: urlMatch ? urlMatch[1] : url,
+          rawText: raw
+        });
+      }
+    }
 
-        const retailer = sellerMatch ? sellerMatch[1] : 'Big-Box Retailer';
-        if (/ebay|tcgplayer|stockx|goat|mercari/i.test(retailer)) continue;
+    // 2. Parse HTML live In-Stock retailer rows for Target, Best Buy, Pokemon Center, Walmart, Amazon, GameStop, Costco, Sam's Club, Barnes & Noble
+    const rowMatches = [...html.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/gi)];
+    for (const rm of rowMatches) {
+      const rowHtml = rm[1];
+      if (!/in\s*stock|available\s*now|add\s*to\s*cart|pre-?order\s*now/i.test(rowHtml)) continue;
+      if (/out\s*of\s*stock|sold\s*out|unavailable/i.test(rowHtml)) continue;
 
-        const offerKey = `${target.slug}_${retailer}_${price}`;
-        const lastSeen = seenBigBoxOffers.get(offerKey) || 0;
-        if (Date.now() - lastSeen > 1000 * 60 * 60 * 4) {
-          seenBigBoxOffers.set(offerKey, Date.now());
-          const isPreOrder = /pre-?order|pre-?sale/i.test(`${target.title} ${raw}`);
-          const isBigBoxFreeShip = price >= 35 && /target|best buy|walmart|amazon|costco|gamestop|pokemon center/i.test(retailer);
-          await processIncomingDrop({
-            title: target.title,
-            retailer: `${retailer} (Big-Box Restock)`,
-            url: urlMatch ? urlMatch[1] : url,
-            price,
-            stock: undefined,
-            itemId: offerKey,
-            isPreOrder,
-            freeShipping: isBigBoxFreeShip
-          });
-        }
+      const retailerMatch = rowHtml.match(/(Target|Best\s*Buy|Pok[eé]mon\s*Center|Walmart|Amazon|GameStop|Costco|Sam'?s\s*Club|Barnes\s*(?:&|and|&amp;)\s*Noble)/i);
+      const priceMatch = rowHtml.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
+      const hrefMatch = rowHtml.match(/href="([^"]+)"/i);
+      if (retailerMatch && priceMatch) {
+        const rawHref = hrefMatch ? hrefMatch[1] : url;
+        const resolvedLink = rawHref.startsWith('http') ? rawHref : `https://www.trackalacker.com${rawHref}`;
+        extractedOffers.push({
+          seller: retailerMatch[1].replace(/&amp;/gi, '&'),
+          price: parseFloat(priceMatch[1]),
+          link: resolvedLink,
+          rawText: rowHtml
+        });
+      }
+    }
+
+    for (const offer of extractedOffers) {
+      const { seller, price, link, rawText } = offer;
+      if (/ebay|tcgplayer|stockx|goat|mercari/i.test(`${seller} ${link}`)) continue;
+      if (!SUPPORTED_BIG_BOX_REGEX.test(`${seller} ${link}`) && seller !== 'Big-Box Retailer') continue;
+
+      const normalizedRetailer = normalizeBigBoxRetailerLabel(seller, link, 'Big-Box Restock');
+      if (!isValidSkuForFormFactor(target.title, target.formFactor, price, {
+        handle: link,
+        retailer: normalizedRetailer,
+        sourceUrl: link,
+        allowPcRetailUnlock: true
+      })) {
+        continue;
+      }
+
+      const offerKey = `${target.slug}_${normalizedRetailer}_${price}`;
+      const lastSeen = seenBigBoxOffers.get(offerKey) || 0;
+      if (Date.now() - lastSeen > 1000 * 60 * 60 * 4) {
+        seenBigBoxOffers.set(offerKey, Date.now());
+        const isPreOrder = /pre-?order|pre-?sale/i.test(`${target.title} ${rawText}`);
+        const isBigBoxFreeShip = price >= 35 && SUPPORTED_BIG_BOX_REGEX.test(normalizedRetailer);
+        await processIncomingDrop({
+          title: target.title,
+          retailer: normalizedRetailer,
+          url: link,
+          price,
+          stock: undefined,
+          itemId: offerKey,
+          isPreOrder,
+          freeShipping: isBigBoxFreeShip
+        });
       }
     }
   } catch (e) {
   } finally {
     isPollingBigBox = false;
-    setTimeout(pollBigBoxAggregators, 12000);
+    setTimeout(pollBigBoxAggregators, 10000);
   }
+}
+
+function extractOutboundRetailerUrl(text: string, fallbackUrl: string): string {
+  const urlMatch = text.match(/https?:\/\/(?:www\.)?(?:target\.com|bestbuy\.com|pokemoncenter\.com|walmart\.com|amazon\.com|a\.co|gamestop\.com|costco\.com|samsclub\.com|barnesandnoble\.com)[^\s)"\]<>]*/i);
+  return urlMatch ? urlMatch[0] : fallbackUrl;
 }
 
 let isPollingReddit = false;
@@ -98,35 +182,82 @@ export async function pollRedditDeals(): Promise<void> {
   if (isPollingReddit) return;
   isPollingReddit = true;
   try {
-    const res = await smartGet('https://www.reddit.com/r/PKMNTCGDeals/new.json?limit=15', {
-      'User-Agent': 'Windows:DropBotCommander:v3.2 (by /u/Lonesoul65666)',
-      Accept: 'application/json'
-    }, 8000);
+    const feeds = [
+      'https://www.reddit.com/r/PKMNTCGDeals/new.json?limit=20',
+      'https://www.reddit.com/r/PKMNTCGDeals/hot.json?limit=15'
+    ];
 
-    const posts = res.data?.data?.children || [];
-    for (const child of posts) {
-      const post = child.data;
-      if (!post || seenRedditIds.has(post.id)) continue;
+    const posts: any[] = [];
+    for (const feedUrl of feeds) {
+      try {
+        const res = await smartGet(feedUrl, {
+          'User-Agent': 'Windows:DropBotCommander:v3.3 (by /u/Lonesoul65666)',
+          Accept: 'application/json'
+        }, 8000);
+        const children = res.data?.data?.children || [];
+        for (const c of children) {
+          if (c?.data) posts.push(c.data);
+        }
+      } catch (e) {}
+    }
+
+    // Fallback to RSS/Atom feed if JSON endpoints return 0 posts
+    if (posts.length === 0) {
+      try {
+        const rssRes = await smartGet('https://www.reddit.com/r/PKMNTCGDeals/new/.rss', {
+          'User-Agent': 'Windows:DropBotCommander:v3.3 (by /u/Lonesoul65666)',
+          Accept: 'application/atom+xml,application/xml,text/xml'
+        }, 8000);
+        const xml: string = rssRes.data || '';
+        const entries = [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/gi)];
+        for (const ent of entries) {
+          const block = ent[1];
+          const idMatch = block.match(/<id>([^<]+)<\/id>/i);
+          const titleMatch = block.match(/<title>([^<]+)<\/title>/i);
+          const linkMatch = block.match(/<link[^>]*href="([^"]+)"/i);
+          const contentMatch = block.match(/<content[^>]*>([\s\S]*?)<\/content>/i);
+          if (idMatch && titleMatch) {
+            posts.push({
+              id: idMatch[1],
+              title: titleMatch[1].replace(/&amp;/g, '&').replace(/&#39;/g, "'").replace(/&quot;/g, '"'),
+              url_overridden_by_dest: linkMatch ? linkMatch[1] : '',
+              selftext: contentMatch ? contentMatch[1] : '',
+              created_utc: Math.floor(Date.now() / 1000) - 60
+            });
+          }
+        }
+      } catch (e) {}
+    }
+
+    for (const post of posts) {
+      if (!post || !post.id || seenRedditIds.has(post.id)) continue;
       seenRedditIds.add(post.id);
 
       const ageSeconds = (Date.now() / 1000) - (post.created_utc || 0);
       if (ageSeconds > 7200) continue;
 
       const title: string = post.title || '';
+      const selftext: string = post.selftext || '';
       if (/stockx/i.test(title)) continue;
 
-      const priceMatch = title.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
+      const priceMatch = `${title} ${selftext}`.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
       if (!priceMatch) continue;
 
       const price = parseFloat(priceMatch[1]);
       if (price < 18) continue;
 
-      const dealUrl = post.url_overridden_by_dest || `https://www.reddit.com${post.permalink}`;
+      const rawDest = post.url_overridden_by_dest || `https://www.reddit.com${post.permalink || ''}`;
+      const dealUrl = extractOutboundRetailerUrl(`${rawDest} ${selftext}`, rawDest);
 
       const storeMatch = title.match(/^\[([^\]]+)\]/);
-      const retailer = storeMatch ? `${storeMatch[1]} (via PKMNTCGDeals)` : 'r/PKMNTCGDeals Alert';
+      const rawStoreTag = storeMatch ? storeMatch[1] : '';
+      const detectedBigBox = detectBigBoxRetailer(`${rawStoreTag} ${title}`, dealUrl);
+      const retailer = detectedBigBox
+        ? `${detectedBigBox} (via PKMNTCGDeals)`
+        : (rawStoreTag ? `${rawStoreTag} (via PKMNTCGDeals)` : 'r/PKMNTCGDeals Alert');
+
       const isPreOrder = /pre-?order|pre-?sale/i.test(`${title} ${post.link_flair_text || ''}`);
-      const freeShipping = /free ship|fs/i.test(title);
+      const freeShipping = Boolean(/free ship|fs/i.test(title) || (detectedBigBox && price >= 35));
 
       await processIncomingDrop({
         title,
