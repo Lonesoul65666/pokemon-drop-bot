@@ -1,14 +1,34 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WATCH_POLICIES = exports.GLOBAL_JUNK_EXCLUSIONS = void 0;
+exports.WATCH_POLICIES = exports.MIN_PLAUSIBLE_PRICE_FLOORS = exports.BOOSTER_BOX_EXCLUSION_TERMS = exports.GLOBAL_JUNK_EXCLUSIONS = void 0;
+exports.getMinPlausiblePriceFloor = getMinPlausiblePriceFloor;
+exports.isValidSkuForFormFactor = isValidSkuForFormFactor;
+exports.atomicWriteJson = atomicWriteJson;
 exports.loadPolicies = loadPolicies;
 const fs = require('fs');
 const path = require('path');
 exports.GLOBAL_JUNK_EXCLUSIONS = [
+    /empty/i,
+    /no packs/i,
+    /box only/i,
+    /case only/i,
+    /acrylic/i,
+    /protector/i,
+    /\bcode\b/i,
+    /code card/i,
+    /sleeves/i,
+    /\bdice\b/i,
+    /opened/i,
+    /damaged/i,
+    /weighed/i,
+    /pack only/i,
+    /single pack/i,
+    /art set/i,
     /3-pack/i,
+    /3 pack/i,
     /blister/i,
     /checklane/i,
-    /sleeved booster/i,
+    /sleeved/i,
     /\bbooster pack\b/i,
     /\bpack\b(?!\s*box)/i,
     /\btin\b/i,
@@ -17,12 +37,89 @@ exports.GLOBAL_JUNK_EXCLUSIONS = [
     /poster/i,
     /illustration collection/i,
     /collection box/i,
-    /acrylic/i,
-    /empty/i,
+    /build & battle/i,
+    /build and battle/i,
     /near mint/i,
     /lightly played/i,
     /japanese/i,
+    /\bjp\s/i,
+    /korean/i,
+    /chinese/i,
+    /s-chinese/i,
+    /t-chinese/i,
+    /spanish/i,
+    /french/i,
+    /german/i,
 ];
+exports.BOOSTER_BOX_EXCLUSION_TERMS = [
+    'half',
+    '18 pack',
+    '18-pack',
+    '18 packs',
+    '18pk',
+    '18 ct',
+    '18x',
+    'bundle',
+    '6 pack',
+    '6-pack',
+    'blister',
+    'sleeved',
+    '3 pack',
+    'build & battle',
+    'build and battle',
+    'korean',
+    'japanese',
+    'jp ',
+    'chinese',
+    's-chinese',
+    't-chinese',
+    'spanish',
+    'french',
+    'german'
+];
+exports.MIN_PLAUSIBLE_PRICE_FLOORS = {
+    'Booster Box': 95,
+    'ETB': 32,
+    'Booster Bundle': 18,
+    'ETB Case': 450,
+    'Master Case': 550
+};
+function getMinPlausiblePriceFloor(formFactor) {
+    if (!formFactor)
+        return 18;
+    return exports.MIN_PLAUSIBLE_PRICE_FLOORS[formFactor] ?? 18;
+}
+function isValidSkuForFormFactor(title, formFactor, price) {
+    const lower = ` ${title.toLowerCase()} `;
+    for (const junkRegex of exports.GLOBAL_JUNK_EXCLUSIONS) {
+        if (junkRegex.test(title)) {
+            return false;
+        }
+    }
+    if (formFactor === 'Booster Box' || formFactor === 'Master Case') {
+        for (const term of exports.BOOSTER_BOX_EXCLUSION_TERMS) {
+            if (lower.includes(term)) {
+                return false;
+            }
+        }
+    }
+    if ((formFactor === 'ETB' || formFactor === 'Booster Box' || formFactor === 'Booster Bundle') && /\b(case|cases|master case|sealed case|x6|6x|x10|10x)\b/i.test(title)) {
+        return false;
+    }
+    if (formFactor === 'Master Case' && /\b(bundle|etb|elite trainer|blister|tin|collection|figure)\b/i.test(title)) {
+        return false;
+    }
+    if (formFactor === 'ETB Case' && !/\b(etb|elite trainer)\b/i.test(title)) {
+        return false;
+    }
+    if (price !== undefined && Number.isFinite(price)) {
+        const minFloor = getMinPlausiblePriceFloor(formFactor);
+        if (price < minFloor) {
+            return false;
+        }
+    }
+    return true;
+}
 // Check root directory first, then fallback to one level up from dist/
 function resolvePoliciesPath() {
     const rootPath = path.resolve(process.cwd(), 'policies.json');
@@ -34,6 +131,21 @@ function resolvePoliciesPath() {
         return parentPath;
     }
     return path.resolve(__dirname, 'policies.json');
+}
+function atomicWriteJson(filePath, data) {
+    try {
+        const tmpPath = `${filePath}.tmp.${process.pid}.${Date.now()}`;
+        fs.writeFileSync(tmpPath, JSON.stringify(data, null, 2), 'utf-8');
+        fs.renameSync(tmpPath, filePath);
+    }
+    catch (err) {
+        try {
+            const fallbackTmp = `${filePath}.tmp`;
+            fs.writeFileSync(fallbackTmp, JSON.stringify(data, null, 2), 'utf-8');
+            fs.renameSync(fallbackTmp, filePath);
+        }
+        catch (e) { }
+    }
 }
 const POLICIES_PATH = resolvePoliciesPath();
 function loadPolicies() {

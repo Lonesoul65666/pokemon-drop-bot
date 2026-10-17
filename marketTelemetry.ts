@@ -1,3 +1,5 @@
+import { atomicWriteJson } from './policies';
+
 declare const require: any;
 declare const process: any;
 
@@ -84,13 +86,7 @@ export function recordObservation(
   // Debounced atomic write to disk every 3 seconds
   if (!saveTimeout) {
     saveTimeout = setTimeout(() => {
-      try {
-        const tmp = CACHE_PATH + '.tmp';
-        fs.writeFileSync(tmp, JSON.stringify(telemetryMap, null, 2), 'utf-8');
-        fs.renameSync(tmp, CACHE_PATH);
-      } catch (err: any) {
-        // Suppress ephemeral lock warnings
-      }
+      atomicWriteJson(CACHE_PATH, telemetryMap);
       saveTimeout = null;
     }, 3000);
   }

@@ -1,6 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import axios from 'axios';
+import { isValidCompTitle, applySyncSanityGuard } from '../marketComps';
+import { getNextProxy } from '../lgsPoller';
+import { atomicWriteJson } from '../policies';
 
 const POLICIES_PATH = path.resolve(process.cwd(), 'policies.json');
 const CACHE_PATH = path.resolve(process.cwd(), 'marketCache.json');
@@ -57,36 +60,52 @@ export class MarketSyncService {
             sort: {}
           };
 
-          const res = await axios.post(url, body, {
-            timeout: 7000,
-            headers: { 'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0' }
-          });
+          let res;
+          try {
+            res = await axios.post(url, body, {
+              timeout: 7000,
+              headers: { 'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0' }
+            });
+          } catch (err) {
+            res = await axios.post(url, body, {
+              timeout: 7000,
+              httpsAgent: getNextProxy(),
+              headers: { 'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0' }
+            });
+          }
 
           const results = res.data?.results?.[0]?.results || [];
           for (const item of results) {
             if (item.customAttributes?.number) continue;
-            const title = (item.productName || '').toLowerCase();
-            if (title.includes('code card') || title.includes('empty') || title.includes('sleeves')) continue;
+            const rawTitle = item.productName || '';
+            const title = rawTitle.toLowerCase();
+            if (!isValidCompTitle(rawTitle, p.name, p.formFactor)) continue;
 
             const isMatch =
-              (p.formFactor === 'Booster Box' && title.includes('booster box') && !title.includes('case')) ||
-              (p.formFactor === 'ETB' && (title.includes('elite trainer') || title.includes('etb')) && !title.includes('case') && !title.includes('center')) ||
-              (p.formFactor === 'Booster Bundle' && title.includes('bundle') && !title.includes('case'));
+              (p.formFactor === 'Booster Box' && title.includes('booster box')) ||
+              (p.formFactor === 'ETB' && (title.includes('elite trainer') || title.includes('etb'))) ||
+              (p.formFactor === 'Booster Bundle' && title.includes('bundle'));
 
             if (isMatch) {
               const mkt = parseFloat(item.marketPrice || item.lowestPrice || 0);
               if (mkt > 10) {
-                const rounded = Math.round(mkt * 100) / 100;
+                const baselineRef = p.estimatedMarketValue || p.msrpCeiling || 50;
+                const rounded = applySyncSanityGuard(mkt, p.formFactor, undefined, {
+                  sampleCount: results.length,
+                  ruleId: p.id,
+                  policyBaseline: baselineRef
+                });
                 p.estimatedMarketValue = rounded;
                 basePriceMap.set(p.id, rounded);
 
                 const prodId = Math.floor(Number(item.productId));
                 const existing = cache[p.id] || {};
                 const hasLiveStoreDrop = existing.inStock === true && existing.lowestStore && !existing.lowestStore.includes('TCGPlayer') && !existing.lowestStore.includes('Catalog');
+                const safeLowest = hasLiveStoreDrop ? Math.min(existing.lowestPrice, rounded) : rounded;
 
                 cache[p.id] = {
                   ...existing,
-                  lowestPrice: hasLiveStoreDrop ? existing.lowestPrice : rounded,
+                  lowestPrice: safeLowest,
                   lowestStore: hasLiveStoreDrop ? existing.lowestStore : 'TCGPlayer SKU Baseline',
                   lowestUrl: hasLiveStoreDrop ? existing.lowestUrl : `https://www.tcgplayer.com/product/${prodId}`,
                   inStock: hasLiveStoreDrop ? true : false,
@@ -105,17 +124,19 @@ export class MarketSyncService {
       // Pass 2: Sync Master Cases & 10-ETB Cases (inherit live multiplier from parent Box/ETB so cases are always accurate)
       for (const c of cases) {
         const parentId = c.id.replace(/-case$/, '').replace(/-booster-case$/, '-booster-box');
-        const parentMkt = basePriceMap.get(parentId);
+        const parentPolicy = singles.find(s => s.id === parentId);
+        const parentMkt = basePriceMap.get(parentId) || parentPolicy?.estimatedMarketValue;
         if (parentMkt) {
           const mult = c.formFactor === 'Master Case' ? 6 : 10;
-          const caseMkt = Math.round(parentMkt * mult);
+          const caseMkt = applySyncSanityGuard(Math.round(parentMkt * mult), c.formFactor, parentMkt);
           c.estimatedMarketValue = caseMkt;
 
           const existing = cache[c.id] || {};
           const hasLiveStoreDrop = existing.inStock === true && existing.lowestStore && !existing.lowestStore.includes('TCGPlayer') && !existing.lowestStore.includes('Catalog');
+          const safeLowest = hasLiveStoreDrop ? Math.min(existing.lowestPrice, caseMkt) : caseMkt;
           cache[c.id] = {
             ...existing,
-            lowestPrice: hasLiveStoreDrop ? existing.lowestPrice : caseMkt,
+            lowestPrice: safeLowest,
             lowestStore: hasLiveStoreDrop ? existing.lowestStore : 'TCGPlayer Case Baseline',
             rollingAverage: caseMkt,
             lastUpdated: new Date().toISOString()
@@ -133,13 +154,8 @@ export class MarketSyncService {
         }
       });
 
-      const tmpPol = POLICIES_PATH + '.tmp';
-      fs.writeFileSync(tmpPol, JSON.stringify(freshPoliciesOnDisk, null, 2), 'utf-8');
-      fs.renameSync(tmpPol, POLICIES_PATH);
-
-      const tmpCache = CACHE_PATH + '.tmp';
-      fs.writeFileSync(tmpCache, JSON.stringify(cache, null, 2), 'utf-8');
-      fs.renameSync(tmpCache, CACHE_PATH);
+      atomicWriteJson(POLICIES_PATH, freshPoliciesOnDisk);
+      atomicWriteJson(CACHE_PATH, cache);
 
       console.log(`[MarketSync] Automated baseline refresh complete (${updatedCount} SKUs synced to latest market value).`);
     } catch (err: any) {

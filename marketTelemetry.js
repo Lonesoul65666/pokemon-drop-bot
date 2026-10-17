@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.recordObservation = recordObservation;
 exports.getTelemetry = getTelemetry;
+const policies_1 = require("./policies");
 const fs = require('fs');
 const path = require('path');
 const CACHE_PATH = path.resolve(process.cwd(), 'marketCache.json');
@@ -63,14 +64,7 @@ function recordObservation(policyId, price, store, url, msrp) {
     // Debounced atomic write to disk every 3 seconds
     if (!saveTimeout) {
         saveTimeout = setTimeout(() => {
-            try {
-                const tmp = CACHE_PATH + '.tmp';
-                fs.writeFileSync(tmp, JSON.stringify(telemetryMap, null, 2), 'utf-8');
-                fs.renameSync(tmp, CACHE_PATH);
-            }
-            catch (err) {
-                // Suppress ephemeral lock warnings
-            }
+            (0, policies_1.atomicWriteJson)(CACHE_PATH, telemetryMap);
             saveTimeout = null;
         }, 3000);
     }

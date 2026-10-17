@@ -1,15 +1,20 @@
 import fs from 'fs';
 import path from 'path';
-import { WATCH_POLICIES, PolicyRule, GLOBAL_JUNK_EXCLUSIONS } from './policies';
+import { WATCH_POLICIES, PolicyRule, GLOBAL_JUNK_EXCLUSIONS, isValidSkuForFormFactor, getMinPlausiblePriceFloor, atomicWriteJson } from './policies';
 import { recordObservation, getTelemetry } from './marketTelemetry';
 
 export interface RawRestockItem {
   title: string;
   retailer: string;
   url: string;
+  productUrl?: string;
+  cart1xUrl?: string;
+  cart2xUrl?: string;
   price?: number;
   stock?: number;
   itemId?: string;
+  isPreOrder?: boolean;
+  freeShipping?: boolean;
 }
 
 export interface EvaluationResult {
@@ -21,6 +26,10 @@ export interface EvaluationResult {
   alertType?: 'NEW_DROP' | 'PRICE_DROP' | 'RESTOCK_REPEAT';
   previousPrice?: number;
   previousTimeStr?: string;
+  landedPrice?: number;
+  estimatedShipping?: number;
+  freeShipNote?: string;
+  isPreOrder?: boolean;
 }
 
 interface AlertMemoryEntry {
@@ -32,6 +41,7 @@ interface AlertMemoryEntry {
 }
 
 const ALERT_STATE_PATH = path.resolve(process.cwd(), 'alertState.json');
+const LIVE_STOCK_PATH = path.resolve(process.cwd(), 'liveStock.json');
 let alertMemory: Record<string, AlertMemoryEntry> = {};
 
 try {
@@ -41,13 +51,77 @@ try {
 } catch (e) {}
 
 function saveAlertMemory() {
+  atomicWriteJson(ALERT_STATE_PATH, alertMemory);
+}
+
+export interface LiveStockEntry {
+  ruleId: string;
+  ruleName: string;
+  formFactor: string;
+  title: string;
+  retailer: string;
+  price: number;
+  landedPrice?: number;
+  freeShipNote?: string;
+  isPreOrder?: boolean;
+  url: string;
+  productUrl?: string;
+  cart1xUrl?: string;
+  cart2xUrl?: string;
+  stock?: number;
+  itemId?: string;
+  inStock: boolean;
+  updatedAt: number;
+  timeStr: string;
+}
+
+export function upsertLiveStock(entry: LiveStockEntry) {
   try {
-    fs.writeFileSync(ALERT_STATE_PATH, JSON.stringify(alertMemory, null, 2), 'utf-8');
+    let map: Record<string, LiveStockEntry> = {};
+    if (fs.existsSync(LIVE_STOCK_PATH)) {
+      try { map = JSON.parse(fs.readFileSync(LIVE_STOCK_PATH, 'utf-8')); } catch (e) { map = {}; }
+    }
+    const existing = map[entry.ruleId];
+    // Update if same retailer, lower/equal price, or existing entry is > 30 mins old
+    if (!existing || !existing.inStock || existing.retailer === entry.retailer || entry.price <= existing.price || (Date.now() - existing.updatedAt > 30 * 60 * 1000)) {
+      map[entry.ruleId] = entry;
+      atomicWriteJson(LIVE_STOCK_PATH, map);
+    }
+  } catch (e) {}
+}
+
+export function markLiveStockOut(itemId: string) {
+  try {
+    if (!fs.existsSync(LIVE_STOCK_PATH)) return;
+    const map: Record<string, any> = JSON.parse(fs.readFileSync(LIVE_STOCK_PATH, 'utf-8'));
+    let changed = false;
+    const recentOos: Array<{ ruleName: string; retailer: string; price: number; oosAt: number }> = Array.isArray(map.__recentOos)
+      ? map.__recentOos.filter((x: any) => Date.now() - (x.oosAt || 0) < 4 * 60 * 60 * 1000)
+      : [];
+
+    for (const key of Object.keys(map)) {
+      if (key === '__recentOos') continue;
+      if (map[key]?.itemId === String(itemId)) {
+        recentOos.unshift({
+          ruleName: map[key].ruleName || map[key].title || key,
+          retailer: map[key].retailer || 'Store',
+          price: map[key].price || 0,
+          oosAt: Date.now()
+        });
+        delete map[key];
+        changed = true;
+      }
+    }
+    if (changed) {
+      map.__recentOos = recentOos.slice(0, 8);
+      atomicWriteJson(LIVE_STOCK_PATH, map);
+    }
   } catch (e) {}
 }
 
 export function evaluateItem(item: RawRestockItem): EvaluationResult {
   const cleanTitle = item.title.trim();
+  const isPreOrder = Boolean(item.isPreOrder || /pre-?order|pre-?sale/i.test(`${cleanTitle} ${item.url}`));
 
   for (const junkRegex of GLOBAL_JUNK_EXCLUSIONS) {
     if (junkRegex.test(cleanTitle)) {
@@ -59,12 +133,17 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
     const isMatched = rule.matchers.some((regex) => regex.test(cleanTitle));
     if (!isMatched) continue;
 
-    if ((rule.formFactor === 'ETB' || rule.formFactor === 'Booster Box' || rule.formFactor === 'Booster Bundle') && /\bcase\b/i.test(cleanTitle)) {
+    if (!isValidSkuForFormFactor(cleanTitle, rule.formFactor, item.price)) {
       continue;
     }
 
-    if (item.price && item.price > 0) {
-      recordObservation(rule.id, item.price, item.retailer, item.url, rule.msrpCeiling);
+    const minFloor = getMinPlausiblePriceFloor(rule.formFactor);
+    if (item.price !== undefined && item.price < minFloor) {
+      continue;
+    }
+
+    if (item.price && item.price >= minFloor) {
+      recordObservation(rule.id, item.price, item.retailer, item.productUrl || item.url, rule.msrpCeiling);
     }
 
     if ((rule as any).active === false) {
@@ -75,20 +154,79 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       return { action: 'IGNORE', reason: `Stock (${item.stock}) below minStock (${rule.minStock}).`, rule };
     }
 
-    const effectiveCeiling = Math.max(rule.msrpCeiling, rule.maxMarketBuyPrice);
-    if (item.price !== undefined && item.price > effectiveCeiling) {
+    const policyMaxBuy = Math.max(rule.msrpCeiling, rule.maxMarketBuyPrice);
+    // Pre-order strict ceiling: Math.min(policy.maxBuy, Math.round(policy.msrp * 1.05))
+    const effectiveCeiling = isPreOrder
+      ? Math.min(policyMaxBuy, Math.round(rule.msrpCeiling * 1.05))
+      : policyMaxBuy;
+
+    const dropPrice = item.price ?? effectiveCeiling;
+    const isFreeShip = Boolean(item.freeShipping || dropPrice >= 150);
+    const estimatedShipping = isFreeShip ? 0 : 6.99;
+    const landedPrice = Math.round((dropPrice + estimatedShipping) * 100) / 100;
+
+    let freeShipNote: string | undefined = undefined;
+
+    if (dropPrice > effectiveCeiling) {
       return {
         action: 'IGNORE',
-        reason: `Price ($${item.price.toFixed(2)}) exceeds allowable buy threshold ($${effectiveCeiling.toFixed(2)}).`,
+        reason: `${isPreOrder ? '[PRE-ORDER] ' : ''}Price ($${dropPrice.toFixed(2)}) exceeds allowable buy threshold ($${effectiveCeiling.toFixed(2)}).`,
         rule
       };
     }
 
+    if (landedPrice > effectiveCeiling) {
+      const qtyForFreeShip = Math.ceil(150 / dropPrice);
+      const hasEnoughStock = item.stock === undefined || item.stock >= qtyForFreeShip;
+      if (qtyForFreeShip <= 4 && hasEnoughStock) {
+        freeShipNote = `Buy ${qtyForFreeShip}x to hit $150 Free Shipping -> $${dropPrice.toFixed(2)}/ea landed`;
+      } else {
+        return {
+          action: 'IGNORE',
+          reason: `Landed price ($${landedPrice.toFixed(2)} w/ $${estimatedShipping.toFixed(2)} ship) exceeds buy threshold ($${effectiveCeiling.toFixed(2)}) and qtyForFreeShip (${qtyForFreeShip}x) > 4.`,
+          rule
+        };
+      }
+    }
+
+    const now = Date.now();
+    const currentPrice = dropPrice;
+    const nowTimeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    // Valid drop (<= maxBuy): sync immediately to liveStock.json so "In Stock Now" dashboard view stays accurate even if deduplicated for Discord!
+    upsertLiveStock({
+      ruleId: rule.id,
+      ruleName: rule.name,
+      formFactor: rule.formFactor || 'Sealed',
+      title: cleanTitle,
+      retailer: item.retailer,
+      price: currentPrice,
+      landedPrice,
+      freeShipNote,
+      isPreOrder,
+      url: item.url,
+      productUrl: item.productUrl,
+      cart1xUrl: item.cart1xUrl,
+      cart2xUrl: item.cart2xUrl,
+      stock: item.stock,
+      itemId: item.itemId,
+      inStock: true,
+      updatedAt: now,
+      timeStr: nowTimeStr
+    });
+
+    // Reload alertState from disk if reset via dashboard
+    try {
+      if (fs.existsSync(ALERT_STATE_PATH)) {
+        alertMemory = JSON.parse(fs.readFileSync(ALERT_STATE_PATH, 'utf-8'));
+      } else {
+        alertMemory = {};
+      }
+    } catch (e) {}
+
     // Persistent Deduplication per (Rule + Retailer)
     const stateKey = `${rule.id}__${item.retailer}`;
     const prev = alertMemory[stateKey];
-    const now = Date.now();
-    const currentPrice = item.price ?? effectiveCeiling;
 
     let alertType: 'NEW_DROP' | 'PRICE_DROP' | 'RESTOCK_REPEAT' = 'NEW_DROP';
     let previousPrice: number | undefined = undefined;
@@ -98,8 +236,8 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       const elapsedHours = (now - prev.timestamp) / (1000 * 60 * 60);
       const isSignificantPriceDrop = currentPrice <= prev.lowestAlertedPrice - 3.00;
 
-      // Block same-price repeats for 12 full hours! Only allow through immediately if the price dropped by $3+
-      if (!isSignificantPriceDrop && elapsedHours < 12) {
+      // Block same-price repeats for 4 hours! Only allow through immediately if the price dropped by $3+
+      if (!isSignificantPriceDrop && elapsedHours < 4) {
         return {
           action: 'IGNORE',
           reason: `Deduplicated repeat: ${rule.name} at ${item.retailer} already alerted at $${prev.lastPrice.toFixed(2)} (${prev.timeStr}).`,
@@ -116,25 +254,30 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       lastPrice: currentPrice,
       lowestAlertedPrice: prev ? Math.min(prev.lowestAlertedPrice, currentPrice) : currentPrice,
       timestamp: now,
-      timeStr: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      timeStr: nowTimeStr,
       alertCount: (prev?.alertCount || 0) + 1
     };
     saveAlertMemory();
 
     const liveTel = getTelemetry()[rule.id];
     const marketVal = (liveTel && liveTel.rollingAverage > 0) ? liveTel.rollingAverage : (rule.estimatedMarketValue || effectiveCeiling);
-    const savingsDollars = Math.max(0, marketVal - currentPrice);
-    const discountPct = marketVal > 0 ? Math.round(((marketVal - currentPrice) / marketVal) * 100) : 0;
+    const effectiveComparePrice = freeShipNote ? currentPrice : landedPrice;
+    const savingsDollars = Math.max(0, marketVal - effectiveComparePrice);
+    const discountPct = marketVal > 0 ? Math.round(((marketVal - effectiveComparePrice) / marketVal) * 100) : 0;
 
     return {
       action: 'BUY',
-      reason: `[${alertType}] Matched "${rule.name}" at $${currentPrice.toFixed(2)} (${discountPct}% under market)`,
+      reason: `[${alertType}]${isPreOrder ? ' [⏳ PRE-ORDER]' : ''} Matched "${rule.name}" at $${currentPrice.toFixed(2)} (Landed: $${landedPrice.toFixed(2)} • ${discountPct}% under market)`,
       rule,
       discountPct,
       savingsDollars,
       alertType,
       previousPrice,
-      previousTimeStr
+      previousTimeStr,
+      landedPrice,
+      estimatedShipping,
+      freeShipNote,
+      isPreOrder
     };
   }
 

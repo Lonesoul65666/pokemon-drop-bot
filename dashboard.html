@@ -14,7 +14,6 @@
   </style>
 </head>
 <body class="p-6 max-w-7xl mx-auto">
-  <!-- Lightbox Modal for Enlarging Box / ETB Art -->
   <div id="artModal" onclick="closeModal()" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 cursor-zoom-out">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-lg w-full p-6 flex flex-col items-center shadow-2xl" onclick="event.stopPropagation()">
       <div class="w-full flex justify-between items-center mb-4 pb-2 border-b border-slate-800">
@@ -28,59 +27,97 @@
     </div>
   </div>
 
+  <div id="compModal" onclick="closeCompModal()" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl" onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center pb-3 border-b border-slate-800">
+        <h3 id="compModalTitle" class="text-sm font-bold text-white">Live Market Comps</h3>
+        <button onclick="closeCompModal()" class="text-slate-400 hover:text-white text-lg font-bold px-2">&times;</button>
+      </div>
+      <div id="compModalBody" class="py-5 space-y-3 text-xs text-slate-300">Scanning live TCGPlayer & eBay Buy-It-Now listings...</div>
+      <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
+        <button id="pushCompDiscordBtn" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold">Push Card to Discord</button>
+        <button onclick="closeCompModal()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold">Close</button>
+      </div>
+    </div>
+  </div>
+
   <header class="flex flex-col md:flex-row justify-between items-start md:items-center pb-6 border-b border-slate-800 gap-4">
     <div>
       <div class="flex items-center gap-3 flex-wrap">
-        <h1 class="text-2xl font-black tracking-tight text-white flex items-center gap-2">
-          <span class="text-yellow-400">&#9889;</span> DROPBOT COMMANDER
-        </h1>
-        <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium" id="streamCounter">
-          &#9679; 20 LGS Streams Live
-        </span>
-        <span class="text-xs px-2.5 py-0.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 font-medium" id="vaultCounter">
-          Vaulted ETBs: 0 / 0
-        </span>
+        <h1 class="text-2xl font-black tracking-tight text-white flex items-center gap-2"><span class="text-yellow-400">&#9889;</span> DROPBOT COMMANDER</h1>
+        <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium" id="streamCounter">&#9679; 20 LGS Streams Live</span>
+        <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold" id="vaultValueBadge">Vault Value: $0</span>
+        <button onclick="toggleSpectatorLock()" id="lockBtn" title="Toggle Spectator Lock: Prevents accidental slider/input edits while browsing the dashboard." class="text-xs px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 hover:border-blue-500 font-semibold">&#128275; Commander Unlocked</button>
+        <span title="Tracks how many English Elite Trainer Boxes are marked as owned in your personal Vault vs. total tracked ETBs." class="text-xs px-2.5 py-0.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 font-medium cursor-help" id="vaultCounter">Vaulted ETBs: 0 / 0</span>
+        <button onclick="sendDigestToDiscord()" id="sendDigestBtn" title="Push the compact 4-Hour Live Shelf Digest card of all currently in-stock deals to your Discord channel right now." class="text-xs px-3 py-0.5 rounded-full bg-blue-600/20 text-blue-300 border border-blue-500/40 hover:bg-blue-600 hover:text-white font-bold transition-colors">&#128242; Send Digest to Discord</button>
       </div>
-      <p class="text-xs text-slate-400 mt-1">Click any product image to enlarge &bull; Type exact dollar amounts or drag sliders to set Discord buy triggers</p>
+      <p class="text-xs text-slate-400 mt-1">Click any product image to enlarge &bull; Click &#9889; Comps to check TCGPlayer + eBay live on demand</p>
     </div>
-
-    <div id="syncToast" class="opacity-0 transition-opacity duration-300 text-xs px-3 py-1.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30 font-medium">
-      Auto-synced to bot
-    </div>
+    <div id="syncToast" class="opacity-0 transition-opacity duration-300 text-xs px-3 py-1.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30 font-medium">Auto-synced to bot</div>
   </header>
 
-  <!-- Global Strategy & Live Drops Ticker -->
-  <div class="my-4 bg-slate-900/90 border border-slate-800 rounded-xl p-3.5 flex flex-wrap items-center justify-between gap-3">
-    <div class="flex items-center gap-2 flex-wrap">
-      <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mr-1">&#9881; Bulk Calibrate All Triggers:</span>
-      <button onclick="applyGlobalPreset('MSRP5')" class="px-2.5 py-1 rounded text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-blue-600 hover:text-white border border-slate-700">MSRP + 5%</button>
-      <button onclick="applyGlobalPreset('MKT15')" class="px-2.5 py-1 rounded text-xs font-semibold bg-slate-800 text-emerald-400 hover:bg-emerald-600 hover:text-white border border-slate-700">-15% Under Market</button>
-      <button onclick="applyGlobalPreset('MKT25')" class="px-2.5 py-1 rounded text-xs font-semibold bg-slate-800 text-amber-400 hover:bg-amber-600 hover:text-white border border-slate-700">-25% Ruthless Alpha</button>
+  <div class="my-4 bg-slate-900/90 border border-slate-800 rounded-xl p-3.5 space-y-3">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mr-1">&#9881; Universal Calibrate:</span>
+        <select id="calibScope" title="Choose whether calibration applies to ALL tracked products or only the currently filtered view/era." class="bg-slate-950 border border-slate-700 text-[11px] font-bold text-blue-400 px-2 py-1 rounded focus:outline-none focus:border-blue-500 mr-1">
+          <option value="ALL">Scope: All Targets</option>
+          <option value="FILTERED">Scope: Current Filter / View</option>
+        </select>
+        <button onclick="applyUniversalPreset('MKT5')" title="Set Max Buy to 5% below Market Baseline" class="px-2 py-1 rounded text-[11px] font-semibold bg-slate-800 text-slate-200 hover:bg-blue-600 hover:text-white border border-slate-700">5% Under Market</button>
+        <button onclick="applyUniversalPreset('MKT10')" title="Set Max Buy to 10% below Market Baseline" class="px-2 py-1 rounded text-[11px] font-semibold bg-slate-800 text-slate-200 hover:bg-blue-600 hover:text-white border border-slate-700">10% Under</button>
+        <button onclick="applyUniversalPreset('MKT15')" title="Set Max Buy to 15% below Market Baseline" class="px-2 py-1 rounded text-[11px] font-semibold bg-slate-800 text-emerald-400 hover:bg-emerald-600 hover:text-white border border-slate-700">15% Under</button>
+        <button onclick="applyUniversalPreset('MKT20')" title="Set Max Buy to 20% below Market Baseline" class="px-2 py-1 rounded text-[11px] font-semibold bg-slate-800 text-emerald-300 hover:bg-emerald-600 hover:text-white border border-slate-700">20% Under</button>
+        <button onclick="applyUniversalPreset('MKT30')" title="Set Max Buy to 30% below Market Baseline (Heavy Alpha)" class="px-2 py-1 rounded text-[11px] font-semibold bg-slate-800 text-amber-400 hover:bg-amber-600 hover:text-white border border-slate-700">30% Under</button>
+        <button onclick="applyUniversalPreset('AT_MSRP')" title="Set Max Buy to exact Retail MSRP" class="px-2 py-1 rounded text-[11px] font-semibold bg-slate-800 text-cyan-300 hover:bg-cyan-600 hover:text-white border border-slate-700">At MSRP</button>
+        <button onclick="applyUniversalPreset('MSRP_PLUS_5_DOLLARS')" title="Set Max Buy to Retail MSRP + $5" class="px-2 py-1 rounded text-[11px] font-semibold bg-slate-800 text-slate-300 hover:bg-blue-600 hover:text-white border border-slate-700">MSRP + $5</button>
+        <button onclick="applyUniversalPreset('MSRP_MINUS_10_PCT')" title="Set Max Buy to 10% below Retail MSRP" class="px-2 py-1 rounded text-[11px] font-semibold bg-slate-800 text-purple-300 hover:bg-purple-600 hover:text-white border border-slate-700">10% Under MSRP</button>
+      </div>
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <div class="flex items-center bg-slate-950 border border-slate-700 rounded overflow-hidden">
+          <input type="number" id="customCalibPct" placeholder="Custom %" min="-50" max="80" step="1" class="w-20 bg-transparent text-[11px] text-white px-2 py-1 focus:outline-none" title="Enter custom % under market (e.g. 12 for 12% Under Market)" />
+          <button onclick="applyCustomPct()" class="px-2.5 py-1 bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold">Apply % Under Mkt</button>
+        </div>
+      </div>
     </div>
-    <button onclick="triggerTestAlert()" id="testAlertBtn" class="px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-600 hover:text-white transition-colors">
-      &#128276; Fire Test Discord Embed
-    </button>
+    <div class="flex items-center justify-between gap-2 flex-wrap pt-2 border-t border-slate-800/80">
+      <div class="text-[11px] text-slate-400" id="liveStockSummaryBadge">&#9679; Scanning live store stock...</div>
+      <div class="flex items-center gap-2 flex-wrap">
+        <button onclick="toggleMuteVaulted()" id="muteVaultBtn" title="Toggle whether ETBs already marked 'Vaulted' (owned) still fire Discord alerts for the crew or stay muted." class="px-3 py-1 rounded-lg text-xs font-bold bg-purple-600/20 text-purple-300 border border-purple-500/30 hover:bg-purple-600 hover:text-white transition-colors">&#128226; Vaulted ETBs: Alerting Crew</button>
+        <button onclick="resetDedupMemory()" id="resetDedupBtn" title="Clears the 4-hour duplicate alert cooldown memory so any currently in-stock item under target will immediately re-fire a fresh alert." class="px-3 py-1 rounded-lg text-xs font-bold bg-emerald-600/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-600 hover:text-white transition-colors">&#128260; Reset Dedupe Block</button>
+        <button onclick="triggerTestAlert()" id="testAlertBtn" title="Sends a sample drop embed to your Discord channel to verify webhook connectivity and formatting." class="px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-600 hover:text-white transition-colors">&#128276; Test Discord Embed</button>
+      </div>
+    </div>
   </div>
 
   <div id="recentDropsContainer" class="my-4 hidden">
-    <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-400 mb-2 flex items-center gap-1.5">
-      <span>&#9889; Recent Discord Alert Hits</span>
-    </div>
+    <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-400 mb-2 flex items-center gap-1.5"><span>&#9889; Recent Discord Alert Hits</span></div>
     <div id="recentDropsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2.5"></div>
   </div>
 
   <div class="flex flex-wrap items-center justify-between gap-4 my-6">
     <div class="flex flex-wrap items-center gap-2" id="filterPills">
-      <button onclick="setFilter('ALL')" class="pill-btn active px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white" data-filter="ALL">All Products</button>
-      <button onclick="setFilter('Master Case')" class="pill-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700" data-filter="Master Case">&#128230; 6-Box Cases (216p)</button>
-      <button onclick="setFilter('ETB Case')" class="pill-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700" data-filter="ETB Case">&#127873; 10-ETB Cases</button>
-      <button onclick="setFilter('Booster Box')" class="pill-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700" data-filter="Booster Box">&#127924; 36-Pack Boxes</button>
-      <button onclick="setFilter('ETB')" class="pill-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700" data-filter="ETB">&#127873; ETBs</button>
-      <button onclick="setFilter('Booster Bundle')" class="pill-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700" data-filter="Booster Bundle">&#128451; 6-Pack Bundles</button>
+      <button onclick="setFilter('ALL')" class="pill-btn active px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white" data-filter="ALL">All Products</button>
+      <button onclick="setFilter('INSTOCK')" id="inStockPillBtn" class="pill-btn px-3.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-950/60 text-emerald-400 border border-emerald-700/50 hover:bg-emerald-800/50" data-filter="INSTOCK">&#9679; In-Stock Now (0)</button>
+      <button onclick="setFilter('NEED_VAULT')" title="Filter to English ETBs not yet checked as Vaulted" class="pill-btn px-3.5 py-1.5 rounded-lg text-xs font-bold bg-purple-950/60 text-purple-300 border border-purple-700/50 hover:bg-purple-800/50" data-filter="NEED_VAULT">&#127919; Needed ETBs</button>
+      <button onclick="setFilter('Master Case')" class="pill-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700" data-filter="Master Case">6-Box Cases</button>
+      <button onclick="setFilter('ETB Case')" class="pill-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700" data-filter="ETB Case">10-ETB Cases</button>
+      <button onclick="setFilter('Booster Box')" class="pill-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700" data-filter="Booster Box">36-Pack Boxes</button>
+      <button onclick="setFilter('ETB')" class="pill-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700" data-filter="ETB">ETBs</button>
+      <button onclick="setFilter('Booster Bundle')" class="pill-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700" data-filter="Booster Bundle">6-Pack Bundles</button>
     </div>
-
-    <input type="text" id="searchInput" placeholder="Search sets or products..." oninput="render()"
-      class="bg-slate-900 border border-slate-700 text-xs text-white px-3 py-1.5 rounded-lg focus:outline-none focus:border-blue-500 w-56" />
+    <div class="flex items-center gap-2 flex-wrap">
+      <select id="eraFilter" onchange="render()" class="bg-slate-900 border border-slate-700 text-xs text-slate-200 px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-blue-500">
+        <option value="ALL_ERAS">All Eras</option>
+      </select>
+      <select id="sortMode" onchange="render()" class="bg-slate-900 border border-slate-700 text-xs text-slate-200 px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-blue-500">
+        <option value="ERA">Sort: By Era (Default)</option>
+        <option value="SPREAD_DESC">Sort: Biggest Target Discount %</option>
+        <option value="VALUE_DESC">Sort: Highest Market Value ($)</option>
+        <option value="VALUE_ASC">Sort: Lowest Market Value ($)</option>
+      </select>
+      <input type="text" id="searchInput" placeholder="Search sets..." oninput="render()" class="bg-slate-900 border border-slate-700 text-xs text-white px-3 py-1.5 rounded-lg focus:outline-none focus:border-blue-500 w-48" />
+    </div>
   </div>
 
   <main id="catalogContainer" class="space-y-10"></main>
@@ -88,41 +125,197 @@
   <script>
     let policies = [];
     let telemetry = {};
-    let activeFilter = 'ALL';
+    let liveStock = {};
+    let activeFilter = "ALL";
     let saveTimeout = null;
+    let spectatorLocked = false;
+    let botSettings = { muteVaulted: false };
     const cacheBuster = Date.now();
 
-    function openModal(imgSrc, title) {
-      document.getElementById('modalImg').src = imgSrc;
-      document.getElementById('modalTitle').innerText = title;
-      document.getElementById('artModal').classList.remove('hidden');
+    function openModalByIndex(index) {
+      const p = policies[index];
+      if (!p) return;
+      const imgPath = (p.image && p.image.startsWith("http")) ? p.image : ("/art/" + p.id + ".jpg?v=" + cacheBuster);
+      document.getElementById("modalImg").src = imgPath;
+      document.getElementById("modalTitle").innerText = p.name;
+      document.getElementById("artModal").classList.remove("hidden");
     }
 
-    function closeModal() {
-      document.getElementById('artModal').classList.add('hidden');
-    }
+    function closeModal() { document.getElementById("artModal").classList.add("hidden"); }
+    function closeCompModal() { document.getElementById("compModal").classList.add("hidden"); }
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeModal();
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") { closeModal(); closeCompModal(); }
     });
 
-    async function triggerTestAlert() {
-      const btn = document.getElementById('testAlertBtn');
-      btn.innerText = 'Sending to Discord...';
-      await fetch('/api/test-alert', { method: 'POST' });
-      btn.innerText = 'Sent to Discord!';
-      loadRecentDrops();
-      setTimeout(() => { btn.innerHTML = '&#128276; Fire Test Discord Embed'; }, 2500);
+    function toggleSpectatorLock() {
+      spectatorLocked = !spectatorLocked;
+      const btn = document.getElementById("lockBtn");
+      if (spectatorLocked) {
+        btn.innerHTML = "&#128274; Spectator Mode (Locked)";
+        btn.className = "text-xs px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 font-bold";
+      } else {
+        btn.innerHTML = "&#128275; Commander Unlocked";
+        btn.className = "text-xs px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 hover:border-blue-500 font-semibold";
+      }
+      render();
     }
 
-    function applyGlobalPreset(mode) {
-      policies.forEach(p => {
+    async function loadBotSettings() {
+      try {
+        const res = await fetch("/api/settings");
+        botSettings = await res.json();
+        updateMuteVaultUI();
+      } catch (e) {}
+    }
+
+    function updateMuteVaultUI() {
+      const btn = document.getElementById("muteVaultBtn");
+      if (!btn) return;
+      if (botSettings.muteVaulted) {
+        btn.innerHTML = "&#128263; Vaulted ETBs: Muted";
+        btn.className = "px-3 py-1 rounded-lg text-xs font-bold bg-rose-600/20 text-rose-300 border border-rose-500/30 hover:bg-rose-600 hover:text-white transition-colors";
+      } else {
+        btn.innerHTML = "&#128226; Vaulted ETBs: Alerting Crew";
+        btn.className = "px-3 py-1 rounded-lg text-xs font-bold bg-purple-600/20 text-purple-300 border border-purple-500/30 hover:bg-purple-600 hover:text-white transition-colors";
+      }
+    }
+
+    async function toggleMuteVaulted() {
+      botSettings.muteVaulted = !botSettings.muteVaulted;
+      updateMuteVaultUI();
+      await fetch("/api/settings", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(botSettings) });
+    }
+
+    async function resetDedupMemory() {
+      const btn = document.getElementById("resetDedupBtn");
+      btn.innerText = "Clearing...";
+      await fetch("/api/reset-dedup", { method: "POST" });
+      btn.innerText = "Dedupe Cleared!";
+      setTimeout(() => { btn.innerHTML = "&#128260; Reset Dedupe Block"; }, 2000);
+    }
+
+    async function triggerTestAlert() {
+      const btn = document.getElementById("testAlertBtn");
+      btn.innerText = "Sending...";
+      await fetch("/api/test-alert", { method: "POST" });
+      btn.innerText = "Sent!";
+      loadRecentDrops();
+      setTimeout(() => { btn.innerHTML = "&#128276; Test Discord Embed"; }, 2000);
+    }
+
+    async function sendDigestToDiscord() {
+      const btn = document.getElementById("sendDigestBtn");
+      if (!btn) return;
+      btn.innerText = "Pushing Digest...";
+      try {
+        const res = await fetch("/api/send-digest", { method: "POST" });
+        const data = await res.json();
+        if (data && data.sent) {
+          btn.innerText = "Digest Sent (" + data.count + ")!";
+        } else {
+          btn.innerText = data?.reason || "0 In-Stock Deals";
+        }
+      } catch (e) {
+        btn.innerText = "Error";
+      }
+      setTimeout(() => { btn.innerHTML = "&#128242; Send Digest to Discord"; }, 2500);
+    }
+
+    async function inspectLiveComps(index) {
+      const p = policies[index];
+      const tel = telemetry[p.id];
+      const mVal = (tel && tel.rollingAverage > 0) ? tel.rollingAverage : p.estimatedMarketValue;
+      document.getElementById("compModalTitle").innerText = p.name;
+      document.getElementById("compModalBody").innerHTML = "<div class=\"text-slate-400 animate-pulse\">Querying live TCGPlayer Seller Table & eBay Buy-It-Now index...</div>";
+      document.getElementById("compModal").classList.remove("hidden");
+
+      const pushBtn = document.getElementById("pushCompDiscordBtn");
+      pushBtn.onclick = async () => {
+        pushBtn.innerText = "Sending...";
+        await fetch("/api/live-comp", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: p.id, name: p.name, marketValue: mVal, sendToDiscord: true }) });
+        pushBtn.innerText = "Sent to Discord!";
+        setTimeout(() => { pushBtn.innerText = "Push Card to Discord"; }, 2000);
+      };
+
+      try {
+        const res = await fetch("/api/live-comp", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: p.id, name: p.name, marketValue: mVal, sendToDiscord: false }) });
+        const comps = await res.json();
+        let tcgHtml = "<div class=\"p-3 rounded-lg bg-slate-950 border border-slate-800 text-slate-400\">No live TCGPlayer listing matched</div>";
+        if (comps.tcgplayer && comps.tcgplayer.price > 0) {
+          tcgHtml = "<div class=\"p-3 rounded-lg bg-slate-950 border border-blue-900/50 flex justify-between items-center\"><div><div class=\"text-[10px] font-bold text-blue-400 uppercase\">TCGPlayer Lowest Verified</div><div class=\"text-sm font-extrabold text-white\">$" + comps.tcgplayer.price.toFixed(2) + " <span class=\"text-xs font-normal text-slate-400\">" + comps.tcgplayer.shippingLabel + "</span></div></div><a href=\"" + comps.tcgplayer.url + "\" target=\"_blank\" class=\"px-2.5 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold\">Open &#8599;</a></div>";
+        }
+        let ebayHtml = "<div class=\"p-3 rounded-lg bg-slate-950 border border-slate-800 flex justify-between items-center\"><div><div class=\"text-[10px] font-bold text-amber-400 uppercase\">eBay Buy-It-Now</div><div class=\"text-xs text-slate-400\">View live sorted lowest BIN listings</div></div><a href=\"https://www.ebay.com/sch/i.html?_nkw=" + encodeURIComponent("Pokemon " + p.name + " Sealed") + "&LH_BIN=1&_sop=15\" target=\"_blank\" class=\"px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-amber-400 rounded text-xs font-bold\">eBay Search &#8599;</a></div>";
+        if (comps.ebay && comps.ebay.price > 0) {
+          ebayHtml = "<div class=\"p-3 rounded-lg bg-slate-950 border border-amber-900/50 flex justify-between items-center\"><div><div class=\"text-[10px] font-bold text-amber-400 uppercase\">eBay Direct Buy-It-Now</div><div class=\"text-sm font-extrabold text-white\">$" + comps.ebay.price.toFixed(2) + " <span class=\"text-xs font-normal text-slate-400\">" + comps.ebay.shippingLabel + "</span></div></div><a href=\"" + comps.ebay.url + "\" target=\"_blank\" class=\"px-2.5 py-1 bg-amber-600 hover:bg-amber-500 text-white rounded text-xs font-bold\">Open Item &#8599;</a></div>";
+        }
+        document.getElementById("compModalBody").innerHTML = tcgHtml + ebayHtml;
+      } catch (e) {
+        document.getElementById("compModalBody").innerHTML = "<div class=\"text-rose-400\">Error loading comps.</div>";
+      }
+    }
+
+    function isPolicyInStockNow(p) {
+      const ls = liveStock[p.id];
+      if (ls && ls.inStock && ls.price <= Math.max(p.msrpCeiling || 0, p.maxMarketBuyPrice || 0)) {
+        return true;
+      }
+      const tel = telemetry[p.id];
+      if (tel && tel.inStock === true && tel.lowestStore && !tel.lowestStore.includes("Market") && !tel.lowestStore.includes("TCGPlayer") && !tel.lowestStore.includes("Catalog") && tel.lowestPrice <= Math.max(p.msrpCeiling || 0, p.maxMarketBuyPrice || 0)) {
+        return true;
+      }
+      return false;
+    }
+
+    function getFilteredPolicies() {
+      const query = (document.getElementById("searchInput")?.value || "").toLowerCase();
+      const selectedEra = document.getElementById("eraFilter")?.value || "ALL_ERAS";
+      return policies.filter(p => {
+        let matchesType = true;
+        if (activeFilter === "INSTOCK") matchesType = isPolicyInStockNow(p);
+        else if (activeFilter === "NEED_VAULT") matchesType = (p.formFactor === "ETB" && !p.owned);
+        else if (activeFilter !== "ALL") matchesType = (p.formFactor === activeFilter);
+        const matchesEra = (selectedEra === "ALL_ERAS") || ((p.era || "General Releases") === selectedEra);
+        const matchesQuery = p.name.toLowerCase().includes(query) || (p.era && p.era.toLowerCase().includes(query));
+        return matchesType && matchesEra && matchesQuery;
+      });
+    }
+
+    function getTargetSetForCalibration() {
+      const scope = document.getElementById("calibScope")?.value || "ALL";
+      return scope === "FILTERED" ? getFilteredPolicies() : policies;
+    }
+
+    function applyUniversalPreset(mode) {
+      if (spectatorLocked) return;
+      const targets = getTargetSetForCalibration();
+      targets.forEach(p => {
         const tel = telemetry[p.id];
         const m = (tel && tel.rollingAverage > 0) ? tel.rollingAverage : (p.estimatedMarketValue || 50);
         const msrp = p.msrpCeiling || 30;
-        if (mode === 'MSRP5') p.maxMarketBuyPrice = Math.round(msrp * 1.05);
-        if (mode === 'MKT15') p.maxMarketBuyPrice = Math.max(Math.round(m * 0.85), Math.round(msrp));
-        if (mode === 'MKT25') p.maxMarketBuyPrice = Math.max(Math.round(m * 0.75), Math.round(msrp * 0.9));
+        if (mode === "MKT5") p.maxMarketBuyPrice = Math.round(m * 0.95);
+        else if (mode === "MKT10") p.maxMarketBuyPrice = Math.round(m * 0.90);
+        else if (mode === "MKT15") p.maxMarketBuyPrice = Math.round(m * 0.85);
+        else if (mode === "MKT20") p.maxMarketBuyPrice = Math.round(m * 0.80);
+        else if (mode === "MKT30") p.maxMarketBuyPrice = Math.round(m * 0.70);
+        else if (mode === "AT_MSRP") p.maxMarketBuyPrice = Math.round(msrp);
+        else if (mode === "MSRP_PLUS_5_DOLLARS") p.maxMarketBuyPrice = Math.round(msrp + 5);
+        else if (mode === "MSRP_MINUS_10_PCT") p.maxMarketBuyPrice = Math.round(msrp * 0.90);
+      });
+      render();
+      saveInstant();
+    }
+
+    function applyCustomPct() {
+      if (spectatorLocked) return;
+      const raw = parseFloat(document.getElementById("customCalibPct")?.value);
+      if (isNaN(raw)) return;
+      const targets = getTargetSetForCalibration();
+      const mult = Math.max(0.1, (100 - raw) / 100);
+      targets.forEach(p => {
+        const tel = telemetry[p.id];
+        const m = (tel && tel.rollingAverage > 0) ? tel.rollingAverage : (p.estimatedMarketValue || 50);
+        p.maxMarketBuyPrice = Math.round(m * mult);
       });
       render();
       saveInstant();
@@ -130,66 +323,107 @@
 
     async function loadRecentDrops() {
       try {
-        const res = await fetch('/api/drops');
+        const res = await fetch("/api/drops");
         const drops = await res.json();
-        const container = document.getElementById('recentDropsContainer');
-        const list = document.getElementById('recentDropsList');
-        if (!drops || drops.length === 0) {
-          container.classList.add('hidden');
-          return;
-        }
-        container.classList.remove('hidden');
+        const container = document.getElementById("recentDropsContainer");
+        const list = document.getElementById("recentDropsList");
+        if (!drops || drops.length === 0) { container.classList.add("hidden"); return; }
+        container.classList.remove("hidden");
         list.innerHTML = drops.slice(0, 4).map(d =>
-          '<div class="bg-emerald-950/25 border border-emerald-800/40 rounded-lg p-2.5 flex items-center justify-between gap-2">' +
-            '<div class="min-w-0">' +
-              '<div class="text-[10px] text-emerald-400 font-bold truncate">' + d.retailer + ' &bull; ' + d.timeStr + '</div>' +
-              '<div class="text-xs font-bold text-white truncate">' + d.title + '</div>' +
-              '<div class="text-[11px] text-slate-300 font-semibold">$' + Number(d.price).toFixed(2) + ' <span class="text-emerald-400">(' + d.discountPct + '% Off)</span></div>' +
-            '</div>' +
-            '<a href="' + d.url + '" target="_blank" class="px-2 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-[10px] font-bold shrink-0">Buy &#8599;</a>' +
-          '</div>'
-        ).join('');
+          "<div class=\"bg-emerald-950/25 border border-emerald-800/40 rounded-lg p-2.5 flex items-center justify-between gap-2\">" +
+            "<div class=\"min-w-0\">" +
+              "<div class=\"text-[10px] text-emerald-400 font-bold truncate\">" + d.retailer + " &bull; " + d.timeStr + "</div>" +
+              "<div class=\"text-xs font-bold text-white truncate\">" + d.title + "</div>" +
+              "<div class=\"text-[11px] text-slate-300 font-semibold\">$" + Number(d.price).toFixed(2) + " <span class=\"text-emerald-400\">(" + d.discountPct + "% Off)</span></div>" +
+            "</div>" +
+            "<a href=\"" + d.url + "\" target=\"_blank\" class=\"px-2 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-[10px] font-bold shrink-0\">Buy &#8599;</a>" +
+          "</div>"
+        ).join("");
       } catch (e) {}
+    }
+
+    async function loadLiveStock() {
+      try {
+        const res = await fetch("/api/live-stock");
+        liveStock = await res.json();
+        updateLiveStockIndicators();
+        if (activeFilter === "INSTOCK") {
+          render();
+        }
+      } catch (e) {}
+    }
+
+    function updateLiveStockIndicators() {
+      const inStockCount = policies.filter(p => isPolicyInStockNow(p)).length;
+      const pill = document.getElementById("inStockPillBtn");
+      if (pill) {
+        pill.innerHTML = "&#9679; In-Stock Now (" + inStockCount + ")";
+      }
+      const summary = document.getElementById("liveStockSummaryBadge");
+      if (summary) {
+        summary.innerHTML = inStockCount > 0
+          ? "<span class=\"text-emerald-400 font-bold\">&#9679; " + inStockCount + " Target SKU(s) In Stock & Under Buy Trigger Now</span>"
+          : "<span class=\"text-slate-400\">&#9679; 0 Target SKUs Currently Under Buy Trigger (Monitoring 20 LGS + TCGP + Big-Box)</span>";
+      }
+    }
+
+    function populateEraFilter() {
+      const sel = document.getElementById("eraFilter");
+      if (!sel) return;
+      const eras = [...new Set(policies.map(p => p.era || "General Releases"))];
+      sel.innerHTML = "<option value=\"ALL_ERAS\">All Eras (" + eras.length + ")</option>" +
+        eras.map(e => "<option value=\"" + e + "\">" + e + "</option>").join("");
     }
 
     async function init() {
       loadRecentDrops();
+      loadBotSettings();
       setInterval(loadRecentDrops, 10000);
-
-      const [polRes, telRes] = await Promise.all([
-        fetch('/api/policies'),
-        fetch('/api/telemetry')
-      ]);
-      policies = await polRes.json();
-      telemetry = await telRes.json();
+      try {
+        const polRes = await fetch("/api/policies");
+        policies = await polRes.json();
+        populateEraFilter();
+      } catch (e) { console.error("Failed to load policies:", e); }
+      try {
+        const telRes = await fetch("/api/telemetry");
+        telemetry = await telRes.json();
+      } catch (e) { telemetry = {}; }
+      await loadLiveStock();
       updateVaultCounter();
       render();
-
       setInterval(async () => {
         try {
-          const tRes = await fetch('/api/telemetry');
+          const [tRes, lRes] = await Promise.all([fetch("/api/telemetry"), fetch("/api/live-stock")]);
           telemetry = await tRes.json();
+          liveStock = await lRes.json();
+          updateLiveStockIndicators();
           updateTelemetryUI();
+          if (activeFilter === "INSTOCK") render();
         } catch (e) {}
-      }, 10000);
+      }, 6000);
     }
 
     function updateVaultCounter() {
-      const etbs = policies.filter(p => p.formFactor === 'ETB');
-      const ownedCount = etbs.filter(p => p.owned === true).length;
-      const counter = document.getElementById('vaultCounter');
-      if (counter) {
-        counter.innerText = 'Vaulted ETBs: ' + ownedCount + ' / ' + etbs.length;
-      }
+      const etbs = policies.filter(p => p.formFactor === "ETB");
+      const ownedEtbs = etbs.filter(p => p.owned === true);
+      const counter = document.getElementById("vaultCounter");
+      if (counter) counter.innerText = "Vaulted ETBs: " + ownedEtbs.length + " / " + etbs.length;
+      const totalVaultVal = ownedEtbs.reduce((sum, p) => {
+        const tel = telemetry[p.id];
+        const m = (tel && tel.rollingAverage > 0) ? tel.rollingAverage : (p.estimatedMarketValue || 0);
+        return sum + m;
+      }, 0);
+      const valBadge = document.getElementById("vaultValueBadge");
+      if (valBadge) valBadge.innerText = "Vault Value: $" + totalVaultVal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
     function setFilter(type) {
       activeFilter = type;
-      document.querySelectorAll('.pill-btn').forEach(b => {
+      document.querySelectorAll(".pill-btn").forEach(b => {
         if (b.dataset.filter === type) {
-          b.className = 'pill-btn active px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white';
+          b.className = "pill-btn active px-3.5 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white";
         } else {
-          b.className = 'pill-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700';
+          b.className = "pill-btn px-3.5 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700";
         }
       });
       render();
@@ -197,35 +431,41 @@
 
     function updateTelemetryUI() {
       const entries = Object.values(telemetry || {});
-      const inStockCount = entries.filter(x => x && x.inStock === true).length;
       const skuCount = entries.length;
-      const sc = document.getElementById('streamCounter');
-      if (sc) {
-        sc.innerHTML = '&#9679; 20 LGS + Vampiric Feeds Live &bull; ' + skuCount + ' SKUs Indexed (' + inStockCount + ' In-Stock Now)';
-      }
-
+      const sc = document.getElementById("streamCounter");
+      if (sc) sc.innerHTML = "&#9679; 20 LGS + TCGPlayer + Wholesale Live &bull; " + skuCount + " SKUs Indexed";
       policies.forEach((p, index) => {
         const tel = telemetry[p.id];
-        const telBanner = document.getElementById('tel_banner_' + index);
+        const ls = liveStock[p.id];
+        const telBanner = document.getElementById("tel_banner_" + index);
         if (!telBanner) return;
 
-        if (tel && tel.lowestPrice > 0) {
-          const isLiveStock = tel.inStock !== false && tel.lowestStore && !tel.lowestStore.includes('Market') && !tel.lowestStore.includes('TCGPlayer') && !tel.lowestStore.includes('Catalog');
+        if (ls && ls.inStock && ls.price <= Math.max(p.msrpCeiling || 0, p.maxMarketBuyPrice || 0)) {
+          const qtyBadge = (typeof ls.stock === "number" && ls.stock > 0) ? (" &bull; " + ls.stock + " left") : "";
+          const preBadge = ls.isPreOrder ? " <span class=\"px-1.5 py-0.5 rounded bg-purple-900/70 text-purple-200 text-[9px] font-extrabold\">&#9203; PRE-ORDER</span>" : "";
+          const shipSub = ls.freeShipNote
+            ? "<div class=\"text-[10px] text-amber-300 font-semibold mt-0.5\">&#128230; " + ls.freeShipNote + "</div>"
+            : (ls.landedPrice && ls.landedPrice > ls.price ? "<div class=\"text-[10px] text-slate-400\">Landed (1x): $" + Number(ls.landedPrice).toFixed(2) + "</div>" : "");
+          const c1 = ls.cart1xUrl || (ls.url && ls.url.includes("/cart/") ? ls.url : null);
+          const c2 = ls.cart2xUrl || (c1 ? c1.replace(/:1$/, ":2") : null);
+          const prodUrl = ls.productUrl || (c1 ? c1.split("/cart/")[0] : ls.url);
+          const actionBtns = c1
+            ? "<div class=\"flex items-center gap-1 shrink-0 flex-wrap justify-end\">" +
+                "<a href=\"" + c1 + "\" target=\"_blank\" title=\"Instant Shopify Cart (1x)\" class=\"px-2 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-[10px] font-bold tracking-tight\">&#9889; Instant Cart (1x)</a>" +
+                (c2 ? "<a href=\"" + c2 + "\" target=\"_blank\" title=\"Instant Shopify Cart (2x)\" class=\"px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-[10px] font-bold tracking-tight\">&#9889; Instant Cart (2x)</a>" : "") +
+                "<a href=\"" + prodUrl + "\" target=\"_blank\" title=\"View Product Page\" class=\"px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded text-[10px] font-semibold\">Product &#8599;</a>" +
+              "</div>"
+            : "<a href=\"" + ls.url + "\" target=\"_blank\" class=\"px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-[11px] font-bold tracking-tight inline-flex items-center gap-1 shrink-0\">Checkout &#8599;</a>";
+
+          telBanner.innerHTML = "<div class=\"min-w-0 pr-2\"><div class=\"text-[10px] text-emerald-400 font-bold uppercase\">&#9679; Live In-Stock Now (" + (ls.timeStr || "Live") + qtyBadge + ")" + preBadge + "</div><div class=\"text-xs text-white font-bold\">$" + Number(ls.price).toFixed(2) + " <span class=\"text-slate-300 font-normal\">at " + ls.retailer + "</span></div>" + shipSub + "</div>" + actionBtns;
+          telBanner.className = "mb-3 px-3 py-2 bg-emerald-950/50 border border-emerald-500/60 rounded-lg flex items-center justify-between gap-2 flex-wrap";
+        } else if (tel && tel.lowestPrice > 0) {
+          const isLiveStock = tel.inStock === true && tel.lowestStore && !tel.lowestStore.includes("Market") && !tel.lowestStore.includes("TCGPlayer") && !tel.lowestStore.includes("Catalog");
           if (isLiveStock) {
-            telBanner.innerHTML =
-              '<div>' +
-                '<div class="text-[10px] text-emerald-400 font-bold uppercase">&#9679; Live In-Stock Drop</div>' +
-                '<div class="text-xs text-white font-bold">$' + tel.lowestPrice.toFixed(2) + ' <span class="text-slate-300 font-normal">at ' + tel.lowestStore + '</span></div>' +
-              '</div>' +
-              '<a href="' + tel.lowestUrl + '" target="_blank" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-[11px] font-bold tracking-tight inline-flex items-center gap-1">Cart &#8599;</a>';
+            telBanner.innerHTML = "<div><div class=\"text-[10px] text-emerald-400 font-bold uppercase\">&#9679; Live In-Stock Drop</div><div class=\"text-xs text-white font-bold\">$" + tel.lowestPrice.toFixed(2) + " <span class=\"text-slate-300 font-normal\">at " + tel.lowestStore + "</span></div></div><a href=\"" + tel.lowestUrl + "\" target=\"_blank\" class=\"px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-[11px] font-bold tracking-tight inline-flex items-center gap-1\">Cart &#8599;</a>";
             telBanner.className = "mb-3 px-3 py-2 bg-emerald-950/40 border border-emerald-700/50 rounded-lg flex items-center justify-between";
           } else {
-            telBanner.innerHTML =
-              '<div>' +
-                '<div class="text-[10px] text-blue-300 font-semibold uppercase">SKU Baseline Reference</div>' +
-                '<div class="text-xs text-white font-bold">$' + tel.lowestPrice.toFixed(2) + ' <span class="text-slate-400 font-normal">via ' + (tel.lowestStore || 'TCGPlayer Market') + '</span></div>' +
-              '</div>' +
-              '<a href="' + (tel.lowestUrl || '#') + '" target="_blank" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-blue-300 border border-slate-700 rounded text-[11px] font-semibold tracking-tight inline-flex items-center gap-1">View SKU &#8599;</a>';
+            telBanner.innerHTML = "<div><div class=\"text-[10px] text-blue-300 font-semibold uppercase\">SKU Baseline Reference</div><div class=\"text-xs text-white font-bold\">$" + tel.lowestPrice.toFixed(2) + " <span class=\"text-slate-400 font-normal\">via " + (tel.lowestStore || "TCGPlayer Market") + "</span></div></div><a href=\"" + (tel.lowestUrl || "#") + "\" target=\"_blank\" class=\"px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-blue-300 border border-slate-700 rounded text-[11px] font-semibold tracking-tight inline-flex items-center gap-1\">View SKU &#8599;</a>";
             telBanner.className = "mb-3 px-3 py-2 bg-blue-950/30 border border-blue-800/40 rounded-lg flex items-center justify-between";
           }
         }
@@ -233,124 +473,145 @@
     }
 
     function render() {
-      const query = document.getElementById('searchInput').value.toLowerCase();
-      const container = document.getElementById('catalogContainer');
-      container.innerHTML = '';
+      const sortMode = document.getElementById("sortMode") ? document.getElementById("sortMode").value : "ERA";
+      const container = document.getElementById("catalogContainer");
+      container.innerHTML = "";
 
-      const filtered = policies.filter(p => {
-        const matchesType = activeFilter === 'ALL' || p.formFactor === activeFilter;
-        const matchesQuery = p.name.toLowerCase().includes(query) || (p.era && p.era.toLowerCase().includes(query));
-        return matchesType && matchesQuery;
-      });
+      const filtered = getFilteredPolicies();
 
-      const eras = [...new Set(filtered.map(p => p.era || 'General Releases'))];
+      if (filtered.length === 0) {
+        container.innerHTML = "<div class=\"p-8 text-center bg-slate-900/60 border border-slate-800 rounded-xl text-slate-400 text-sm\">No products match the current filter (" + activeFilter + ").</div>";
+        updateLiveStockIndicators();
+        return;
+      }
 
+      if (sortMode !== "ERA") {
+        filtered.sort((a, b) => {
+          const mA = (telemetry[a.id]?.rollingAverage > 0) ? telemetry[a.id].rollingAverage : a.estimatedMarketValue;
+          const mB = (telemetry[b.id]?.rollingAverage > 0) ? telemetry[b.id].rollingAverage : b.estimatedMarketValue;
+          if (sortMode === "VALUE_DESC") return mB - mA;
+          if (sortMode === "VALUE_ASC") return mA - mB;
+          if (sortMode === "SPREAD_DESC") {
+            const sA = ((mA - a.maxMarketBuyPrice) / mA);
+            const sB = ((mB - b.maxMarketBuyPrice) / mB);
+            return sB - sA;
+          }
+          return 0;
+        });
+      }
+
+      const eras = [...new Set(filtered.map(p => p.era || "General Releases"))];
       eras.forEach(era => {
-        const itemsInEra = filtered.filter(p => (p.era || 'General Releases') === era);
+        const itemsInEra = filtered.filter(p => (p.era || "General Releases") === era);
         if (itemsInEra.length === 0) return;
-
-        const section = document.createElement('section');
+        const section = document.createElement("section");
         section.innerHTML =
-          '<div class="flex items-center gap-2 mb-4">' +
-            '<h2 class="text-sm font-bold uppercase tracking-wider text-slate-400">' + era + '</h2>' +
-            '<div class="h-px bg-slate-800 flex-1"></div>' +
-            '<span class="text-xs text-slate-500">' + itemsInEra.length + ' Tracked</span>' +
-          '</div>' +
-          '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">' +
-            itemsInEra.map(p => renderCard(p)).join('') +
-          '</div>';
+          "<div class=\"flex items-center gap-2 mb-4\">" +
+            "<h2 class=\"text-sm font-bold uppercase tracking-wider text-slate-400\">" + era + "</h2>" +
+            "<div class=\"h-px bg-slate-800 flex-1\"></div>" +
+            "<span class=\"text-xs text-slate-500\">" + itemsInEra.length + " Tracked</span>" +
+          "</div>" +
+          "<div class=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5\">" +
+            itemsInEra.map(p => renderCard(p)).join("") +
+          "</div>";
         container.appendChild(section);
       });
+      updateLiveStockIndicators();
       updateTelemetryUI();
     }
 
     function renderCard(p) {
       const index = policies.findIndex(x => x.id === p.id);
       const tel = telemetry[p.id];
-      const marketVal = (tel && tel.rollingAverage > 0) ? tel.rollingAverage : p.estimatedMarketValue;
+      const marketVal = (tel && tel.rollingAverage > 0) ? tel.rollingAverage : (p.estimatedMarketValue || 50);
       const buyVal = p.maxMarketBuyPrice || 0;
       const diffPct = Math.round(((marketVal - buyVal) / marketVal) * 100);
-      const spreadLabel = diffPct >= 0 ? (diffPct + '% Under Market') : (Math.abs(diffPct) + '% Above Market');
-      const imgPath = p.image && p.image.startsWith('http') ? p.image : ('/art/' + p.id + '.jpg?v=' + cacheBuster);
-      const safeTitle = p.name.replace(/'/g, "\'");
+      const spreadLabel = diffPct >= 0 ? (diffPct + "% Under Market") : (Math.abs(diffPct) + "% Above Market");
+      const imgPath = (p.image && p.image.startsWith("http")) ? p.image : ("/art/" + p.id + ".jpg?v=" + cacheBuster);
       const sliderMax = Math.ceil(Math.max(marketVal * 1.5, buyVal * 1.2, 100));
+      const disabledAttr = spectatorLocked ? "disabled" : "";
 
-      const etbCheckbox = p.formFactor === 'ETB'
-        ? '<label class="flex items-center gap-1.5 text-[11px] font-semibold ' + (p.owned ? 'text-purple-400' : 'text-slate-400') + ' cursor-pointer">' +
-            '<input type="checkbox" ' + (p.owned ? 'checked' : '') + ' onchange="toggleOwned(' + index + ', this.checked)" class="rounded bg-slate-900 border-slate-700 text-purple-600 focus:ring-0">' +
-            '<span>Vaulted</span>' +
-          '</label>'
-        : '';
+      const etbCheckbox = p.formFactor === "ETB"
+        ? "<label class=\"flex items-center gap-1.5 text-[11px] font-semibold " + (p.owned ? "text-purple-400" : "text-slate-400") + " cursor-pointer\">" +
+            "<input type=\"checkbox\" " + (p.owned ? "checked" : "") + " onchange=\"toggleOwned(" + index + ", this.checked)\" class=\"rounded bg-slate-900 border-slate-700 text-purple-600 focus:ring-0\">" +
+            "<span>Vaulted</span>" +
+          "</label>"
+        : "";
 
       return (
-        '<div class="card-glass rounded-xl p-5 flex flex-col justify-between">' +
-          '<div>' +
-            '<div class="flex justify-between items-center mb-3 gap-2">' +
-              '<span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-slate-800 text-blue-400 border border-slate-700">' + p.formFactor + '</span>' +
-              '<div class="flex items-center gap-3">' +
+        "<div class=\"card-glass rounded-xl p-5 flex flex-col justify-between\">" +
+          "<div>" +
+            "<div class=\"flex justify-between items-center mb-3 gap-2\">" +
+              "<div class=\"flex items-center gap-1.5\">" +
+                "<span class=\"text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-slate-800 text-blue-400 border border-slate-700\">" + p.formFactor + "</span>" +
+                "<button onclick=\"inspectLiveComps(" + index + ")\" title=\"Check live TCGPlayer & eBay BIN comps\" class=\"text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-950/80 text-indigo-300 border border-indigo-700/50 hover:bg-indigo-600 hover:text-white\">&#9889; Comps</button>" +
+              "</div>" +
+              "<div class=\"flex items-center gap-3\">" +
                 etbCheckbox +
-                '<label class="relative inline-flex items-center cursor-pointer">' +
-                  '<input type="checkbox" ' + (p.active !== false ? 'checked' : '') + ' onchange="toggleActive(' + index + ', this.checked)" class="sr-only peer">' +
-                  '<div class="w-8 h-4 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[\'\'] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-emerald-500"></div>' +
-                '</label>' +
-              '</div>' +
-            '</div>' +
-            '<div class="flex items-center gap-3.5 mb-4">' +
-              '<div onclick="openModal(\'' + imgPath + '\', \'' + safeTitle + '\')" title="Click to enlarge artwork" class="w-20 h-20 bg-slate-950 border border-slate-800 hover:border-blue-500 rounded-xl flex items-center justify-center p-1.5 overflow-hidden shrink-0 cursor-zoom-in group relative">' +
-                '<img src="' + imgPath + '" class="max-h-full max-w-full object-contain rounded transition-transform duration-200 group-hover:scale-110" alt="' + safeTitle + '" />' +
-                '<span class="absolute bottom-0.5 right-1 text-[9px] bg-black/70 text-slate-300 px-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">&#128269;</span>' +
-              '</div>' +
-              '<div>' +
-                '<h3 class="text-sm font-bold text-white leading-snug">' + p.name + '</h3>' +
-                '<span class="text-[11px] text-slate-400">Retail MSRP: $' + (p.msrpCeiling ? p.msrpCeiling.toFixed(2) : '0.00') + '</span>' +
-              '</div>' +
-            '</div>' +
-            '<div id="tel_banner_' + index + '" class="mb-3 px-3 py-2 bg-slate-900/40 border border-slate-800/60 rounded-lg text-[11px] text-slate-400 flex items-center justify-between">' +
-              '<span>SKU Baseline: <strong>$' + marketVal.toFixed(2) + '</strong></span>' +
-              '<a href="https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=' + encodeURIComponent(p.name) + '&view=grid" target="_blank" class="text-blue-400 hover:underline text-[10px] font-semibold">Check TCGP &#8599;</a>' +
-            '</div>' +
-            '<div class="bg-slate-900/60 border border-slate-800 rounded-lg p-3 grid grid-cols-2 gap-2 mb-4 items-center">' +
-              '<div>' +
-                '<div class="text-[10px] uppercase font-bold text-slate-500">Market Baseline</div>' +
-                '<div class="text-sm font-extrabold text-yellow-400">$' + marketVal.toFixed(2) + '</div>' +
-              '</div>' +
-              '<div>' +
-                '<div class="text-[10px] uppercase font-bold text-slate-500 mb-0.5">Max Buy Trigger ($)</div>' +
-                '<div class="flex items-center bg-slate-950 border border-slate-700 focus-within:border-emerald-500 rounded px-2 py-0.5">' +
-                  '<span class="text-emerald-400 font-extrabold text-xs mr-1">$</span>' +
-                  '<input type="number" step="1" id="priceInput_' + index + '" value="' + buyVal + '" onchange="onDirectPriceInput(' + index + ', this.value, ' + marketVal + ')" class="w-full bg-transparent text-sm font-extrabold text-emerald-400 focus:outline-none" />' +
-                '</div>' +
-              '</div>' +
-            '</div>' +
-            '<div class="mb-2">' +
-              '<div class="flex justify-between text-xs mb-1">' +
-                '<span class="text-slate-400 font-medium">Alert Threshold</span>' +
-                '<span class="font-bold ' + (diffPct >= 15 ? 'text-emerald-400' : (diffPct >= 0 ? 'text-blue-400' : 'text-amber-400')) + '" id="spreadDisplay_' + index + '">' + spreadLabel + '</span>' +
-              '</div>' +
-              '<input type="range" id="slider_' + index + '" min="' + Math.floor((p.msrpCeiling || 20) * 0.8) + '" max="' + sliderMax + '" step="1" value="' + buyVal + '" oninput="onSliderMove(' + index + ', this.value, ' + marketVal + ')" class="w-full h-1.5 bg-slate-800 rounded-lg cursor-pointer" />' +
-            '</div>' +
-          '</div>' +
-          '<div class="grid grid-cols-4 gap-1 pt-3 border-t border-slate-800/80">' +
-            '<button onclick="setPreset(' + index + ', ' + p.msrpCeiling + ')" class="py-1 rounded text-[10px] font-semibold bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white">MSRP</button>' +
-            '<button onclick="setPreset(' + index + ', ' + (marketVal * 0.75) + ')" class="py-1 rounded text-[10px] font-semibold bg-slate-800 text-emerald-400 hover:bg-emerald-950/40">-25%</button>' +
-            '<button onclick="setPreset(' + index + ', ' + (marketVal * 0.90) + ')" class="py-1 rounded text-[10px] font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">-10%</button>' +
-            '<button onclick="setPreset(' + index + ', ' + marketVal + ')" title="Trigger alert even at full Market Price" class="py-1 rounded text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 hover:bg-amber-500/20">At Market</button>' +
-          '</div>' +
-        '</div>'
+                "<label class=\"relative inline-flex items-center cursor-pointer\">" +
+                  "<input type=\"checkbox\" " + (p.active !== false ? "checked" : "") + " onchange=\"toggleActive(" + index + ", this.checked)\" " + disabledAttr + " class=\"sr-only peer\">" +
+                  "<div class=\"w-8 h-4 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-emerald-500\"></div>" +
+                "</label>" +
+              "</div>" +
+            "</div>" +
+            "<div class=\"flex items-center gap-3.5 mb-4\">" +
+              "<div onclick=\"openModalByIndex(" + index + ")\" title=\"Click to enlarge artwork\" class=\"w-20 h-20 bg-slate-950 border border-slate-800 hover:border-blue-500 rounded-xl flex items-center justify-center p-1.5 overflow-hidden shrink-0 cursor-zoom-in group relative\">" +
+                "<img src=\"" + imgPath + "\" class=\"max-h-full max-w-full object-contain rounded transition-transform duration-200 group-hover:scale-110\" alt=\"Art\" />" +
+                "<span class=\"absolute bottom-0.5 right-1 text-[9px] bg-black/70 text-slate-300 px-1 rounded opacity-0 group-hover:opacity-100 transition-opacity\">&#128269;</span>" +
+              "</div>" +
+              "<div>" +
+                "<h3 class=\"text-sm font-bold text-white leading-snug\">" + p.name + "</h3>" +
+                "<span class=\"text-[11px] text-slate-400\">Retail MSRP: $" + (p.msrpCeiling ? p.msrpCeiling.toFixed(2) : "0.00") + "</span>" +
+              "</div>" +
+            "</div>" +
+            "<div id=\"tel_banner_" + index + "\" class=\"mb-3 px-3 py-2 bg-slate-900/40 border border-slate-800/60 rounded-lg text-[11px] text-slate-400 flex items-center justify-between\">" +
+              "<span>SKU Baseline: <strong>$" + marketVal.toFixed(2) + "</strong></span>" +
+              "<a href=\"https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=" + encodeURIComponent(p.name) + "&view=grid\" target=\"_blank\" class=\"text-blue-400 hover:underline text-[10px] font-semibold\">Check TCGP &#8599;</a>" +
+            "</div>" +
+            "<div class=\"bg-slate-900/60 border border-slate-800 rounded-lg p-3 grid grid-cols-2 gap-2 mb-4 items-center\">" +
+              "<div>" +
+                "<div class=\"text-[10px] uppercase font-bold text-slate-500\">Market Baseline</div>" +
+                "<div class=\"text-sm font-extrabold text-yellow-400\">$" + marketVal.toFixed(2) + "</div>" +
+              "</div>" +
+              "<div>" +
+                "<div class=\"text-[10px] uppercase font-bold text-slate-500 mb-0.5\">Max Buy Trigger ($)</div>" +
+                "<div class=\"flex items-center bg-slate-950 border border-slate-700 focus-within:border-emerald-500 rounded px-2 py-0.5\">" +
+                  "<span class=\"text-emerald-400 font-extrabold text-xs mr-1\">$</span>" +
+                  "<input type=\"number\" step=\"1\" id=\"priceInput_" + index + "\" value=\"" + buyVal + "\" " + disabledAttr + " onchange=\"onDirectPriceInput(" + index + ", this.value, " + marketVal + ")\" class=\"w-full bg-transparent text-sm font-extrabold text-emerald-400 focus:outline-none\" />" +
+                "</div>" +
+              "</div>" +
+            "</div>" +
+            "<div class=\"mb-2\">" +
+              "<div class=\"flex justify-between text-xs mb-1\">" +
+                "<span class=\"text-slate-400 font-medium\">Alert Threshold</span>" +
+                "<span class=\"font-bold " + (diffPct >= 15 ? "text-emerald-400" : (diffPct >= 0 ? "text-blue-400" : "text-amber-400")) + "\" id=\"spreadDisplay_" + index + "\">" + spreadLabel + "</span>" +
+              "</div>" +
+              "<input type=\"range\" id=\"slider_" + index + "\" min=\"" + Math.floor((p.msrpCeiling || 20) * 0.8) + "\" max=\"" + sliderMax + "\" step=\"1\" value=\"" + buyVal + "\" " + disabledAttr + " oninput=\"onSliderMove(" + index + ", this.value, " + marketVal + ")\" class=\"w-full h-1.5 bg-slate-800 rounded-lg cursor-pointer\" />" +
+            "</div>" +
+          "</div>" +
+          "<div class=\"grid grid-cols-4 gap-1 pt-3 border-t border-slate-800/80\">" +
+            "<button onclick=\"setPreset(" + index + ", " + p.msrpCeiling + ")\" " + disabledAttr + " class=\"py-1 rounded text-[10px] font-semibold bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white\">MSRP</button>" +
+            "<button onclick=\"setPreset(" + index + ", " + (marketVal * 0.75) + ")\" " + disabledAttr + " class=\"py-1 rounded text-[10px] font-semibold bg-slate-800 text-emerald-400 hover:bg-emerald-950/40\">-25%</button>" +
+            "<button onclick=\"setPreset(" + index + ", " + (marketVal * 0.90) + ")\" " + disabledAttr + " class=\"py-1 rounded text-[10px] font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700\">-10%</button>" +
+            "<button onclick=\"setPreset(" + index + ", " + marketVal + ")\" " + disabledAttr + " class=\"py-1 rounded text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 hover:bg-amber-500/20\">At Market</button>" +
+          "</div>" +
+        "</div>"
       );
     }
 
     function onSliderMove(index, val, marketVal) {
+      if (spectatorLocked) return;
       const num = parseFloat(val) || 0;
       policies[index].maxMarketBuyPrice = num;
       const diffPct = Math.round(((marketVal - num) / marketVal) * 100);
-      const spreadLabel = diffPct >= 0 ? (diffPct + '% Under Market') : (Math.abs(diffPct) + '% Above Market');
-      document.getElementById('priceInput_' + index).value = num;
-      document.getElementById('spreadDisplay_' + index).innerText = spreadLabel;
+      const spreadLabel = diffPct >= 0 ? (diffPct + "% Under Market") : (Math.abs(diffPct) + "% Above Market");
+      document.getElementById("priceInput_" + index).value = num;
+      document.getElementById("spreadDisplay_" + index).innerText = spreadLabel;
       debouncedSave();
     }
 
     function onDirectPriceInput(index, val, marketVal) {
+      if (spectatorLocked) return;
       const num = Math.round((parseFloat(val) || 0) * 100) / 100;
       policies[index].maxMarketBuyPrice = num;
       render();
@@ -358,17 +619,20 @@
     }
 
     function setPreset(index, targetVal) {
+      if (spectatorLocked) return;
       policies[index].maxMarketBuyPrice = Math.round(targetVal);
       render();
       saveInstant();
     }
 
     function toggleActive(index, state) {
+      if (spectatorLocked) return;
       policies[index].active = state;
       saveInstant();
     }
 
     function toggleOwned(index, state) {
+      if (spectatorLocked) return;
       policies[index].owned = state;
       updateVaultCounter();
       render();
@@ -376,25 +640,14 @@
     }
 
     async function sendPoliciesToDisk() {
-      await fetch('/api/policies', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(policies)
-      });
-      const toast = document.getElementById('syncToast');
-      toast.style.opacity = '1';
-      setTimeout(() => { toast.style.opacity = '0'; }, 1500);
+      await fetch("/api/policies", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(policies) });
+      const toast = document.getElementById("syncToast");
+      toast.style.opacity = "1";
+      setTimeout(() => { toast.style.opacity = "0"; }, 1500);
     }
 
-    function saveInstant() {
-      clearTimeout(saveTimeout);
-      sendPoliciesToDisk();
-    }
-
-    function debouncedSave() {
-      clearTimeout(saveTimeout);
-      saveTimeout = setTimeout(sendPoliciesToDisk, 400);
-    }
+    function saveInstant() { clearTimeout(saveTimeout); sendPoliciesToDisk(); }
+    function debouncedSave() { clearTimeout(saveTimeout); saveTimeout = setTimeout(sendPoliciesToDisk, 400); }
 
     init();
   </script>

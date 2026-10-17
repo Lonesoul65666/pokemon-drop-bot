@@ -1,0 +1,188 @@
+{
+  "MinMaxGames": {
+    "name": "MinMaxGames",
+    "baseUrl": "https://minmaxgames.com",
+    "status": "HEALTHY",
+    "consecutiveFailures": 0,
+    "cooldownUntil": 0,
+    "lastSuccessAt": 1792201728958,
+    "lastProductsCount": 12
+  },
+  "Card Shop Live": {
+    "name": "Card Shop Live",
+    "baseUrl": "https://cardshoplive.com",
+    "status": "HEALTHY",
+    "consecutiveFailures": 0,
+    "cooldownUntil": 0,
+    "lastSuccessAt": 1792201728970,
+    "lastProductsCount": 36
+  },
+  "Zulus Games": {
+    "name": "Zulus Games",
+    "baseUrl": "https://zulusgames.com",
+    "status": "HEALTHY",
+    "consecutiveFailures": 0,
+    "cooldownUntil": 0,
+    "lastSuccessAt": 1792201729001,
+    "lastProductsCount": 20
+  },
+  "Gamers Guild AZ": {
+    "name": "Gamers Guild AZ",
+    "baseUrl": "https://gamersguildaz.com",
+    "status": "HEALTHY",
+    "consecutiveFailures": 0,
+    "cooldownUntil": 0,
+    "lastSuccessAt": 1792201728858,
+    "lastProductsCount": 250
+  },
+  "Smoke & Mirrors": {
+    "name": "Smoke & Mirrors",
+    "baseUrl": "https://smokeandmirrorshobby.com",
+    "status": "HEALTHY",
+    "consecutiveFailures": 0,
+    "cooldownUntil": 0,
+    "lastSuccessAt": 1792201729118,
+    "lastProductsCount": 250
+  },
+  "Joshs Cards": {
+    "name": "Joshs Cards",
+    "baseUrl": "https://joshscards.com",
+    "status": "HEALTHY",
+    "consecutiveFailures": 0,
+    "cooldownUntil": 0,
+    "lastSuccessAt": 1792201729035,
+    "lastProductsCount": 250
+  },
+  "Flipside Gaming": {
+    "name": "Flipside Gaming",
+    "baseUrl": "https://www.flipsidegaming.com",
+    "status": "HEALTHY",
+    "consecutiveFailures": 0,
+    "cooldownUntil": 0,
+    "lastSuccessAt": 1792201729279,
+    "lastProductsCount": 250
+  },
+  "Safari Zone": {
+    "name": "Safari Zone",
+    "baseUrl": "https://safari-zone.com",
+    "status": "HEALTHY",
+    "consecutiveFailures": 0,
+    "cooldownUntil": 0,
+    "lastSuccessAt": 1792201729020,
+    "lastProductsCount": 30
+  },
+  "Over The Brick": {
+    "name": "Over The Brick",
+    "baseUrl": "https://overthebrick.com",
+    "status": "HEALTHY",
+    "consecutiveFailures": 0,
+    "cooldownUntil": 0,
+    "lastSuccessAt": 1792201729584,
+    "lastProductsCount": 65
+  },
+  "Knight & Day Games": {
+    "name": "Knight & Day Games",
+    "baseUrl": "https://knightanddaygames.com",
+    "status": "HEALTHY",
+    "consecutiveFailures": 0,
+    "cooldownUntil": 0,
+    "lastSuccessAt": 1792201729696,
+    "lastProductsCount": 6
+  },
+  "Collector Store": {
+    "name": "Collector Store",
+    "baseUrl": "https://collectorstore.com",
+    "status": "HEALTHY",
+    "consecutiveFailures": 0,
+    "cooldownUntil": 0,
+    "lastSuccessAt": 1792201729692,
+    "lastProductsCount": 34
+  },
+  "Prodigy Games": {
+    "name": "Prodigy Games",
+    "baseUrl": "https://prodigygames.com",
+    "status": "HEALTHY",
+    "consecutiveFailures": 0,
+    "cooldownUntil": 0,
+    "lastSuccessAt": 1792201729706,
+    "lastProductsCount": 71
+  },
+  "Rip N Ship Arena": {
+    "name": "Rip N Ship Arena",
+    "baseUrl": "https://www.ripnshiparena.com",
+    "status": "HEALTHY",
+    "consecutiveFailures": 0,
+    "cooldownUntil": 0,
+    "lastSuccessAt": 1792201729592,
+    "lastProductsCount": 9
+  },
+  "TCG Stadium": {
+    "name": "TCG Stadium",
+    "baseUrl": "https://tcg-stadium.com",
+    "status": "HEALTHY",
+    "consecutiveFailures": 0,
+    "cooldownUntil": 0,
+    "lastSuccessAt": 1792201729609,
+    "lastProductsCount": 87
+  },
+  "Rare Candy": {
+    "name": "Rare Candy",
+    "baseUrl": "https://rarecandy.com",
+    "status": "CIRCUIT_OPEN",
+    "consecutiveFailures": 5,
+    "cooldownUntil": 1792202380759,
+    "lastSuccessAt": 0,
+    "lastProductsCount": 0,
+    "lastError": "Invalid JSON feed"
+  },
+  "Full Grip Games": {
+    "name": "Full Grip Games",
+    "baseUrl": "https://www.fullgripgames.com",
+    "status": "CIRCUIT_OPEN",
+    "consecutiveFailures": 5,
+    "cooldownUntil": 1792202380590,
+    "lastSuccessAt": 0,
+    "lastProductsCount": 0,
+    "lastError": "HTTP 404"
+  },
+  "PokeNE": {
+    "name": "PokeNE",
+    "baseUrl": "https://www.pokene.com",
+    "status": "CIRCUIT_OPEN",
+    "consecutiveFailures": 5,
+    "cooldownUntil": 1792202380589,
+    "lastSuccessAt": 0,
+    "lastProductsCount": 0,
+    "lastError": "HTTP 400"
+  },
+  "Silver Moon": {
+    "name": "Silver Moon",
+    "baseUrl": "https://silvermooncards.com",
+    "status": "CIRCUIT_OPEN",
+    "consecutiveFailures": 5,
+    "cooldownUntil": 1792202401350,
+    "lastSuccessAt": 0,
+    "lastProductsCount": 0,
+    "lastError": "HTTP 502"
+  },
+  "The Lotusbox": {
+    "name": "The Lotusbox",
+    "baseUrl": "https://thelotusbox.com",
+    "status": "CIRCUIT_OPEN",
+    "consecutiveFailures": 5,
+    "cooldownUntil": 1792202401553,
+    "lastSuccessAt": 0,
+    "lastProductsCount": 0,
+    "lastError": "HTTP 502"
+  },
+  "Forge & Fire": {
+    "name": "Forge & Fire",
+    "baseUrl": "https://forgeandfiregaming.com",
+    "status": "CIRCUIT_OPEN",
+    "consecutiveFailures": 5,
+    "cooldownUntil": 1792202381428,
+    "lastSuccessAt": 0,
+    "lastProductsCount": 0,
+    "lastError": "HTTP 404"
+  }
+}

@@ -7,6 +7,9 @@ exports.MarketSyncService = void 0;
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const axios_1 = __importDefault(require("axios"));
+const marketComps_1 = require("../marketComps");
+const lgsPoller_1 = require("../lgsPoller");
+const policies_1 = require("../policies");
 const POLICIES_PATH = path_1.default.resolve(process.cwd(), 'policies.json');
 const CACHE_PATH = path_1.default.resolve(process.cwd(), 'marketCache.json');
 const SYNC_INTERVAL_MS = 1000 * 60 * 60 * 6; // Refresh every 6 hours (4x daily)
@@ -59,32 +62,49 @@ class MarketSyncService {
                         settings: { useFuzzySearch: false, didYouMean: {} },
                         sort: {}
                     };
-                    const res = await axios_1.default.post(url, body, {
-                        timeout: 7000,
-                        headers: { 'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0' }
-                    });
+                    let res;
+                    try {
+                        res = await axios_1.default.post(url, body, {
+                            timeout: 7000,
+                            headers: { 'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0' }
+                        });
+                    }
+                    catch (err) {
+                        res = await axios_1.default.post(url, body, {
+                            timeout: 7000,
+                            httpsAgent: (0, lgsPoller_1.getNextProxy)(),
+                            headers: { 'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0' }
+                        });
+                    }
                     const results = res.data?.results?.[0]?.results || [];
                     for (const item of results) {
                         if (item.customAttributes?.number)
                             continue;
-                        const title = (item.productName || '').toLowerCase();
-                        if (title.includes('code card') || title.includes('empty') || title.includes('sleeves'))
+                        const rawTitle = item.productName || '';
+                        const title = rawTitle.toLowerCase();
+                        if (!(0, marketComps_1.isValidCompTitle)(rawTitle, p.name, p.formFactor))
                             continue;
-                        const isMatch = (p.formFactor === 'Booster Box' && title.includes('booster box') && !title.includes('case')) ||
-                            (p.formFactor === 'ETB' && (title.includes('elite trainer') || title.includes('etb')) && !title.includes('case') && !title.includes('center')) ||
-                            (p.formFactor === 'Booster Bundle' && title.includes('bundle') && !title.includes('case'));
+                        const isMatch = (p.formFactor === 'Booster Box' && title.includes('booster box')) ||
+                            (p.formFactor === 'ETB' && (title.includes('elite trainer') || title.includes('etb'))) ||
+                            (p.formFactor === 'Booster Bundle' && title.includes('bundle'));
                         if (isMatch) {
                             const mkt = parseFloat(item.marketPrice || item.lowestPrice || 0);
                             if (mkt > 10) {
-                                const rounded = Math.round(mkt * 100) / 100;
+                                const baselineRef = p.estimatedMarketValue || p.msrpCeiling || 50;
+                                const rounded = (0, marketComps_1.applySyncSanityGuard)(mkt, p.formFactor, undefined, {
+                                    sampleCount: results.length,
+                                    ruleId: p.id,
+                                    policyBaseline: baselineRef
+                                });
                                 p.estimatedMarketValue = rounded;
                                 basePriceMap.set(p.id, rounded);
                                 const prodId = Math.floor(Number(item.productId));
                                 const existing = cache[p.id] || {};
                                 const hasLiveStoreDrop = existing.inStock === true && existing.lowestStore && !existing.lowestStore.includes('TCGPlayer') && !existing.lowestStore.includes('Catalog');
+                                const safeLowest = hasLiveStoreDrop ? Math.min(existing.lowestPrice, rounded) : rounded;
                                 cache[p.id] = {
                                     ...existing,
-                                    lowestPrice: hasLiveStoreDrop ? existing.lowestPrice : rounded,
+                                    lowestPrice: safeLowest,
                                     lowestStore: hasLiveStoreDrop ? existing.lowestStore : 'TCGPlayer SKU Baseline',
                                     lowestUrl: hasLiveStoreDrop ? existing.lowestUrl : `https://www.tcgplayer.com/product/${prodId}`,
                                     inStock: hasLiveStoreDrop ? true : false,
@@ -103,16 +123,18 @@ class MarketSyncService {
             // Pass 2: Sync Master Cases & 10-ETB Cases (inherit live multiplier from parent Box/ETB so cases are always accurate)
             for (const c of cases) {
                 const parentId = c.id.replace(/-case$/, '').replace(/-booster-case$/, '-booster-box');
-                const parentMkt = basePriceMap.get(parentId);
+                const parentPolicy = singles.find(s => s.id === parentId);
+                const parentMkt = basePriceMap.get(parentId) || parentPolicy?.estimatedMarketValue;
                 if (parentMkt) {
                     const mult = c.formFactor === 'Master Case' ? 6 : 10;
-                    const caseMkt = Math.round(parentMkt * mult);
+                    const caseMkt = (0, marketComps_1.applySyncSanityGuard)(Math.round(parentMkt * mult), c.formFactor, parentMkt);
                     c.estimatedMarketValue = caseMkt;
                     const existing = cache[c.id] || {};
                     const hasLiveStoreDrop = existing.inStock === true && existing.lowestStore && !existing.lowestStore.includes('TCGPlayer') && !existing.lowestStore.includes('Catalog');
+                    const safeLowest = hasLiveStoreDrop ? Math.min(existing.lowestPrice, caseMkt) : caseMkt;
                     cache[c.id] = {
                         ...existing,
-                        lowestPrice: hasLiveStoreDrop ? existing.lowestPrice : caseMkt,
+                        lowestPrice: safeLowest,
                         lowestStore: hasLiveStoreDrop ? existing.lowestStore : 'TCGPlayer Case Baseline',
                         rollingAverage: caseMkt,
                         lastUpdated: new Date().toISOString()
@@ -128,12 +150,8 @@ class MarketSyncService {
                     fp.estimatedMarketValue = syncedMap.get(fp.id);
                 }
             });
-            const tmpPol = POLICIES_PATH + '.tmp';
-            fs_1.default.writeFileSync(tmpPol, JSON.stringify(freshPoliciesOnDisk, null, 2), 'utf-8');
-            fs_1.default.renameSync(tmpPol, POLICIES_PATH);
-            const tmpCache = CACHE_PATH + '.tmp';
-            fs_1.default.writeFileSync(tmpCache, JSON.stringify(cache, null, 2), 'utf-8');
-            fs_1.default.renameSync(tmpCache, CACHE_PATH);
+            (0, policies_1.atomicWriteJson)(POLICIES_PATH, freshPoliciesOnDisk);
+            (0, policies_1.atomicWriteJson)(CACHE_PATH, cache);
             console.log(`[MarketSync] Automated baseline refresh complete (${updatedCount} SKUs synced to latest market value).`);
         }
         catch (err) {
