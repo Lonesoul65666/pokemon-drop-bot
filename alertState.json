@@ -280,11 +280,11 @@
     "alertCount": 4
   },
   "me-pitch-black-etb__TCGPlayer Verified Seller": {
-    "lastPrice": 69,
+    "lastPrice": 64,
     "lowestAlertedPrice": 58,
-    "timestamp": 1792195897633,
-    "timeStr": "07:11 PM",
-    "alertCount": 6
+    "timestamp": 1792210860945,
+    "timeStr": "11:21 PM",
+    "alertCount": 7
   },
   "me-perfect-order-etb__TCGPlayer Verified Seller": {
     "lastPrice": 73.3,
@@ -294,11 +294,11 @@
     "alertCount": 6
   },
   "me-ascended-heroes-etb__TCGPlayer Verified Seller": {
-    "lastPrice": 144,
+    "lastPrice": 143,
     "lowestAlertedPrice": 131,
-    "timestamp": 1792195958902,
-    "timeStr": "07:12 PM",
-    "alertCount": 7
+    "timestamp": 1792210922506,
+    "timeStr": "11:22 PM",
+    "alertCount": 8
   },
   "me-ascended-heroes-etb-case__TCGPlayer Verified Seller": {
     "lastPrice": 1568.01,
@@ -522,6 +522,13 @@
     "lowestAlertedPrice": 360,
     "timestamp": 1792210406854,
     "timeStr": "11:13 PM",
+    "alertCount": 1
+  },
+  "me-delta-reign-etb__Double Infinity Gaming": {
+    "lastPrice": 99.99,
+    "lowestAlertedPrice": 99.99,
+    "timestamp": 1792210841345,
+    "timeStr": "11:20 PM",
     "alertCount": 1
   }
 }

@@ -561,7 +561,7 @@
     "minStock": 1,
     "msrpCeiling": 32,
     "maxMarketBuyPrice": 65,
-    "estimatedMarketValue": 75.57,
+    "estimatedMarketValue": 75.13,
     "priority": "GRAIL",
     "cooldownMins": 45,
     "active": true
@@ -1053,7 +1053,7 @@
     "minStock": 1,
     "msrpCeiling": 32,
     "maxMarketBuyPrice": 50,
-    "estimatedMarketValue": 180,
+    "estimatedMarketValue": 178.2,
     "priority": "GRAIL",
     "cooldownMins": 45,
     "active": true

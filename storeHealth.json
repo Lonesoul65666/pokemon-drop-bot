@@ -5,7 +5,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210813611,
+    "lastSuccessAt": 1792211091839,
     "lastProductsCount": 12
   },
   "Card Shop Live": {
@@ -14,7 +14,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210813642,
+    "lastSuccessAt": 1792211091852,
     "lastProductsCount": 36
   },
   "Zulus Games": {
@@ -23,7 +23,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210813624,
+    "lastSuccessAt": 1792211091885,
     "lastProductsCount": 20
   },
   "Gamers Guild AZ": {
@@ -32,7 +32,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210813492,
+    "lastSuccessAt": 1792211091986,
     "lastProductsCount": 250
   },
   "Smoke & Mirrors": {
@@ -41,7 +41,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210813743,
+    "lastSuccessAt": 1792211091668,
     "lastProductsCount": 250
   },
   "Joshs Cards": {
@@ -50,18 +50,17 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210813921,
+    "lastSuccessAt": 1792211091911,
     "lastProductsCount": 250
   },
   "Flipside Gaming": {
     "name": "Flipside Gaming",
     "baseUrl": "https://www.flipsidegaming.com",
-    "status": "DEGRADED",
-    "consecutiveFailures": 1,
+    "status": "HEALTHY",
+    "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210814041,
-    "lastProductsCount": 250,
-    "lastError": "Cannot read properties of undefined (reading 'push')"
+    "lastSuccessAt": 1792211092099,
+    "lastProductsCount": 250
   },
   "Safari Zone": {
     "name": "Safari Zone",
@@ -69,7 +68,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210813684,
+    "lastSuccessAt": 1792211091620,
     "lastProductsCount": 30
   },
   "Over The Brick": {
@@ -78,7 +77,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210814269,
+    "lastSuccessAt": 1792211092285,
     "lastProductsCount": 65
   },
   "Knight & Day Games": {
@@ -87,7 +86,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210814273,
+    "lastSuccessAt": 1792211092502,
     "lastProductsCount": 6
   },
   "Collector Store": {
@@ -96,7 +95,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210814248,
+    "lastSuccessAt": 1792211092433,
     "lastProductsCount": 34
   },
   "Prodigy Games": {
@@ -105,7 +104,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210814303,
+    "lastSuccessAt": 1792211092462,
     "lastProductsCount": 71
   },
   "Rip N Ship Arena": {
@@ -114,28 +113,26 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210814406,
+    "lastSuccessAt": 1792211092421,
     "lastProductsCount": 9
   },
   "TCG Stadium": {
     "name": "TCG Stadium",
     "baseUrl": "https://tcg-stadium.com",
-    "status": "DEGRADED",
-    "consecutiveFailures": 1,
+    "status": "HEALTHY",
+    "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210814421,
-    "lastProductsCount": 87,
-    "lastError": "Cannot read properties of undefined (reading 'push')"
+    "lastSuccessAt": 1792211092445,
+    "lastProductsCount": 87
   },
   "PKMN Colosseum": {
     "name": "PKMN Colosseum",
     "baseUrl": "https://pkmncolosseum.com",
-    "status": "DEGRADED",
-    "consecutiveFailures": 1,
+    "status": "HEALTHY",
+    "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210814665,
-    "lastProductsCount": 192,
-    "lastError": "Cannot read properties of undefined (reading 'push')"
+    "lastSuccessAt": 1792211092726,
+    "lastProductsCount": 192
   },
   "Paladin Cards": {
     "name": "Paladin Cards",
@@ -143,18 +140,17 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210814489,
+    "lastSuccessAt": 1792211092709,
     "lastProductsCount": 5
   },
   "Double Infinity Gaming": {
     "name": "Double Infinity Gaming",
     "baseUrl": "https://doubleinfinitygaming.com",
-    "status": "DEGRADED",
-    "consecutiveFailures": 1,
+    "status": "HEALTHY",
+    "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210814701,
-    "lastProductsCount": 181,
-    "lastError": "Cannot read properties of undefined (reading 'push')"
+    "lastSuccessAt": 1792211092600,
+    "lastProductsCount": 181
   },
   "Top Cut Central": {
     "name": "Top Cut Central",
@@ -162,7 +158,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210814959,
+    "lastSuccessAt": 1792211092883,
     "lastProductsCount": 46
   },
   "Poke-Collect": {
@@ -171,7 +167,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210814942,
+    "lastSuccessAt": 1792211092933,
     "lastProductsCount": 47
   },
   "Game Grid Lehi": {
@@ -180,7 +176,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210815000,
+    "lastSuccessAt": 1792211093176,
     "lastProductsCount": 15
   },
   "Mystic TCG": {
@@ -189,7 +185,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210814686,
+    "lastSuccessAt": 1792211092931,
     "lastProductsCount": 19
   },
   "Galactic Toys": {
@@ -198,7 +194,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210815026,
+    "lastSuccessAt": 1792211093394,
     "lastProductsCount": 119
   },
   "Card Cavern": {
@@ -207,18 +203,17 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210815208,
+    "lastSuccessAt": 1792211093444,
     "lastProductsCount": 5
   },
   "Trading Card Market": {
     "name": "Trading Card Market",
     "baseUrl": "https://tradingcardmarket.com",
-    "status": "DEGRADED",
-    "consecutiveFailures": 1,
+    "status": "HEALTHY",
+    "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210815682,
-    "lastProductsCount": 250,
-    "lastError": "Cannot read properties of undefined (reading 'push')"
+    "lastSuccessAt": 1792211093970,
+    "lastProductsCount": 250
   },
   "AllPokeTCG": {
     "name": "AllPokeTCG",
@@ -226,7 +221,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210815044,
+    "lastSuccessAt": 1792211092938,
     "lastProductsCount": 250
   },
   "The Pokecave": {
@@ -235,7 +230,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210815292,
+    "lastSuccessAt": 1792211093178,
     "lastProductsCount": 128
   },
   "The Gaming Goat": {
@@ -244,7 +239,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210815377,
+    "lastSuccessAt": 1792211093520,
     "lastProductsCount": 6
   },
   "Stomping Grounds": {
@@ -253,7 +248,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210815397,
+    "lastSuccessAt": 1792211093792,
     "lastProductsCount": 250
   },
   "Red Raccoon Games": {
@@ -262,7 +257,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210815810,
+    "lastSuccessAt": 1792211093603,
     "lastProductsCount": 250
   },
   "Tabletop Village": {
@@ -271,7 +266,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210815970,
+    "lastSuccessAt": 1792211093953,
     "lastProductsCount": 5
   },
   "1st Edition Collectibles": {
@@ -280,7 +275,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792210815215,
+    "lastSuccessAt": 1792211093491,
     "lastProductsCount": 250
   }
 }
