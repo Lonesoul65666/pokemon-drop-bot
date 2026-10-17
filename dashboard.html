@@ -99,6 +99,7 @@
     <div class="flex flex-wrap items-center gap-2" id="filterPills">
       <button onclick="setFilter('ALL')" class="pill-btn active px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white" data-filter="ALL">All Products</button>
       <button onclick="setFilter('INSTOCK')" id="inStockPillBtn" class="pill-btn px-3.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-950/60 text-emerald-400 border border-emerald-700/50 hover:bg-emerald-800/50" data-filter="INSTOCK">&#9679; In-Stock Now (0)</button>
+      <button onclick="setFilter('MARKET_TAPE')" id="marketTapePillBtn" title="View 14-Day NRT Analytics, Honey-Hole Store DNA, Distributor Waves, and Sunday-to-Sunday Weekly Delta Checkpoints" class="pill-btn px-3.5 py-1.5 rounded-lg text-xs font-bold bg-cyan-950/70 text-cyan-300 border border-cyan-700/60 hover:bg-cyan-800/50" data-filter="MARKET_TAPE">&#128200; Market Tape</button>
       <button onclick="setFilter('NEED_VAULT')" title="Filter to English ETBs not yet checked as Vaulted" class="pill-btn px-3.5 py-1.5 rounded-lg text-xs font-bold bg-purple-950/60 text-purple-300 border border-purple-700/50 hover:bg-purple-800/50" data-filter="NEED_VAULT">&#127919; Needed ETBs</button>
       <button onclick="setFilter('Master Case')" class="pill-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700" data-filter="Master Case">6-Box Cases</button>
       <button onclick="setFilter('ETB Case')" class="pill-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700" data-filter="ETB Case">10-ETB Cases</button>
@@ -126,6 +127,7 @@
     let policies = [];
     let telemetry = {};
     let liveStock = {};
+    let marketTape = { targets: {}, honeyHoleStores: [], recentSalesTape: [], weeklyCheckpoints: {} };
     let activeFilter = "ALL";
     let saveTimeout = null;
     let spectatorLocked = false;
@@ -363,8 +365,35 @@
       if (summary) {
         summary.innerHTML = inStockCount > 0
           ? "<span class=\"text-emerald-400 font-bold\">&#9679; " + inStockCount + " Target SKU(s) In Stock & Under Buy Trigger Now</span>"
-          : "<span class=\"text-slate-400\">&#9679; 0 Target SKUs Currently Under Buy Trigger (Monitoring 20 LGS + TCGP + Big-Box)</span>";
+          : "<span class=\"text-slate-400\">&#9679; 0 Target SKUs Currently Under Buy Trigger (Monitoring 31 LGS + TCGP + Big-Box)</span>";
       }
+    }
+
+    async function loadMarketTape() {
+      try {
+        const res = await fetch("/api/market-tape");
+        if (res.ok) {
+          marketTape = await res.json();
+        }
+      } catch (e) {}
+    }
+
+    async function triggerSundaySnapshot() {
+      const btn = document.getElementById("sundaySnapBtn");
+      if (btn) btn.innerText = "Recording...";
+      try {
+        const res = await fetch("/api/market-tape/checkpoint", { method: "POST" });
+        const data = await res.json();
+        if (data && data.tape) marketTape = data.tape;
+        if (btn) btn.innerText = "Checkpoint Saved!";
+        render();
+      } catch (e) {
+        if (btn) btn.innerText = "Error";
+      }
+      setTimeout(() => {
+        const b = document.getElementById("sundaySnapBtn");
+        if (b) b.innerHTML = "&#128204; Refresh Sunday Checkpoint";
+      }, 2000);
     }
 
     function populateEraFilter() {
@@ -388,17 +417,22 @@
         const telRes = await fetch("/api/telemetry");
         telemetry = await telRes.json();
       } catch (e) { telemetry = {}; }
-      await loadLiveStock();
+      await Promise.all([loadLiveStock(), loadMarketTape()]);
       updateVaultCounter();
       render();
       setInterval(async () => {
         try {
-          const [tRes, lRes] = await Promise.all([fetch("/api/telemetry"), fetch("/api/live-stock")]);
+          const [tRes, lRes, mtRes] = await Promise.all([
+            fetch("/api/telemetry"),
+            fetch("/api/live-stock"),
+            fetch("/api/market-tape")
+          ]);
           telemetry = await tRes.json();
           liveStock = await lRes.json();
+          if (mtRes.ok) marketTape = await mtRes.json();
           updateLiveStockIndicators();
           updateTelemetryUI();
-          if (activeFilter === "INSTOCK") render();
+          if (activeFilter === "INSTOCK" || activeFilter === "MARKET_TAPE") render();
         } catch (e) {}
       }, 6000);
     }
@@ -433,7 +467,7 @@
       const entries = Object.values(telemetry || {});
       const skuCount = entries.length;
       const sc = document.getElementById("streamCounter");
-      if (sc) sc.innerHTML = "&#9679; 20 LGS + TCGPlayer + Wholesale Live &bull; " + skuCount + " SKUs Indexed";
+      if (sc) sc.innerHTML = "&#9679; 31 LGS + TCGPlayer + Wholesale Live &bull; " + skuCount + " SKUs Indexed";
       policies.forEach((p, index) => {
         const tel = telemetry[p.id];
         const ls = liveStock[p.id];
@@ -472,10 +506,140 @@
       });
     }
 
+    function renderMarketTapeView(container) {
+      const tMap = (marketTape && marketTape.targets) ? marketTape.targets : {};
+      const allMetrics = Object.values(tMap);
+      const waves = allMetrics.filter(m => m.isDistributorWave);
+      const honeyStores = (marketTape && Array.isArray(marketTape.honeyHoleStores)) ? marketTape.honeyHoleStores : [];
+      const recentTape = (marketTape && Array.isArray(marketTape.recentSalesTape)) ? marketTape.recentSalesTape : [];
+
+      const query = (document.getElementById("searchInput")?.value || "").toLowerCase();
+      const selectedEra = document.getElementById("eraFilter")?.value || "ALL_ERAS";
+      const filteredMetrics = allMetrics.filter(m => {
+        const matchesEra = (selectedEra === "ALL_ERAS") || (m.era === selectedEra);
+        const matchesQuery = m.targetName.toLowerCase().includes(query) || m.era.toLowerCase().includes(query);
+        return matchesEra && matchesQuery;
+      });
+
+      const wavesHtml = waves.length > 0
+        ? waves.map(w =>
+            "<div class=\"p-3 rounded-lg bg-purple-950/40 border border-purple-600/50 flex items-center justify-between gap-2\">" +
+              "<div>" +
+                "<div class=\"text-xs font-extrabold text-purple-200\">&#127754; " + w.targetName + "</div>" +
+                "<div class=\"text-[11px] text-purple-300\">Restocked across " + w.waveStores48h.length + " stores in 48h: " + w.waveStores48h.join(", ") + "</div>" +
+              "</div>" +
+              "<span class=\"px-2 py-1 rounded bg-purple-600/30 text-purple-200 text-[10px] font-bold shrink-0\">WAIT FOR UNDERCUT</span>" +
+            "</div>"
+          ).join("")
+        : "<div class=\"p-3 rounded-lg bg-slate-950/70 border border-slate-800 text-xs text-slate-400\">No 3+ store Distributor Waves detected in the last 48 hours. Monitoring 31 USD Shopify stores for synchronized allocations.</div>";
+
+      const honeyHtml = honeyStores.length > 0
+        ? honeyStores.slice(0, 6).map((s, idx) =>
+            "<div class=\"p-2.5 rounded-lg bg-slate-950/80 border border-slate-800 flex items-center justify-between gap-2\">" +
+              "<div>" +
+                "<div class=\"text-xs font-bold text-white\">#" + (idx + 1) + " " + s.store + "</div>" +
+                "<div class=\"text-[10px] text-slate-400\">" + s.restocks + " Drop Events &bull; " + s.lowestHits + " Floor Leads</div>" +
+              "</div>" +
+              "<span class=\"px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-700/50 text-emerald-300 text-[11px] font-extrabold\">Avg " + s.avgDiscountPct + "% Off</span>" +
+            "</div>"
+          ).join("")
+        : "<div class=\"text-xs text-slate-400\">Accumulating store restock DNA...</div>";
+
+      const tapeRows = recentTape.slice(0, 8).map(ev => {
+        const velBadge = ev.status === "CLEARED"
+          ? "<span class=\"px-2 py-0.5 rounded bg-rose-950/80 border border-rose-700/50 text-rose-300 text-[10px] font-bold\">" + ev.velocity + " (" + (ev.durationMins || 1) + "m)</span>"
+          : "<span class=\"px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-700/50 text-emerald-300 text-[10px] font-bold\">ACTIVE SHELF</span>";
+        return (
+          "<div class=\"p-2.5 rounded-lg bg-slate-950/80 border border-slate-800 flex items-center justify-between gap-2 text-xs\">" +
+            "<div class=\"min-w-0\">" +
+              "<div class=\"font-bold text-white truncate\">" + ev.targetName + "</div>" +
+              "<div class=\"text-[11px] text-slate-400\">" + ev.store + " &bull; $" + Number(ev.price).toFixed(2) + " (" + (ev.discountPct || 0) + "% Under Mkt)</div>" +
+            "</div>" +
+            velBadge +
+          "</div>"
+        );
+      }).join("");
+
+      const tableRows = filteredMetrics.map(m => {
+        const nrtColor = m.nrt7dDeltaPct < 0 ? "text-emerald-400" : (m.nrt7dDeltaPct > 0 ? "text-amber-400" : "text-slate-300");
+        const nrtStr = (m.nrt7dDeltaPct > 0 ? "+" : "") + m.nrt7dDeltaPct.toFixed(1) + "%";
+        const clearStr = m.lastClearPrice
+          ? ("$" + Number(m.lastClearPrice).toFixed(2) + " @ " + m.lastClearStore + " (" + (m.lastClearVelocity || "CLEARED") + ")")
+          : "No 14d Clear Yet";
+        const floorStr = m.staleFloorPrice
+          ? ("$" + Number(m.staleFloorPrice).toFixed(2) + " @ " + (m.staleFloorStore || "Market"))
+          : ("$" + Number(m.marketPrice).toFixed(2));
+        const wk = m.latestWeekly;
+        const wowStr = wk ? ((wk.wowDeltaPct > 0 ? "+" : "") + wk.wowDeltaPct.toFixed(1) + "% (Wk " + wk.weekEnding + ")") : "0.0% (Seeded)";
+        const wowColor = (wk && wk.wowDeltaPct < 0) ? "text-emerald-400" : ((wk && wk.wowDeltaPct > 0) ? "text-amber-400" : "text-slate-300");
+
+        return (
+          "<tr class=\"border-b border-slate-800/70 hover:bg-slate-900/60\">" +
+            "<td class=\"py-2.5 px-3 font-bold text-white\">" + m.targetName + "<div class=\"text-[10px] text-slate-400 font-normal\">" + m.formFactor + " &bull; MSRP $" + Number(m.msrp).toFixed(2) + " &bull; MaxBuy $" + Number(m.maxBuy).toFixed(2) + "</div></td>" +
+            "<td class=\"py-2.5 px-3 font-extrabold text-yellow-400\">$" + Number(m.marketPrice).toFixed(2) + "</td>" +
+            "<td class=\"py-2.5 px-3 font-bold " + nrtColor + "\">" + nrtStr + "<div class=\"text-[10px] text-slate-400 font-normal\">Absorption: " + m.absorptionRatio + "% (" + m.clearedCount14d + "/" + m.totalEvents14d + ")</div></td>" +
+            "<td class=\"py-2.5 px-3 text-slate-200\"><div>Clear: <span class=\"font-bold text-emerald-300\">" + clearStr + "</span></div><div class=\"text-[10px] text-slate-400\">Floor: " + floorStr + "</div></td>" +
+            "<td class=\"py-2.5 px-3 text-slate-200\"><span class=\"font-bold text-cyan-300\">" + m.topStore + "</span><div class=\"text-[10px] text-slate-400\">Avg " + m.topStoreAvgDiscountPct + "% Below Mkt</div></td>" +
+            "<td class=\"py-2.5 px-3 font-bold " + wowColor + "\">" + wowStr + "<div class=\"text-[10px] text-slate-400 font-normal\">Avg Clear: $" + Number(wk?.avgClearPrice || m.maxBuy).toFixed(2) + " &bull; Low: $" + Number(wk?.lowestDrop || m.marketPrice).toFixed(2) + "</div></td>" +
+            "<td class=\"py-2.5 px-3\"><span class=\"px-2 py-1 rounded text-[10px] font-extrabold bg-slate-800 border border-slate-700 text-slate-200\">" + m.verdictBadge + "</span></td>" +
+          "</tr>"
+        );
+      }).join("");
+
+      container.innerHTML =
+        "<div class=\"space-y-6\">" +
+          "<div class=\"grid grid-cols-1 lg:grid-cols-3 gap-4\">" +
+            "<div class=\"bg-slate-900/90 border border-slate-800 rounded-xl p-4 space-y-2.5\">" +
+              "<div class=\"text-xs font-extrabold uppercase tracking-wider text-purple-300\">&#127754; 48h Distributor Wave Radar (3+ Stores)</div>" +
+              wavesHtml +
+            "</div>" +
+            "<div class=\"bg-slate-900/90 border border-slate-800 rounded-xl p-4 space-y-2\">" +
+              "<div class=\"text-xs font-extrabold uppercase tracking-wider text-emerald-400\">&#127855; Honey-Hole Store DNA (14-Day Top Sources)</div>" +
+              "<div class=\"grid grid-cols-1 sm:grid-cols-2 gap-2\">" + honeyHtml + "</div>" +
+            "</div>" +
+            "<div class=\"bg-slate-900/90 border border-slate-800 rounded-xl p-4 space-y-2\">" +
+              "<div class=\"text-xs font-extrabold uppercase tracking-wider text-cyan-300\">&#9889; Hot 14-Day NRT Restock &amp; Clear Tape</div>" +
+              "<div class=\"space-y-1.5 max-h-48 overflow-y-auto pr-1\">" + (tapeRows || "<div class=\"text-xs text-slate-400\">No recent tape events.</div>") + "</div>" +
+            "</div>" +
+          "</div>" +
+          "<div class=\"bg-slate-900/90 border border-slate-800 rounded-xl p-4\">" +
+            "<div class=\"flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b border-slate-800\">" +
+              "<div>" +
+                "<h2 class=\"text-sm font-black uppercase tracking-wider text-white\">&#128200; 14-Day NRT Ledger &amp; Sunday-to-Sunday Weekly Delta Checkpoints</h2>" +
+                "<p class=\"text-[11px] text-slate-400\">Auto-prunes raw events &gt;14 days &bull; Compares 7-Day Rolling NRT Delta, Last Clear vs. Stale Floor, Honey-Hole Store DNA, and Sunday-to-Sunday WoW Checkpoints</p>" +
+              "</div>" +
+              "<button onclick=\"triggerSundaySnapshot()\" id=\"sundaySnapBtn\" class=\"px-3 py-1.5 rounded-lg bg-cyan-600/20 text-cyan-300 border border-cyan-500/40 hover:bg-cyan-600 hover:text-white text-xs font-bold\">&#128204; Refresh Sunday Checkpoint</button>" +
+            "</div>" +
+            "<div class=\"overflow-x-auto\">" +
+              "<table class=\"w-full text-left text-xs\">" +
+                "<thead>" +
+                  "<tr class=\"border-b border-slate-800 text-[10px] uppercase tracking-wider text-slate-400\">" +
+                    "<th class=\"py-2 px-3\">Target SKU</th>" +
+                    "<th class=\"py-2 px-3\">Mkt Baseline</th>" +
+                    "<th class=\"py-2 px-3\">7d NRT Trend</th>" +
+                    "<th class=\"py-2 px-3\">Last Clear vs. Stale Floor</th>" +
+                    "<th class=\"py-2 px-3\">Top Store DNA</th>" +
+                    "<th class=\"py-2 px-3\">Sunday-to-Sunday WoW</th>" +
+                    "<th class=\"py-2 px-3\">Wave / Buy-vs-Wait Verdict</th>" +
+                  "</tr>" +
+                "</thead>" +
+                "<tbody>" + tableRows + "</tbody>" +
+              "</table>" +
+            "</div>" +
+          "</div>" +
+        "</div>";
+    }
+
     function render() {
       const sortMode = document.getElementById("sortMode") ? document.getElementById("sortMode").value : "ERA";
       const container = document.getElementById("catalogContainer");
       container.innerHTML = "";
+
+      if (activeFilter === "MARKET_TAPE") {
+        renderMarketTapeView(container);
+        updateLiveStockIndicators();
+        return;
+      }
 
       const filtered = getFilteredPolicies();
 
@@ -523,6 +687,7 @@
     function renderCard(p) {
       const index = policies.findIndex(x => x.id === p.id);
       const tel = telemetry[p.id];
+      const tape = (marketTape && marketTape.targets) ? marketTape.targets[p.id] : null;
       const marketVal = (tel && tel.rollingAverage > 0) ? tel.rollingAverage : (p.estimatedMarketValue || 50);
       const buyVal = p.maxMarketBuyPrice || 0;
       const diffPct = Math.round(((marketVal - buyVal) / marketVal) * 100);
@@ -530,6 +695,35 @@
       const imgPath = (p.image && p.image.startsWith("http")) ? p.image : ("/art/" + p.id + ".jpg?v=" + cacheBuster);
       const sliderMax = Math.ceil(Math.max(marketVal * 1.5, buyVal * 1.2, 100));
       const disabledAttr = spectatorLocked ? "disabled" : "";
+
+      const nrtPct = tape ? tape.nrt7dDeltaPct : 0;
+      const nrtSign = nrtPct > 0 ? "+" : "";
+      const nrtColor = nrtPct < 0 ? "text-emerald-400" : (nrtPct > 0 ? "text-amber-400" : "text-slate-300");
+      const lastClearText = (tape && tape.lastClearPrice)
+        ? ("$" + Number(tape.lastClearPrice).toFixed(2) + " @ " + tape.lastClearStore)
+        : "None (14d)";
+      const staleFloorText = (tape && tape.staleFloorPrice)
+        ? ("$" + Number(tape.staleFloorPrice).toFixed(2))
+        : ("$" + marketVal.toFixed(2));
+      const topStoreText = (tape && tape.topStore) ? tape.topStore : (tel?.lowestStore || "TCGPlayer");
+      const verdictBadge = (tape && tape.verdictBadge) ? tape.verdictBadge : "🟡 HOLD / WAIT FOR DIP";
+      const wowDelta = (tape && tape.latestWeekly) ? ((tape.latestWeekly.wowDeltaPct > 0 ? "+" : "") + tape.latestWeekly.wowDeltaPct.toFixed(1) + "%") : "0.0%";
+
+      const tapeBlockHtml =
+        "<div class=\"mb-3 p-2.5 rounded-lg bg-slate-950/75 border border-slate-800/90 text-[10px] space-y-1.5\">" +
+          "<div class=\"flex items-center justify-between gap-1\">" +
+            "<span class=\"font-extrabold text-cyan-300 uppercase tracking-tight\">" + verdictBadge + "</span>" +
+            "<span class=\"font-bold " + nrtColor + "\">7d NRT: " + nrtSign + nrtPct.toFixed(1) + "% &bull; Sun WoW: " + wowDelta + "</span>" +
+          "</div>" +
+          "<div class=\"flex items-center justify-between text-slate-400\">" +
+            "<span>Last Clear: <strong class=\"text-slate-200\">" + lastClearText + "</strong></span>" +
+            "<span>Stale Floor: <strong class=\"text-slate-200\">" + staleFloorText + "</strong></span>" +
+          "</div>" +
+          "<div class=\"flex items-center justify-between text-slate-400\">" +
+            "<span>Top Store: <strong class=\"text-emerald-300\">" + topStoreText + "</strong></span>" +
+            "<span>14d Absorption: <strong class=\"text-slate-200\">" + (tape ? tape.absorptionRatio : 0) + "%</strong></span>" +
+          "</div>" +
+        "</div>";
 
       const etbCheckbox = p.formFactor === "ETB"
         ? "<label class=\"flex items-center gap-1.5 text-[11px] font-semibold " + (p.owned ? "text-purple-400" : "text-slate-400") + " cursor-pointer\">" +
@@ -568,6 +762,7 @@
               "<span>SKU Baseline: <strong>$" + marketVal.toFixed(2) + "</strong></span>" +
               "<a href=\"https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=" + encodeURIComponent(p.name) + "&view=grid\" target=\"_blank\" class=\"text-blue-400 hover:underline text-[10px] font-semibold\">Check TCGP &#8599;</a>" +
             "</div>" +
+            tapeBlockHtml +
             "<div class=\"bg-slate-900/60 border border-slate-800 rounded-lg p-3 grid grid-cols-2 gap-2 mb-4 items-center\">" +
               "<div>" +
                 "<div class=\"text-[10px] uppercase font-bold text-slate-500\">Market Baseline</div>" +

@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { WATCH_POLICIES, PolicyRule, GLOBAL_JUNK_EXCLUSIONS, isValidSkuForFormFactor, getMinPlausiblePriceFloor, atomicWriteJson } from './policies';
 import { recordObservation, getTelemetry } from './marketTelemetry';
+import { recordDailySnapshot, recordTapeRestock, recordTapeSoldOut } from './marketTape';
 
 export interface RawRestockItem {
   title: string;
@@ -149,6 +150,10 @@ export function upsertLiveStock(entry: LiveStockEntry) {
 
 export function markLiveStockOut(itemId: string) {
   try {
+    recordTapeSoldOut(String(itemId));
+  } catch (e) {}
+
+  try {
     if (!fs.existsSync(LIVE_STOCK_PATH)) return;
     const map: Record<string, any> = JSON.parse(fs.readFileSync(LIVE_STOCK_PATH, 'utf-8'));
     let changed = false;
@@ -199,8 +204,14 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       continue;
     }
 
+    const liveTelPre = getTelemetry()[rule.id];
+    const currentMarketRef = (liveTelPre && liveTelPre.rollingAverage > 0)
+      ? liveTelPre.rollingAverage
+      : (rule.estimatedMarketValue || rule.msrpCeiling);
+
     if (item.price && item.price >= minFloor) {
       recordObservation(rule.id, item.price, item.retailer, item.productUrl || item.url, rule.msrpCeiling);
+      recordDailySnapshot(rule.id, item.price, item.retailer, currentMarketRef);
     }
 
     if ((rule as any).active === false) {
@@ -250,6 +261,17 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
     const now = Date.now();
     const currentPrice = dropPrice;
     const nowTimeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    recordTapeRestock({
+      itemId: String(item.itemId || `${rule.id}__${item.retailer}`),
+      targetId: rule.id,
+      targetName: rule.name,
+      store: item.retailer,
+      price: currentPrice,
+      landedPrice,
+      marketPrice: currentMarketRef,
+      url: item.productUrl || item.url
+    });
 
     // Valid drop (<= maxBuy): sync immediately to liveStock.json so "In Stock Now" dashboard view stays accurate even if deduplicated for Discord!
     upsertLiveStock({

@@ -15,6 +15,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const marketComps_1 = require("./marketComps");
 const evaluator_1 = require("./evaluator");
 const policies_1 = require("./policies");
+const marketTape_1 = require("./marketTape");
 dotenv_1.default.config({ path: path_1.default.resolve(__dirname, '.env') });
 const DISCORD_MIN_INTERVAL_MS = 1250;
 const discordWebhookQueue = [];
@@ -174,9 +175,14 @@ async function sendAlert(drop) {
         marketLines.push(`*Live BIN Check* [View Lowest on eBay ↗](https://www.ebay.com/sch/i.html?_nkw=${q}&LH_BIN=1&_sop=15)`);
     }
     const marketBlock = marketLines.join('\n');
+    const flashEscalation = (0, marketTape_1.getFlashClearEscalation)(drop.ruleId, priceVal);
     let tierBadge = '🟡 SOLID DEAL — UNDER TARGET';
     let embedColor = 0xf59e0b;
-    if (drop.isPreOrder) {
+    if (flashEscalation.isHighVelocityRepeat && flashEscalation.badgeText) {
+        tierBadge = flashEscalation.badgeText;
+        embedColor = 0xe11d48;
+    }
+    else if (drop.isPreOrder) {
         tierBadge = '⏳ PRE-ORDER — AT OR NEAR MSRP CEILING';
         embedColor = 0x8b5cf6;
     }
@@ -188,7 +194,7 @@ async function sendAlert(drop) {
         tierBadge = `🔴 HEAVY ALPHA — ${discount}% UNDER MARKET (Save $${savings.toFixed(0)})`;
         embedColor = 0xe60012;
     }
-    let headerPrefix = drop.isPreOrder ? '⏳ PRE-ORDER:' : '🚨 IN STOCK:';
+    let headerPrefix = drop.isPreOrder ? '⏳ PRE-ORDER:' : (flashEscalation.isHighVelocityRepeat ? '⚡ FLASH REPEAT:' : '🚨 IN STOCK:');
     let signalLine = drop.isPreOrder ? 'Pre-order allocation live (Strict MSRP+5% cap enforced)' : 'Fresh restock detected';
     if (drop.alertType === 'PRICE_DROP' && drop.previousPrice) {
         const cut = (drop.previousPrice - priceVal).toFixed(2);
@@ -199,6 +205,9 @@ async function sendAlert(drop) {
     else if (drop.alertType === 'RESTOCK_REPEAT' && drop.previousPrice) {
         headerPrefix = drop.isPreOrder ? '⏳ PRE-ORDER RESTOCK:' : '🔄 RESTOCKED:';
         signalLine = `Previously seen at $${drop.previousPrice.toFixed(2)} (${drop.previousTimeStr})`;
+    }
+    if (flashEscalation.isHighVelocityRepeat && flashEscalation.badgeText) {
+        signalLine += `\n${flashEscalation.badgeText}`;
     }
     if (drop.freeShipNote) {
         signalLine += `\n📦 **${drop.freeShipNote}**`;

@@ -1,0 +1,631 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.WEEKLY_CHECKPOINTS_PATH = exports.DAILY_SNAPSHOTS_PATH = exports.SALES_HISTORY_PATH = void 0;
+exports.flushMarketTapeToDisk = flushMarketTapeToDisk;
+exports.recordDailySnapshot = recordDailySnapshot;
+exports.recordTapeRestock = recordTapeRestock;
+exports.recordTapeSoldOut = recordTapeSoldOut;
+exports.getFlashClearEscalation = getFlashClearEscalation;
+exports.recordSundayWeeklyCheckpoints = recordSundayWeeklyCheckpoints;
+exports.computeFullMarketTape = computeFullMarketTape;
+exports.startMarketTapeScheduler = startMarketTapeScheduler;
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
+const policies_1 = require("./policies");
+exports.SALES_HISTORY_PATH = path_1.default.resolve(process.cwd(), 'salesHistory.json');
+exports.DAILY_SNAPSHOTS_PATH = path_1.default.resolve(process.cwd(), 'dailySnapshots.json');
+exports.WEEKLY_CHECKPOINTS_PATH = path_1.default.resolve(process.cwd(), 'weeklyCheckpoints.json');
+const MARKET_CACHE_PATH = path_1.default.resolve(process.cwd(), 'marketCache.json');
+const DROPS_HISTORY_PATH = path_1.default.resolve(process.cwd(), 'dropsHistory.json');
+const LIVE_STOCK_PATH = path_1.default.resolve(process.cwd(), 'liveStock.json');
+const FOURTEEN_DAYS_MS = 14 * 24 * 60 * 60 * 1000;
+const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+const FORTY_EIGHT_HOURS_MS = 48 * 60 * 60 * 1000;
+let salesHistory = [];
+let dailySnapshots = {};
+let weeklyCheckpoints = {};
+let flushTimer = null;
+function getDateKey(ts = Date.now()) {
+    const d = new Date(ts);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+}
+function getMostRecentSundayKey(ts = Date.now()) {
+    const d = new Date(ts);
+    const day = d.getDay(); // 0 = Sunday
+    d.setDate(d.getDate() - day);
+    return getDateKey(d.getTime());
+}
+function pruneOldRecords() {
+    const cutoffTs = Date.now() - FOURTEEN_DAYS_MS;
+    salesHistory = salesHistory.filter(ev => (ev.clearedAt || ev.lastSeenAt || ev.restockedAt) >= cutoffTs);
+    for (const targetId of Object.keys(dailySnapshots)) {
+        const arr = dailySnapshots[targetId] || [];
+        dailySnapshots[targetId] = arr.filter(s => s.timestamp >= cutoffTs).slice(-14);
+        if (dailySnapshots[targetId].length === 0) {
+            delete dailySnapshots[targetId];
+        }
+    }
+}
+function flushMarketTapeToDisk(immediate = false) {
+    const doFlush = () => {
+        pruneOldRecords();
+        (0, policies_1.atomicWriteJson)(exports.SALES_HISTORY_PATH, salesHistory);
+        (0, policies_1.atomicWriteJson)(exports.DAILY_SNAPSHOTS_PATH, dailySnapshots);
+        (0, policies_1.atomicWriteJson)(exports.WEEKLY_CHECKPOINTS_PATH, weeklyCheckpoints);
+    };
+    if (immediate) {
+        if (flushTimer) {
+            clearTimeout(flushTimer);
+            flushTimer = null;
+        }
+        doFlush();
+        return;
+    }
+    if (!flushTimer) {
+        flushTimer = setTimeout(() => {
+            flushTimer = null;
+            doFlush();
+        }, 2500);
+    }
+}
+function loadAndSeedMarketTape() {
+    try {
+        if (fs_1.default.existsSync(exports.SALES_HISTORY_PATH)) {
+            const raw = JSON.parse(fs_1.default.readFileSync(exports.SALES_HISTORY_PATH, 'utf-8'));
+            if (Array.isArray(raw))
+                salesHistory = raw;
+        }
+    }
+    catch (e) {
+        salesHistory = [];
+    }
+    try {
+        if (fs_1.default.existsSync(exports.DAILY_SNAPSHOTS_PATH)) {
+            const raw = JSON.parse(fs_1.default.readFileSync(exports.DAILY_SNAPSHOTS_PATH, 'utf-8'));
+            if (raw && typeof raw === 'object')
+                dailySnapshots = raw;
+        }
+    }
+    catch (e) {
+        dailySnapshots = {};
+    }
+    try {
+        if (fs_1.default.existsSync(exports.WEEKLY_CHECKPOINTS_PATH)) {
+            const raw = JSON.parse(fs_1.default.readFileSync(exports.WEEKLY_CHECKPOINTS_PATH, 'utf-8'));
+            if (raw && typeof raw === 'object')
+                weeklyCheckpoints = raw;
+        }
+    }
+    catch (e) {
+        weeklyCheckpoints = {};
+    }
+    let cache = {};
+    try {
+        if (fs_1.default.existsSync(MARKET_CACHE_PATH)) {
+            cache = JSON.parse(fs_1.default.readFileSync(MARKET_CACHE_PATH, 'utf-8'));
+        }
+    }
+    catch (e) { }
+    let drops = [];
+    try {
+        if (fs_1.default.existsSync(DROPS_HISTORY_PATH)) {
+            drops = JSON.parse(fs_1.default.readFileSync(DROPS_HISTORY_PATH, 'utf-8'));
+        }
+    }
+    catch (e) { }
+    let liveMap = {};
+    try {
+        if (fs_1.default.existsSync(LIVE_STOCK_PATH)) {
+            liveMap = JSON.parse(fs_1.default.readFileSync(LIVE_STOCK_PATH, 'utf-8'));
+        }
+    }
+    catch (e) { }
+    let modified = false;
+    const now = Date.now();
+    const todayKey = getDateKey(now);
+    // Seed salesHistory from dropsHistory & liveStock.__recentOos if empty
+    if (salesHistory.length === 0) {
+        for (const d of drops) {
+            if (!d.ruleId || !d.price)
+                continue;
+            const ts = d.timestamp || (now - 30 * 60 * 1000);
+            const isSoldOut = Boolean(d.soldOut);
+            const durMins = isSoldOut ? 4 : undefined;
+            salesHistory.push({
+                id: `${d.ruleId}__${d.retailer}__${ts}`,
+                itemId: String(d.itemId || `${d.ruleId}_${d.retailer}`),
+                targetId: d.ruleId,
+                targetName: d.title || d.ruleId,
+                store: d.retailer || 'LGS',
+                price: Number(d.price),
+                landedPrice: Number(d.landedPrice || d.price),
+                marketPrice: Number(d.marketValue || d.price),
+                discountPct: Number(d.discountPct || 0),
+                url: d.productUrl || d.url || '',
+                restockedAt: ts,
+                lastSeenAt: now,
+                clearedAt: isSoldOut ? (ts + 4 * 60 * 1000) : undefined,
+                durationMins: durMins,
+                status: isSoldOut ? 'CLEARED' : 'ACTIVE',
+                velocity: isSoldOut ? '⚡ FLASH' : 'ACTIVE'
+            });
+            modified = true;
+        }
+        for (const [ruleId, entry] of Object.entries(liveMap)) {
+            if (ruleId === '__recentOos' || !entry || !entry.inStock)
+                continue;
+            const exists = salesHistory.some(ev => ev.targetId === ruleId && ev.store === entry.retailer && ev.status === 'ACTIVE');
+            if (!exists) {
+                const mkt = cache[ruleId]?.rollingAverage || entry.price;
+                const disc = mkt > 0 ? Math.round(((mkt - entry.price) / mkt) * 100) : 0;
+                salesHistory.push({
+                    id: `${ruleId}__${entry.retailer}__${entry.updatedAt || now}`,
+                    itemId: String(entry.itemId || `${ruleId}_${entry.retailer}`),
+                    targetId: ruleId,
+                    targetName: entry.ruleName || entry.title || ruleId,
+                    store: entry.retailer || 'LGS',
+                    price: Number(entry.price),
+                    landedPrice: Number(entry.landedPrice || entry.price),
+                    marketPrice: Number(mkt),
+                    discountPct: disc,
+                    url: entry.productUrl || entry.url || '',
+                    restockedAt: entry.updatedAt || now,
+                    lastSeenAt: now,
+                    status: 'ACTIVE',
+                    velocity: 'ACTIVE'
+                });
+                modified = true;
+            }
+        }
+    }
+    // Seed dailySnapshots for all policies if missing
+    for (const pol of policies_1.WATCH_POLICIES) {
+        const c = cache[pol.id];
+        const mkt = (c && c.rollingAverage > 0) ? c.rollingAverage : pol.estimatedMarketValue;
+        const low = (c && c.lowestPrice > 0) ? c.lowestPrice : mkt;
+        const store = (c && c.lowestStore) ? c.lowestStore : 'TCGPlayer Market';
+        if (!dailySnapshots[pol.id] || dailySnapshots[pol.id].length === 0) {
+            // Seed 7d anchor snapshot + today snapshot so 7d NRT delta is immediately active
+            const sevenDaysAgoTs = now - SEVEN_DAYS_MS;
+            const anchorKey = getDateKey(sevenDaysAgoTs);
+            const anchorMkt = pol.estimatedMarketValue || mkt;
+            dailySnapshots[pol.id] = [
+                {
+                    date: anchorKey,
+                    timestamp: sevenDaysAgoTs,
+                    marketPrice: anchorMkt,
+                    lowestDrop: low,
+                    lowestStore: store,
+                    observations: 1
+                },
+                {
+                    date: todayKey,
+                    timestamp: now,
+                    marketPrice: mkt,
+                    lowestDrop: low,
+                    lowestStore: store,
+                    observations: (c?.observationsCount || 1)
+                }
+            ];
+            modified = true;
+        }
+    }
+    // Seed weeklyCheckpoints immediately on first boot if empty
+    if (Object.keys(weeklyCheckpoints).length === 0) {
+        recordSundayWeeklyCheckpoints(true);
+        modified = true;
+    }
+    if (modified) {
+        flushMarketTapeToDisk(true);
+    }
+}
+function recordDailySnapshot(targetId, price, store, marketPrice) {
+    if (!targetId || price <= 0)
+        return;
+    const now = Date.now();
+    const todayKey = getDateKey(now);
+    const list = dailySnapshots[targetId] || [];
+    let todaySnap = list.find(s => s.date === todayKey);
+    const effMarket = marketPrice && marketPrice > 0 ? marketPrice : price;
+    if (!todaySnap) {
+        todaySnap = {
+            date: todayKey,
+            timestamp: now,
+            marketPrice: effMarket,
+            lowestDrop: price,
+            lowestStore: store,
+            observations: 1
+        };
+        list.push(todaySnap);
+    }
+    else {
+        todaySnap.timestamp = now;
+        todaySnap.observations += 1;
+        if (marketPrice && marketPrice > 0) {
+            todaySnap.marketPrice = marketPrice;
+        }
+        if (price <= todaySnap.lowestDrop || todaySnap.lowestDrop <= 0) {
+            todaySnap.lowestDrop = price;
+            todaySnap.lowestStore = store;
+        }
+    }
+    dailySnapshots[targetId] = list.slice(-14);
+    flushMarketTapeToDisk(false);
+}
+function recordTapeRestock(params) {
+    const now = Date.now();
+    const discountPct = params.marketPrice > 0
+        ? Math.round(((params.marketPrice - params.price) / params.marketPrice) * 100)
+        : 0;
+    recordDailySnapshot(params.targetId, params.price, params.store, params.marketPrice);
+    const existing = salesHistory.find(ev => ev.status === 'ACTIVE' && (ev.itemId === String(params.itemId) || (ev.targetId === params.targetId && ev.store === params.store)));
+    if (existing) {
+        existing.lastSeenAt = now;
+        existing.price = params.price;
+        existing.landedPrice = params.landedPrice ?? params.price;
+        existing.marketPrice = params.marketPrice;
+        existing.discountPct = discountPct;
+        existing.url = params.url || existing.url;
+    }
+    else {
+        salesHistory.unshift({
+            id: `${params.targetId}__${params.store}__${now}`,
+            itemId: String(params.itemId),
+            targetId: params.targetId,
+            targetName: params.targetName,
+            store: params.store,
+            price: params.price,
+            landedPrice: params.landedPrice ?? params.price,
+            marketPrice: params.marketPrice,
+            discountPct,
+            url: params.url,
+            restockedAt: now,
+            lastSeenAt: now,
+            status: 'ACTIVE',
+            velocity: 'ACTIVE'
+        });
+    }
+    if (salesHistory.length > 600) {
+        salesHistory = salesHistory.slice(0, 600);
+    }
+    flushMarketTapeToDisk(false);
+}
+function recordTapeSoldOut(itemId) {
+    const now = Date.now();
+    const activeEv = salesHistory.find(ev => ev.status === 'ACTIVE' && ev.itemId === String(itemId));
+    if (!activeEv)
+        return null;
+    activeEv.status = 'CLEARED';
+    activeEv.clearedAt = now;
+    const durationMins = Math.max(1, Math.round((now - activeEv.restockedAt) / 60000));
+    activeEv.durationMins = durationMins;
+    if (durationMins < 5) {
+        activeEv.velocity = '⚡ FLASH';
+    }
+    else if (durationMins <= 60) {
+        activeEv.velocity = '🔥 FAST';
+    }
+    else {
+        activeEv.velocity = '🐢 SLOW';
+    }
+    flushMarketTapeToDisk(false);
+    return activeEv;
+}
+function getFlashClearEscalation(targetId, dropPrice) {
+    if (!targetId || !dropPrice || dropPrice <= 0) {
+        return { isHighVelocityRepeat: false };
+    }
+    const cutoff7d = Date.now() - SEVEN_DAYS_MS;
+    const flashClears = salesHistory.filter(ev => ev.targetId === targetId &&
+        ev.status === 'CLEARED' &&
+        ev.velocity === '⚡ FLASH' &&
+        (ev.clearedAt || ev.lastSeenAt) >= cutoff7d &&
+        dropPrice <= ev.price * 1.05);
+    if (flashClears.length === 0) {
+        return { isHighVelocityRepeat: false };
+    }
+    flashClears.sort((a, b) => (b.clearedAt || 0) - (a.clearedAt || 0));
+    const best = flashClears[0];
+    const mins = best.durationMins || 3;
+    return {
+        isHighVelocityRepeat: true,
+        badgeText: `🚨 HIGH-VELOCITY REPEAT (Last cleared in ${mins}m @ ${best.store})`,
+        lastStore: best.store,
+        lastMins: mins,
+        lastPrice: best.price
+    };
+}
+function recordSundayWeeklyCheckpoints(seedMode = false) {
+    let cache = {};
+    try {
+        if (fs_1.default.existsSync(MARKET_CACHE_PATH)) {
+            cache = JSON.parse(fs_1.default.readFileSync(MARKET_CACHE_PATH, 'utf-8'));
+        }
+    }
+    catch (e) { }
+    const now = Date.now();
+    const weekEnding = getMostRecentSundayKey(now);
+    const cutoff7d = now - SEVEN_DAYS_MS;
+    let recorded = 0;
+    for (const pol of policies_1.WATCH_POLICIES) {
+        const c = cache[pol.id];
+        const currentMarket = (c && c.rollingAverage > 0) ? c.rollingAverage : pol.estimatedMarketValue;
+        const snaps = dailySnapshots[pol.id] || [];
+        const events7d = salesHistory.filter(ev => ev.targetId === pol.id && ev.restockedAt >= cutoff7d);
+        const cleared7d = events7d.filter(ev => ev.status === 'CLEARED');
+        const avgClearPrice = cleared7d.length > 0
+            ? Math.round((cleared7d.reduce((s, e) => s + e.price, 0) / cleared7d.length) * 100) / 100
+            : (c?.lowestPrice && c.lowestPrice <= pol.maxMarketBuyPrice ? c.lowestPrice : pol.maxMarketBuyPrice);
+        let lowestDrop = (c && c.lowestPrice > 0) ? c.lowestPrice : currentMarket;
+        for (const s of snaps) {
+            if (s.lowestDrop > 0 && s.lowestDrop < lowestDrop)
+                lowestDrop = s.lowestDrop;
+        }
+        for (const e of events7d) {
+            if (e.price > 0 && e.price < lowestDrop)
+                lowestDrop = e.price;
+        }
+        // Honey-hole top store in last 7-14d
+        const storeCounts = {};
+        for (const e of events7d) {
+            if (e.store && !/tcgplayer|market|catalog/i.test(e.store)) {
+                storeCounts[e.store] = (storeCounts[e.store] || 0) + 1;
+            }
+        }
+        let topStore = (c?.lowestStore && !/tcgplayer|market|catalog/i.test(c.lowestStore))
+            ? c.lowestStore
+            : 'TCGPlayer / LGS Baseline';
+        let bestCount = 0;
+        for (const [st, cnt] of Object.entries(storeCounts)) {
+            if (cnt > bestCount) {
+                bestCount = cnt;
+                topStore = st;
+            }
+        }
+        const history = weeklyCheckpoints[pol.id] || [];
+        if (seedMode && history.length === 0) {
+            // Seed prior Sunday baseline + current Sunday checkpoint so Sunday-to-Sunday comparison works immediately
+            const prevSundayKey = getDateKey(new Date(weekEnding).getTime() - SEVEN_DAYS_MS);
+            const baseRef = pol.estimatedMarketValue || currentMarket;
+            history.push({
+                weekEnding: prevSundayKey,
+                timestamp: now - SEVEN_DAYS_MS,
+                marketPrice: baseRef,
+                avgClearPrice: pol.maxMarketBuyPrice,
+                lowestDrop: Math.min(baseRef, lowestDrop),
+                clearedCount: 0,
+                topStore,
+                wowDeltaPct: 0
+            });
+        }
+        const prevCheckpoint = history.length > 0 ? history[history.length - 1] : null;
+        const prevMarket = (prevCheckpoint && prevCheckpoint.weekEnding !== weekEnding)
+            ? prevCheckpoint.marketPrice
+            : (history.length > 1 ? history[history.length - 2].marketPrice : (pol.estimatedMarketValue || currentMarket));
+        const wowDeltaPct = prevMarket > 0
+            ? Math.round(((currentMarket - prevMarket) / prevMarket) * 1000) / 10
+            : 0;
+        const newEntry = {
+            weekEnding,
+            timestamp: now,
+            marketPrice: Math.round(currentMarket * 100) / 100,
+            avgClearPrice: Math.round(avgClearPrice * 100) / 100,
+            lowestDrop: Math.round(lowestDrop * 100) / 100,
+            clearedCount: cleared7d.length,
+            topStore,
+            wowDeltaPct
+        };
+        const existingIdx = history.findIndex(h => h.weekEnding === weekEnding);
+        if (existingIdx >= 0) {
+            history[existingIdx] = newEntry;
+        }
+        else {
+            history.push(newEntry);
+        }
+        weeklyCheckpoints[pol.id] = history.slice(-52);
+        recorded++;
+    }
+    flushMarketTapeToDisk(true);
+    return recorded;
+}
+function computeFullMarketTape() {
+    pruneOldRecords();
+    let cache = {};
+    try {
+        if (fs_1.default.existsSync(MARKET_CACHE_PATH)) {
+            cache = JSON.parse(fs_1.default.readFileSync(MARKET_CACHE_PATH, 'utf-8'));
+        }
+    }
+    catch (e) { }
+    let liveMap = {};
+    try {
+        if (fs_1.default.existsSync(LIVE_STOCK_PATH)) {
+            liveMap = JSON.parse(fs_1.default.readFileSync(LIVE_STOCK_PATH, 'utf-8'));
+        }
+    }
+    catch (e) { }
+    const now = Date.now();
+    const cutoff48h = now - FORTY_EIGHT_HOURS_MS;
+    const cutoff7d = now - SEVEN_DAYS_MS;
+    const targets = {};
+    const globalStoreStats = {};
+    for (const pol of policies_1.WATCH_POLICIES) {
+        const c = cache[pol.id];
+        const currentMarket = (c && c.rollingAverage > 0) ? c.rollingAverage : pol.estimatedMarketValue;
+        const snaps = dailySnapshots[pol.id] || [];
+        // 7-day rolling delta %
+        let anchorMarket = pol.estimatedMarketValue || currentMarket;
+        const olderSnaps = snaps.filter(s => s.timestamp <= cutoff7d + 24 * 60 * 60 * 1000);
+        if (olderSnaps.length > 0) {
+            anchorMarket = olderSnaps[0].marketPrice || anchorMarket;
+        }
+        else if (snaps.length > 0) {
+            anchorMarket = snaps[0].marketPrice || anchorMarket;
+        }
+        const nrt7dDeltaPct = anchorMarket > 0
+            ? Math.round(((currentMarket - anchorMarket) / anchorMarket) * 1000) / 10
+            : 0;
+        const evs14d = salesHistory.filter(ev => ev.targetId === pol.id);
+        const clearedEvs = evs14d.filter(ev => ev.status === 'CLEARED');
+        const activeEvs = evs14d.filter(ev => ev.status === 'ACTIVE');
+        const absorptionRatio = evs14d.length > 0
+            ? Math.round((clearedEvs.length / evs14d.length) * 100)
+            : 0;
+        // Last Clear vs Stale Floor
+        clearedEvs.sort((a, b) => (b.clearedAt || 0) - (a.clearedAt || 0));
+        const lastClear = clearedEvs[0] || null;
+        const liveEntry = liveMap[pol.id];
+        let staleFloorPrice = null;
+        let staleFloorStore = null;
+        if (liveEntry && liveEntry.inStock) {
+            staleFloorPrice = Number(liveEntry.price);
+            staleFloorStore = liveEntry.retailer;
+        }
+        else if (c && c.lowestPrice > 0) {
+            staleFloorPrice = Number(c.lowestPrice);
+            staleFloorStore = c.lowestStore || 'TCGPlayer';
+        }
+        // Honey-hole Store DNA for this target
+        const storeMap = {};
+        for (const ev of evs14d) {
+            if (!ev.store || /tcgplayer|market|catalog/i.test(ev.store))
+                continue;
+            if (!storeMap[ev.store])
+                storeMap[ev.store] = { count: 0, sumDisc: 0 };
+            storeMap[ev.store].count += 1;
+            storeMap[ev.store].sumDisc += ev.discountPct || 0;
+            if (!globalStoreStats[ev.store]) {
+                globalStoreStats[ev.store] = { store: ev.store, restocks: 0, cleared: 0, totalDiscountPct: 0, lowestHits: 0 };
+            }
+            globalStoreStats[ev.store].restocks += 1;
+            if (ev.status === 'CLEARED')
+                globalStoreStats[ev.store].cleared += 1;
+            globalStoreStats[ev.store].totalDiscountPct += ev.discountPct || 0;
+        }
+        if (c?.lowestStore && !/tcgplayer|market|catalog/i.test(c.lowestStore)) {
+            const st = c.lowestStore;
+            if (!globalStoreStats[st]) {
+                globalStoreStats[st] = { store: st, restocks: 1, cleared: 0, totalDiscountPct: Math.max(0, Math.round(((currentMarket - c.lowestPrice) / currentMarket) * 100)), lowestHits: 0 };
+            }
+            globalStoreStats[st].lowestHits += 1;
+        }
+        let topStore = (c?.lowestStore && !/tcgplayer|market|catalog/i.test(c.lowestStore))
+            ? c.lowestStore
+            : 'None (TCGP Baseline)';
+        let topStoreRestocks = 0;
+        let topStoreAvgDiscountPct = (c?.lowestPrice && currentMarket > 0)
+            ? Math.round(((currentMarket - c.lowestPrice) / currentMarket) * 100)
+            : 0;
+        for (const [st, info] of Object.entries(storeMap)) {
+            if (info.count > topStoreRestocks) {
+                topStoreRestocks = info.count;
+                topStore = st;
+                topStoreAvgDiscountPct = Math.round(info.sumDisc / info.count);
+            }
+        }
+        // Distributor Wave detection (>= 3 distinct stores restocking same targetId within 48h)
+        const waveStoresSet = new Set();
+        for (const ev of evs14d) {
+            if (ev.restockedAt >= cutoff48h && ev.store && !/tcgplayer|market|catalog/i.test(ev.store)) {
+                waveStoresSet.add(ev.store);
+            }
+        }
+        const waveStores48h = Array.from(waveStoresSet);
+        const isDistributorWave = waveStores48h.length >= 3;
+        // Verdict Badge & Tone
+        let verdictBadge = '🟡 HOLD / WAIT FOR DIP';
+        let verdictTone = 'slate';
+        if (isDistributorWave) {
+            verdictBadge = `🌊 DISTRO WAVE (${waveStores48h.length} Stores) • WAIT FOR UNDERCUT`;
+            verdictTone = 'purple';
+        }
+        else if (liveEntry && liveEntry.inStock && liveEntry.price <= pol.maxMarketBuyPrice) {
+            if (lastClear && liveEntry.price <= lastClear.price * 1.02) {
+                verdictBadge = '🟢 BUY NOW • AT/BELOW CLEAR FLOOR';
+                verdictTone = 'emerald';
+            }
+            else {
+                verdictBadge = '🟢 BUY ZONE • IN STOCK UNDER TRIGGER';
+                verdictTone = 'emerald';
+            }
+        }
+        else if (lastClear && lastClear.velocity === '⚡ FLASH') {
+            verdictBadge = `⚡ FLASH-CLEAR TARGET (${lastClear.durationMins}m @ $${lastClear.price.toFixed(0)})`;
+            verdictTone = 'cyan';
+        }
+        else if (nrt7dDeltaPct <= -5) {
+            verdictBadge = `📉 SOFTENING (${nrt7dDeltaPct}% 7d) • WAIT FOR FLOOR`;
+            verdictTone = 'amber';
+        }
+        else if (nrt7dDeltaPct >= 5) {
+            verdictBadge = `📈 RISING (+${nrt7dDeltaPct}% 7d) • SNIPE AT TRIGGER`;
+            verdictTone = 'emerald';
+        }
+        const wkList = weeklyCheckpoints[pol.id] || [];
+        const latestWeekly = wkList.length > 0 ? wkList[wkList.length - 1] : null;
+        targets[pol.id] = {
+            targetId: pol.id,
+            targetName: pol.name,
+            formFactor: pol.formFactor || 'Sealed',
+            era: pol.era || 'General Releases',
+            msrp: pol.msrpCeiling,
+            marketPrice: Math.round(currentMarket * 100) / 100,
+            maxBuy: pol.maxMarketBuyPrice,
+            nrt7dDeltaPct,
+            absorptionRatio,
+            clearedCount14d: clearedEvs.length,
+            activeCount14d: activeEvs.length,
+            totalEvents14d: evs14d.length,
+            lastClearPrice: lastClear ? lastClear.price : null,
+            lastClearStore: lastClear ? lastClear.store : null,
+            lastClearMins: lastClear ? (lastClear.durationMins || null) : null,
+            lastClearVelocity: lastClear ? lastClear.velocity : null,
+            staleFloorPrice,
+            staleFloorStore,
+            topStore,
+            topStoreRestocks,
+            topStoreAvgDiscountPct,
+            isDistributorWave,
+            waveStores48h,
+            verdictBadge,
+            verdictTone,
+            latestWeekly
+        };
+    }
+    const honeyHoleStores = Object.values(globalStoreStats)
+        .map(s => ({
+        store: s.store,
+        restocks: s.restocks,
+        cleared: s.cleared,
+        lowestHits: s.lowestHits,
+        avgDiscountPct: s.restocks > 0 ? Math.round(s.totalDiscountPct / s.restocks) : 0
+    }))
+        .sort((a, b) => (b.restocks + b.lowestHits) - (a.restocks + a.lowestHits))
+        .slice(0, 12);
+    return {
+        generatedAt: now,
+        windowDays: 14,
+        targets,
+        honeyHoleStores,
+        recentSalesTape: salesHistory.slice(0, 30),
+        weeklyCheckpoints
+    };
+}
+function startMarketTapeScheduler() {
+    loadAndSeedMarketTape();
+    // Check hourly if it's Sunday night (8:00 PM - 11:59 PM local time) to record Sunday-to-Sunday weekly checkpoints
+    setInterval(() => {
+        const now = new Date();
+        if (now.getDay() === 0 && now.getHours() >= 20) {
+            recordSundayWeeklyCheckpoints(false);
+        }
+    }, 60 * 60 * 1000);
+}
+// Auto-initialize when module is loaded
+loadAndSeedMarketTape();

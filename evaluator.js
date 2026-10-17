@@ -12,6 +12,7 @@ const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const policies_1 = require("./policies");
 const marketTelemetry_1 = require("./marketTelemetry");
+const marketTape_1 = require("./marketTape");
 const ALERT_STATE_PATH = path_1.default.resolve(process.cwd(), 'alertState.json');
 const LIVE_STOCK_PATH = path_1.default.resolve(process.cwd(), 'liveStock.json');
 let alertMemory = {};
@@ -98,6 +99,10 @@ function upsertLiveStock(entry) {
 }
 function markLiveStockOut(itemId) {
     try {
+        (0, marketTape_1.recordTapeSoldOut)(String(itemId));
+    }
+    catch (e) { }
+    try {
         if (!fs_1.default.existsSync(LIVE_STOCK_PATH))
             return;
         const map = JSON.parse(fs_1.default.readFileSync(LIVE_STOCK_PATH, 'utf-8'));
@@ -145,8 +150,13 @@ function evaluateItem(item) {
         if (item.price !== undefined && item.price < minFloor) {
             continue;
         }
+        const liveTelPre = (0, marketTelemetry_1.getTelemetry)()[rule.id];
+        const currentMarketRef = (liveTelPre && liveTelPre.rollingAverage > 0)
+            ? liveTelPre.rollingAverage
+            : (rule.estimatedMarketValue || rule.msrpCeiling);
         if (item.price && item.price >= minFloor) {
             (0, marketTelemetry_1.recordObservation)(rule.id, item.price, item.retailer, item.productUrl || item.url, rule.msrpCeiling);
+            (0, marketTape_1.recordDailySnapshot)(rule.id, item.price, item.retailer, currentMarketRef);
         }
         if (rule.active === false) {
             return { action: 'IGNORE', reason: `Rule "${rule.name}" is toggled OFF on dashboard.`, rule };
@@ -189,6 +199,16 @@ function evaluateItem(item) {
         const now = Date.now();
         const currentPrice = dropPrice;
         const nowTimeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        (0, marketTape_1.recordTapeRestock)({
+            itemId: String(item.itemId || `${rule.id}__${item.retailer}`),
+            targetId: rule.id,
+            targetName: rule.name,
+            store: item.retailer,
+            price: currentPrice,
+            landedPrice,
+            marketPrice: currentMarketRef,
+            url: item.productUrl || item.url
+        });
         // Valid drop (<= maxBuy): sync immediately to liveStock.json so "In Stock Now" dashboard view stays accurate even if deduplicated for Discord!
         upsertLiveStock({
             ruleId: rule.id,

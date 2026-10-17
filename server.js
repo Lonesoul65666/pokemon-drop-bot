@@ -58,6 +58,25 @@ app.get('/api/store-health', (req, res) => {
   }
 });
 
+app.get('/api/market-tape', (req, res) => {
+  try {
+    const { computeFullMarketTape } = require('./marketTape');
+    res.json(computeFullMarketTape());
+  } catch (e) {
+    res.status(500).json({ error: e.message, targets: {}, honeyHoleStores: [], recentSalesTape: [], weeklyCheckpoints: {} });
+  }
+});
+
+app.post('/api/market-tape/checkpoint', (req, res) => {
+  try {
+    const { recordSundayWeeklyCheckpoints, computeFullMarketTape } = require('./marketTape');
+    const count = recordSundayWeeklyCheckpoints(false);
+    res.json({ ok: true, count, tape: computeFullMarketTape() });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
 app.get('/api/live-stock', (req, res) => {
   try {
     let liveMap = {};

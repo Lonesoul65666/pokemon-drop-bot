@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { getDualMarketComps } from './marketComps';
 import { markLiveStockOut } from './evaluator';
 import { atomicWriteJson } from './policies';
+import { getFlashClearEscalation } from './marketTape';
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
@@ -216,10 +217,15 @@ export async function sendAlert(drop: DropPayload): Promise<void> {
   }
   const marketBlock = marketLines.join('\n');
 
+  const flashEscalation = getFlashClearEscalation(drop.ruleId, priceVal);
+
   let tierBadge = '🟡 SOLID DEAL — UNDER TARGET';
   let embedColor = 0xf59e0b;
 
-  if (drop.isPreOrder) {
+  if (flashEscalation.isHighVelocityRepeat && flashEscalation.badgeText) {
+    tierBadge = flashEscalation.badgeText;
+    embedColor = 0xe11d48;
+  } else if (drop.isPreOrder) {
     tierBadge = '⏳ PRE-ORDER — AT OR NEAR MSRP CEILING';
     embedColor = 0x8b5cf6;
   } else if (msrpVal > 0 && priceVal <= msrpVal * 1.05) {
@@ -230,7 +236,7 @@ export async function sendAlert(drop: DropPayload): Promise<void> {
     embedColor = 0xe60012;
   }
 
-  let headerPrefix = drop.isPreOrder ? '⏳ PRE-ORDER:' : '🚨 IN STOCK:';
+  let headerPrefix = drop.isPreOrder ? '⏳ PRE-ORDER:' : (flashEscalation.isHighVelocityRepeat ? '⚡ FLASH REPEAT:' : '🚨 IN STOCK:');
   let signalLine = drop.isPreOrder ? 'Pre-order allocation live (Strict MSRP+5% cap enforced)' : 'Fresh restock detected';
 
   if (drop.alertType === 'PRICE_DROP' && drop.previousPrice) {
@@ -241,6 +247,10 @@ export async function sendAlert(drop: DropPayload): Promise<void> {
   } else if (drop.alertType === 'RESTOCK_REPEAT' && drop.previousPrice) {
     headerPrefix = drop.isPreOrder ? '⏳ PRE-ORDER RESTOCK:' : '🔄 RESTOCKED:';
     signalLine = `Previously seen at $${drop.previousPrice.toFixed(2)} (${drop.previousTimeStr})`;
+  }
+
+  if (flashEscalation.isHighVelocityRepeat && flashEscalation.badgeText) {
+    signalLine += `\n${flashEscalation.badgeText}`;
   }
 
   if (drop.freeShipNote) {
