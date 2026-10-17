@@ -233,7 +233,8 @@ async function pollSingleStore(store: MonitoredStore): Promise<{ hit: boolean; p
 
         if (variant.available) {
           const fullTitle = `${prod.title} ${variant.title !== 'Default Title' ? variant.title : ''}`.trim();
-          if (!isValidSkuForFormFactor(fullTitle, undefined, priceNum)) continue;
+          const tagsStr = Array.isArray(prod.tags) ? prod.tags.join(' ') : String(prod.tags || '');
+          if (!isValidSkuForFormFactor(fullTitle, undefined, priceNum, { handle: `${prod.handle || ''} ${tagsStr}` })) continue;
 
           const prev = variantStateMap.get(variant.id);
           const minsSinceCheck = prev ? (checkNow - prev.lastCheckedAt) / (1000 * 60) : 999;
@@ -244,7 +245,6 @@ async function pollSingleStore(store: MonitoredStore): Promise<{ hit: boolean; p
             const cart1xUrl = `${store.baseUrl}/cart/${variant.id}:1`;
             const cart2xUrl = `${store.baseUrl}/cart/${variant.id}:2`;
             const productUrl = prod.handle ? `${store.baseUrl}/products/${prod.handle}` : store.baseUrl;
-            const tagsStr = Array.isArray(prod.tags) ? prod.tags.join(' ') : String(prod.tags || '');
             const isPreOrder = /pre-?order|pre-?sale/i.test(`${fullTitle} ${tagsStr} ${prod.handle || ''}`);
             const realQty = typeof variant.inventory_quantity === 'number' && variant.inventory_quantity > 0
               ? variant.inventory_quantity

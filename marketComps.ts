@@ -3,7 +3,13 @@ import fs from 'fs';
 import path from 'path';
 import * as cheerio from 'cheerio';
 import { getNextProxy } from './lgsPoller';
-import { BOOSTER_BOX_EXCLUSION_TERMS, getMinPlausiblePriceFloor, isValidSkuForFormFactor } from './policies';
+import {
+  BOOSTER_BOX_EXCLUSION_TERMS,
+  PC_EXCLUSIVE_EXCLUSION_TERMS,
+  getMinPlausiblePriceFloor,
+  getMaxPlausiblePriceCeiling,
+  isValidSkuForFormFactor
+} from './policies';
 
 export interface CompQuote {
   price: number;
@@ -56,13 +62,7 @@ export const GLOBAL_JUNK_BLOCKLIST = [
   'german'
 ];
 
-export const PC_EXCLUSIVE_BLOCKLIST = [
-  'pokemon center',
-  'pkmn center',
-  'pc etb',
-  'pc exclusive',
-  'stamped'
-];
+export const PC_EXCLUSIVE_BLOCKLIST = PC_EXCLUSIVE_EXCLUSION_TERMS;
 
 export const SINGLE_BULK_BLOCKLIST = [
   'case',
@@ -113,12 +113,12 @@ export function inferFormFactor(ruleId?: string, ruleName?: string): string {
   return 'Booster Box';
 }
 
-export function isValidCompTitle(title: string, targetName: string, formFactor: string, price?: number): boolean {
+export function isValidCompTitle(title: string, targetName: string, formFactor: string, price?: number, ruleId?: string): boolean {
   const lower = ` ${title.toLowerCase()} `;
   const targetLower = targetName.toLowerCase();
 
-  // 0. Shared SKU & Price Floor Validation
-  if (!isValidSkuForFormFactor(title, formFactor, price)) {
+  // 0. Shared SKU, PC Firewall & Price Floor/Ceiling Validation
+  if (!isValidSkuForFormFactor(title, formFactor, price, { ruleId, targetName })) {
     return false;
   }
 
@@ -162,8 +162,8 @@ export function isValidCompTitle(title: string, targetName: string, formFactor: 
   return true;
 }
 
-export function computeTrimmedCompStats(rawPrices: number[], minFloor = 0): { lowestPrice: number; averagePrice: number; trimmedSlice: number[] } | null {
-  const valid = rawPrices.filter(p => Number.isFinite(p) && p > 0 && p >= minFloor).sort((a, b) => a - b);
+export function computeTrimmedCompStats(rawPrices: number[], minFloor = 0, maxCeiling = 99999): { lowestPrice: number; averagePrice: number; trimmedSlice: number[] } | null {
+  const valid = rawPrices.filter(p => Number.isFinite(p) && p > 0 && p >= minFloor && p <= maxCeiling).sort((a, b) => a - b);
   if (valid.length === 0) return null;
 
   let trimmed = valid;
@@ -188,16 +188,15 @@ export function applySyncSanityGuard(
   price: number,
   formFactor: string,
   singleUnitBaseline?: number,
-  options?: { sampleCount?: number; ruleId?: string; policyBaseline?: number }
+  options?: { sampleCount?: number; ruleId?: string; targetName?: string; policyBaseline?: number }
 ): number {
   const minFloor = getMinPlausiblePriceFloor(formFactor);
-  let clamped = Math.max(minFloor, Math.round(price * 100) / 100);
-  if (formFactor === 'ETB') {
-    clamped = Math.min(clamped, 450);
-  } else if (formFactor === 'Booster Bundle') {
-    clamped = Math.min(clamped, 180);
-  } else if ((formFactor === 'ETB Case' || formFactor === 'Master Case') && singleUnitBaseline && singleUnitBaseline > 0) {
-    clamped = Math.min(clamped, Math.round(singleUnitBaseline * 11 * 100) / 100);
+  const maxCeiling = getMaxPlausiblePriceCeiling(formFactor, options?.ruleId, options?.targetName);
+  let clamped = Math.max(minFloor, Math.min(maxCeiling, Math.round(price * 100) / 100));
+
+  if ((formFactor === 'ETB Case' || formFactor === 'Master Case') && singleUnitBaseline && singleUnitBaseline > 0) {
+    const multCap = formFactor === 'Master Case' ? 6.5 : 10.5;
+    clamped = Math.min(clamped, Math.round(singleUnitBaseline * multCap * 100) / 100);
   }
 
   const ruleIdLower = (options?.ruleId || '').toLowerCase();
@@ -205,16 +204,12 @@ export function applySyncSanityGuard(
   const isLowSample = options?.sampleCount !== undefined && options.sampleCount < 5;
   const isMeEtbOrBundle = isMeEra && (formFactor === 'ETB' || formFactor === 'Booster Bundle');
 
-  if (isMeEra && formFactor === 'ETB') {
-    clamped = Math.min(clamped, 110);
-  }
-
   if ((isLowSample || isMeEtbOrBundle) && options?.policyBaseline && options.policyBaseline > 0) {
-    const maxAllowed = Math.max(minFloor, Math.round(options.policyBaseline * 1.35 * 100) / 100);
+    const maxAllowed = Math.max(minFloor, Math.min(maxCeiling, Math.round(options.policyBaseline * 1.35 * 100) / 100));
     clamped = Math.min(clamped, maxAllowed);
   }
 
-  return clamped;
+  return Math.min(clamped, maxCeiling);
 }
 
 function cleanQuery(name: string): string {
@@ -246,7 +241,7 @@ async function smartGet(url: string, headers: Record<string, string>, timeout = 
   }
 }
 
-async function fetchExactTcgSellerListings(prodId: number, minFloor: number): Promise<Array<{ itemPrice: number; shipping: number; total: number }>> {
+async function fetchExactTcgSellerListings(prodId: number, minFloor: number, maxCeiling: number): Promise<Array<{ itemPrice: number; shipping: number; total: number }>> {
   try {
     const url = `https://mp-search-api.tcgplayer.com/v1/product/${prodId}/listings`;
     const body = {
@@ -267,7 +262,7 @@ async function fetchExactTcgSellerListings(prodId: number, minFloor: number): Pr
       const p = parseFloat(l.price || 0);
       const s = parseFloat(l.shippingPrice || 0);
       const total = Math.round((p + s) * 100) / 100;
-      if (p > 0 && total >= minFloor) {
+      if (p > 0 && total >= minFloor && total <= maxCeiling) {
         quotes.push({ itemPrice: p, shipping: s, total });
       }
     }
@@ -280,6 +275,7 @@ async function fetchTcgPlayerComp(ruleId: string | undefined, ruleName: string, 
   const query = cleanQuery(ruleName);
   const formFactor = inferFormFactor(ruleId, ruleName);
   const minFloor = getMinPlausiblePriceFloor(formFactor);
+  const maxCeiling = getMaxPlausiblePriceCeiling(formFactor, ruleId, ruleName);
 
   try {
     const url = `https://mp-search-api.tcgplayer.com/v1/search/request?q=${encodeURIComponent(query)}&isList=false`;
@@ -309,7 +305,7 @@ async function fetchTcgPlayerComp(ruleId: string | undefined, ruleName: string, 
       const productName = `${item.productName || ''} ${item.setName || ''}`.trim();
       const t = productName.toLowerCase();
 
-      if (!isValidCompTitle(productName, ruleName, formFactor)) continue;
+      if (!isValidCompTitle(productName, ruleName, formFactor, undefined, ruleId)) continue;
 
       const qLower = query.toLowerCase();
       if (qLower.includes('elite trainer') && !t.includes('elite trainer') && !t.includes('etb')) continue;
@@ -319,15 +315,15 @@ async function fetchTcgPlayerComp(ruleId: string | undefined, ruleName: string, 
       const prodId = Math.floor(Number(item.productId));
       const directUrl = `https://www.tcgplayer.com/product/${prodId}`;
 
-      const exactListings = await fetchExactTcgSellerListings(prodId, minFloor);
+      const exactListings = await fetchExactTcgSellerListings(prodId, minFloor, maxCeiling);
       const listingTotals = exactListings.map(l => l.total);
       const fallbackPrice = parseFloat(item.lowestPrice || item.marketPrice || 0);
-      const validFallback = fallbackPrice >= minFloor ? [fallbackPrice] : [];
+      const validFallback = (fallbackPrice >= minFloor && fallbackPrice <= maxCeiling) ? [fallbackPrice] : [];
       const rawSamples = listingTotals.length > 0 ? listingTotals : validFallback;
-      const stats = computeTrimmedCompStats(rawSamples, minFloor);
+      const stats = computeTrimmedCompStats(rawSamples, minFloor, maxCeiling);
       if (!stats || stats.lowestPrice < minFloor) continue;
 
-      const guardOpts = { sampleCount: rawSamples.length, ruleId, policyBaseline };
+      const guardOpts = { sampleCount: rawSamples.length, ruleId, targetName: ruleName, policyBaseline };
       const clampedAvg = applySyncSanityGuard(stats.averagePrice, formFactor, singleUnitBaseline, guardOpts);
       const clampedLow = Math.max(minFloor, Math.min(applySyncSanityGuard(stats.lowestPrice, formFactor, singleUnitBaseline, guardOpts), clampedAvg));
       const shipAmt = exactListings.length > 0 ? exactListings[0].shipping : 0;
@@ -360,8 +356,9 @@ async function fetchEbayComp(ruleId: string | undefined, ruleName: string, price
   const query = cleanQuery(ruleName);
   const formFactor = inferFormFactor(ruleId, ruleName);
   const hardMinFloor = getMinPlausiblePriceFloor(formFactor);
+  const hardMaxCeiling = getMaxPlausiblePriceCeiling(formFactor, ruleId, ruleName);
   const minValid = Math.max(hardMinFloor, (priceFloorRef || hardMinFloor) * 0.60);
-  const maxValid = Math.max(minValid * 1.5, (priceFloorRef || hardMinFloor) * 1.55);
+  const maxValid = Math.min(hardMaxCeiling, Math.max(minValid * 1.5, (priceFloorRef || hardMinFloor) * 1.55));
 
   try {
     const searchQ = `site:ebay.com/itm "Pokemon" ${query} Sealed`;
@@ -381,7 +378,7 @@ async function fetchEbayComp(ruleId: string | undefined, ruleName: string, price
 
       if (!link.includes('ebay.com/itm/')) return;
       const combinedText = `${title} ${snippet}`;
-      if (!isValidCompTitle(combinedText, ruleName, formFactor)) return;
+      if (!isValidCompTitle(combinedText, ruleName, formFactor, undefined, ruleId)) return;
 
       const pMatches = [...combinedText.matchAll(/\$([0-9]{2,4}\.[0-9]{2})/g)].map(m => parseFloat(m[1]));
       const validPrices = pMatches.filter(p => p >= minValid && p <= maxValid);
@@ -400,7 +397,7 @@ async function fetchEbayComp(ruleId: string | undefined, ruleName: string, price
       }
 
       const total = Math.round((itemPrice + shipCost) * 100) / 100;
-      if (total < hardMinFloor) return;
+      if (total < hardMinFloor || total > hardMaxCeiling) return;
 
       const cleanUrl = link.split('?')[0];
       candidates.push({
@@ -417,10 +414,10 @@ async function fetchEbayComp(ruleId: string | undefined, ruleName: string, price
     if (candidates.length > 0) {
       candidates.sort((a, b) => a.total - b.total);
       const rawTotals = candidates.map(c => c.total);
-      const stats = computeTrimmedCompStats(rawTotals, hardMinFloor);
+      const stats = computeTrimmedCompStats(rawTotals, hardMinFloor, hardMaxCeiling);
       if (!stats || stats.lowestPrice < hardMinFloor) return undefined;
 
-      const guardOpts = { sampleCount: rawTotals.length, ruleId, policyBaseline };
+      const guardOpts = { sampleCount: rawTotals.length, ruleId, targetName: ruleName, policyBaseline };
       const clampedAvg = applySyncSanityGuard(stats.averagePrice, formFactor, singleUnitBaseline, guardOpts);
       const clampedLow = Math.max(hardMinFloor, Math.min(applySyncSanityGuard(stats.lowestPrice, formFactor, singleUnitBaseline, guardOpts), clampedAvg));
       const bestMatch = candidates.find(c => c.total >= stats.lowestPrice) || candidates[0];

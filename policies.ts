@@ -95,6 +95,16 @@ export const BOOSTER_BOX_EXCLUSION_TERMS = [
   'german'
 ];
 
+export const PC_EXCLUSIVE_EXCLUSION_TERMS = [
+  'pokemon center',
+  'pokémon center',
+  'pkmn center',
+  'pc exclusive',
+  'pc etb',
+  'center exclusive',
+  'stamped'
+];
+
 export const MIN_PLAUSIBLE_PRICE_FLOORS: Record<string, number> = {
   'Booster Box': 95,
   'ETB': 32,
@@ -108,8 +118,42 @@ export function getMinPlausiblePriceFloor(formFactor?: string): number {
   return MIN_PLAUSIBLE_PRICE_FLOORS[formFactor] ?? 18;
 }
 
-export function isValidSkuForFormFactor(title: string, formFactor?: string, price?: number): boolean {
-  const lower = ` ${title.toLowerCase()} `;
+export function getMaxPlausiblePriceCeiling(formFactor?: string, ruleId?: string, targetName?: string): number {
+  const key = `${ruleId || ''} ${targetName || ''}`.toLowerCase();
+  const isSpecialSet = /\b151\b|paldean[- ]fates|prismatic|crown[- ]zenith/i.test(key);
+  const isSwsh = (
+    /^swsh-|sword\s*&\s*shield|battle[- ]styles|chilling[- ]reign|evolving[- ]skies|celebrations|fusion[- ]strike|brilliant[- ]stars|astral[- ]radiance|pokemon[- ]go|lost[- ]origin|silver[- ]tempest|vivid[- ]voltage|darkness[- ]ablaze|rebel[- ]clash|shining[- ]fates|champions[- ]path|hidden[- ]fates/i.test(key)
+  ) && !/crown[- ]zenith/i.test(key);
+
+  if (formFactor === 'ETB') {
+    if (isSpecialSet) return 210;
+    if (isSwsh) return 450;
+    return 115;
+  }
+  if (formFactor === 'Booster Box') {
+    if (isSwsh) return 1600;
+    return 275;
+  }
+  if (formFactor === 'Booster Bundle') {
+    return 80;
+  }
+  if (formFactor === 'ETB Case') {
+    return 2200;
+  }
+  if (formFactor === 'Master Case') {
+    return 2600;
+  }
+  return 2600;
+}
+
+export function isValidSkuForFormFactor(
+  title: string,
+  formFactor?: string,
+  price?: number,
+  options?: { ruleId?: string; targetName?: string; handle?: string }
+): boolean {
+  const combinedLower = ` ${title} ${options?.handle || ''} `.toLowerCase();
+  const targetLower = `${options?.targetName || ''} ${options?.ruleId || ''}`.toLowerCase();
 
   for (const junkRegex of GLOBAL_JUNK_EXCLUSIONS) {
     if (junkRegex.test(title)) {
@@ -117,9 +161,18 @@ export function isValidSkuForFormFactor(title: string, formFactor?: string, pric
     }
   }
 
+  // Strict Standard vs. Pokemon Center Exclusive Firewall for all non-PC ETB targets
+  const isEtbContext = formFactor === 'ETB' || formFactor === 'ETB Case' || /\b(etb|elite trainer)\b/i.test(combinedLower);
+  if (isEtbContext) {
+    const isTargetExplicitPc = PC_EXCLUSIVE_EXCLUSION_TERMS.some(term => targetLower.includes(term));
+    if (!isTargetExplicitPc && PC_EXCLUSIVE_EXCLUSION_TERMS.some(term => combinedLower.includes(term))) {
+      return false;
+    }
+  }
+
   if (formFactor === 'Booster Box' || formFactor === 'Master Case') {
     for (const term of BOOSTER_BOX_EXCLUSION_TERMS) {
-      if (lower.includes(term)) {
+      if (combinedLower.includes(term)) {
         return false;
       }
     }
@@ -141,6 +194,12 @@ export function isValidSkuForFormFactor(title: string, formFactor?: string, pric
     const minFloor = getMinPlausiblePriceFloor(formFactor);
     if (price < minFloor) {
       return false;
+    }
+    if (formFactor) {
+      const maxCeiling = getMaxPlausiblePriceCeiling(formFactor, options?.ruleId, options?.targetName || title);
+      if (price > maxCeiling) {
+        return false;
+      }
     }
   }
 

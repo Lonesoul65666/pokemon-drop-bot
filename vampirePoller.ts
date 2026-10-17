@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getNextProxy } from './lgsPoller';
 import { processIncomingDrop } from './listener';
-import { WATCH_POLICIES, getMinPlausiblePriceFloor, isValidSkuForFormFactor } from './policies';
+import { WATCH_POLICIES, getMinPlausiblePriceFloor, getMaxPlausiblePriceCeiling, isValidSkuForFormFactor } from './policies';
 import { isValidCompTitle } from './marketComps';
 import { markLiveStockOut } from './evaluator';
 
@@ -146,8 +146,8 @@ export async function pollRedditDeals(): Promise<void> {
   }
 }
 
-function doesTcgResultMatchFormFactor(title: string, targetName: string, formFactor: string, price?: number): boolean {
-  if (!isValidCompTitle(title, targetName, formFactor, price)) return false;
+function doesTcgResultMatchFormFactor(title: string, targetName: string, formFactor: string, price?: number, ruleId?: string): boolean {
+  if (!isValidCompTitle(title, targetName, formFactor, price, ruleId)) return false;
   const t = title.toLowerCase();
 
   if (formFactor === 'ETB Case') {
@@ -168,7 +168,7 @@ function doesTcgResultMatchFormFactor(title: string, targetName: string, formFac
   return true;
 }
 
-async function getBestVerifiedTcgSeller(prodId: number, minFloor: number): Promise<{ price: number; shipping: number; sellerName: string; rating: number; sales: number } | null> {
+async function getBestVerifiedTcgSeller(prodId: number, minFloor: number, maxCeiling: number): Promise<{ price: number; shipping: number; sellerName: string; rating: number; sales: number } | null> {
   try {
     const url = `https://mp-search-api.tcgplayer.com/v1/product/${prodId}/listings`;
     const body = {
@@ -190,7 +190,7 @@ async function getBestVerifiedTcgSeller(prodId: number, minFloor: number): Promi
       const itemPrice = parseFloat(l.price || 0);
       const shipPrice = parseFloat(l.shippingPrice || 0);
       const total = Math.round((itemPrice + shipPrice) * 100) / 100;
-      if (itemPrice > 0 && total >= minFloor) {
+      if (itemPrice > 0 && total >= minFloor && total <= maxCeiling) {
         return {
           price: total,
           shipping: shipPrice,
@@ -221,12 +221,13 @@ export async function pollTcgPlayerUndercuts(): Promise<void> {
       tcgCursor = (tcgCursor + 1) % activePolicies.length;
       const formFactor = policy.formFactor || 'Booster Box';
       const minFloor = getMinPlausiblePriceFloor(formFactor);
+      const maxCeiling = getMaxPlausiblePriceCeiling(formFactor, policy.id, policy.name);
 
       try {
         if ((policy as any).tcgProductId) {
           const prodId = (policy as any).tcgProductId;
-          const bestSeller = await getBestVerifiedTcgSeller(prodId, minFloor);
-          if (bestSeller && bestSeller.price >= minFloor) {
+          const bestSeller = await getBestVerifiedTcgSeller(prodId, minFloor, maxCeiling);
+          if (bestSeller && bestSeller.price >= minFloor && bestSeller.price <= maxCeiling) {
             const prev = lowestTcgSeenMap.get(policy.id);
             const minsSinceLast = prev ? (Date.now() - prev.timestamp) / (1000 * 60) : 999;
             if (!prev || bestSeller.price <= prev.lowestPrice - 2 || minsSinceLast >= 15) {
@@ -272,13 +273,13 @@ export async function pollTcgPlayerUndercuts(): Promise<void> {
         for (const item of results) {
           if (item.customAttributes?.number) continue;
           const prodTitle = `${item.productName || ''} ${item.setName || ''}`.trim();
-          if (!doesTcgResultMatchFormFactor(prodTitle, policy.name, formFactor)) continue;
+          if (!doesTcgResultMatchFormFactor(prodTitle, policy.name, formFactor, undefined, policy.id)) continue;
 
           const prodId = Math.floor(Number(item.productId));
-          const bestSeller = await getBestVerifiedTcgSeller(prodId, minFloor);
+          const bestSeller = await getBestVerifiedTcgSeller(prodId, minFloor, maxCeiling);
           const fallbackCandidate = parseFloat(item.lowestPriceWithShipping || item.lowestPrice || 0);
           const lowestPrice = bestSeller ? bestSeller.price : fallbackCandidate;
-          if (!lowestPrice || lowestPrice < minFloor) continue;
+          if (!lowestPrice || lowestPrice < minFloor || lowestPrice > maxCeiling) continue;
 
           const shopLabel = bestSeller
             ? `${bestSeller.sellerName} (TCGPlayer • ${bestSeller.rating}%)`

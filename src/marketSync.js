@@ -82,7 +82,7 @@ class MarketSyncService {
                             continue;
                         const rawTitle = item.productName || '';
                         const title = rawTitle.toLowerCase();
-                        if (!(0, marketComps_1.isValidCompTitle)(rawTitle, p.name, p.formFactor))
+                        if (!(0, marketComps_1.isValidCompTitle)(rawTitle, p.name, p.formFactor, undefined, p.id))
                             continue;
                         const isMatch = (p.formFactor === 'Booster Box' && title.includes('booster box')) ||
                             (p.formFactor === 'ETB' && (title.includes('elite trainer') || title.includes('etb'))) ||
@@ -94,6 +94,7 @@ class MarketSyncService {
                                 const rounded = (0, marketComps_1.applySyncSanityGuard)(mkt, p.formFactor, undefined, {
                                     sampleCount: results.length,
                                     ruleId: p.id,
+                                    targetName: p.name,
                                     policyBaseline: baselineRef
                                 });
                                 p.estimatedMarketValue = rounded;
@@ -127,7 +128,10 @@ class MarketSyncService {
                 const parentMkt = basePriceMap.get(parentId) || parentPolicy?.estimatedMarketValue;
                 if (parentMkt) {
                     const mult = c.formFactor === 'Master Case' ? 6 : 10;
-                    const caseMkt = (0, marketComps_1.applySyncSanityGuard)(Math.round(parentMkt * mult), c.formFactor, parentMkt);
+                    const caseMkt = (0, marketComps_1.applySyncSanityGuard)(Math.round(parentMkt * mult), c.formFactor, parentMkt, {
+                        ruleId: c.id,
+                        targetName: c.name
+                    });
                     c.estimatedMarketValue = caseMkt;
                     const existing = cache[c.id] || {};
                     const hasLiveStoreDrop = existing.inStock === true && existing.lowestStore && !existing.lowestStore.includes('TCGPlayer') && !existing.lowestStore.includes('Catalog');

@@ -79,7 +79,7 @@ export class MarketSyncService {
             if (item.customAttributes?.number) continue;
             const rawTitle = item.productName || '';
             const title = rawTitle.toLowerCase();
-            if (!isValidCompTitle(rawTitle, p.name, p.formFactor)) continue;
+            if (!isValidCompTitle(rawTitle, p.name, p.formFactor, undefined, p.id)) continue;
 
             const isMatch =
               (p.formFactor === 'Booster Box' && title.includes('booster box')) ||
@@ -93,6 +93,7 @@ export class MarketSyncService {
                 const rounded = applySyncSanityGuard(mkt, p.formFactor, undefined, {
                   sampleCount: results.length,
                   ruleId: p.id,
+                  targetName: p.name,
                   policyBaseline: baselineRef
                 });
                 p.estimatedMarketValue = rounded;
@@ -128,7 +129,10 @@ export class MarketSyncService {
         const parentMkt = basePriceMap.get(parentId) || parentPolicy?.estimatedMarketValue;
         if (parentMkt) {
           const mult = c.formFactor === 'Master Case' ? 6 : 10;
-          const caseMkt = applySyncSanityGuard(Math.round(parentMkt * mult), c.formFactor, parentMkt);
+          const caseMkt = applySyncSanityGuard(Math.round(parentMkt * mult), c.formFactor, parentMkt, {
+            ruleId: c.id,
+            targetName: c.name
+          });
           c.estimatedMarketValue = caseMkt;
 
           const existing = cache[c.id] || {};

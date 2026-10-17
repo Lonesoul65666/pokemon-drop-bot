@@ -149,8 +149,8 @@ async function pollRedditDeals() {
         setTimeout(pollRedditDeals, 60000);
     }
 }
-function doesTcgResultMatchFormFactor(title, targetName, formFactor, price) {
-    if (!(0, marketComps_1.isValidCompTitle)(title, targetName, formFactor, price))
+function doesTcgResultMatchFormFactor(title, targetName, formFactor, price, ruleId) {
+    if (!(0, marketComps_1.isValidCompTitle)(title, targetName, formFactor, price, ruleId))
         return false;
     const t = title.toLowerCase();
     if (formFactor === 'ETB Case') {
@@ -170,7 +170,7 @@ function doesTcgResultMatchFormFactor(title, targetName, formFactor, price) {
     }
     return true;
 }
-async function getBestVerifiedTcgSeller(prodId, minFloor) {
+async function getBestVerifiedTcgSeller(prodId, minFloor, maxCeiling) {
     try {
         const url = `https://mp-search-api.tcgplayer.com/v1/product/${prodId}/listings`;
         const body = {
@@ -193,7 +193,7 @@ async function getBestVerifiedTcgSeller(prodId, minFloor) {
             const itemPrice = parseFloat(l.price || 0);
             const shipPrice = parseFloat(l.shippingPrice || 0);
             const total = Math.round((itemPrice + shipPrice) * 100) / 100;
-            if (itemPrice > 0 && total >= minFloor) {
+            if (itemPrice > 0 && total >= minFloor && total <= maxCeiling) {
                 return {
                     price: total,
                     shipping: shipPrice,
@@ -223,11 +223,12 @@ async function pollTcgPlayerUndercuts() {
             tcgCursor = (tcgCursor + 1) % activePolicies.length;
             const formFactor = policy.formFactor || 'Booster Box';
             const minFloor = (0, policies_1.getMinPlausiblePriceFloor)(formFactor);
+            const maxCeiling = (0, policies_1.getMaxPlausiblePriceCeiling)(formFactor, policy.id, policy.name);
             try {
                 if (policy.tcgProductId) {
                     const prodId = policy.tcgProductId;
-                    const bestSeller = await getBestVerifiedTcgSeller(prodId, minFloor);
-                    if (bestSeller && bestSeller.price >= minFloor) {
+                    const bestSeller = await getBestVerifiedTcgSeller(prodId, minFloor, maxCeiling);
+                    if (bestSeller && bestSeller.price >= minFloor && bestSeller.price <= maxCeiling) {
                         const prev = lowestTcgSeenMap.get(policy.id);
                         const minsSinceLast = prev ? (Date.now() - prev.timestamp) / (1000 * 60) : 999;
                         if (!prev || bestSeller.price <= prev.lowestPrice - 2 || minsSinceLast >= 15) {
@@ -270,13 +271,13 @@ async function pollTcgPlayerUndercuts() {
                     if (item.customAttributes?.number)
                         continue;
                     const prodTitle = `${item.productName || ''} ${item.setName || ''}`.trim();
-                    if (!doesTcgResultMatchFormFactor(prodTitle, policy.name, formFactor))
+                    if (!doesTcgResultMatchFormFactor(prodTitle, policy.name, formFactor, undefined, policy.id))
                         continue;
                     const prodId = Math.floor(Number(item.productId));
-                    const bestSeller = await getBestVerifiedTcgSeller(prodId, minFloor);
+                    const bestSeller = await getBestVerifiedTcgSeller(prodId, minFloor, maxCeiling);
                     const fallbackCandidate = parseFloat(item.lowestPriceWithShipping || item.lowestPrice || 0);
                     const lowestPrice = bestSeller ? bestSeller.price : fallbackCandidate;
-                    if (!lowestPrice || lowestPrice < minFloor)
+                    if (!lowestPrice || lowestPrice < minFloor || lowestPrice > maxCeiling)
                         continue;
                     const shopLabel = bestSeller
                         ? `${bestSeller.sellerName} (TCGPlayer • ${bestSeller.rating}%)`

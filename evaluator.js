@@ -143,18 +143,23 @@ function evaluateItem(item) {
         const isMatched = rule.matchers.some((regex) => regex.test(cleanTitle));
         if (!isMatched)
             continue;
-        if (!(0, policies_1.isValidSkuForFormFactor)(cleanTitle, rule.formFactor, item.price)) {
+        if (!(0, policies_1.isValidSkuForFormFactor)(cleanTitle, rule.formFactor, item.price, {
+            ruleId: rule.id,
+            targetName: rule.name,
+            handle: `${item.url || ''} ${item.productUrl || ''}`
+        })) {
             continue;
         }
         const minFloor = (0, policies_1.getMinPlausiblePriceFloor)(rule.formFactor);
-        if (item.price !== undefined && item.price < minFloor) {
+        const maxCeiling = (0, policies_1.getMaxPlausiblePriceCeiling)(rule.formFactor, rule.id, rule.name);
+        if (item.price !== undefined && (item.price < minFloor || item.price > maxCeiling)) {
             continue;
         }
         const liveTelPre = (0, marketTelemetry_1.getTelemetry)()[rule.id];
         const currentMarketRef = (liveTelPre && liveTelPre.rollingAverage > 0)
-            ? liveTelPre.rollingAverage
-            : (rule.estimatedMarketValue || rule.msrpCeiling);
-        if (item.price && item.price >= minFloor) {
+            ? Math.min(maxCeiling, liveTelPre.rollingAverage)
+            : Math.min(maxCeiling, rule.estimatedMarketValue || rule.msrpCeiling);
+        if (item.price && item.price >= minFloor && item.price <= maxCeiling) {
             (0, marketTelemetry_1.recordObservation)(rule.id, item.price, item.retailer, item.productUrl || item.url, rule.msrpCeiling);
             (0, marketTape_1.recordDailySnapshot)(rule.id, item.price, item.retailer, currentMarketRef);
         }

@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { atomicWriteJson, WATCH_POLICIES } from './policies';
+import { atomicWriteJson, WATCH_POLICIES, getMinPlausiblePriceFloor, getMaxPlausiblePriceCeiling } from './policies';
 
 export const SALES_HISTORY_PATH = path.resolve(process.cwd(), 'salesHistory.json');
 export const DAILY_SNAPSHOTS_PATH = path.resolve(process.cwd(), 'dailySnapshots.json');
@@ -176,80 +176,11 @@ function loadAndSeedMarketTape() {
     }
   } catch (e) {}
 
-  let drops: any[] = [];
-  try {
-    if (fs.existsSync(DROPS_HISTORY_PATH)) {
-      drops = JSON.parse(fs.readFileSync(DROPS_HISTORY_PATH, 'utf-8'));
-    }
-  } catch (e) {}
-
-  let liveMap: Record<string, any> = {};
-  try {
-    if (fs.existsSync(LIVE_STOCK_PATH)) {
-      liveMap = JSON.parse(fs.readFileSync(LIVE_STOCK_PATH, 'utf-8'));
-    }
-  } catch (e) {}
-
   let modified = false;
   const now = Date.now();
   const todayKey = getDateKey(now);
 
-  // Seed salesHistory from dropsHistory & liveStock.__recentOos if empty
-  if (salesHistory.length === 0) {
-    for (const d of drops) {
-      if (!d.ruleId || !d.price) continue;
-      const ts = d.timestamp || (now - 30 * 60 * 1000);
-      const isSoldOut = Boolean(d.soldOut);
-      const durMins = isSoldOut ? 4 : undefined;
-      salesHistory.push({
-        id: `${d.ruleId}__${d.retailer}__${ts}`,
-        itemId: String(d.itemId || `${d.ruleId}_${d.retailer}`),
-        targetId: d.ruleId,
-        targetName: d.title || d.ruleId,
-        store: d.retailer || 'LGS',
-        price: Number(d.price),
-        landedPrice: Number(d.landedPrice || d.price),
-        marketPrice: Number(d.marketValue || d.price),
-        discountPct: Number(d.discountPct || 0),
-        url: d.productUrl || d.url || '',
-        restockedAt: ts,
-        lastSeenAt: now,
-        clearedAt: isSoldOut ? (ts + 4 * 60 * 1000) : undefined,
-        durationMins: durMins,
-        status: isSoldOut ? 'CLEARED' : 'ACTIVE',
-        velocity: isSoldOut ? '⚡ FLASH' : 'ACTIVE'
-      });
-      modified = true;
-    }
-
-    for (const [ruleId, entry] of Object.entries(liveMap)) {
-      if (ruleId === '__recentOos' || !entry || !entry.inStock) continue;
-      const exists = salesHistory.some(ev => ev.targetId === ruleId && ev.store === entry.retailer && ev.status === 'ACTIVE');
-      if (!exists) {
-        const mkt = cache[ruleId]?.rollingAverage || entry.price;
-        const disc = mkt > 0 ? Math.round(((mkt - entry.price) / mkt) * 100) : 0;
-        salesHistory.push({
-          id: `${ruleId}__${entry.retailer}__${entry.updatedAt || now}`,
-          itemId: String(entry.itemId || `${ruleId}_${entry.retailer}`),
-          targetId: ruleId,
-          targetName: entry.ruleName || entry.title || ruleId,
-          store: entry.retailer || 'LGS',
-          price: Number(entry.price),
-          landedPrice: Number(entry.landedPrice || entry.price),
-          marketPrice: Number(mkt),
-          discountPct: disc,
-          url: entry.productUrl || entry.url || '',
-          restockedAt: entry.updatedAt || now,
-          lastSeenAt: now,
-          status: 'ACTIVE',
-          velocity: 'ACTIVE'
-        });
-        modified = true;
-      }
-    }
-  }
-
-  // Seed dailySnapshots for all policies if missing
+  // Seed Day 0 dailySnapshots for all policies if missing (0.0% initial delta)
   for (const pol of WATCH_POLICIES) {
     const c = cache[pol.id];
     const mkt = (c && c.rollingAverage > 0) ? c.rollingAverage : pol.estimatedMarketValue;
@@ -257,19 +188,7 @@ function loadAndSeedMarketTape() {
     const store = (c && c.lowestStore) ? c.lowestStore : 'TCGPlayer Market';
 
     if (!dailySnapshots[pol.id] || dailySnapshots[pol.id].length === 0) {
-      // Seed 7d anchor snapshot + today snapshot so 7d NRT delta is immediately active
-      const sevenDaysAgoTs = now - SEVEN_DAYS_MS;
-      const anchorKey = getDateKey(sevenDaysAgoTs);
-      const anchorMkt = pol.estimatedMarketValue || mkt;
       dailySnapshots[pol.id] = [
-        {
-          date: anchorKey,
-          timestamp: sevenDaysAgoTs,
-          marketPrice: anchorMkt,
-          lowestDrop: low,
-          lowestStore: store,
-          observations: 1
-        },
         {
           date: todayKey,
           timestamp: now,
@@ -283,7 +202,7 @@ function loadAndSeedMarketTape() {
     }
   }
 
-  // Seed weeklyCheckpoints immediately on first boot if empty
+  // Seed weeklyCheckpoints immediately on first boot if empty (Week 0 at 0.0% delta)
   if (Object.keys(weeklyCheckpoints).length === 0) {
     recordSundayWeeklyCheckpoints(true);
     modified = true;
@@ -301,6 +220,17 @@ export function recordDailySnapshot(
   marketPrice?: number
 ) {
   if (!targetId || price <= 0) return;
+
+  const pol = WATCH_POLICIES.find(p => p.id === targetId);
+  if (pol) {
+    const minFloor = getMinPlausiblePriceFloor(pol.formFactor);
+    const maxCeiling = getMaxPlausiblePriceCeiling(pol.formFactor, pol.id, pol.name);
+    if (price < minFloor || price > maxCeiling) return;
+    if (marketPrice && (marketPrice < minFloor || marketPrice > maxCeiling)) {
+      marketPrice = pol.estimatedMarketValue;
+    }
+  }
+
   const now = Date.now();
   const todayKey = getDateKey(now);
   const list = dailySnapshots[targetId] || [];
@@ -497,15 +427,15 @@ export function recordSundayWeeklyCheckpoints(seedMode = false): number {
 
     const history = weeklyCheckpoints[pol.id] || [];
     if (seedMode && history.length === 0) {
-      // Seed prior Sunday baseline + current Sunday checkpoint so Sunday-to-Sunday comparison works immediately
+      // Seed prior Sunday baseline + current Sunday checkpoint at 0.0% delta on clean boot
       const prevSundayKey = getDateKey(new Date(weekEnding).getTime() - SEVEN_DAYS_MS);
-      const baseRef = pol.estimatedMarketValue || currentMarket;
+      const baseRef = currentMarket;
       history.push({
         weekEnding: prevSundayKey,
         timestamp: now - SEVEN_DAYS_MS,
-        marketPrice: baseRef,
+        marketPrice: Math.round(baseRef * 100) / 100,
         avgClearPrice: pol.maxMarketBuyPrice,
-        lowestDrop: Math.min(baseRef, lowestDrop),
+        lowestDrop: Math.round(Math.min(baseRef, lowestDrop) * 100) / 100,
         clearedCount: 0,
         topStore,
         wowDeltaPct: 0

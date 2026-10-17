@@ -1,6 +1,14 @@
 import fs from 'fs';
 import path from 'path';
-import { WATCH_POLICIES, PolicyRule, GLOBAL_JUNK_EXCLUSIONS, isValidSkuForFormFactor, getMinPlausiblePriceFloor, atomicWriteJson } from './policies';
+import {
+  WATCH_POLICIES,
+  PolicyRule,
+  GLOBAL_JUNK_EXCLUSIONS,
+  isValidSkuForFormFactor,
+  getMinPlausiblePriceFloor,
+  getMaxPlausiblePriceCeiling,
+  atomicWriteJson
+} from './policies';
 import { recordObservation, getTelemetry } from './marketTelemetry';
 import { recordDailySnapshot, recordTapeRestock, recordTapeSoldOut } from './marketTape';
 
@@ -195,21 +203,26 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
     const isMatched = rule.matchers.some((regex) => regex.test(cleanTitle));
     if (!isMatched) continue;
 
-    if (!isValidSkuForFormFactor(cleanTitle, rule.formFactor, item.price)) {
+    if (!isValidSkuForFormFactor(cleanTitle, rule.formFactor, item.price, {
+      ruleId: rule.id,
+      targetName: rule.name,
+      handle: `${item.url || ''} ${item.productUrl || ''}`
+    })) {
       continue;
     }
 
     const minFloor = getMinPlausiblePriceFloor(rule.formFactor);
-    if (item.price !== undefined && item.price < minFloor) {
+    const maxCeiling = getMaxPlausiblePriceCeiling(rule.formFactor, rule.id, rule.name);
+    if (item.price !== undefined && (item.price < minFloor || item.price > maxCeiling)) {
       continue;
     }
 
     const liveTelPre = getTelemetry()[rule.id];
     const currentMarketRef = (liveTelPre && liveTelPre.rollingAverage > 0)
-      ? liveTelPre.rollingAverage
-      : (rule.estimatedMarketValue || rule.msrpCeiling);
+      ? Math.min(maxCeiling, liveTelPre.rollingAverage)
+      : Math.min(maxCeiling, rule.estimatedMarketValue || rule.msrpCeiling);
 
-    if (item.price && item.price >= minFloor) {
+    if (item.price && item.price >= minFloor && item.price <= maxCeiling) {
       recordObservation(rule.id, item.price, item.retailer, item.productUrl || item.url, rule.msrpCeiling);
       recordDailySnapshot(rule.id, item.price, item.retailer, currentMarketRef);
     }

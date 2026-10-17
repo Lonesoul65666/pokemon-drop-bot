@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WATCH_POLICIES = exports.MIN_PLAUSIBLE_PRICE_FLOORS = exports.BOOSTER_BOX_EXCLUSION_TERMS = exports.GLOBAL_JUNK_EXCLUSIONS = void 0;
+exports.WATCH_POLICIES = exports.MIN_PLAUSIBLE_PRICE_FLOORS = exports.PC_EXCLUSIVE_EXCLUSION_TERMS = exports.BOOSTER_BOX_EXCLUSION_TERMS = exports.GLOBAL_JUNK_EXCLUSIONS = void 0;
 exports.getMinPlausiblePriceFloor = getMinPlausiblePriceFloor;
+exports.getMaxPlausiblePriceCeiling = getMaxPlausiblePriceCeiling;
 exports.isValidSkuForFormFactor = isValidSkuForFormFactor;
 exports.atomicWriteJson = atomicWriteJson;
 exports.loadPolicies = loadPolicies;
@@ -77,6 +78,15 @@ exports.BOOSTER_BOX_EXCLUSION_TERMS = [
     'french',
     'german'
 ];
+exports.PC_EXCLUSIVE_EXCLUSION_TERMS = [
+    'pokemon center',
+    'pokémon center',
+    'pkmn center',
+    'pc exclusive',
+    'pc etb',
+    'center exclusive',
+    'stamped'
+];
 exports.MIN_PLAUSIBLE_PRICE_FLOORS = {
     'Booster Box': 95,
     'ETB': 32,
@@ -89,16 +99,52 @@ function getMinPlausiblePriceFloor(formFactor) {
         return 18;
     return exports.MIN_PLAUSIBLE_PRICE_FLOORS[formFactor] ?? 18;
 }
-function isValidSkuForFormFactor(title, formFactor, price) {
-    const lower = ` ${title.toLowerCase()} `;
+function getMaxPlausiblePriceCeiling(formFactor, ruleId, targetName) {
+    const key = `${ruleId || ''} ${targetName || ''}`.toLowerCase();
+    const isSpecialSet = /\b151\b|paldean[- ]fates|prismatic|crown[- ]zenith/i.test(key);
+    const isSwsh = (/^swsh-|sword\s*&\s*shield|battle[- ]styles|chilling[- ]reign|evolving[- ]skies|celebrations|fusion[- ]strike|brilliant[- ]stars|astral[- ]radiance|pokemon[- ]go|lost[- ]origin|silver[- ]tempest|vivid[- ]voltage|darkness[- ]ablaze|rebel[- ]clash|shining[- ]fates|champions[- ]path|hidden[- ]fates/i.test(key)) && !/crown[- ]zenith/i.test(key);
+    if (formFactor === 'ETB') {
+        if (isSpecialSet)
+            return 210;
+        if (isSwsh)
+            return 450;
+        return 115;
+    }
+    if (formFactor === 'Booster Box') {
+        if (isSwsh)
+            return 1600;
+        return 275;
+    }
+    if (formFactor === 'Booster Bundle') {
+        return 80;
+    }
+    if (formFactor === 'ETB Case') {
+        return 2200;
+    }
+    if (formFactor === 'Master Case') {
+        return 2600;
+    }
+    return 2600;
+}
+function isValidSkuForFormFactor(title, formFactor, price, options) {
+    const combinedLower = ` ${title} ${options?.handle || ''} `.toLowerCase();
+    const targetLower = `${options?.targetName || ''} ${options?.ruleId || ''}`.toLowerCase();
     for (const junkRegex of exports.GLOBAL_JUNK_EXCLUSIONS) {
         if (junkRegex.test(title)) {
             return false;
         }
     }
+    // Strict Standard vs. Pokemon Center Exclusive Firewall for all non-PC ETB targets
+    const isEtbContext = formFactor === 'ETB' || formFactor === 'ETB Case' || /\b(etb|elite trainer)\b/i.test(combinedLower);
+    if (isEtbContext) {
+        const isTargetExplicitPc = exports.PC_EXCLUSIVE_EXCLUSION_TERMS.some(term => targetLower.includes(term));
+        if (!isTargetExplicitPc && exports.PC_EXCLUSIVE_EXCLUSION_TERMS.some(term => combinedLower.includes(term))) {
+            return false;
+        }
+    }
     if (formFactor === 'Booster Box' || formFactor === 'Master Case') {
         for (const term of exports.BOOSTER_BOX_EXCLUSION_TERMS) {
-            if (lower.includes(term)) {
+            if (combinedLower.includes(term)) {
                 return false;
             }
         }
@@ -116,6 +162,12 @@ function isValidSkuForFormFactor(title, formFactor, price) {
         const minFloor = getMinPlausiblePriceFloor(formFactor);
         if (price < minFloor) {
             return false;
+        }
+        if (formFactor) {
+            const maxCeiling = getMaxPlausiblePriceCeiling(formFactor, options?.ruleId, options?.targetName || title);
+            if (price > maxCeiling) {
+                return false;
+            }
         }
     }
     return true;

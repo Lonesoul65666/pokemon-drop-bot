@@ -33,6 +33,11 @@ function computeTrimmedAverage(samples) {
 function recordObservation(policyId, price, store, url, msrp) {
     if (price <= 0)
         return;
+    const pol = policies_1.WATCH_POLICIES.find(p => p.id === policyId);
+    const minFloor = (0, policies_1.getMinPlausiblePriceFloor)(pol?.formFactor);
+    const maxCeiling = (0, policies_1.getMaxPlausiblePriceCeiling)(pol?.formFactor, policyId, pol?.name);
+    if (price < minFloor || price > maxCeiling)
+        return;
     const now = Date.now();
     const current = telemetryMap[policyId] || {
         lowestPrice: price,
@@ -43,7 +48,7 @@ function recordObservation(policyId, price, store, url, msrp) {
         observationsCount: 0,
         samples: [],
     };
-    // 1. ALWAYS update the dashboard display so you can see the baseline reality, even if it's a gouge
+    // 1. Update lowest observed valid price within strict floor/ceiling bounds
     const isStale = now - current.lastSeen > 12 * 60 * 60 * 1000;
     if (price <= current.lowestPrice || isStale) {
         current.lowestPrice = price;
@@ -54,14 +59,14 @@ function recordObservation(policyId, price, store, url, msrp) {
     if (!Array.isArray(current.samples)) {
         current.samples = [];
     }
-    // 2. ONLY add to the rolling average math if it isn't an extreme scam or 400% markup gouge
-    if (price <= msrp * 4.5 && price >= msrp * 0.35) {
+    // 2. Add to rolling average within era/packaging ceiling
+    if (price <= maxCeiling && price >= minFloor) {
         current.samples.push(price);
         if (current.samples.length > 40) {
             current.samples.shift();
         }
         current.observationsCount = (current.observationsCount || 0) + 1;
-        current.rollingAverage = computeTrimmedAverage(current.samples);
+        current.rollingAverage = Math.min(maxCeiling, computeTrimmedAverage(current.samples));
     }
     telemetryMap[policyId] = current;
     // Debounced atomic write to disk every 3 seconds
