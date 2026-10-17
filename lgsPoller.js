@@ -39,14 +39,17 @@ try {
 }
 catch (e) { }
 function flushStoreHealthToDisk() {
+    const activeNames = new Set(MONITORED_STORES.map(s => s.name));
     const out = {};
     for (const [k, v] of storeHealthMap.entries()) {
-        out[k] = v;
+        if (activeNames.has(k)) {
+            out[k] = v;
+        }
     }
     (0, policies_1.atomicWriteJson)(STORE_HEALTH_PATH, out);
 }
 const MONITORED_STORES = [
-    { name: 'Forge & Fire', baseUrl: 'https://forgeandfiregaming.com' },
+    // Existing Verified USD Shopify Stores (14)
     { name: 'Smoke & Mirrors', baseUrl: 'https://smokeandmirrorshobby.com' },
     { name: 'Safari Zone', baseUrl: 'https://safari-zone.com' },
     { name: 'Zulus Games', baseUrl: 'https://zulusgames.com' },
@@ -55,17 +58,30 @@ const MONITORED_STORES = [
     { name: 'Card Shop Live', baseUrl: 'https://cardshoplive.com' },
     { name: 'Joshs Cards', baseUrl: 'https://joshscards.com' },
     { name: 'Flipside Gaming', baseUrl: 'https://www.flipsidegaming.com' },
-    { name: 'Full Grip Games', baseUrl: 'https://www.fullgripgames.com' },
     { name: 'Over The Brick', baseUrl: 'https://overthebrick.com' },
     { name: 'Knight & Day Games', baseUrl: 'https://knightanddaygames.com' },
-    { name: 'PokeNE', baseUrl: 'https://www.pokene.com' },
     { name: 'TCG Stadium', baseUrl: 'https://tcg-stadium.com' },
     { name: 'Rip N Ship Arena', baseUrl: 'https://www.ripnshiparena.com' },
     { name: 'Collector Store', baseUrl: 'https://collectorstore.com' },
     { name: 'Prodigy Games', baseUrl: 'https://prodigygames.com' },
-    { name: 'Silver Moon', baseUrl: 'https://silvermooncards.com' },
-    { name: 'The Lotusbox', baseUrl: 'https://thelotusbox.com' },
-    { name: 'Rare Candy', baseUrl: 'https://rarecandy.com' }
+    // Wave 1 Newly Onboarded Verified USD Shopify Stores (17)
+    { name: 'Double Infinity Gaming', baseUrl: 'https://doubleinfinitygaming.com' },
+    { name: 'Paladin Cards', baseUrl: 'https://paladincards20.com' },
+    { name: 'PKMN Colosseum', baseUrl: 'https://pkmncolosseum.com' },
+    { name: 'Mystic TCG', baseUrl: 'https://mystictcg.com' },
+    { name: 'Top Cut Central', baseUrl: 'https://topcutcentral.com' },
+    { name: 'Poke-Collect', baseUrl: 'https://poke-collect.com' },
+    { name: 'AllPokeTCG', baseUrl: 'https://allpoketcg.com' },
+    { name: 'The Pokecave', baseUrl: 'https://thepokecave.com' },
+    { name: 'Game Grid Lehi', baseUrl: 'https://store.gglehi.com' },
+    { name: 'Card Cavern', baseUrl: 'https://cardcaverntradingcards.com' },
+    { name: 'Galactic Toys', baseUrl: 'https://galactictoys.com' },
+    { name: '1st Edition Collectibles', baseUrl: 'https://1steditioncollectibles.com' },
+    { name: 'Trading Card Market', baseUrl: 'https://tradingcardmarket.com' },
+    { name: 'The Gaming Goat', baseUrl: 'https://tgg-games.com' },
+    { name: 'Stomping Grounds', baseUrl: 'https://www.stompinggroundstcg.com' },
+    { name: 'Red Raccoon Games', baseUrl: 'https://redraccoongames.com' },
+    { name: 'Tabletop Village', baseUrl: 'https://tabletopvillage.com' }
 ];
 const variantStateMap = new Map();
 function sleep(ms) {

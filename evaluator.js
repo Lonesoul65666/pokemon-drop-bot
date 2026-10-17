@@ -3,6 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.STORE_SHIPPING_RULES = void 0;
+exports.getStoreShippingProfile = getStoreShippingProfile;
 exports.upsertLiveStock = upsertLiveStock;
 exports.markLiveStockOut = markLiveStockOut;
 exports.evaluateItem = evaluateItem;
@@ -21,6 +23,58 @@ try {
 catch (e) { }
 function saveAlertMemory() {
     (0, policies_1.atomicWriteJson)(ALERT_STATE_PATH, alertMemory);
+}
+exports.STORE_SHIPPING_RULES = {
+    // Big Box Retailers
+    'target': { freeShipThreshold: 35, flatShipping: 5.99 },
+    'walmart': { freeShipThreshold: 35, flatShipping: 5.99 },
+    'best buy': { freeShipThreshold: 35, flatShipping: 5.99 },
+    'amazon': { freeShipThreshold: 35, flatShipping: 5.99 },
+    'costco': { freeShipThreshold: 0, flatShipping: 0 },
+    'pokemon center': { freeShipThreshold: 20, flatShipping: 6.99 },
+    // Existing 14 Verified USD Shopify LGS Stores
+    'smoke & mirrors': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'safari zone': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'zulus games': { freeShipThreshold: 100, flatShipping: 5.99 },
+    'gamers guild az': { freeShipThreshold: 99, flatShipping: 6.99 },
+    'minmaxgames': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'card shop live': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'joshs cards': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'flipside gaming': { freeShipThreshold: 100, flatShipping: 5.99 },
+    'over the brick': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'knight & day games': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'tcg stadium': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'rip n ship arena': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'collector store': { freeShipThreshold: 100, flatShipping: 6.99 },
+    'prodigy games': { freeShipThreshold: 150, flatShipping: 6.99 },
+    // Wave 1 Newly Onboarded Verified USD Shopify LGS Stores (17)
+    'double infinity gaming': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'paladin cards': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'pkmn colosseum': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'mystic tcg': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'top cut central': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'poke-collect': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'allpoketcg': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'the pokecave': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'game grid lehi': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'card cavern': { freeShipThreshold: 100, flatShipping: 5.99 },
+    'galactic toys': { freeShipThreshold: 125, flatShipping: 6.99 },
+    '1st edition collectibles': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'trading card market': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'the gaming goat': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'stomping grounds': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'red raccoon games': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'tabletop village': { freeShipThreshold: 150, flatShipping: 6.99 }
+};
+function getStoreShippingProfile(retailer) {
+    const key = (retailer || '').trim().toLowerCase();
+    if (exports.STORE_SHIPPING_RULES[key])
+        return exports.STORE_SHIPPING_RULES[key];
+    for (const [k, profile] of Object.entries(exports.STORE_SHIPPING_RULES)) {
+        if (key.includes(k))
+            return profile;
+    }
+    return { freeShipThreshold: 150, flatShipping: 6.99 };
 }
 function upsertLiveStock(entry) {
     try {
@@ -106,8 +160,9 @@ function evaluateItem(item) {
             ? Math.min(policyMaxBuy, Math.round(rule.msrpCeiling * 1.05))
             : policyMaxBuy;
         const dropPrice = item.price ?? effectiveCeiling;
-        const isFreeShip = Boolean(item.freeShipping || dropPrice >= 150);
-        const estimatedShipping = isFreeShip ? 0 : 6.99;
+        const shipProfile = getStoreShippingProfile(item.retailer);
+        const isFreeShip = Boolean(item.freeShipping || dropPrice >= shipProfile.freeShipThreshold);
+        const estimatedShipping = isFreeShip ? 0 : shipProfile.flatShipping;
         const landedPrice = Math.round((dropPrice + estimatedShipping) * 100) / 100;
         let freeShipNote = undefined;
         if (dropPrice > effectiveCeiling) {
@@ -118,10 +173,10 @@ function evaluateItem(item) {
             };
         }
         if (landedPrice > effectiveCeiling) {
-            const qtyForFreeShip = Math.ceil(150 / dropPrice);
+            const qtyForFreeShip = Math.ceil(shipProfile.freeShipThreshold / dropPrice);
             const hasEnoughStock = item.stock === undefined || item.stock >= qtyForFreeShip;
             if (qtyForFreeShip <= 4 && hasEnoughStock) {
-                freeShipNote = `Buy ${qtyForFreeShip}x to hit $150 Free Shipping -> $${dropPrice.toFixed(2)}/ea landed`;
+                freeShipNote = `Buy ${qtyForFreeShip}x to hit $${shipProfile.freeShipThreshold} Free Shipping -> $${dropPrice.toFixed(2)}/ea landed`;
             }
             else {
                 return {

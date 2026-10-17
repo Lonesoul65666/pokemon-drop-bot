@@ -5,7 +5,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792201728958,
+    "lastSuccessAt": 1792210232253,
     "lastProductsCount": 12
   },
   "Card Shop Live": {
@@ -14,7 +14,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792201728970,
+    "lastSuccessAt": 1792210232373,
     "lastProductsCount": 36
   },
   "Zulus Games": {
@@ -23,7 +23,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792201729001,
+    "lastSuccessAt": 1792210232426,
     "lastProductsCount": 20
   },
   "Gamers Guild AZ": {
@@ -32,7 +32,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792201728858,
+    "lastSuccessAt": 1792210233272,
     "lastProductsCount": 250
   },
   "Smoke & Mirrors": {
@@ -41,7 +41,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792201729118,
+    "lastSuccessAt": 1792210232574,
     "lastProductsCount": 250
   },
   "Joshs Cards": {
@@ -50,7 +50,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792201729035,
+    "lastSuccessAt": 1792210232463,
     "lastProductsCount": 250
   },
   "Flipside Gaming": {
@@ -59,7 +59,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792201729279,
+    "lastSuccessAt": 1792210232855,
     "lastProductsCount": 250
   },
   "Safari Zone": {
@@ -68,7 +68,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792201729020,
+    "lastSuccessAt": 1792210232070,
     "lastProductsCount": 30
   },
   "Over The Brick": {
@@ -77,7 +77,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792201729584,
+    "lastSuccessAt": 1792210232847,
     "lastProductsCount": 65
   },
   "Knight & Day Games": {
@@ -86,7 +86,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792201729696,
+    "lastSuccessAt": 1792210233576,
     "lastProductsCount": 6
   },
   "Collector Store": {
@@ -95,7 +95,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792201729692,
+    "lastSuccessAt": 1792210233721,
     "lastProductsCount": 34
   },
   "Prodigy Games": {
@@ -104,7 +104,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792201729706,
+    "lastSuccessAt": 1792210233664,
     "lastProductsCount": 71
   },
   "Rip N Ship Arena": {
@@ -113,7 +113,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792201729592,
+    "lastSuccessAt": 1792210233569,
     "lastProductsCount": 9
   },
   "TCG Stadium": {
@@ -122,15 +122,15 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792201729609,
+    "lastSuccessAt": 1792210233650,
     "lastProductsCount": 87
   },
   "Rare Candy": {
     "name": "Rare Candy",
     "baseUrl": "https://rarecandy.com",
     "status": "CIRCUIT_OPEN",
-    "consecutiveFailures": 5,
-    "cooldownUntil": 1792202380759,
+    "consecutiveFailures": 14,
+    "cooldownUntil": 1792210569568,
     "lastSuccessAt": 0,
     "lastProductsCount": 0,
     "lastError": "Invalid JSON feed"
@@ -139,8 +139,8 @@
     "name": "Full Grip Games",
     "baseUrl": "https://www.fullgripgames.com",
     "status": "CIRCUIT_OPEN",
-    "consecutiveFailures": 5,
-    "cooldownUntil": 1792202380590,
+    "consecutiveFailures": 14,
+    "cooldownUntil": 1792210594446,
     "lastSuccessAt": 0,
     "lastProductsCount": 0,
     "lastError": "HTTP 404"
@@ -149,8 +149,8 @@
     "name": "PokeNE",
     "baseUrl": "https://www.pokene.com",
     "status": "CIRCUIT_OPEN",
-    "consecutiveFailures": 5,
-    "cooldownUntil": 1792202380589,
+    "consecutiveFailures": 14,
+    "cooldownUntil": 1792210594257,
     "lastSuccessAt": 0,
     "lastProductsCount": 0,
     "lastError": "HTTP 400"
@@ -159,8 +159,8 @@
     "name": "Silver Moon",
     "baseUrl": "https://silvermooncards.com",
     "status": "CIRCUIT_OPEN",
-    "consecutiveFailures": 5,
-    "cooldownUntil": 1792202401350,
+    "consecutiveFailures": 14,
+    "cooldownUntil": 1792210594694,
     "lastSuccessAt": 0,
     "lastProductsCount": 0,
     "lastError": "HTTP 502"
@@ -169,8 +169,8 @@
     "name": "The Lotusbox",
     "baseUrl": "https://thelotusbox.com",
     "status": "CIRCUIT_OPEN",
-    "consecutiveFailures": 5,
-    "cooldownUntil": 1792202401553,
+    "consecutiveFailures": 14,
+    "cooldownUntil": 1792210574925,
     "lastSuccessAt": 0,
     "lastProductsCount": 0,
     "lastError": "HTTP 502"
@@ -179,8 +179,8 @@
     "name": "Forge & Fire",
     "baseUrl": "https://forgeandfiregaming.com",
     "status": "CIRCUIT_OPEN",
-    "consecutiveFailures": 5,
-    "cooldownUntil": 1792202381428,
+    "consecutiveFailures": 14,
+    "cooldownUntil": 1792210595163,
     "lastSuccessAt": 0,
     "lastProductsCount": 0,
     "lastError": "HTTP 404"
