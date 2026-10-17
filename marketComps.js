@@ -51,6 +51,11 @@ exports.GLOBAL_JUNK_BLOCKLIST = [
     'no packs',
     'box only',
     'case only',
+    'open case',
+    'open box',
+    'opened case',
+    'unsealed case',
+    'loose boxes',
     'acrylic',
     'protector',
     'code',
@@ -106,7 +111,12 @@ exports.CASE_REQUIRED_IDENTIFIERS = [
 exports.MULTI_CASE_BLOCKLIST = [
     '2 cases',
     'multiple cases',
-    'pallet'
+    'pallet',
+    'open case',
+    'open box',
+    'opened case',
+    'unsealed case',
+    'loose boxes'
 ];
 function inferFormFactor(ruleId, ruleName) {
     const id = (ruleId || '').toLowerCase();

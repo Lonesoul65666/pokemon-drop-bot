@@ -10,6 +10,7 @@ export interface PolicyRule {
   name: string;
   era?: string;
   formFactor?: string;
+  packCount?: number;
   image?: string;
   matchers: RegExp[];
   negativeMatchers?: RegExp[];
@@ -21,6 +22,85 @@ export interface PolicyRule {
   cooldownMins: number;
   active?: boolean;
   owned?: boolean;
+  inVault?: boolean;
+  releaseDate?: string;
+}
+
+export function getPackCountForSku(skuId?: string, formFactor?: string, name?: string): number {
+  const idLower = (skuId || '').toLowerCase();
+  const ffLower = (formFactor || '').toLowerCase();
+  const nameLower = (name || '').toLowerCase();
+  const combined = `${idLower} ${ffLower} ${nameLower}`;
+
+  if (
+    ffLower === 'master case' ||
+    ffLower === 'booster-case' ||
+    ffLower === 'booster case' ||
+    idLower.endsWith('-booster-case') ||
+    /\b216\s*packs\b|\b6\s*boxes\b/i.test(combined) ||
+    (combined.includes('booster') && combined.includes('case'))
+  ) {
+    return 216;
+  }
+
+  if (
+    ffLower === 'etb case' ||
+    ffLower === 'etb-case' ||
+    idLower.endsWith('-etb-case') ||
+    /\b10\s*etbs\b|\bcase\s*of\s*10\b/i.test(combined) ||
+    ((combined.includes('etb') || combined.includes('elite trainer')) && combined.includes('case'))
+  ) {
+    return 90;
+  }
+
+  if (
+    ffLower === 'booster box' ||
+    ffLower === 'booster-box' ||
+    idLower.endsWith('-booster-box') ||
+    /\b36[- ]?pack\b|booster\s*box/i.test(combined)
+  ) {
+    return 36;
+  }
+
+  if (
+    ffLower === 'booster bundle' ||
+    ffLower === 'bundle' ||
+    idLower.endsWith('-bundle') ||
+    /\b6[- ]?pack\b|booster\s*bundle|\bbundle\b/i.test(combined)
+  ) {
+    return 6;
+  }
+
+  if (
+    ffLower === 'etb' ||
+    idLower.endsWith('-etb') ||
+    /\b(etb|elite\s*trainer\s*box)\b/i.test(combined)
+  ) {
+    if (/pokemon\s*center|pokémon\s*center|pkmn\s*center|pc\s*exclusive|pc\s*etb/i.test(combined)) {
+      return 11;
+    }
+    return 9;
+  }
+
+  return 36;
+}
+
+export function computeRipMetrics(
+  landedPrice: number,
+  skuId?: string,
+  formFactor?: string,
+  name?: string,
+  explicitPackCount?: number
+): { packCount: number; pricePerPack: number; isRipValueLeader: boolean } {
+  const packCount = (explicitPackCount && explicitPackCount > 0)
+    ? explicitPackCount
+    : getPackCountForSku(skuId, formFactor, name);
+  const safePrice = Number.isFinite(landedPrice) && landedPrice > 0 ? landedPrice : 0;
+  const pricePerPack = packCount > 0 && safePrice > 0
+    ? Number((safePrice / packCount).toFixed(2))
+    : 0;
+  const isRipValueLeader = pricePerPack > 0 && pricePerPack <= 4.25;
+  return { packCount, pricePerPack, isRipValueLeader };
 }
 
 export const GLOBAL_JUNK_EXCLUSIONS = [
@@ -28,6 +108,11 @@ export const GLOBAL_JUNK_EXCLUSIONS = [
   /no packs/i,
   /box only/i,
   /case only/i,
+  /open case/i,
+  /open box/i,
+  /opened case/i,
+  /unsealed case/i,
+  /loose boxes/i,
   /acrylic/i,
   /protector/i,
   /\bcode\b/i,
@@ -291,6 +376,7 @@ export function loadPolicies(): PolicyRule[] {
 
     return parsed.map((item: any) => ({
       ...item,
+      packCount: item.packCount || getPackCountForSku(item.id, item.formFactor, item.name),
       matchers: item.matchers.map((m: string) => new RegExp(m, 'i')),
       negativeMatchers: GLOBAL_JUNK_EXCLUSIONS,
     }));

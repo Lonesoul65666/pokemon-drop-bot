@@ -1,6 +1,13 @@
 import fs from 'fs';
 import path from 'path';
-import { atomicWriteJson, WATCH_POLICIES, getMinPlausiblePriceFloor, getMaxPlausiblePriceCeiling } from './policies';
+import {
+  atomicWriteJson,
+  WATCH_POLICIES,
+  getMinPlausiblePriceFloor,
+  getMaxPlausiblePriceCeiling,
+  getPackCountForSku,
+  computeRipMetrics
+} from './policies';
 
 export const SALES_HISTORY_PATH = path.resolve(process.cwd(), 'salesHistory.json');
 export const DAILY_SNAPSHOTS_PATH = path.resolve(process.cwd(), 'dailySnapshots.json');
@@ -25,6 +32,9 @@ export interface SalesHistoryEvent {
   landedPrice: number;
   marketPrice: number;
   discountPct: number;
+  packCount?: number;
+  pricePerPack?: number;
+  isRipValueLeader?: boolean;
   url: string;
   restockedAt: number;
   lastSeenAt: number;
@@ -64,6 +74,12 @@ export interface TargetTapeMetrics {
   msrp: number;
   marketPrice: number;
   maxBuy: number;
+  packCount: number;
+  pricePerPack: number;
+  isRipValueLeader: boolean;
+  releaseDate?: string;
+  isPreRelease?: boolean;
+  preReleaseStatusTag?: string;
   nrt7dDeltaPct: number;
   absorptionRatio: number;
   clearedCount14d: number;
@@ -284,6 +300,10 @@ export function recordTapeRestock(params: {
 
   recordDailySnapshot(params.targetId, params.price, params.store, params.marketPrice);
 
+  const pol = WATCH_POLICIES.find(p => p.id === params.targetId);
+  const effLanded = params.landedPrice ?? params.price;
+  const rip = computeRipMetrics(effLanded, params.targetId, pol?.formFactor, params.targetName, pol?.packCount);
+
   const existing = salesHistory.find(
     ev => ev.status === 'ACTIVE' && (ev.itemId === String(params.itemId) || (ev.targetId === params.targetId && ev.store === params.store))
   );
@@ -291,9 +311,12 @@ export function recordTapeRestock(params: {
   if (existing) {
     existing.lastSeenAt = now;
     existing.price = params.price;
-    existing.landedPrice = params.landedPrice ?? params.price;
+    existing.landedPrice = effLanded;
     existing.marketPrice = params.marketPrice;
     existing.discountPct = discountPct;
+    existing.packCount = rip.packCount;
+    existing.pricePerPack = rip.pricePerPack;
+    existing.isRipValueLeader = rip.isRipValueLeader;
     existing.url = params.url || existing.url;
     if (params.bigBoxTier) existing.bigBoxTier = params.bigBoxTier;
     if (params.bigBoxBadge) existing.bigBoxBadge = params.bigBoxBadge;
@@ -305,9 +328,12 @@ export function recordTapeRestock(params: {
       targetName: params.targetName,
       store: params.store,
       price: params.price,
-      landedPrice: params.landedPrice ?? params.price,
+      landedPrice: effLanded,
       marketPrice: params.marketPrice,
       discountPct,
+      packCount: rip.packCount,
+      pricePerPack: rip.pricePerPack,
+      isRipValueLeader: rip.isRipValueLeader,
       url: params.url,
       restockedAt: now,
       lastSeenAt: now,
@@ -598,6 +624,10 @@ export function computeFullMarketTape() {
     const waveStores48h = Array.from(waveStoresSet);
     const isDistributorWave = waveStores48h.length >= 3;
 
+    const releaseDate: string | undefined = (pol as any).releaseDate;
+    const isPreRelease = Boolean(releaseDate && !Number.isNaN(Date.parse(`${releaseDate}T00:00:00`)) && now < Date.parse(`${releaseDate}T00:00:00`));
+    const preReleaseStatusTag = isPreRelease ? '⏳ PRE-RELEASE BLEED (Wait for Launch Week)' : undefined;
+
     // Verdict Badge & Tone
     let verdictBadge = '🟡 HOLD / WAIT FOR DIP';
     let verdictTone: TargetTapeMetrics['verdictTone'] = 'slate';
@@ -605,6 +635,9 @@ export function computeFullMarketTape() {
     if (liveEntry && liveEntry.inStock && liveEntry.bigBoxBadge && (liveEntry.bigBoxTier === 'PC_EXCLUSIVE_MSRP' || liveEntry.bigBoxTier === 'MSRP_TIER_A')) {
       verdictBadge = `${liveEntry.bigBoxBadge} @ ${liveEntry.retailer}`;
       verdictTone = 'emerald';
+    } else if (isPreRelease && (!liveEntry || !liveEntry.inStock || liveEntry.price > pol.msrpCeiling * 1.08)) {
+      verdictBadge = preReleaseStatusTag!;
+      verdictTone = 'purple';
     } else if (isDistributorWave) {
       verdictBadge = `🌊 DISTRO WAVE (${waveStores48h.length} Stores) • WAIT FOR UNDERCUT`;
       verdictTone = 'purple';
@@ -630,6 +663,11 @@ export function computeFullMarketTape() {
     const wkList = weeklyCheckpoints[pol.id] || [];
     const latestWeekly = wkList.length > 0 ? wkList[wkList.length - 1] : null;
 
+    const refPriceForRip = (liveEntry && liveEntry.inStock && (liveEntry.landedPrice || liveEntry.price))
+      ? Number(liveEntry.landedPrice || liveEntry.price)
+      : (staleFloorPrice && staleFloorPrice > 0 ? staleFloorPrice : Math.round(currentMarket * 100) / 100);
+    const ripMetrics = computeRipMetrics(refPriceForRip, pol.id, pol.formFactor, pol.name, pol.packCount);
+
     targets[pol.id] = {
       targetId: pol.id,
       targetName: pol.name,
@@ -638,6 +676,12 @@ export function computeFullMarketTape() {
       msrp: pol.msrpCeiling,
       marketPrice: Math.round(currentMarket * 100) / 100,
       maxBuy: pol.maxMarketBuyPrice,
+      packCount: ripMetrics.packCount,
+      pricePerPack: ripMetrics.pricePerPack,
+      isRipValueLeader: ripMetrics.isRipValueLeader,
+      releaseDate,
+      isPreRelease,
+      preReleaseStatusTag,
       nrt7dDeltaPct,
       absorptionRatio,
       clearedCount14d: clearedEvs.length,
@@ -671,13 +715,33 @@ export function computeFullMarketTape() {
     .sort((a, b) => (b.restocks + b.lowestHits) - (a.restocks + a.lowestHits))
     .slice(0, 12);
 
+  let msrpTrophies = { totalMsrpHits: 0, catches: [] };
+  try {
+    const trophiesPath = path.resolve(process.cwd(), 'data', 'msrpTrophies.json');
+    if (fs.existsSync(trophiesPath)) {
+      msrpTrophies = JSON.parse(fs.readFileSync(trophiesPath, 'utf-8'));
+    }
+  } catch (e) {}
+
+  const enrichedSalesTape = salesHistory.slice(0, 30).map(ev => {
+    const pol = WATCH_POLICIES.find(p => p.id === ev.targetId);
+    const rip = computeRipMetrics(ev.landedPrice || ev.price, ev.targetId, pol?.formFactor, ev.targetName, pol?.packCount);
+    return {
+      ...ev,
+      packCount: ev.packCount ?? rip.packCount,
+      pricePerPack: ev.pricePerPack ?? rip.pricePerPack,
+      isRipValueLeader: ev.isRipValueLeader ?? rip.isRipValueLeader
+    };
+  });
+
   return {
     generatedAt: now,
     windowDays: 14,
     targets,
     honeyHoleStores,
-    recentSalesTape: salesHistory.slice(0, 30),
-    weeklyCheckpoints
+    recentSalesTape: enrichedSalesTape,
+    weeklyCheckpoints,
+    msrpTrophies
   };
 }
 

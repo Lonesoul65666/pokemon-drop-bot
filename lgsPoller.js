@@ -209,13 +209,14 @@ async function pollSingleStore(store) {
                     const minsSinceCheck = prev ? (checkNow - prev.lastCheckedAt) / (1000 * 60) : 999;
                     if (!prev || priceNum !== prev.price || minsSinceCheck >= 3) {
                         variantStateMap.set(variant.id, { price: priceNum, lastCheckedAt: checkNow, oosStrikes: 0 });
-                        const cart1xUrl = `${store.baseUrl}/cart/${variant.id}:1`;
-                        const cart2xUrl = `${store.baseUrl}/cart/${variant.id}:2`;
-                        const productUrl = prod.handle ? `${store.baseUrl}/products/${prod.handle}` : store.baseUrl;
-                        const isPreOrder = /pre-?order|pre-?sale/i.test(`${fullTitle} ${tagsStr} ${prod.handle || ''}`);
                         const realQty = typeof variant.inventory_quantity === 'number' && variant.inventory_quantity > 0
                             ? variant.inventory_quantity
                             : undefined;
+                        const cart1xUrl = `${store.baseUrl}/cart/${variant.id}:1`;
+                        const cart2xUrl = (realQty === undefined || realQty >= 2) ? `${store.baseUrl}/cart/${variant.id}:2` : undefined;
+                        const cart3xUrl = (realQty === undefined || realQty >= 3) ? `${store.baseUrl}/cart/${variant.id}:3` : undefined;
+                        const productUrl = prod.handle ? `${store.baseUrl}/products/${prod.handle}` : store.baseUrl;
+                        const isPreOrder = /pre-?order|pre-?sale/i.test(`${fullTitle} ${tagsStr} ${prod.handle || ''}`);
                         await (0, listener_1.processIncomingDrop)({
                             title: fullTitle,
                             retailer: store.name,
@@ -223,6 +224,7 @@ async function pollSingleStore(store) {
                             productUrl,
                             cart1xUrl,
                             cart2xUrl,
+                            cart3xUrl,
                             isPreOrder,
                             price: priceNum,
                             stock: realQty,

@@ -1,21 +1,111 @@
-# pokemon-drop-bot — Architecture & Operational State
+# pokemon-drop-bot — V4 Architecture & Multi-Agent State (`STATE.md`)
 
-## Current Architecture Status (Phase 1 + Core 3 + Scalability Hardening + Wave 1 Store Onboarding)
+> **SINGLE SOURCE OF TRUTH:** Any AI agent (Claude, Gemini, or subagents) working in `C:\pokemon-drop-bot` MUST read this file first before inspecting or modifying code, and MUST append an entry to the **Last Touch Log** at the bottom before finishing a session or committing changes.
 
-### 1. Proxy, Concurrency & Wave 1 Store Network (`lgsPoller.ts`)
-- **Verified USD Shopify Store Network**: 31 active US Shopify LGS stores (14 retained core stores + 17 Wave 1 onboarded stores), strictly validated for HTTP 200 `/products.json` feeds, USD currency (`Shopify.currency.active === "USD"`), US storefront origin (excluding `.ca`/`.uk`/`.au` and CAD/AUD stores), and English Pokémon TCG sealed inventory.
-- **Gateway Routing**: Smart direct-first HTTP requests with automatic fallback to `WEBSHARE_PROXY_URL` (`HttpsProxyAgent`) on 403/429/network errors across `lgsPoller.ts`, `vampirePoller.ts`, `marketComps.ts`, and `src/marketSync.ts`.
-- **Bounded Concurrency & Cycle Mutex**: `isPolling` cycle overlap guards prevent overlapping poll loops in `lgsPoller.ts` and `vampirePoller.ts`. Store polling uses an 8-worker bounded pool (`MAX_CONCURRENT_STORES = 8`) with `8000ms` request timeouts.
-- **Per-Store Circuit Breaker**: Tracks consecutive store failures in `storeHealth.json` (exposed at `GET /api/store-health`). 3 consecutive failures (`403`/`404`/timeout) trigger a 15-minute cooldown backoff.
+---
 
-### 2. SKU Validation & Landed-Cost Evaluation (`policies.ts` & `evaluator.ts`)
-- **Strict SKU & Form-Factor Guard**: Shared `isValidSkuForFormFactor()` blocks 18-pack half booster boxes, bundles, blisters, Battle Stadiums, and foreign language sets (JP/KR/CN/ES/FR/DE) from matching 36-pack English Booster Box and Master Case targets.
-- **Hard Minimum Plausible Price Floors**: Enforced across both incoming drop matchers and live market comp scrapers (`Booster Box >= $95`, `ETB >= $32`, `Booster Bundle >= $18`, `ETB Case >= $450`, `Master Case >= $550`).
-- **True Landed-Cost & Free-Ship Multiplier Math**: Uses `STORE_SHIPPING_RULES` (`getStoreShippingProfile()`) to compute `landedPrice = dropPrice + estimatedShipping` per store (`$0` shipping if `>= freeShipThreshold` or free-shipping flag, else store flat shipping). If `dropPrice <= maxBuy` but `landedPrice > maxBuy`, computes `qtyForFreeShip = Math.ceil(freeShipThreshold / dropPrice)` (up to `4x`) and attaches a multi-unit free-shipping note.
-- **Pre-Order Isolation & Era Caps**: Detects pre-orders (`⏳ PRE-ORDER`) and enforces a strict ceiling of `Math.min(maxBuy, Math.round(msrp * 1.05))`. Low-sample (`< 5` comps) and `me-*` era targets clamp synced market baselines to `<= 1.35x` policy baseline (`$110` cap on `me-*` standard ETBs).
+## 1. System Architecture & Runtime Topology
 
-### 3. Checkout Acceleration, Digest & Discord Rate-Limit Queue (`notifier.ts` & `server.js`)
-- **Shopify Instant-Cart Permalinks**: Generates `⚡ Instant Cart (1x)` (`/cart/{variant_id}:1`) and `⚡ Instant Cart (2x)` (`/cart/{variant_id}:2`) links alongside product URLs in Discord embeds and Dashboard cards.
-- **4-Hour Live Shelf Digest**: Scheduled every 4 hours (skipping 12:00 AM–7:00 AM local quiet hours and empty shelves) plus on-demand via `POST /api/send-digest` (`📲 Send Digest to Discord`), grouping top deals into `🎯 NEEDED FOR VAULT` and `🔒 IN VAULT / CREW DEALS` with 4-hour OOS tracking.
-- **Discord FIFO Webhook Queue**: All Discord webhook POST/PATCH requests route through `enqueueDiscordWebhook()` with `1250ms` minimum spacing and automatic HTTP `429` `retry_after` backoff.
-- **Atomic Persistence**: All JSON state files (`liveStock.json`, `marketCache.json`, `policies.json`, `storeHealth.json`, `alertState.json`, `dropsHistory.json`) use `atomicWriteJson()` (`.tmp` write + `fs.renameSync`).
+- **Repository Root:** `C:\pokemon-drop-bot` (Node.js, TypeScript compiled to CommonJS `.js`, Express, PM2, Windows native).
+- **PM2 Processes:**
+  1. `pokemon-drop-bot` (`index.js` / `index.ts`): Autonomous background market sniper, 31-store Shopify LGS poller, Big-Box TrackaLacker aggregator poller, Reddit `r/PKMNTCGDeals` poller, TCGPlayer verified-seller undercut poller, 6-hour TCGPlayer MarketSync baseline worker, 14-day Market Tape NRT engine, and 4-hour Discord Live Shelf Digest scheduler.
+  2. `drop-bot-dashboard` (`server.js` on `http://localhost:3000`): Express REST API & Command Dashboard server serving `dashboard.html`, live stock, policies, market tape, MSRP trophies, conquered vault plaques, and on-demand Bounty Hunter recon.
+- **Gateway & Proxy Routing:**
+  - Uses direct-first HTTP requests with automatic fallback to `WEBSHARE_PROXY_URL` (`146.103.1.23:5556` via `HttpsProxyAgent` in `.env` — **NEVER expose raw proxy credentials or Discord webhook tokens in git**).
+  - Bounded concurrency pool (`MAX_CONCURRENT_STORES = 8`, `8000ms` timeout) with a per-store circuit breaker (`storeHealth.json`: 3 consecutive failures trigger a 15-minute cooldown).
+
+---
+
+## 2. Core TypeScript & JavaScript Modules
+
+- **`policies.ts` / `policies.js`:**
+  - Loads and hot-watches `policies.json` (`WATCH_POLICIES`).
+  - Enforces `GLOBAL_JUNK_EXCLUSIONS` (including `/open case/i`, `/open box/i`, `/opened case/i`, `/unsealed case/i`, `/loose boxes/i`), `BOOSTER_BOX_EXCLUSION_TERMS`, and `PC_EXCLUSIVE_EXCLUSION_TERMS`.
+  - Provides `isValidSkuForFormFactor()`, `getMinPlausiblePriceFloor()`, `getMaxPlausiblePriceCeiling()`, `getPackCountForSku()`, `computeRipMetrics()`, and `atomicWriteJson()`.
+- **`evaluator.ts` / `evaluator.js`:**
+  - Evaluates incoming restock items (`evaluateItem()`) against `WATCH_POLICIES`.
+  - **Landed Cost & Shipping Math:** Uses `STORE_SHIPPING_RULES` (`getStoreShippingProfile()`) to compute `landedPrice = dropPrice + estimatedShipping` and multi-unit free-shipping threshold notes (`qtyForFreeShip <= 4`).
+  - **Pack Count & `$/Pack` Rip Math:** Computes `packCount` (`36` Booster Box, `216` Master Case, `9` ETB / `11` PC ETB, `90` ETB Case, `6` Booster Bundle), `pricePerPack` (`landedPrice / packCount`), and `isRipValueLeader` (`pricePerPack <= 4.25`).
+  - **Pre-Release Bleed Tagging:** Checks `releaseDate` (e.g., `"2026-11-06"` on Mega Evolution: Delta Reign targets) and flags pre-release items with `isPreRelease: true` and `preReleaseStatusTag: "⏳ PRE-RELEASE BLEED (Wait for Launch Week)"`.
+  - **MSRP = Defcon-1 Override & Trophy Counter:** Any deal hitting Tier-A True Retail MSRP (`landedPrice <= msrpCeiling * 1.08` with shipping `<= $6.99`) sets `isMsrpUnicorn: true`, bypasses `inVault` / `owned` + `muteVaulted` suppression, and logs the catch to `data/msrpTrophies.json`.
+  - **"Rule of 3" Family Pack Cart Links:** Generates stock-aware `/cart/{variant_id}:1`, `:2`, and `:3` instant-checkout links for Shopify ETB drops (omitting `:2` or `:3` if known `inventory_quantity` is `< 2` or `< 3`).
+- **`notifier.ts` / `notifier.js`:**
+  - Rate-limited FIFO Discord webhook queue (`enqueueDiscordWebhook()`, `1250ms` spacing, HTTP 429 backoff).
+  - Formats Discord embeds with live TCGPlayer + eBay comps, `🚨💎 UNICORN RETAIL MSRP HIT 💎🚨` header + `0x00F0FF` diamond embed color + `@everyone` ping on Tier-A MSRP hits, Rule of 3 ETB cart links (`⚡ 1x Single`, `⚡ 2x Pair`, `⚡ 3x Family Pack (Free Ship Threshold)`), and auto-edits embeds to `❌ SOLD OUT` when stock clears.
+- **`marketComps.ts` / `marketComps.js`:**
+  - Scrapes live TCGPlayer seller listings and eBay Buy-It-Now comps with trimmed median sanity guards (`applySyncSanityGuard`) and open-case/open-box blocklists (`GLOBAL_JUNK_BLOCKLIST`, `MULTI_CASE_BLOCKLIST`).
+- **`marketTape.ts` / `marketTape.js`:**
+  - 14-day rolling NRT sales velocity tracker (`⚡ FLASH`, `🔥 FAST`, `🐢 SLOW`), absorption ratio, distributor wave detector (`>= 3` stores in 48h), honey-hole store rankings, Sunday-to-Sunday weekly checkpoints, and `$/Pack` metrics.
+- **`lgsPoller.ts`, `vampirePoller.ts`, `src/marketSync.ts`:**
+  - Continuous polling engines for 31 US Shopify LGS storefronts, TrackaLacker Big-Box offers, Reddit deals, TCGPlayer undercuts, and 6-hour baseline synchronization.
+- **`server.js`:**
+  - Express HTTP server (`PORT = 3000`) exposing all REST endpoints for the dashboard.
+
+---
+
+## 3. Active REST API Endpoints (`server.js` on Port 3000)
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/status` | System health, `totalMsrpHits`, `msrpTrophies`, `totalConquered`, `collectorRank`, and `storeHealth`. |
+| `GET` | `/api/policies` | All target policies enriched with `packCount`, `pricePerPack`, `isRipValueLeader`, `isPreRelease`, and `preReleaseStatusTag`. |
+| `POST` | `/api/policies` | Atomically saves updated target policies (`policies.json`) and triggers hot-reload. |
+| `GET` | `/api/live-stock` | Currently in-stock items under buy threshold (`< 6h` old) with landed cost, cart links, and `$/Pack` math. |
+| `GET` | `/api/drops` | Last 25 alerted drops (`dropsHistory.json`) enriched with `packCount`, `pricePerPack`, and `isRipValueLeader`. |
+| `GET` | `/api/trophies` | Persistent MSRP Unicorn counter (`totalMsrpHits` + last 20 retail MSRP catches from `data/msrpTrophies.json`). |
+| `GET` | `/api/conquered-vault` | Returns all conquered trophy plaques (`conqueredVault.json`), `totalConquered`, `collectorRank`, and `ruleOf3Progress`. |
+| `POST` | `/api/conquered-vault/claim` | One-click endpoint to snapshot a live deal or alert into `conqueredVault.json` and mark the SKU `owned: true`. |
+| `PATCH` | `/api/conquered-vault/:id` | Updates `ruleOf3Status` pips (`ripped`, `onWall`, `subsidized`, `sealedCase`), `deliveryWindow`, `orderRef`, or `memoryNote`. |
+| `GET/POST` | `/api/bounty-recon` | On-Demand Bounty Hunter recon (`?skuId=` or `?query=`). Ranks `top5LowestLanded` with `$/Pack` math and returns `bestSealedHold` (`#1 Best Sealed Hold`) and `cheapestPackRip` (`#1 Cheapest Pack Rip`). |
+| `GET` | `/api/market-tape` | Full 14-day Market Tape analytics, target verdicts, honey-hole stores, sales history, and `msrpTrophies`. |
+| `GET` | `/api/trends` | Alias/enriched Market Tape + MSRP Trophies payload. |
+| `POST` | `/api/market-tape/checkpoint` | Forces an immediate weekly checkpoint snapshot. |
+| `GET` | `/api/telemetry` | Raw rolling average and lowest observed price cache (`marketCache.json`). |
+| `GET` | `/api/store-health` | Per-store polling health and circuit breaker state (`storeHealth.json`). |
+| `GET/POST` | `/api/settings` | Reads/writes `botSettings.json` (e.g., `{ muteVaulted: boolean }`). |
+| `POST` | `/api/reset-dedup` | Clears 4-hour alert deduplication memory (`alertState.json`). |
+| `POST` | `/api/send-digest` | Forces an immediate 4-hour Live Shelf Digest card to Discord. |
+| `POST` | `/api/test-alert` | Fires a sample Prismatic Evolutions ETB Discord alert. |
+| `POST` | `/api/live-comp` | Fetches live dual market comps (TCGPlayer + eBay) and optionally pushes to Discord. |
+
+---
+
+## 4. Critical Persistent JSON Files
+
+All persistent JSON files are written via `atomicWriteJson()` (`.tmp` write + `fs.renameSync`) to prevent corruption:
+- `policies.json`: Master target matrix (SKUs, matchers, `msrpCeiling`, `maxMarketBuyPrice`, `estimatedMarketValue`, `owned`, `releaseDate`).
+- `conqueredVault.json`: Gamified Trophy Plaque ledger (seeded with Trophy #1: `me-30th-celebration-etb-case` from `Player One Services (Verified WPN)` @ `$1,529.45`, Order `8E2261C4-EEED7D-7D4DB`).
+- `data/msrpTrophies.json`: Persistent Tier-A Retail MSRP Unicorn counter (`totalMsrpHits` and last 20 catches).
+- `marketCache.json` / `salesHistory.json` / `dailySnapshots.json` / `weeklyCheckpoints.json` (`marketHistory.json` equivalents): Rolling price telemetry and 14-day Market Tape state.
+- `liveStock.json`: Real-time in-stock shelf state and 4-hour recent OOS list.
+- `dropsHistory.json`: Last 25 Discord alert payloads.
+- `botSettings.json`: User dashboard preferences (`muteVaulted`).
+- `alertState.json`: 4-hour per-rule/per-store deduplication memory.
+- `storeHealth.json`: 31-store Shopify polling health & circuit breaker status.
+
+---
+
+## 5. Next Planned Session (V4 Step 2B — Executive UI Overhaul)
+
+- **Collapsible 4-Tab Sidebar Navigation:**
+  1. `Live Command`: Real-time radar, in-stock shelf, recent Discord drops, MSRP Unicorn Trophy counter, and Rule of 3 instant-cart buttons (`⚡ 1x`, `⚡ 2x`, `⚡ 3x`).
+  2. `Bounty Hunter`: On-demand live recon interface powered by `/api/bounty-recon`, comparing Top 5 lowest landed options, `$/Pack` rip math (`🔥 RIP VALUE LEADER <= $4.25/pk`), `#1 Best Sealed Hold`, and `#1 Cheapest Pack Rip`.
+  3. `The Vault`: Gamified Conquered Vault & Trophy Plaque showcase powered by `/api/conquered-vault` (featuring the 30th Celebration 10-ETB Case Trophy #1 conquered with Logan, interactive `ruleOf3Status` pips: `ripped`, `onWall`, `subsidized`, `sealedCase`, collector rank progression, and one-click claim modal).
+  4. `Target Matrix`: Full policy configuration grid with `$/Pack` badges, Pre-Release Bleed warnings (`⏳ PRE-RELEASE BLEED`), and slider controls.
+- **Dynamic Pokédex Chameleon / Click-to-Evolve & Shiny Header Engine:**
+  - Defaults to **Scott's Gyarados + Logan's Arcanine Tag-Team** over a **Royal Purple / Obsidian** executive theme.
+  - Supports interactive **Click-to-Evolve & Shiny toggle** across the Hall of Fame roster (including **Absol** and iconic partners), dynamically shifting header sprites, cries/animations, and accent glow palettes.
+
+---
+
+## 6. Last Touch Log
+
+- **2026-10-17 | Agent: Gemini 4 Argon (via `agy`)**
+  - Completed V4 Phase 2 & Step 2A Backend Upgrades:
+    - Added `"open case"`, `"open box"`, `"opened case"`, `"unsealed case"`, and `"loose boxes"` firewall exclusions to `policies.ts` and `marketComps.ts`.
+    - Added `releaseDate: "2026-11-06"` to Mega Evolution: Delta Reign targets in `policies.json` and wired `isPreRelease` + `"⏳ PRE-RELEASE BLEED (Wait for Launch Week)"` tagging across `evaluator.ts`, `notifier.ts`, `marketTape.ts`, and `server.js`.
+    - Implemented Tier-A True Retail MSRP (`<= msrpCeiling * 1.08`) Defcon-1 Override bypassing `owned`/`inVault` + `muteVaulted`, added `🚨💎 UNICORN RETAIL MSRP HIT 💎🚨` (`0x00F0FF` + `@everyone`), and created persistent `data/msrpTrophies.json` (`GET /api/trophies`).
+    - Implemented stock-aware "Rule of 3" Family Pack instant-cart links (`/cart/{variant_id}:1`, `:2`, `:3`) for Shopify ETB drops.
+    - Built Pack Count & `$/Pack` Rip Math Engine (`getPackCountForSku`, `computeRipMetrics`, `isRipValueLeader <= $4.25/pk`) across all endpoints and fixed `"36-Pack"` vs `"6-Pack"` regex word-boundary precedence.
+    - Seeded `conqueredVault.json` with Trophy #1 (`me-30th-celebration-etb-case` @ `$1,529.45` from Player One Services), marked `me-30th-celebration-etb-case` as `owned: true`, and exposed `GET /api/conquered-vault`, `POST /api/conquered-vault/claim`, `PATCH /api/conquered-vault/:id`, and `GET/POST /api/bounty-recon`.
+    - Established multi-agent synchronization files (`STATE.md`, `CLAUDE.md`, `GEMINI.md`), verified `npx tsc --noEmit` (0 errors) and all HTTP 200 smoke tests.

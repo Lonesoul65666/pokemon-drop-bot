@@ -33,6 +33,11 @@ export const GLOBAL_JUNK_BLOCKLIST = [
   'no packs',
   'box only',
   'case only',
+  'open case',
+  'open box',
+  'opened case',
+  'unsealed case',
+  'loose boxes',
   'acrylic',
   'protector',
   'code',
@@ -92,7 +97,12 @@ export const CASE_REQUIRED_IDENTIFIERS = [
 export const MULTI_CASE_BLOCKLIST = [
   '2 cases',
   'multiple cases',
-  'pallet'
+  'pallet',
+  'open case',
+  'open box',
+  'opened case',
+  'unsealed case',
+  'loose boxes'
 ];
 
 export function inferFormFactor(ruleId?: string, ruleName?: string): string {

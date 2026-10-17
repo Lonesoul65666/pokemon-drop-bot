@@ -20,7 +20,8 @@
     "marketTelemetry.ts",
     "src/marketSync.ts",
     "vampirePoller.ts",
-    "marketComps.ts"
+    "marketComps.ts",
+    "marketTape.ts"
   ],
   "exclude": [
     "node_modules",

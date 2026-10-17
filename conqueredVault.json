@@ -1,0 +1,34 @@
+{
+  "trophies": [
+    {
+      "id": "trophy-30th-celebration-etb-case-001",
+      "skuId": "me-30th-celebration-etb-case",
+      "productName": "Pokémon 30th Celebration ETB Sealed Case (10 ETBs)",
+      "formFactor": "etb-case",
+      "store": "Player One Services (Verified WPN)",
+      "conqueredAt": "2026-10-17T16:45:00.000Z",
+      "deliveryWindow": "Oct 27 – Oct 30, 2026",
+      "orderRef": "8E2261C4-EEED7D-7D4DB",
+      "landedPrice": 1529.45,
+      "marketValueAtCapture": 1650,
+      "discountPct": 11,
+      "packCount": 90,
+      "pricePerPack": 16.99,
+      "isRipValueLeader": false,
+      "discordAlertSnapshot": {
+        "headline": "🎯 FLOOR SNIPE: 30th Celebration 10-ETB Sealed Case",
+        "triggerReason": "Verified WPN Institutional Seller • Opened-Case Trap Avoided",
+        "badgeText": "11% UNDER MKT • 90-DAY FLOOR",
+        "capturedFrom": "DropBot Commander Live Radar"
+      },
+      "ruleOf3Status": {
+        "ripped": false,
+        "onWall": true,
+        "subsidized": false,
+        "sealedCase": true
+      },
+      "memoryNote": "First major case conquered with Logan sitting in the room!"
+    }
+  ],
+  "updatedAt": "2026-10-17T16:45:00.000Z"
+}

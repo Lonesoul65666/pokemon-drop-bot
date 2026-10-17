@@ -5,7 +5,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214385267,
+    "lastSuccessAt": 1792277141007,
     "lastProductsCount": 12
   },
   "Card Shop Live": {
@@ -14,7 +14,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214385307,
+    "lastSuccessAt": 1792277140959,
     "lastProductsCount": 36
   },
   "Zulus Games": {
@@ -23,7 +23,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214385283,
+    "lastSuccessAt": 1792277141021,
     "lastProductsCount": 20
   },
   "Gamers Guild AZ": {
@@ -32,7 +32,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214385548,
+    "lastSuccessAt": 1792277141533,
     "lastProductsCount": 250
   },
   "Smoke & Mirrors": {
@@ -41,7 +41,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214385088,
+    "lastSuccessAt": 1792277141276,
     "lastProductsCount": 250
   },
   "Joshs Cards": {
@@ -50,7 +50,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214385344,
+    "lastSuccessAt": 1792277141213,
     "lastProductsCount": 250
   },
   "Flipside Gaming": {
@@ -59,7 +59,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214385398,
+    "lastSuccessAt": 1792277141046,
     "lastProductsCount": 250
   },
   "Safari Zone": {
@@ -68,7 +68,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214385022,
+    "lastSuccessAt": 1792277140751,
     "lastProductsCount": 30
   },
   "Over The Brick": {
@@ -77,7 +77,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214385540,
+    "lastSuccessAt": 1792277141517,
     "lastProductsCount": 65
   },
   "Knight & Day Games": {
@@ -86,7 +86,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214385787,
+    "lastSuccessAt": 1792277141752,
     "lastProductsCount": 6
   },
   "Collector Store": {
@@ -95,7 +95,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214385807,
+    "lastSuccessAt": 1792277141782,
     "lastProductsCount": 34
   },
   "Prodigy Games": {
@@ -104,7 +104,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214385936,
+    "lastSuccessAt": 1792277141825,
     "lastProductsCount": 71
   },
   "Rip N Ship Arena": {
@@ -113,8 +113,8 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214385754,
-    "lastProductsCount": 9
+    "lastSuccessAt": 1792277141745,
+    "lastProductsCount": 8
   },
   "TCG Stadium": {
     "name": "TCG Stadium",
@@ -122,7 +122,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214385819,
+    "lastSuccessAt": 1792277141878,
     "lastProductsCount": 87
   },
   "PKMN Colosseum": {
@@ -131,8 +131,8 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214386021,
-    "lastProductsCount": 192
+    "lastSuccessAt": 1792277142063,
+    "lastProductsCount": 189
   },
   "Paladin Cards": {
     "name": "Paladin Cards",
@@ -140,7 +140,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214386033,
+    "lastSuccessAt": 1792277141903,
     "lastProductsCount": 5
   },
   "Double Infinity Gaming": {
@@ -149,8 +149,8 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214386002,
-    "lastProductsCount": 181
+    "lastSuccessAt": 1792277142040,
+    "lastProductsCount": 178
   },
   "Top Cut Central": {
     "name": "Top Cut Central",
@@ -158,7 +158,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214386164,
+    "lastSuccessAt": 1792277142280,
     "lastProductsCount": 46
   },
   "Poke-Collect": {
@@ -167,8 +167,8 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214386204,
-    "lastProductsCount": 47
+    "lastSuccessAt": 1792277142409,
+    "lastProductsCount": 56
   },
   "Game Grid Lehi": {
     "name": "Game Grid Lehi",
@@ -176,8 +176,8 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214386410,
-    "lastProductsCount": 15
+    "lastSuccessAt": 1792277142260,
+    "lastProductsCount": 13
   },
   "Mystic TCG": {
     "name": "Mystic TCG",
@@ -185,7 +185,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214386138,
+    "lastSuccessAt": 1792277142404,
     "lastProductsCount": 19
   },
   "Galactic Toys": {
@@ -194,7 +194,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214386603,
+    "lastSuccessAt": 1792277142798,
     "lastProductsCount": 119
   },
   "Card Cavern": {
@@ -203,7 +203,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214386409,
+    "lastSuccessAt": 1792277142780,
     "lastProductsCount": 5
   },
   "Trading Card Market": {
@@ -212,7 +212,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214387098,
+    "lastSuccessAt": 1792277142977,
     "lastProductsCount": 250
   },
   "AllPokeTCG": {
@@ -221,7 +221,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214386424,
+    "lastSuccessAt": 1792277142425,
     "lastProductsCount": 250
   },
   "The Pokecave": {
@@ -230,7 +230,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214386322,
+    "lastSuccessAt": 1792277142318,
     "lastProductsCount": 128
   },
   "The Gaming Goat": {
@@ -239,7 +239,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214386728,
+    "lastSuccessAt": 1792277142906,
     "lastProductsCount": 6
   },
   "Stomping Grounds": {
@@ -248,7 +248,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214386754,
+    "lastSuccessAt": 1792277143073,
     "lastProductsCount": 250
   },
   "Red Raccoon Games": {
@@ -257,7 +257,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214386929,
+    "lastSuccessAt": 1792277143243,
     "lastProductsCount": 250
   },
   "Tabletop Village": {
@@ -266,7 +266,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214386897,
+    "lastSuccessAt": 1792277143234,
     "lastProductsCount": 5
   },
   "1st Edition Collectibles": {
@@ -275,7 +275,7 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1792214386903,
+    "lastSuccessAt": 1792277142747,
     "lastProductsCount": 250
   }
 }

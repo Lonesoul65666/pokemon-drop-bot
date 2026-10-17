@@ -2,15 +2,85 @@
   "me-pitch-black-etb__Trading Card Market": {
     "lastPrice": 65,
     "lowestAlertedPrice": 65,
-    "timestamp": 1792213420544,
-    "timeStr": "12:03 AM",
-    "alertCount": 1
+    "timestamp": 1792242404382,
+    "timeStr": "08:06 AM",
+    "alertCount": 3
   },
   "me-pitch-black-etb__TCGPlayer Verified Seller": {
     "lastPrice": 64,
     "lowestAlertedPrice": 64,
-    "timestamp": 1792213440449,
-    "timeStr": "12:04 AM",
+    "timestamp": 1792243162028,
+    "timeStr": "08:19 AM",
+    "alertCount": 3
+  },
+  "swsh-lost-origin-etb__TCGPlayer Verified Seller": {
+    "lastPrice": 196.99,
+    "lowestAlertedPrice": 195.99,
+    "timestamp": 1792274220296,
+    "timeStr": "04:57 PM",
+    "alertCount": 3
+  },
+  "sv-journey-together-booster-box__PKMN Colosseum": {
+    "lastPrice": 185.99,
+    "lowestAlertedPrice": 185.99,
+    "timestamp": 1792273759267,
+    "timeStr": "04:49 PM",
+    "alertCount": 3
+  },
+  "me-ascended-heroes-etb-case__TCGPlayer Verified Seller": {
+    "lastPrice": 1582,
+    "lowestAlertedPrice": 1582,
+    "timestamp": 1792273829931,
+    "timeStr": "04:50 PM",
+    "alertCount": 3
+  },
+  "me-30th-celebration-etb-case__TCGPlayer Verified Seller": {
+    "lastPrice": 1412.89,
+    "lowestAlertedPrice": 1412.88,
+    "timestamp": 1792273851637,
+    "timeStr": "04:50 PM",
+    "alertCount": 3
+  },
+  "sv-prismatic-evolutions-etb-case__TCGPlayer Verified Seller": {
+    "lastPrice": 1320,
+    "lowestAlertedPrice": 1320,
+    "timestamp": 1792274054833,
+    "timeStr": "04:54 PM",
+    "alertCount": 3
+  },
+  "swsh-fusion-strike-etb__TCGPlayer Verified Seller": {
+    "lastPrice": 320,
+    "lowestAlertedPrice": 320,
+    "timestamp": 1792274169595,
+    "timeStr": "04:56 PM",
+    "alertCount": 3
+  },
+  "me-chaos-rising-etb__TCGPlayer Verified Seller": {
+    "lastPrice": 62,
+    "lowestAlertedPrice": 62,
+    "timestamp": 1792246540049,
+    "timeStr": "09:15 AM",
+    "alertCount": 1
+  },
+  "sv-twilight-masquerade-etb__TCGPlayer Verified Seller": {
+    "lastPrice": 92.57,
+    "lowestAlertedPrice": 92.57,
+    "timestamp": 1792266726703,
+    "timeStr": "02:52 PM",
+    "alertCount": 2
+  },
+  "sv-journey-together-booster-box__TCGPlayer Verified Seller": {
+    "lastPrice": 189.4,
+    "lowestAlertedPrice": 189.4,
+    "timestamp": 1792262604923,
+    "timeStr": "01:43 PM",
+    "alertCount": 1
+  },
+  "sv-destined-rivals-etb__TCGPlayer Verified Seller": {
+    "lastPrice": 104,
+    "lowestAlertedPrice": 104,
+    "timestamp": 1792265242049,
+    "timeStr": "02:27 PM",
     "alertCount": 1
   }
 }

@@ -10,12 +10,31 @@ import {
   detectBigBoxRetailer,
   isPokemonCenterSource,
   hasPcExclusiveTerms,
+  getPackCountForSku,
+  computeRipMetrics,
   atomicWriteJson
 } from './policies';
 import { recordObservation, getTelemetry } from './marketTelemetry';
 import { recordDailySnapshot, recordTapeRestock, recordTapeSoldOut } from './marketTape';
 
 export type BigBoxTier = 'MSRP_TIER_A' | 'PC_EXCLUSIVE_MSRP' | '3P_TIER_B';
+
+export interface MsrpTrophyCatch {
+  productName: string;
+  ruleId?: string;
+  store: string;
+  price: number;
+  landedPrice: number;
+  msrp: number;
+  url: string;
+  timestamp: number;
+  timeStr: string;
+}
+
+export interface MsrpTrophiesState {
+  totalMsrpHits: number;
+  catches: MsrpTrophyCatch[];
+}
 
 export interface RawRestockItem {
   title: string;
@@ -24,6 +43,7 @@ export interface RawRestockItem {
   productUrl?: string;
   cart1xUrl?: string;
   cart2xUrl?: string;
+  cart3xUrl?: string;
   price?: number;
   stock?: number;
   itemId?: string;
@@ -43,7 +63,18 @@ export interface EvaluationResult {
   landedPrice?: number;
   estimatedShipping?: number;
   freeShipNote?: string;
+  packCount?: number;
+  pricePerPack?: number;
+  isRipValueLeader?: boolean;
   isPreOrder?: boolean;
+  isPreRelease?: boolean;
+  preReleaseStatusTag?: string;
+  releaseDate?: string;
+  isMsrpUnicorn?: boolean;
+  bypassVaultMute?: boolean;
+  cart1xUrl?: string;
+  cart2xUrl?: string;
+  cart3xUrl?: string;
   bigBoxTier?: BigBoxTier;
   bigBoxBadge?: string;
   marketplaceWarning?: string;
@@ -60,6 +91,8 @@ interface AlertMemoryEntry {
 
 const ALERT_STATE_PATH = path.resolve(process.cwd(), 'alertState.json');
 const LIVE_STOCK_PATH = path.resolve(process.cwd(), 'liveStock.json');
+const SETTINGS_PATH = path.resolve(process.cwd(), 'botSettings.json');
+export const MSRP_TROPHIES_PATH = path.resolve(process.cwd(), 'data', 'msrpTrophies.json');
 let alertMemory: Record<string, AlertMemoryEntry> = {};
 
 try {
@@ -71,6 +104,46 @@ try {
 function saveAlertMemory() {
   atomicWriteJson(ALERT_STATE_PATH, alertMemory);
 }
+
+export function getMsrpTrophies(): MsrpTrophiesState {
+  try {
+    if (fs.existsSync(MSRP_TROPHIES_PATH)) {
+      const parsed = JSON.parse(fs.readFileSync(MSRP_TROPHIES_PATH, 'utf-8'));
+      if (parsed && typeof parsed.totalMsrpHits === 'number' && Array.isArray(parsed.catches)) {
+        return parsed;
+      }
+    }
+  } catch (e) {}
+  return { totalMsrpHits: 0, catches: [] };
+}
+
+export function recordMsrpTrophyCatch(entry: MsrpTrophyCatch): MsrpTrophiesState {
+  try {
+    const dir = path.dirname(MSRP_TROPHIES_PATH);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    const state = getMsrpTrophies();
+    state.totalMsrpHits = (state.totalMsrpHits || 0) + 1;
+    state.catches.unshift(entry);
+    if (state.catches.length > 20) {
+      state.catches = state.catches.slice(0, 20);
+    }
+    atomicWriteJson(MSRP_TROPHIES_PATH, state);
+    return state;
+  } catch (e) {
+    return getMsrpTrophies();
+  }
+}
+
+export function isPreReleaseDate(releaseDate?: string, nowTs = Date.now()): boolean {
+  if (!releaseDate) return false;
+  const parsed = Date.parse(`${releaseDate}T00:00:00`);
+  if (Number.isNaN(parsed)) return false;
+  return nowTs < parsed;
+}
+
+export const PRE_RELEASE_BLEED_TAG = '⏳ PRE-RELEASE BLEED (Wait for Launch Week)';
 
 export interface StoreShippingProfile {
   freeShipThreshold: number;
@@ -142,7 +215,14 @@ export interface LiveStockEntry {
   price: number;
   landedPrice?: number;
   freeShipNote?: string;
+  packCount?: number;
+  pricePerPack?: number;
+  isRipValueLeader?: boolean;
   isPreOrder?: boolean;
+  isPreRelease?: boolean;
+  preReleaseStatusTag?: string;
+  releaseDate?: string;
+  isMsrpUnicorn?: boolean;
   bigBoxTier?: BigBoxTier;
   bigBoxBadge?: string;
   marketplaceWarning?: string;
@@ -150,6 +230,7 @@ export interface LiveStockEntry {
   productUrl?: string;
   cart1xUrl?: string;
   cart2xUrl?: string;
+  cart3xUrl?: string;
   stock?: number;
   itemId?: string;
   inStock: boolean;
@@ -283,14 +364,32 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
     let marketplaceWarning: string | undefined = undefined;
     let priorityFront = false;
 
-    const isTierAMsrp = Boolean(bigBoxName && dropPrice <= rule.msrpCeiling * 1.08);
+    const isBigBoxMsrp = Boolean(bigBoxName && dropPrice <= rule.msrpCeiling * 1.08);
+
+    // Tier A (True Retail MSRP) and PC Exclusive Retail Drops force $0 shipping on Big Box
+    const isFreeShip = Boolean(
+      isPcExclusiveRetailDrop ||
+      isBigBoxMsrp ||
+      item.freeShipping ||
+      dropPrice >= shipProfile.freeShipThreshold
+    );
+    const estimatedShipping = isFreeShip ? 0 : shipProfile.flatShipping;
+    const landedPrice = Math.round((dropPrice + estimatedShipping) * 100) / 100;
+
+    // Tier-A True Retail MSRP: landed price <= MSRP * 1.08 with free/nominal shipping (<= $6.99)
+    const isTierAMsrp = Boolean(
+      rule.msrpCeiling > 0 &&
+      landedPrice <= Math.round(rule.msrpCeiling * 1.08 * 100) / 100 &&
+      estimatedShipping <= 6.99
+    );
+
     if (isPcExclusiveRetailDrop) {
       bigBoxTier = 'PC_EXCLUSIVE_MSRP';
       bigBoxBadge = '💎 POKÉMON CENTER EXCLUSIVE MSRP DROP';
       priorityFront = true;
     } else if (isTierAMsrp) {
       bigBoxTier = 'MSRP_TIER_A';
-      bigBoxBadge = '🎯 TRUE RETAIL MSRP DROP';
+      bigBoxBadge = '🚨💎 UNICORN RETAIL MSRP HIT 💎🚨';
       priorityFront = true;
     } else if (bigBoxName && dropPrice > rule.msrpCeiling * 1.08) {
       bigBoxTier = '3P_TIER_B';
@@ -300,23 +399,58 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       }
     }
 
-    // Tier A (True Retail MSRP) and PC Exclusive Retail Drops force $0 shipping
-    const isFreeShip = Boolean(
-      isPcExclusiveRetailDrop ||
-      isTierAMsrp ||
-      item.freeShipping ||
-      dropPrice >= shipProfile.freeShipThreshold
+    // Pre-Release Bleed Tagging
+    const isPreRelease = isPreReleaseDate(rule.releaseDate);
+    const preReleaseStatusTag = isPreRelease ? PRE_RELEASE_BLEED_TAG : undefined;
+
+    // Rule of 3 Family Pack Instant-Cart Links for Shopify LGS drops on ETBs
+    const baseCartUrl = item.cart1xUrl || (item.url && item.url.includes('/cart/') ? item.url : undefined);
+    let cart1xUrl = item.cart1xUrl;
+    let cart2xUrl = item.cart2xUrl;
+    let cart3xUrl = item.cart3xUrl;
+    if (baseCartUrl) {
+      const cleanCartRoot = baseCartUrl.replace(/:\d+$/, '');
+      cart1xUrl = `${cleanCartRoot}:1`;
+      cart2xUrl = (item.stock === undefined || item.stock >= 2) ? `${cleanCartRoot}:2` : undefined;
+      if (rule.formFactor === 'ETB') {
+        cart3xUrl = (item.stock === undefined || item.stock >= 3) ? `${cleanCartRoot}:3` : undefined;
+      } else {
+        cart3xUrl = undefined;
+      }
+    }
+
+    // Check Vault suppression (inVault / owned + muteVaulted setting), with MSRP Tier-A Defcon-1 Override!
+    const isInVault = Boolean(rule.inVault ?? rule.owned);
+    const isMsrpUnicorn = Boolean(isTierAMsrp || isPcExclusiveRetailDrop);
+    let muteVaulted = false;
+    try {
+      if (fs.existsSync(SETTINGS_PATH)) {
+        const settings = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf-8'));
+        muteVaulted = Boolean(settings?.muteVaulted);
+      }
+    } catch (e) {}
+
+    const { packCount, pricePerPack, isRipValueLeader } = computeRipMetrics(
+      landedPrice,
+      rule.id,
+      rule.formFactor,
+      `${rule.name} ${cleanTitle}`,
+      rule.packCount
     );
-    const estimatedShipping = isFreeShip ? 0 : shipProfile.flatShipping;
-    const landedPrice = Math.round((dropPrice + estimatedShipping) * 100) / 100;
 
     let freeShipNote: string | undefined = undefined;
 
     if (dropPrice > effectiveCeiling) {
       return {
         action: 'IGNORE',
-        reason: `${isPreOrder ? '[PRE-ORDER] ' : ''}Price ($${dropPrice.toFixed(2)}) exceeds allowable buy threshold ($${effectiveCeiling.toFixed(2)}).`,
-        rule
+        reason: `${isPreOrder ? '[PRE-ORDER] ' : ''}${isPreRelease ? `[${PRE_RELEASE_BLEED_TAG}] ` : ''}Price ($${dropPrice.toFixed(2)}) exceeds allowable buy threshold ($${effectiveCeiling.toFixed(2)}).`,
+        rule,
+        packCount,
+        pricePerPack,
+        isRipValueLeader,
+        isPreRelease,
+        preReleaseStatusTag,
+        releaseDate: rule.releaseDate
       };
     }
 
@@ -329,7 +463,13 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
         return {
           action: 'IGNORE',
           reason: `Landed price ($${landedPrice.toFixed(2)} w/ $${estimatedShipping.toFixed(2)} ship) exceeds buy threshold ($${effectiveCeiling.toFixed(2)}) and qtyForFreeShip (${qtyForFreeShip}x) > 4.`,
-          rule
+          rule,
+          packCount,
+          pricePerPack,
+          isRipValueLeader,
+          isPreRelease,
+          preReleaseStatusTag,
+          releaseDate: rule.releaseDate
         };
       }
     }
@@ -361,20 +501,43 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       price: currentPrice,
       landedPrice,
       freeShipNote,
+      packCount,
+      pricePerPack,
+      isRipValueLeader,
       isPreOrder,
+      isPreRelease,
+      preReleaseStatusTag,
+      releaseDate: rule.releaseDate,
+      isMsrpUnicorn,
       bigBoxTier,
       bigBoxBadge,
       marketplaceWarning,
       url: item.url,
       productUrl: item.productUrl,
-      cart1xUrl: item.cart1xUrl,
-      cart2xUrl: item.cart2xUrl,
+      cart1xUrl,
+      cart2xUrl,
+      cart3xUrl,
       stock: item.stock,
       itemId: item.itemId,
       inStock: true,
       updatedAt: now,
       timeStr: nowTimeStr
     });
+
+    // Vault suppression check: If item is marked inVault/owned AND muteVaulted is enabled, suppress alert UNLESS it's a Tier-A True Retail MSRP Unicorn!
+    if (isInVault && muteVaulted && !isMsrpUnicorn) {
+      return {
+        action: 'IGNORE',
+        reason: `Suppressed by Vault Mute (inVault=true and above MSRP Tier-A ceiling).`,
+        rule,
+        packCount,
+        pricePerPack,
+        isRipValueLeader,
+        isPreRelease,
+        preReleaseStatusTag,
+        releaseDate: rule.releaseDate
+      };
+    }
 
     // Reload alertState from disk if reset via dashboard
     try {
@@ -402,7 +565,13 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
         return {
           action: 'IGNORE',
           reason: `Deduplicated repeat: ${rule.name} at ${item.retailer} already alerted at $${prev.lastPrice.toFixed(2)} (${prev.timeStr}).`,
-          rule
+          rule,
+          packCount,
+          pricePerPack,
+          isRipValueLeader,
+          isPreRelease,
+          preReleaseStatusTag,
+          releaseDate: rule.releaseDate
         };
       }
 
@@ -420,6 +589,21 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
     };
     saveAlertMemory();
 
+    // Record persistent Trophy Catch if Tier-A True Retail MSRP hit!
+    if (isMsrpUnicorn) {
+      recordMsrpTrophyCatch({
+        productName: rule.name,
+        ruleId: rule.id,
+        store: item.retailer,
+        price: currentPrice,
+        landedPrice,
+        msrp: rule.msrpCeiling,
+        url: item.productUrl || item.url,
+        timestamp: now,
+        timeStr: new Date(now).toISOString()
+      });
+    }
+
     const liveTel = getTelemetry()[rule.id];
     const marketVal = (liveTel && liveTel.rollingAverage > 0) ? liveTel.rollingAverage : (rule.estimatedMarketValue || effectiveCeiling);
     const effectiveComparePrice = freeShipNote ? currentPrice : landedPrice;
@@ -428,7 +612,7 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
 
     return {
       action: 'BUY',
-      reason: `[${alertType}]${bigBoxBadge ? ` [${bigBoxBadge}]` : ''}${isPreOrder ? ' [⏳ PRE-ORDER]' : ''} Matched "${rule.name}" at $${currentPrice.toFixed(2)} (Landed: $${landedPrice.toFixed(2)} • ${discountPct}% under market)`,
+      reason: `[${alertType}]${bigBoxBadge ? ` [${bigBoxBadge}]` : ''}${isPreRelease ? ` [${PRE_RELEASE_BLEED_TAG}]` : ''}${isPreOrder ? ' [⏳ PRE-ORDER]' : ''} Matched "${rule.name}" at $${currentPrice.toFixed(2)} (Landed: $${landedPrice.toFixed(2)} • $${pricePerPack.toFixed(2)}/pk • ${discountPct}% under market)`,
       rule,
       discountPct,
       savingsDollars,
@@ -438,7 +622,18 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       landedPrice,
       estimatedShipping,
       freeShipNote,
+      packCount,
+      pricePerPack,
+      isRipValueLeader,
       isPreOrder,
+      isPreRelease,
+      preReleaseStatusTag,
+      releaseDate: rule.releaseDate,
+      isMsrpUnicorn,
+      bypassVaultMute: Boolean(isInVault && isMsrpUnicorn),
+      cart1xUrl,
+      cart2xUrl,
+      cart3xUrl,
       bigBoxTier,
       bigBoxBadge,
       marketplaceWarning,

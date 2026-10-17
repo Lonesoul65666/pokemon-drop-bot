@@ -4,7 +4,7 @@ import path from 'path';
 import dotenv from 'dotenv';
 import { getDualMarketComps } from './marketComps';
 import { markLiveStockOut } from './evaluator';
-import { atomicWriteJson } from './policies';
+import { atomicWriteJson, computeRipMetrics } from './policies';
 import { getFlashClearEscalation } from './marketTape';
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
@@ -84,12 +84,21 @@ export interface DropPayload {
   productUrl?: string;
   cart1xUrl?: string;
   cart2xUrl?: string;
+  cart3xUrl?: string;
   price?: string;
   priceNum?: number;
   landedPrice?: number;
   estimatedShipping?: number;
   freeShipNote?: string;
+  packCount?: number;
+  pricePerPack?: number;
+  isRipValueLeader?: boolean;
   isPreOrder?: boolean;
+  isPreRelease?: boolean;
+  preReleaseStatusTag?: string;
+  releaseDate?: string;
+  isMsrpUnicorn?: boolean;
+  bypassVaultMute?: boolean;
   stock?: number;
   itemId?: string;
   ruleId?: string;
@@ -148,16 +157,26 @@ function recordDropHistory(drop: DropPayload) {
     if (fs.existsSync(DROPS_HISTORY_PATH)) {
       history = JSON.parse(fs.readFileSync(DROPS_HISTORY_PATH, 'utf-8'));
     }
+    const rawPrice = drop.priceNum || parseFloat(drop.price || '0');
+    const effLanded = drop.landedPrice || rawPrice;
+    const rip = computeRipMetrics(effLanded, drop.ruleId, drop.formFactor, drop.ruleName || drop.title, drop.packCount);
     history.unshift({
       timestamp: Date.now(),
       timeStr: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       title: drop.ruleName || drop.title,
       rawTitle: drop.title,
       retailer: drop.retailer,
-      price: drop.priceNum || parseFloat(drop.price || '0'),
+      price: rawPrice,
       landedPrice: drop.landedPrice,
       freeShipNote: drop.freeShipNote,
+      packCount: drop.packCount ?? rip.packCount,
+      pricePerPack: drop.pricePerPack ?? rip.pricePerPack,
+      isRipValueLeader: drop.isRipValueLeader ?? rip.isRipValueLeader,
       isPreOrder: Boolean(drop.isPreOrder),
+      isPreRelease: Boolean(drop.isPreRelease),
+      preReleaseStatusTag: drop.preReleaseStatusTag,
+      releaseDate: drop.releaseDate,
+      isMsrpUnicorn: Boolean(drop.isMsrpUnicorn),
       bigBoxTier: drop.bigBoxTier,
       bigBoxBadge: drop.bigBoxBadge,
       marketplaceWarning: drop.marketplaceWarning,
@@ -167,6 +186,8 @@ function recordDropHistory(drop: DropPayload) {
       productUrl: drop.productUrl,
       cart1xUrl: drop.cart1xUrl,
       cart2xUrl: drop.cart2xUrl,
+      cart3xUrl: drop.cart3xUrl,
+      stock: drop.stock,
       formFactor: drop.formFactor || 'Sealed',
       ruleId: drop.ruleId || '',
       alertType: drop.alertType || 'NEW_DROP',
@@ -242,18 +263,28 @@ export async function sendAlert(drop: DropPayload): Promise<void> {
 
   const flashEscalation = getFlashClearEscalation(drop.ruleId, priceVal);
 
+  const landedOrPrice = drop.landedPrice ?? priceVal;
+  const isTierAMsrpHit = Boolean(
+    drop.bigBoxTier === 'MSRP_TIER_A' ||
+    drop.isMsrpUnicorn ||
+    (msrpVal > 0 && landedOrPrice <= Math.round(msrpVal * 1.08 * 100) / 100 && (drop.estimatedShipping ?? 0) <= 6.99)
+  );
+
   let tierBadge = '🟡 SOLID DEAL — UNDER TARGET';
   let embedColor = 0xf59e0b;
 
-  if (drop.bigBoxTier === 'PC_EXCLUSIVE_MSRP' && drop.bigBoxBadge) {
+  if (isTierAMsrpHit) {
+    tierBadge = '🚨💎 UNICORN RETAIL MSRP HIT 💎🚨';
+    embedColor = 0x00F0FF;
+  } else if (drop.bigBoxTier === 'PC_EXCLUSIVE_MSRP' && drop.bigBoxBadge) {
     tierBadge = drop.bigBoxBadge;
-    embedColor = 0x38bdf8;
-  } else if (drop.bigBoxTier === 'MSRP_TIER_A' && drop.bigBoxBadge) {
-    tierBadge = drop.bigBoxBadge;
-    embedColor = 0x10b981;
+    embedColor = 0x00F0FF;
   } else if (flashEscalation.isHighVelocityRepeat && flashEscalation.badgeText) {
     tierBadge = flashEscalation.badgeText;
     embedColor = 0xe11d48;
+  } else if (drop.isPreRelease && drop.preReleaseStatusTag) {
+    tierBadge = drop.preReleaseStatusTag;
+    embedColor = 0x8b5cf6;
   } else if (drop.isPreOrder) {
     tierBadge = '⏳ PRE-ORDER — AT OR NEAR MSRP CEILING';
     embedColor = 0x8b5cf6;
@@ -265,21 +296,36 @@ export async function sendAlert(drop: DropPayload): Promise<void> {
     embedColor = 0xe60012;
   }
 
-  let headerPrefix = drop.bigBoxTier === 'PC_EXCLUSIVE_MSRP'
-    ? '💎 PC EXCLUSIVE MSRP:'
-    : (drop.bigBoxTier === 'MSRP_TIER_A'
-        ? '🎯 RETAIL MSRP DROP:'
-        : (drop.isPreOrder ? '⏳ PRE-ORDER:' : (flashEscalation.isHighVelocityRepeat ? '⚡ FLASH REPEAT:' : '🚨 IN STOCK:')));
+  let headerPrefix = isTierAMsrpHit
+    ? '🚨💎 UNICORN RETAIL MSRP HIT 💎🚨'
+    : (drop.bigBoxTier === 'PC_EXCLUSIVE_MSRP'
+        ? '💎 PC EXCLUSIVE MSRP:'
+        : (drop.isPreRelease
+            ? '⏳ PRE-RELEASE:'
+            : (drop.isPreOrder ? '⏳ PRE-ORDER:' : (flashEscalation.isHighVelocityRepeat ? '⚡ FLASH REPEAT:' : '🚨 IN STOCK:'))));
   let signalLine = drop.isPreOrder ? 'Pre-order allocation live (Strict MSRP+5% cap enforced)' : 'Fresh restock detected';
 
   if (drop.alertType === 'PRICE_DROP' && drop.previousPrice) {
     const cut = (drop.previousPrice - priceVal).toFixed(2);
-    headerPrefix = `📉 PRICE DROP (-$${cut}):`;
+    if (!isTierAMsrpHit) {
+      headerPrefix = `📉 PRICE DROP (-$${cut}):`;
+      embedColor = 0x06b6d4;
+    }
     signalLine = `Slashed from $${drop.previousPrice.toFixed(2)} (seen at ${drop.previousTimeStr})`;
-    embedColor = 0x06b6d4;
   } else if (drop.alertType === 'RESTOCK_REPEAT' && drop.previousPrice) {
-    headerPrefix = drop.isPreOrder ? '⏳ PRE-ORDER RESTOCK:' : '🔄 RESTOCKED:';
+    if (!isTierAMsrpHit) {
+      headerPrefix = drop.isPreOrder ? '⏳ PRE-ORDER RESTOCK:' : '🔄 RESTOCKED:';
+    }
     signalLine = `Previously seen at $${drop.previousPrice.toFixed(2)} (${drop.previousTimeStr})`;
+  }
+
+  if (drop.isPreRelease) {
+    const bleedTag = drop.preReleaseStatusTag || '⏳ PRE-RELEASE BLEED (Wait for Launch Week)';
+    if (isTierAMsrpHit) {
+      signalLine += `\n✅ **PRE-RELEASE AT TRUE RETAIL MSRP** (${bleedTag} bypassed)`;
+    } else {
+      signalLine += `\n⚠️ **${bleedTag}** — Avoid inflated pre-release allocation dumps above retail MSRP!`;
+    }
   }
 
   if (flashEscalation.isHighVelocityRepeat && flashEscalation.badgeText) {
@@ -295,7 +341,7 @@ export async function sendAlert(drop: DropPayload): Promise<void> {
   }
 
   const vaultBadge = drop.ownedInVault
-    ? '🟣 In Vault (Passing to Crew)'
+    ? (isTierAMsrpHit ? '🚨💎 DEFCON-1 OVERRIDE (In Vault — MSRP Rip Alert!)' : '🟣 In Vault (Passing to Crew)')
     : '🎯 Needed for Vault';
 
   const stockDisplay = typeof drop.stock === 'number' && drop.stock > 0
@@ -308,13 +354,35 @@ export async function sendAlert(drop: DropPayload): Promise<void> {
     : '';
 
   const isShopifyCart = Boolean(drop.cart1xUrl || drop.url.includes('/cart/'));
+  const baseCartRoot = (drop.cart1xUrl || drop.url).replace(/:\d+$/, '');
   const c1 = drop.cart1xUrl || drop.url;
-  const c2 = drop.cart2xUrl || (drop.url.includes('/cart/') ? drop.url.replace(/:1$/, ':2') : undefined);
+  const knownStock = typeof drop.stock === 'number' && drop.stock > 0 ? drop.stock : undefined;
+  const c2 = (knownStock === undefined || knownStock >= 2)
+    ? (drop.cart2xUrl || (isShopifyCart ? `${baseCartRoot}:2` : undefined))
+    : undefined;
+  const isEtbDrop = drop.formFactor === 'ETB' || /\b(etb|elite trainer box)\b/i.test(`${drop.ruleName || ''} ${drop.title || ''}`);
+  const c3 = isEtbDrop && (knownStock === undefined || knownStock >= 3)
+    ? (drop.cart3xUrl || (isShopifyCart ? `${baseCartRoot}:3` : undefined))
+    : undefined;
   const prodPageUrl = drop.productUrl || (drop.url.includes('/cart/') ? drop.url.split('/cart/')[0] : drop.url);
 
-  const actionLinks = isShopifyCart
-    ? `[**⚡ Instant Cart (1x)**](${c1})${c2 ? `   •   [**⚡ Instant Cart (2x)**](${c2})` : ''}   •   [🌐 Product Page](${prodPageUrl})`
-    : `[**🛒 View & Checkout on ${drop.retailer} ↗**](${drop.url})`;
+  let actionLinks: string;
+  if (isShopifyCart) {
+    if (isEtbDrop) {
+      const segments = [`[**⚡ 1x Single**](${c1})`];
+      if (c2) segments.push(`[**⚡ 2x Pair**](${c2})`);
+      if (c3) segments.push(`[**⚡ 3x Family Pack (Free Ship Threshold)**](${c3})`);
+      segments.push(`[🌐 Product Page](${prodPageUrl})`);
+      actionLinks = segments.join('   •   ');
+    } else {
+      const segments = [`[**⚡ Instant Cart (1x)**](${c1})`];
+      if (c2) segments.push(`[**⚡ Instant Cart (2x)**](${c2})`);
+      segments.push(`[🌐 Product Page](${prodPageUrl})`);
+      actionLinks = segments.join('   •   ');
+    }
+  } else {
+    actionLinks = `[**🛒 View & Checkout on ${drop.retailer} ↗**](${drop.url})`;
+  }
 
   const thumbUrl = getThumbnailUrl(drop.ruleId);
 
@@ -331,7 +399,7 @@ export async function sendAlert(drop: DropPayload): Promise<void> {
       { name: '💰 SPREAD GAIN', value: discount > 0 ? `🔥 **${discount}% Below Market** (~$${savings.toFixed(0)} edge)` : 'At Target', inline: true },
       { name: '🚀 DIRECT CHECKOUT', value: actionLinks, inline: false }
     ],
-    footer: { text: 'DropBot Commander v3.0 • Live OOS Tracker Active (Auto-Updates When Sold Out)' },
+    footer: { text: 'DropBot Commander v4.0 • Live OOS Tracker Active (Auto-Updates When Sold Out)' },
     timestamp: new Date().toISOString()
   };
 
@@ -339,9 +407,14 @@ export async function sendAlert(drop: DropPayload): Promise<void> {
     embed.thumbnail = { url: thumbUrl };
   }
 
+  const webhookPayload: any = { embeds: [embed] };
+  if (isTierAMsrpHit) {
+    webhookPayload.content = `@everyone 🚨💎 **UNICORN RETAIL MSRP HIT** — **${drop.ruleName || drop.title}** at **$${priceVal.toFixed(2)}** on **${drop.retailer}**!`;
+  }
+
   try {
     // Use ?wait=true so Discord returns the message ID, allowing us to auto-edit it when the item sells out!
-    const data = await enqueueDiscordWebhook(`${webhookUrl}?wait=true`, { embeds: [embed] }, 'POST', Boolean(drop.priorityFront));
+    const data = await enqueueDiscordWebhook(`${webhookUrl}?wait=true`, webhookPayload, 'POST', Boolean(drop.priorityFront || isTierAMsrpHit));
     if (data?.id && drop.itemId) {
       activeDiscordMessages.set(String(drop.itemId), {
         messageId: data.id,
