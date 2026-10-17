@@ -12,7 +12,7 @@
     "minStock": 1,
     "msrpCeiling": 161.64,
     "maxMarketBuyPrice": 261,
-    "estimatedMarketValue": 289.75,
+    "estimatedMarketValue": 289.32,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true
@@ -90,7 +90,7 @@
     "minStock": 1,
     "msrpCeiling": 161.64,
     "maxMarketBuyPrice": 164,
-    "estimatedMarketValue": 182.45,
+    "estimatedMarketValue": 182.21,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true
@@ -165,7 +165,7 @@
     "minStock": 1,
     "msrpCeiling": 161.64,
     "maxMarketBuyPrice": 359,
-    "estimatedMarketValue": 394.82,
+    "estimatedMarketValue": 395.03,
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true
@@ -240,7 +240,7 @@
     "minStock": 1,
     "msrpCeiling": 161.64,
     "maxMarketBuyPrice": 157,
-    "estimatedMarketValue": 173.12,
+    "estimatedMarketValue": 173.11,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true
@@ -315,7 +315,7 @@
     "minStock": 1,
     "msrpCeiling": 161.64,
     "maxMarketBuyPrice": 165,
-    "estimatedMarketValue": 182.28,
+    "estimatedMarketValue": 182.22,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true
@@ -390,7 +390,7 @@
     "minStock": 1,
     "msrpCeiling": 161.64,
     "maxMarketBuyPrice": 223,
-    "estimatedMarketValue": 244.66,
+    "estimatedMarketValue": 244.51,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true
@@ -425,7 +425,7 @@
     ],
     "minStock": 1,
     "msrpCeiling": 54.99,
-    "maxMarketBuyPrice": 92,
+    "maxMarketBuyPrice": 100,
     "estimatedMarketValue": 110,
     "priority": "STANDARD",
     "cooldownMins": 30,
@@ -504,7 +504,7 @@
     "minStock": 1,
     "msrpCeiling": 32,
     "maxMarketBuyPrice": 75,
-    "estimatedMarketValue": 79.29,
+    "estimatedMarketValue": 77.82,
     "priority": "GRAIL",
     "cooldownMins": 45,
     "active": true
@@ -561,7 +561,7 @@
     "minStock": 1,
     "msrpCeiling": 32,
     "maxMarketBuyPrice": 65,
-    "estimatedMarketValue": 74.12,
+    "estimatedMarketValue": 75.57,
     "priority": "GRAIL",
     "cooldownMins": 45,
     "active": true
@@ -615,7 +615,7 @@
     "minStock": 1,
     "msrpCeiling": 54.99,
     "maxMarketBuyPrice": 117,
-    "estimatedMarketValue": 129.45,
+    "estimatedMarketValue": 130.15,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
@@ -636,7 +636,7 @@
     "minStock": 1,
     "msrpCeiling": 549.9,
     "maxMarketBuyPrice": 1166,
-    "estimatedMarketValue": 1295,
+    "estimatedMarketValue": 1302,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -1053,7 +1053,7 @@
     "minStock": 1,
     "msrpCeiling": 32,
     "maxMarketBuyPrice": 50,
-    "estimatedMarketValue": 179.53,
+    "estimatedMarketValue": 180,
     "priority": "GRAIL",
     "cooldownMins": 45,
     "active": true
@@ -1146,7 +1146,7 @@
     "minStock": 1,
     "msrpCeiling": 54.99,
     "maxMarketBuyPrice": 113,
-    "estimatedMarketValue": 125.63,
+    "estimatedMarketValue": 126.75,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
@@ -1167,7 +1167,7 @@
     "minStock": 1,
     "msrpCeiling": 549.9,
     "maxMarketBuyPrice": 1130,
-    "estimatedMarketValue": 1256,
+    "estimatedMarketValue": 1268,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true
@@ -1392,7 +1392,7 @@
     "minStock": 1,
     "msrpCeiling": 161.64,
     "maxMarketBuyPrice": 269,
-    "estimatedMarketValue": 297.79,
+    "estimatedMarketValue": 297.87,
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true
@@ -1506,7 +1506,7 @@
     "minStock": 1,
     "msrpCeiling": 32,
     "maxMarketBuyPrice": 83,
-    "estimatedMarketValue": 81.03,
+    "estimatedMarketValue": 81.09,
     "priority": "GRAIL",
     "cooldownMins": 45,
     "active": true
@@ -1524,7 +1524,7 @@
     "minStock": 1,
     "msrpCeiling": 161.64,
     "maxMarketBuyPrice": 215,
-    "estimatedMarketValue": 193.93,
+    "estimatedMarketValue": 193.14,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true
@@ -1599,7 +1599,7 @@
     "minStock": 1,
     "msrpCeiling": 161.64,
     "maxMarketBuyPrice": 360,
-    "estimatedMarketValue": 402.67,
+    "estimatedMarketValue": 400.66,
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true
@@ -2280,7 +2280,7 @@
     "minStock": 1,
     "msrpCeiling": 143.64,
     "maxMarketBuyPrice": 660,
-    "estimatedMarketValue": 733.31,
+    "estimatedMarketValue": 732.87,
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true

@@ -11,8 +11,8 @@
     "url": "https://www.tcgplayer.com/product/692947?Language=English",
     "itemId": "tcg_692947",
     "inStock": true,
-    "updatedAt": 1792209000880,
-    "timeStr": "10:50 PM"
+    "updatedAt": 1792210266096,
+    "timeStr": "11:11 PM"
   },
   "me-perfect-order-etb": {
     "ruleId": "me-perfect-order-etb",
@@ -29,23 +29,26 @@
     "cart2xUrl": "https://gamersguildaz.com/cart/52757680718187:2",
     "itemId": "52757680718187",
     "inStock": true,
-    "updatedAt": 1792210210828,
-    "timeStr": "11:10 PM"
+    "updatedAt": 1792210813495,
+    "timeStr": "11:20 PM"
   },
   "sv-journey-together-booster-box": {
     "ruleId": "sv-journey-together-booster-box",
     "ruleName": "Journey Together Booster Box (36-Pack)",
     "formFactor": "Booster Box",
-    "title": "Journey Together Booster Box SV09: Journey Together",
-    "retailer": "TCGPlayer Verified Seller",
-    "price": 190,
-    "landedPrice": 190,
+    "title": "Sealed Journey Together Booster Box (NON ENHANCED)",
+    "retailer": "PKMN Colosseum",
+    "price": 185.99,
+    "landedPrice": 185.99,
     "isPreOrder": false,
-    "url": "https://www.tcgplayer.com/product/610931?Language=English",
-    "itemId": "tcg_610931",
+    "url": "https://pkmncolosseum.com/cart/45074537971766:1",
+    "productUrl": "https://pkmncolosseum.com/products/sealed-journey-together-booster-box-non-enhanced",
+    "cart1xUrl": "https://pkmncolosseum.com/cart/45074537971766:1",
+    "cart2xUrl": "https://pkmncolosseum.com/cart/45074537971766:2",
+    "itemId": "45074537971766",
     "inStock": true,
-    "updatedAt": 1792210135562,
-    "timeStr": "11:08 PM"
+    "updatedAt": 1792210710496,
+    "timeStr": "11:18 PM"
   },
   "me-ascended-heroes-etb": {
     "ruleId": "me-ascended-heroes-etb",
@@ -59,23 +62,26 @@
     "url": "https://www.tcgplayer.com/product/668496?Language=English",
     "itemId": "tcg_668496",
     "inStock": true,
-    "updatedAt": 1792209948061,
-    "timeStr": "11:05 PM"
+    "updatedAt": 1792210326408,
+    "timeStr": "11:12 PM"
   },
   "me-chaos-rising-etb": {
     "ruleId": "me-chaos-rising-etb",
     "ruleName": "Mega Evolution: Chaos Rising ETB",
     "formFactor": "ETB",
-    "title": "Chaos Rising Elite Trainer Box ME04: Chaos Rising",
-    "retailer": "TCGPlayer Verified Seller",
+    "title": "Pokemon Mega Evolution Chaos Rising Elite Trainer Box",
+    "retailer": "Trading Card Market",
     "price": 70,
-    "landedPrice": 70,
+    "landedPrice": 76.99,
     "isPreOrder": false,
-    "url": "https://www.tcgplayer.com/product/684450?Language=English",
-    "itemId": "tcg_684450",
+    "url": "https://tradingcardmarket.com/cart/47582292967476:1",
+    "productUrl": "https://tradingcardmarket.com/products/pokemon-mega-evolution-chaos-rising-elite-trainer-box",
+    "cart1xUrl": "https://tradingcardmarket.com/cart/47582292967476:1",
+    "cart2xUrl": "https://tradingcardmarket.com/cart/47582292967476:2",
+    "itemId": "47582292967476",
     "inStock": true,
-    "updatedAt": 1792209483186,
-    "timeStr": "10:58 PM"
+    "updatedAt": 1792210693473,
+    "timeStr": "11:18 PM"
   },
   "me-ascended-heroes-etb-case": {
     "ruleId": "me-ascended-heroes-etb-case",
@@ -89,8 +95,8 @@
     "url": "https://www.tcgplayer.com/product/679558?Language=English",
     "itemId": "tcg_679558",
     "inStock": true,
-    "updatedAt": 1792209505464,
-    "timeStr": "10:58 PM"
+    "updatedAt": 1792210327707,
+    "timeStr": "11:12 PM"
   },
   "me-30th-celebration-etb-case": {
     "ruleId": "me-30th-celebration-etb-case",
@@ -104,8 +110,8 @@
     "url": "https://www.tcgplayer.com/product/709036?Language=English",
     "itemId": "tcg_709036",
     "inStock": true,
-    "updatedAt": 1792209078425,
-    "timeStr": "10:51 PM"
+    "updatedAt": 1792210331915,
+    "timeStr": "11:12 PM"
   },
   "sv-prismatic-evolutions-etb-case": {
     "ruleId": "sv-prismatic-evolutions-etb-case",
@@ -119,23 +125,27 @@
     "url": "https://www.tcgplayer.com/product/598487?Language=English",
     "itemId": "tcg_598487",
     "inStock": true,
-    "updatedAt": 1792209684329,
-    "timeStr": "11:01 PM"
+    "updatedAt": 1792210511394,
+    "timeStr": "11:15 PM"
   },
   "sv-prismatic-evolutions-bundle": {
     "ruleId": "sv-prismatic-evolutions-bundle",
     "ruleName": "Prismatic Evolutions 6-Pack Booster Bundle",
     "formFactor": "Booster Bundle",
-    "title": "Prismatic Evolutions Booster Bundle SV: Prismatic Evolutions",
-    "retailer": "TCGPlayer Verified Seller",
-    "price": 81.98,
-    "landedPrice": 81.98,
+    "title": "Prismatic Evolutions Booster Bundle",
+    "retailer": "PKMN Colosseum",
+    "price": 79.99,
+    "landedPrice": 86.98,
+    "freeShipNote": "Buy 2x to hit $150 Free Shipping -> $79.99/ea landed",
     "isPreOrder": false,
-    "url": "https://www.tcgplayer.com/product/600518?Language=English",
-    "itemId": "tcg_600518",
+    "url": "https://pkmncolosseum.com/cart/44843071275062:1",
+    "productUrl": "https://pkmncolosseum.com/products/prismatic-evolutions-booster-bundle",
+    "cart1xUrl": "https://pkmncolosseum.com/cart/44843071275062:1",
+    "cart2xUrl": "https://pkmncolosseum.com/cart/44843071275062:2",
+    "itemId": "44843071275062",
     "inStock": true,
-    "updatedAt": 1792209685597,
-    "timeStr": "11:01 PM"
+    "updatedAt": 1792210710491,
+    "timeStr": "11:18 PM"
   },
   "swsh-astral-radiance-etb": {
     "ruleId": "swsh-astral-radiance-etb",
@@ -149,8 +159,8 @@
     "url": "https://www.tcgplayer.com/product/265527?Language=English",
     "itemId": "tcg_265527",
     "inStock": true,
-    "updatedAt": 1792208936204,
-    "timeStr": "10:48 PM"
+    "updatedAt": 1792210634745,
+    "timeStr": "11:17 PM"
   },
   "swsh-lost-origin-booster-case": {
     "ruleId": "swsh-lost-origin-booster-case",
@@ -164,8 +174,8 @@
     "url": "https://www.tcgplayer.com/product/278793?Language=English",
     "itemId": "tcg_278793",
     "inStock": true,
-    "updatedAt": 1792209385652,
-    "timeStr": "10:56 PM"
+    "updatedAt": 1792210653428,
+    "timeStr": "11:17 PM"
   },
   "swsh-crown-zenith-etb": {
     "ruleId": "swsh-crown-zenith-etb",
@@ -179,8 +189,8 @@
     "url": "https://www.tcgplayer.com/product/453470?Language=English",
     "itemId": "tcg_453470",
     "inStock": true,
-    "updatedAt": 1792208976873,
-    "timeStr": "10:49 PM"
+    "updatedAt": 1792210675607,
+    "timeStr": "11:17 PM"
   },
   "swsh-crown-zenith-etb-case": {
     "ruleId": "swsh-crown-zenith-etb-case",
@@ -194,8 +204,8 @@
     "url": "https://www.tcgplayer.com/product/453471?Language=English",
     "itemId": "tcg_453471",
     "inStock": true,
-    "updatedAt": 1792208978169,
-    "timeStr": "10:49 PM"
+    "updatedAt": 1792210676851,
+    "timeStr": "11:17 PM"
   },
   "sv-obsidian-flames-etb": {
     "ruleId": "sv-obsidian-flames-etb",
@@ -209,8 +219,8 @@
     "url": "https://www.tcgplayer.com/product/501264?Language=English",
     "itemId": "tcg_501264",
     "inStock": true,
-    "updatedAt": 1792209564281,
-    "timeStr": "10:59 PM"
+    "updatedAt": 1792210386879,
+    "timeStr": "11:13 PM"
   },
   "sv-151-etb": {
     "ruleId": "sv-151-etb",
@@ -224,38 +234,44 @@
     "url": "https://www.tcgplayer.com/product/503313?Language=English",
     "itemId": "tcg_503313",
     "inStock": true,
-    "updatedAt": 1792210013807,
-    "timeStr": "11:06 PM"
+    "updatedAt": 1792210389565,
+    "timeStr": "11:13 PM"
   },
   "sv-151-etb-case": {
     "ruleId": "sv-151-etb-case",
     "ruleName": "Scarlet & Violet: 151 ETB Sealed Case (10 ETBs)",
     "formFactor": "ETB Case",
-    "title": "151 Elite Trainer Box Case SV: Scarlet & Violet 151",
-    "retailer": "TCGPlayer Verified Seller",
-    "price": 6183.33,
-    "landedPrice": 6183.33,
+    "title": "Scarlet & Violet 151 Elite Trainer Box Sealed Case - Pokemon Center Exclusive",
+    "retailer": "PKMN Colosseum",
+    "price": 5599.99,
+    "landedPrice": 5599.99,
     "isPreOrder": false,
-    "url": "https://www.tcgplayer.com/product/506640?Language=English",
-    "itemId": "tcg_506640",
+    "url": "https://pkmncolosseum.com/cart/47899031175222:1",
+    "productUrl": "https://pkmncolosseum.com/products/scarlet-violet-151-elite-trainer-box-sealed-case-pokemon-center-exclusive",
+    "cart1xUrl": "https://pkmncolosseum.com/cart/47899031175222:1",
+    "cart2xUrl": "https://pkmncolosseum.com/cart/47899031175222:2",
+    "itemId": "47899031175222",
     "inStock": true,
-    "updatedAt": 1792210015053,
-    "timeStr": "11:06 PM"
+    "updatedAt": 1792210710518,
+    "timeStr": "11:18 PM"
   },
   "swsh-evolving-skies-etb": {
     "ruleId": "swsh-evolving-skies-etb",
     "ruleName": "Evolving Skies ETB",
     "formFactor": "ETB",
-    "title": "Evolving Skies Elite Trainer Box [Glaceon/Vaporeon/Sylveon/Espeon] SWSH07: Evolving Skies",
-    "retailer": "TCGPlayer Verified Seller",
-    "price": 453.95,
-    "landedPrice": 453.95,
+    "title": "Evolving Skies Elite Trainer Box (Glaceon/Vaporeon/Sylveon/Espeon)",
+    "retailer": "PKMN Colosseum",
+    "price": 499.99,
+    "landedPrice": 499.99,
     "isPreOrder": false,
-    "url": "https://www.tcgplayer.com/product/242443?Language=English",
-    "itemId": "tcg_242443",
+    "url": "https://pkmncolosseum.com/cart/47116995100726:1",
+    "productUrl": "https://pkmncolosseum.com/products/evolving-skies-elite-trainer-box-glaceon-vaporeon-sylveon-espeon",
+    "cart1xUrl": "https://pkmncolosseum.com/cart/47116995100726:1",
+    "cart2xUrl": "https://pkmncolosseum.com/cart/47116995100726:2",
+    "itemId": "47116995100726",
     "inStock": true,
-    "updatedAt": 1792210214119,
-    "timeStr": "11:10 PM"
+    "updatedAt": 1792210710505,
+    "timeStr": "11:18 PM"
   },
   "swsh-celebrations-etb": {
     "ruleId": "swsh-celebrations-etb",
@@ -269,8 +285,8 @@
     "url": "https://www.tcgplayer.com/product/242811?Language=English",
     "itemId": "tcg_242811",
     "inStock": true,
-    "updatedAt": 1792210216862,
-    "timeStr": "11:10 PM"
+    "updatedAt": 1792210594461,
+    "timeStr": "11:16 PM"
   },
   "swsh-fusion-strike-etb": {
     "ruleId": "swsh-fusion-strike-etb",
@@ -284,8 +300,8 @@
     "url": "https://www.tcgplayer.com/product/247671?Language=English",
     "itemId": "tcg_247671",
     "inStock": true,
-    "updatedAt": 1792209784399,
-    "timeStr": "11:03 PM"
+    "updatedAt": 1792210611973,
+    "timeStr": "11:16 PM"
   },
   "__recentOos": [
     {
@@ -311,20 +327,20 @@
     "ruleId": "sv-prismatic-evolutions-etb",
     "ruleName": "Prismatic Evolutions ETB",
     "formFactor": "ETB",
-    "title": "Pokemon TCG: Scarlet and Violet - Prismatic Evolutions Elite Trainer Box",
-    "retailer": "Gamers Guild AZ",
-    "price": 127.99,
-    "landedPrice": 134.98,
-    "freeShipNote": "Buy 2x to hit $150 Free Shipping -> $127.99/ea landed",
+    "title": "Prismatic Evolutions Elite Trainer Box Pokemon Scarlet and Violet",
+    "retailer": "AllPokeTCG",
+    "price": 124.99,
+    "landedPrice": 131.98,
+    "freeShipNote": "Buy 2x to hit $150 Free Shipping -> $124.99/ea landed",
     "isPreOrder": false,
-    "url": "https://gamersguildaz.com/cart/51718448415083:1",
-    "productUrl": "https://gamersguildaz.com/products/pokemon-tcg-scarlet-and-violet-prismatic-evolutions-elite-trainer-box",
-    "cart1xUrl": "https://gamersguildaz.com/cart/51718448415083:1",
-    "cart2xUrl": "https://gamersguildaz.com/cart/51718448415083:2",
-    "itemId": "51718448415083",
+    "url": "https://allpoketcg.com/cart/47300049502450:1",
+    "productUrl": "https://allpoketcg.com/products/prismatic-evolutions-elite-trainer-box-pokemon-scarlet-and-violet",
+    "cart1xUrl": "https://allpoketcg.com/cart/47300049502450:1",
+    "cart2xUrl": "https://allpoketcg.com/cart/47300049502450:2",
+    "itemId": "47300049502450",
     "inStock": true,
-    "updatedAt": 1792210210832,
-    "timeStr": "11:10 PM"
+    "updatedAt": 1792210646158,
+    "timeStr": "11:17 PM"
   },
   "me-30th-celebration-etb": {
     "ruleId": "me-30th-celebration-etb",
@@ -338,7 +354,43 @@
     "url": "https://www.tcgplayer.com/product/704143?Language=English",
     "itemId": "tcg_704143",
     "inStock": true,
-    "updatedAt": 1792209508015,
-    "timeStr": "10:58 PM"
+    "updatedAt": 1792210330291,
+    "timeStr": "11:12 PM"
+  },
+  "sv-stellar-crown-etb": {
+    "ruleId": "sv-stellar-crown-etb",
+    "ruleName": "Stellar Crown ETB",
+    "formFactor": "ETB",
+    "title": "Stellar Crown Elite Trainer Box",
+    "retailer": "PKMN Colosseum",
+    "price": 153.99,
+    "landedPrice": 153.99,
+    "isPreOrder": false,
+    "url": "https://pkmncolosseum.com/cart/43067582185526:1",
+    "productUrl": "https://pkmncolosseum.com/products/stellar-crown-elite-trainer-box",
+    "cart1xUrl": "https://pkmncolosseum.com/cart/43067582185526:1",
+    "cart2xUrl": "https://pkmncolosseum.com/cart/43067582185526:2",
+    "itemId": "43067582185526",
+    "inStock": true,
+    "updatedAt": 1792210710486,
+    "timeStr": "11:18 PM"
+  },
+  "sv-paldean-fates-etb-case": {
+    "ruleId": "sv-paldean-fates-etb-case",
+    "ruleName": "Paldean Fates ETB Sealed Case (10 ETBs)",
+    "formFactor": "ETB Case",
+    "title": "Paldean Fates Elite Trainer Box Sealed Case - Pokemon Center Exclusive",
+    "retailer": "PKMN Colosseum",
+    "price": 3199.99,
+    "landedPrice": 3199.99,
+    "isPreOrder": false,
+    "url": "https://pkmncolosseum.com/cart/47899077804086:1",
+    "productUrl": "https://pkmncolosseum.com/products/paldean-fates-elite-trainer-box-sealed-case-pokemon-center-exclusive",
+    "cart1xUrl": "https://pkmncolosseum.com/cart/47899077804086:1",
+    "cart2xUrl": "https://pkmncolosseum.com/cart/47899077804086:2",
+    "itemId": "47899077804086",
+    "inStock": true,
+    "updatedAt": 1792210710515,
+    "timeStr": "11:18 PM"
   }
 }

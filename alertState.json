@@ -383,5 +383,145 @@
     "timestamp": 1792198862295,
     "timeStr": "08:01 PM",
     "alertCount": 1
+  },
+  "sv-prismatic-evolutions-etb__AllPokeTCG": {
+    "lastPrice": 124.99,
+    "lowestAlertedPrice": 124.99,
+    "timestamp": 1792210248682,
+    "timeStr": "11:10 PM",
+    "alertCount": 1
+  },
+  "me-pitch-black-etb__Stomping Grounds": {
+    "lastPrice": 70,
+    "lowestAlertedPrice": 70,
+    "timestamp": 1792210249172,
+    "timeStr": "11:10 PM",
+    "alertCount": 1
+  },
+  "me-pitch-black-etb__Red Raccoon Games": {
+    "lastPrice": 79.99,
+    "lowestAlertedPrice": 79.99,
+    "timestamp": 1792210249613,
+    "timeStr": "11:10 PM",
+    "alertCount": 1
+  },
+  "swsh-crown-zenith-etb__1st Edition Collectibles": {
+    "lastPrice": 315,
+    "lowestAlertedPrice": 315,
+    "timestamp": 1792210250335,
+    "timeStr": "11:10 PM",
+    "alertCount": 1
+  },
+  "me-chaos-rising-etb__Stomping Grounds": {
+    "lastPrice": 70,
+    "lowestAlertedPrice": 70,
+    "timestamp": 1792210252918,
+    "timeStr": "11:10 PM",
+    "alertCount": 1
+  },
+  "swsh-celebrations-etb__1st Edition Collectibles": {
+    "lastPrice": 350,
+    "lowestAlertedPrice": 350,
+    "timestamp": 1792210255455,
+    "timeStr": "11:10 PM",
+    "alertCount": 1
+  },
+  "me-perfect-order-etb__Stomping Grounds": {
+    "lastPrice": 70,
+    "lowestAlertedPrice": 70,
+    "timestamp": 1792210256691,
+    "timeStr": "11:10 PM",
+    "alertCount": 1
+  },
+  "swsh-fusion-strike-etb__PKMN Colosseum": {
+    "lastPrice": 359.99,
+    "lowestAlertedPrice": 359.99,
+    "timestamp": 1792210276283,
+    "timeStr": "11:11 PM",
+    "alertCount": 1
+  },
+  "me-pitch-black-etb__Trading Card Market": {
+    "lastPrice": 65,
+    "lowestAlertedPrice": 65,
+    "timestamp": 1792210297231,
+    "timeStr": "11:11 PM",
+    "alertCount": 1
+  },
+  "me-chaos-rising-etb__Trading Card Market": {
+    "lastPrice": 70,
+    "lowestAlertedPrice": 70,
+    "timestamp": 1792210299374,
+    "timeStr": "11:11 PM",
+    "alertCount": 1
+  },
+  "sv-stellar-crown-etb__PKMN Colosseum": {
+    "lastPrice": 153.99,
+    "lowestAlertedPrice": 153.99,
+    "timestamp": 1792210321802,
+    "timeStr": "11:12 PM",
+    "alertCount": 1
+  },
+  "swsh-celebrations-etb__Double Infinity Gaming": {
+    "lastPrice": 359.99,
+    "lowestAlertedPrice": 359.99,
+    "timestamp": 1792210321966,
+    "timeStr": "11:12 PM",
+    "alertCount": 1
+  },
+  "sv-prismatic-evolutions-bundle__PKMN Colosseum": {
+    "lastPrice": 79.99,
+    "lowestAlertedPrice": 79.99,
+    "timestamp": 1792210325312,
+    "timeStr": "11:12 PM",
+    "alertCount": 1
+  },
+  "sv-journey-together-booster-box__PKMN Colosseum": {
+    "lastPrice": 185.99,
+    "lowestAlertedPrice": 185.99,
+    "timestamp": 1792210327019,
+    "timeStr": "11:12 PM",
+    "alertCount": 1
+  },
+  "swsh-evolving-skies-etb__PKMN Colosseum": {
+    "lastPrice": 499.99,
+    "lowestAlertedPrice": 499.99,
+    "timestamp": 1792210330539,
+    "timeStr": "11:12 PM",
+    "alertCount": 2
+  },
+  "swsh-celebrations-etb__PKMN Colosseum": {
+    "lastPrice": 514.99,
+    "lowestAlertedPrice": 514.99,
+    "timestamp": 1792210332580,
+    "timeStr": "11:12 PM",
+    "alertCount": 1
+  },
+  "sv-paldean-fates-etb-case__PKMN Colosseum": {
+    "lastPrice": 3199.99,
+    "lowestAlertedPrice": 3199.99,
+    "timestamp": 1792210334692,
+    "timeStr": "11:12 PM",
+    "alertCount": 1
+  },
+  "sv-151-etb-case__PKMN Colosseum": {
+    "lastPrice": 5599.99,
+    "lowestAlertedPrice": 5599.99,
+    "timestamp": 1792210336309,
+    "timeStr": "11:12 PM",
+    "alertCount": 1
+  },
+  "me-perfect-order-etb__Trading Card Market": {
+    "lastPrice": 70,
+    "lowestAlertedPrice": 70,
+    "timestamp": 1792210360221,
+    "timeStr": "11:12 PM",
+    "alertCount": 1
+  },
+  "swsh-fusion-strike-etb__Trading Card Market": {
+    "lastPrice": 360,
+    "lowestAlertedPrice": 360,
+    "timestamp": 1792210406854,
+    "timeStr": "11:13 PM",
+    "alertCount": 1
   }
 }

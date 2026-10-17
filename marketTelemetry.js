@@ -51,13 +51,16 @@ function recordObservation(policyId, price, store, url, msrp) {
         current.lowestUrl = url;
         current.lastSeen = now;
     }
+    if (!Array.isArray(current.samples)) {
+        current.samples = [];
+    }
     // 2. ONLY add to the rolling average math if it isn't an extreme scam or 400% markup gouge
     if (price <= msrp * 4.5 && price >= msrp * 0.35) {
         current.samples.push(price);
         if (current.samples.length > 40) {
             current.samples.shift();
         }
-        current.observationsCount += 1;
+        current.observationsCount = (current.observationsCount || 0) + 1;
         current.rollingAverage = computeTrimmedAverage(current.samples);
     }
     telemetryMap[policyId] = current;
