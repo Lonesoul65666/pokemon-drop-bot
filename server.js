@@ -14,6 +14,8 @@ const STORE_HEALTH_PATH = path.resolve(__dirname, 'storeHealth.json');
 const SALES_HISTORY_PATH = path.resolve(__dirname, 'salesHistory.json');
 const MSRP_TROPHIES_PATH = path.resolve(__dirname, 'data', 'msrpTrophies.json');
 const CONQUERED_VAULT_PATH = path.resolve(__dirname, 'conqueredVault.json');
+const PUBLIC_DIR = path.resolve(__dirname, 'public');
+const PUBLIC_INDEX_PATH = path.resolve(PUBLIC_DIR, 'index.html');
 const HTML_PATH = path.resolve(__dirname, 'dashboard.html');
 const ART_DIR = path.resolve(__dirname, 'art');
 
@@ -68,51 +70,104 @@ function computeRipMetrics(landedPrice, skuId, formFactor, name, explicitPackCou
   return { packCount, pricePerPack, isRipValueLeader };
 }
 
+const DEFAULT_MSRP_CATCH = {
+  productName: 'Mega Evolution: Chaos Rising Elite Trainer Box',
+  ruleId: 'me-chaos-rising-etb',
+  store: 'Cooperstown Cards (TCGPlayer Verified Seller)',
+  price: 51.00,
+  landedPrice: 51.00,
+  landedPriceNote: '$51.00 MSRP Drop ($67.11 after tax/ship)',
+  msrp: 54.99,
+  marketValue: 60.00,
+  discountPct: 15,
+  orderRef: 'B108C090-96CCFE-CA0AF',
+  url: 'https://www.tcgplayer.com/product/684450?Language=English',
+  timestamp: 1792295593850,
+  timeStr: '2026-10-18T03:53:00.000Z'
+};
+
 function loadMsrpTrophies() {
   try {
     if (fs.existsSync(MSRP_TROPHIES_PATH)) {
       const parsed = JSON.parse(fs.readFileSync(MSRP_TROPHIES_PATH, 'utf-8'));
       if (parsed && typeof parsed.totalMsrpHits === 'number' && Array.isArray(parsed.catches)) {
+        if (parsed.totalMsrpHits < 1 || parsed.catches.length === 0) {
+          parsed.totalMsrpHits = Math.max(1, parsed.totalMsrpHits);
+          parsed.catches = [DEFAULT_MSRP_CATCH];
+          try { atomicWriteJson(MSRP_TROPHIES_PATH, parsed); } catch (e) {}
+        }
         return parsed;
       }
     }
   } catch (e) {}
-  const initial = { totalMsrpHits: 0, catches: [] };
+  const initial = { totalMsrpHits: 1, catches: [DEFAULT_MSRP_CATCH] };
   try {
     atomicWriteJson(MSRP_TROPHIES_PATH, initial);
   } catch (e) {}
   return initial;
 }
 
-const DEFAULT_SEED_TROPHY = {
-  id: 'trophy-30th-celebration-etb-case-001',
-  skuId: 'me-30th-celebration-etb-case',
-  productName: 'Pokémon 30th Celebration ETB Sealed Case (10 ETBs)',
-  formFactor: 'etb-case',
-  store: 'Player One Services (Verified WPN)',
-  conqueredAt: '2026-10-17T16:45:00.000Z',
-  deliveryWindow: 'Oct 27 – Oct 30, 2026',
-  orderRef: '8E2261C4-EEED7D-7D4DB',
-  landedPrice: 1529.45,
-  marketValueAtCapture: 1650.00,
-  discountPct: 11,
-  packCount: 90,
-  pricePerPack: 16.99,
-  isRipValueLeader: false,
-  discordAlertSnapshot: {
-    headline: '🎯 FLOOR SNIPE: 30th Celebration 10-ETB Sealed Case',
-    triggerReason: 'Verified WPN Institutional Seller • Opened-Case Trap Avoided',
-    badgeText: '11% UNDER MKT • 90-DAY FLOOR',
-    capturedFrom: 'DropBot Commander Live Radar'
+const DEFAULT_SEED_TROPHIES = [
+  {
+    id: 'trophy-30th-celebration-etb-case-001',
+    skuId: 'me-30th-celebration-etb-case',
+    productName: 'Pokémon 30th Celebration ETB Sealed Case (10 ETBs)',
+    formFactor: 'etb-case',
+    store: 'Player One Services (Verified WPN)',
+    conqueredAt: '2026-10-17T16:45:00.000Z',
+    deliveryWindow: 'Oct 27 – Oct 30, 2026',
+    orderRef: '8E2261C4-EEED7D-7D4DB',
+    landedPrice: 1529.45,
+    marketValueAtCapture: 1650.00,
+    discountPct: 11,
+    packCount: 90,
+    pricePerPack: 16.99,
+    isRipValueLeader: false,
+    discordAlertSnapshot: {
+      headline: '🎯 FLOOR SNIPE: 30th Celebration 10-ETB Sealed Case',
+      triggerReason: 'Verified WPN Institutional Seller • Opened-Case Trap Avoided',
+      badgeText: '11% UNDER MKT • 90-DAY FLOOR',
+      capturedFrom: 'DropBot Commander Live Radar'
+    },
+    ruleOf3Status: {
+      ripped: false,
+      onWall: true,
+      subsidized: false,
+      sealedCase: true
+    },
+    memoryNote: 'First major case conquered with Logan sitting in the room!'
   },
-  ruleOf3Status: {
-    ripped: false,
-    onWall: true,
-    subsidized: false,
-    sealedCase: true
-  },
-  memoryNote: 'First major case conquered with Logan sitting in the room!'
-};
+  {
+    id: 'trophy-2-chaos-rising-etb-msrp',
+    skuId: 'me-chaos-rising-etb',
+    productName: 'Mega Evolution: Chaos Rising Elite Trainer Box',
+    formFactor: 'etb',
+    store: 'Cooperstown Cards (TCGPlayer Verified Seller)',
+    conqueredAt: '2026-10-18T03:53:00.000Z',
+    deliveryWindow: 'Oct 27 – Oct 30, 2026',
+    orderRef: 'B108C090-96CCFE-CA0AF',
+    landedPrice: 51.00,
+    landedPriceNote: '$51.00 MSRP Drop ($67.11 after tax/ship)',
+    marketValueAtCapture: 60.00,
+    discountPct: 15,
+    packCount: 9,
+    pricePerPack: 5.67,
+    isRipValueLeader: false,
+    discordAlertSnapshot: {
+      headline: '🚨💎 UNICORN RETAIL MSRP HIT — Mega Evolution: Chaos Rising ETB at $51.00!',
+      triggerReason: 'DEFCON-1 OVERRIDE (In Vault — MSRP Rip Alert! Slashed from $60.00)',
+      badgeText: '7% BELOW $54.99 RETAIL MSRP',
+      capturedFrom: 'Discord @everyone Defcon-1 Flare • 10:53 PM'
+    },
+    ruleOf3Status: {
+      ripped: true,
+      onWall: true,
+      subsidized: false,
+      sealedCase: false
+    },
+    memoryNote: 'First live V4 Defcon-1 MSRP Override catch! Sniped at 10:53 PM from Cooperstown Cards to rip with Logan!'
+  }
+];
 
 function computeCollectorRank(ownedEtbCount, trophyCount) {
   const score = (ownedEtbCount * 10) + (trophyCount * 25);
@@ -140,8 +195,19 @@ function loadConqueredVault() {
     plaques = [];
   }
 
+  let mutated = false;
   if (plaques.length === 0) {
-    plaques = [DEFAULT_SEED_TROPHY];
+    plaques = [...DEFAULT_SEED_TROPHIES];
+    mutated = true;
+  } else {
+    for (const seed of DEFAULT_SEED_TROPHIES) {
+      if (!plaques.some(p => p.id === seed.id)) {
+        plaques.push(seed);
+        mutated = true;
+      }
+    }
+  }
+  if (mutated) {
     try {
       atomicWriteJson(CONQUERED_VAULT_PATH, { trophies: plaques, updatedAt: new Date().toISOString() });
     } catch (e) {}
@@ -207,12 +273,19 @@ function isPreReleaseDate(releaseDate, nowTs = Date.now()) {
 if (!fs.existsSync(ART_DIR)) {
   fs.mkdirSync(ART_DIR, { recursive: true });
 }
+if (!fs.existsSync(PUBLIC_DIR)) {
+  fs.mkdirSync(PUBLIC_DIR, { recursive: true });
+}
 loadMsrpTrophies();
 loadConqueredVault();
 
 app.use(express.json({ limit: '10mb' }));
+app.use(express.static(PUBLIC_DIR, { index: false }));
 
 app.get('/', (req, res) => {
+  if (fs.existsSync(PUBLIC_INDEX_PATH)) {
+    return res.sendFile(PUBLIC_INDEX_PATH);
+  }
   res.sendFile(HTML_PATH);
 });
 
@@ -259,6 +332,7 @@ app.post('/api/conquered-vault/claim', (req, res) => {
       deliveryWindow: body.deliveryWindow || 'In Transit / Pending Delivery',
       orderRef: body.orderRef || '',
       landedPrice,
+      landedPriceNote: body.landedPriceNote || undefined,
       marketValueAtCapture,
       discountPct,
       packCount: rip.packCount,
@@ -309,6 +383,7 @@ app.patch('/api/conquered-vault/:id', (req, res) => {
       ...existing,
       deliveryWindow: body.deliveryWindow !== undefined ? body.deliveryWindow : existing.deliveryWindow,
       orderRef: body.orderRef !== undefined ? body.orderRef : existing.orderRef,
+      landedPriceNote: body.landedPriceNote !== undefined ? body.landedPriceNote : existing.landedPriceNote,
       memoryNote: body.memoryNote !== undefined ? body.memoryNote : existing.memoryNote,
       ruleOf3Status: {
         ...(existing.ruleOf3Status || { ripped: false, onWall: true, subsidized: false, sealedCase: false }),

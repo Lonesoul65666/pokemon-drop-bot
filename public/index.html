@@ -1,0 +1,2509 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DropBot Commander — Executive Command Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --bg-obsidian: #08070E;
+      --bg-royal: #110F1D;
+      --bg-elevated: #171426;
+      --accent-primary: #00F0FF;
+      --accent-primary-rgb: 0, 240, 255;
+      --accent-secondary: #F97316;
+      --accent-secondary-rgb: 249, 115, 22;
+      --accent-gold: #FACC15;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background-color: var(--bg-obsidian);
+      background-image:
+        radial-gradient(circle at 18% 0%, rgba(var(--accent-primary-rgb), 0.08) 0%, transparent 42%),
+        radial-gradient(circle at 85% 4%, rgba(var(--accent-secondary-rgb), 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 50% 100%, rgba(88, 28, 135, 0.12) 0%, transparent 60%);
+      color: #F8FAFC;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .font-mono-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Machined Depth (Anti-Flatness) */
+    .machined-card {
+      background: linear-gradient(180deg, rgba(25, 22, 42, 0.92) 0%, rgba(15, 13, 26, 0.96) 100%);
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
+      border-left: 1px solid rgba(255, 255, 255, 0.05);
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.65), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .machined-card:hover {
+      border-top-color: rgba(var(--accent-primary-rgb), 0.45);
+      box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.75), 0 0 24px -6px rgba(var(--accent-primary-rgb), 0.16);
+    }
+
+    .machined-trophy-card {
+      background: linear-gradient(165deg, rgba(28, 23, 48, 0.95) 0%, rgba(13, 11, 24, 0.98) 100%);
+      border-top: 1px solid rgba(var(--accent-secondary-rgb), 0.45);
+      border-left: 1px solid rgba(255, 255, 255, 0.07);
+      border-right: 1px solid rgba(255, 255, 255, 0.07);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.8), 0 0 28px -8px rgba(var(--accent-secondary-rgb), 0.15);
+    }
+
+    .unicorn-holo-card {
+      background: linear-gradient(145deg, rgba(8, 35, 52, 0.72) 0%, rgba(17, 15, 29, 0.96) 65%);
+      border-top: 1px solid rgba(0, 240, 255, 0.55);
+      border-left: 1px solid rgba(0, 240, 255, 0.22);
+      border-right: 1px solid rgba(250, 204, 21, 0.22);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.15);
+      box-shadow: 0 14px 36px -8px rgba(0, 240, 255, 0.18), inset 0 0 24px rgba(0, 240, 255, 0.06);
+    }
+
+    .art-pedestal {
+      background: radial-gradient(circle at 50% 50%, rgba(var(--accent-primary-rgb), 0.16) 0%, rgba(11, 9, 20, 0.92) 72%);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .accent-primary-text { color: var(--accent-primary); }
+    .accent-secondary-text { color: var(--accent-secondary); }
+    .accent-primary-border { border-color: rgba(var(--accent-primary-rgb), 0.45); }
+    .accent-secondary-border { border-color: rgba(var(--accent-secondary-rgb), 0.45); }
+
+    .nav-item.active {
+      background: linear-gradient(90deg, rgba(var(--accent-primary-rgb), 0.16) 0%, rgba(var(--accent-primary-rgb), 0.03) 100%);
+      border-left: 3px solid var(--accent-primary);
+      color: #FFFFFF;
+    }
+
+    /* Evolution Flash & Shiny Sparkle */
+    @keyframes evolveFlash {
+      0% { filter: brightness(1) drop-shadow(0 0 0px #fff); transform: scale(1); }
+      35% { filter: brightness(8) saturate(0) drop-shadow(0 0 22px #00F0FF); transform: scale(1.25); }
+      70% { filter: brightness(5) drop-shadow(0 0 28px #FACC15); transform: scale(0.92); }
+      100% { filter: brightness(1) drop-shadow(0 0 10px rgba(var(--accent-primary-rgb), 0.6)); transform: scale(1); }
+    }
+
+    .evolving-sprite {
+      animation: evolveFlash 0.62s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    input[type=range] {
+      accent-color: var(--accent-primary);
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #08070E; }
+    ::-webkit-scrollbar-thumb { background: #26223B; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3B3559; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Enlarged Artwork Modal -->
+  <div id="artModal" onclick="closeModal()" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-4 cursor-zoom-out">
+    <div class="machined-card rounded-2xl max-w-lg w-full p-6 flex flex-col items-center" onclick="event.stopPropagation()">
+      <div class="w-full flex justify-between items-center mb-4 pb-2 border-b border-white/10">
+        <h3 id="modalTitle" class="text-sm font-bold text-white">Product Artwork</h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-white text-lg font-bold px-2">&times;</button>
+      </div>
+      <div class="w-80 h-80 art-pedestal rounded-xl flex items-center justify-center p-4 overflow-hidden">
+        <img id="modalImg" src="" class="max-h-full max-w-full object-contain" alt="Enlarged Product Art" />
+      </div>
+      <p class="text-[11px] text-slate-400 mt-3">Click outside or press ESC to close</p>
+    </div>
+  </div>
+
+  <!-- Live Market Comps Modal -->
+  <div id="compModal" onclick="closeCompModal()" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="machined-card rounded-2xl max-w-md w-full p-6" onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center pb-3 border-b border-white/10">
+        <h3 id="compModalTitle" class="text-sm font-bold text-white">Live Market Comps</h3>
+        <button onclick="closeCompModal()" class="text-slate-400 hover:text-white text-lg font-bold px-2">&times;</button>
+      </div>
+      <div id="compModalBody" class="py-5 space-y-3 text-xs text-slate-300">Scanning live TCGPlayer &amp; eBay Buy-It-Now listings...</div>
+      <div class="flex justify-end gap-2 pt-3 border-t border-white/10">
+        <button id="pushCompDiscordBtn" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold">Push Card to Discord</button>
+        <button onclick="closeCompModal()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- One-Click Claim Trophy Modal -->
+  <div id="claimTrophyModal" onclick="closeClaimModal()" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="machined-trophy-card rounded-2xl max-w-lg w-full p-6" onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center pb-3 border-b border-white/10">
+        <div class="flex items-center gap-2">
+          <span class="text-lg">🏆</span>
+          <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Record Conquered Vault Trophy</h3>
+        </div>
+        <button onclick="closeClaimModal()" class="text-slate-400 hover:text-white text-lg font-bold px-2">&times;</button>
+      </div>
+      <div class="space-y-3 py-4 text-xs">
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Target SKU</label>
+          <select id="claimSkuSelect" onchange="onClaimSkuChange()" class="w-full bg-[#0B0914] border border-white/15 rounded-lg px-3 py-2 text-white font-semibold focus:outline-none focus:border-cyan-400"></select>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Product Name</label>
+            <input id="claimProductName" type="text" class="w-full bg-[#0B0914] border border-white/15 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-cyan-400" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Store / Seller</label>
+            <input id="claimStore" type="text" placeholder="e.g. Cooperstown Cards" class="w-full bg-[#0B0914] border border-white/15 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-cyan-400" />
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Landed Price ($)</label>
+            <input id="claimLandedPrice" type="number" step="0.01" class="w-full bg-[#0B0914] border border-white/15 rounded-lg px-3 py-1.5 text-emerald-400 font-mono-num font-bold focus:outline-none focus:border-cyan-400" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Market Value ($)</label>
+            <input id="claimMarketVal" type="number" step="0.01" class="w-full bg-[#0B0914] border border-white/15 rounded-lg px-3 py-1.5 text-amber-300 font-mono-num font-bold focus:outline-none focus:border-cyan-400" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Order Ref #</label>
+            <input id="claimOrderRef" type="text" placeholder="Order ID" class="w-full bg-[#0B0914] border border-white/15 rounded-lg px-3 py-1.5 text-slate-200 font-mono-num focus:outline-none focus:border-cyan-400" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Delivery Window</label>
+            <input id="claimDelivery" type="text" value="Oct 27 – Oct 30, 2026" class="w-full bg-[#0B0914] border border-white/15 rounded-lg px-3 py-1.5 text-slate-200 focus:outline-none focus:border-cyan-400" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Alert Headline Snapshot</label>
+            <input id="claimHeadline" type="text" placeholder="🚨💎 UNICORN RETAIL MSRP HIT..." class="w-full bg-[#0B0914] border border-white/15 rounded-lg px-3 py-1.5 text-cyan-300 focus:outline-none focus:border-cyan-400" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Scott &amp; Logan Memory Note</label>
+          <input id="claimMemoryNote" type="text" placeholder="Sniped live to rip with Logan!" class="w-full bg-[#0B0914] border border-white/15 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-cyan-400" />
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 pt-3 border-t border-white/10">
+        <button onclick="closeClaimModal()" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold">Cancel</button>
+        <button onclick="submitClaimTrophy()" id="submitClaimBtn" class="px-4 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 text-xs font-extrabold tracking-wide">🏆 Lock Into Conquered Vault</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP EXECUTIVE COMMAND HEADER BAR -->
+  <header class="sticky top-0 z-40 bg-[#0B0914]/90 backdrop-blur-xl border-b border-white/10 px-4 lg:px-6 py-2.5">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <!-- Left: Brand Crest + Active Callsign -->
+      <div class="flex items-center gap-3">
+        <button onclick="toggleSidebar()" title="Collapse / Expand Sidebar" class="p-2 rounded-lg bg-[#161329] hover:bg-[#211C3A] border border-white/10 text-slate-300 hover:text-white transition">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl flex items-center justify-center bg-gradient-to-br from-cyan-500/25 via-purple-600/20 to-orange-500/25 border border-white/15 shadow-inner">
+            <span class="text-lg">⚡</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm sm:text-base font-extrabold tracking-tight text-white">DROPBOT COMMANDER</span>
+              <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-mono-num font-bold uppercase tracking-wider bg-purple-500/20 text-purple-300 border border-purple-400/30">V4 EXECUTIVE</span>
+            </div>
+            <div id="activeTeamCallsign" class="text-[11px] font-semibold text-slate-400">🌊🔥 Tag-Team: Gyarados &amp; Arcanine • Scott &amp; Logan HQ</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center: Interactive Dynamic Pokédex Chameleon & Tag-Team Battle Arena -->
+      <div class="relative flex items-center gap-2 bg-[#120F22]/95 border border-white/15 rounded-2xl px-3 py-1.5 shadow-lg">
+        <!-- Slot 1 Partner -->
+        <div class="flex items-center gap-2 pr-2 border-r border-white/10">
+          <div class="relative group cursor-pointer" onclick="onPartnerSpriteClick(1)" title="Click Sprite to Evolve or Toggle ✨ Shiny!">
+            <img id="slot1Sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/130.gif"
+                 onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/130.png'"
+                 class="w-10 h-10 object-contain transition-transform group-hover:scale-110" alt="Slot 1 Partner" />
+            <span id="slot1ShinyBadge" class="hidden absolute -top-1 -right-1 text-[10px] bg-amber-500/90 text-slate-950 font-black rounded-full px-1 leading-tight">✨</span>
+          </div>
+          <div class="leading-tight">
+            <div class="flex items-center gap-1">
+              <button onclick="openRosterPopover(1)" class="text-xs font-extrabold text-white hover:text-cyan-300 flex items-center gap-1">
+                <span id="slot1Name">Gyarados</span>
+                <svg class="w-3 h-3 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>
+            <div class="flex items-center gap-1 mt-0.5">
+              <span id="slot1TypeBadge" class="text-[9px] font-mono-num uppercase px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold">WATER</span>
+              <button onclick="onPartnerSpriteClick(1)" id="slot1ActionHint" class="text-[9px] text-slate-400 hover:text-amber-300 font-semibold">✨ Shiny</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tag-Team / VS Emblem -->
+        <button onclick="openRosterPopover(1)" title="Open Hall of Fame &amp; PokeAPI Roster" class="px-1.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-[10px] font-black text-amber-400 tracking-tighter">
+          🌊🔥
+        </button>
+
+        <!-- Slot 2 Partner -->
+        <div class="flex items-center gap-2 pl-1">
+          <div class="relative group cursor-pointer" onclick="onPartnerSpriteClick(2)" title="Click Sprite to Evolve or Toggle ✨ Shiny!">
+            <img id="slot2Sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/59.gif"
+                 onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/59.png'"
+                 class="w-10 h-10 object-contain transition-transform group-hover:scale-110" alt="Slot 2 Partner" />
+            <span id="slot2ShinyBadge" class="hidden absolute -top-1 -right-1 text-[10px] bg-amber-500/90 text-slate-950 font-black rounded-full px-1 leading-tight">✨</span>
+          </div>
+          <div class="leading-tight">
+            <div class="flex items-center gap-1">
+              <button onclick="openRosterPopover(2)" class="text-xs font-extrabold text-white hover:text-orange-300 flex items-center gap-1">
+                <span id="slot2Name">Arcanine</span>
+                <svg class="w-3 h-3 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>
+            <div class="flex items-center gap-1 mt-0.5">
+              <span id="slot2TypeBadge" class="text-[9px] font-mono-num uppercase px-1.5 py-0.2 rounded bg-orange-500/20 text-orange-300 border border-orange-500/30 font-bold">FIRE</span>
+              <button onclick="onPartnerSpriteClick(2)" id="slot2ActionHint" class="text-[9px] text-slate-400 hover:text-amber-300 font-semibold">✨ Shiny</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Roster Popover Drawer -->
+        <div id="rosterPopover" class="hidden absolute top-full mt-2 left-1/2 -translate-x-1/2 w-[360px] sm:w-[430px] machined-card rounded-2xl p-4 z-50 shadow-2xl border border-white/20">
+          <div class="flex items-center justify-between pb-2.5 mb-3 border-b border-white/10">
+            <div>
+              <div class="text-xs font-extrabold text-white uppercase tracking-wider">⚡ Scott &amp; Logan Hall of Fame Roster</div>
+              <div id="rosterSlotIndicator" class="text-[10px] text-cyan-300 font-semibold">Selecting Partner for Slot 1 (Primary Accent)</div>
+            </div>
+            <div class="flex items-center gap-1">
+              <button onclick="switchRosterTargetSlot(1)" id="rosterSlot1Btn" class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">Slot 1</button>
+              <button onclick="switchRosterTargetSlot(2)" id="rosterSlot2Btn" class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-400 border border-white/10">Slot 2</button>
+              <button onclick="closeRosterPopover()" class="ml-1 text-slate-400 hover:text-white font-bold px-1.5">&times;</button>
+            </div>
+          </div>
+
+          <!-- Featured Tag-Team Presets -->
+          <div class="mb-3">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Featured Tag-Team Presets</div>
+            <div class="grid grid-cols-2 gap-1.5">
+              <button onclick="applyTeamPreset('GYARADOS_ARCANINE')" class="px-2.5 py-1.5 rounded-lg bg-[#1B1630] hover:bg-[#251E42] border border-cyan-500/30 text-left text-[11px] font-bold text-white flex items-center justify-between">
+                <span>🌊🔥 Gyarados &amp; Arcanine</span>
+                <span class="text-[9px] text-cyan-300">Default</span>
+              </button>
+              <button onclick="applyTeamPreset('ABSOL_DISASTER')" class="px-2.5 py-1.5 rounded-lg bg-[#1B1630] hover:bg-[#251E42] border border-rose-500/30 text-left text-[11px] font-bold text-white flex items-center justify-between">
+                <span>🌑 Absol (Disaster Blade)</span>
+                <span class="text-[9px] text-rose-300">Dark</span>
+              </button>
+              <button onclick="applyTeamPreset('MEWTWO_CHARIZARD')" class="px-2.5 py-1.5 rounded-lg bg-[#1B1630] hover:bg-[#251E42] border border-purple-500/30 text-left text-[11px] font-bold text-white flex items-center justify-between">
+                <span>⚔️ Mewtwo vs. Charizard</span>
+                <span class="text-[9px] text-purple-300">Clash</span>
+              </button>
+              <button onclick="applyTeamPreset('KANTO_ORIGINALS')" class="px-2.5 py-1.5 rounded-lg bg-[#1B1630] hover:bg-[#251E42] border border-emerald-500/30 text-left text-[11px] font-bold text-white flex items-center justify-between">
+                <span>🌿🔥💧 Kanto Originals</span>
+                <span class="text-[9px] text-emerald-300">Trio</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Individual Hall of Fame Roster -->
+          <div class="mb-3">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Hall of Fame Roster (Click Sprite in Header to Evolve / Shiny)</div>
+            <div id="hofRosterGrid" class="grid grid-cols-3 sm:grid-cols-4 gap-1.5 max-h-48 overflow-y-auto pr-1"></div>
+          </div>
+
+          <!-- Live PokeAPI Search (All 1,025 Pokémon) -->
+          <div class="pt-2 border-t border-white/10">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Live PokéAPI Search (1 – 1,025)</div>
+            <div class="flex gap-1.5">
+              <input id="pokeSearchInput" type="text" placeholder="Type name or # (e.g. umbreon, rayquaza, 249)..."
+                     onkeydown="if(event.key==='Enter') searchPokeApiLive()"
+                     class="flex-1 bg-[#090710] border border-white/15 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-400" />
+              <button onclick="searchPokeApiLive()" id="pokeSearchBtn" class="px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-extrabold text-xs">Load</button>
+            </div>
+            <div id="pokeSearchStatus" class="text-[10px] text-slate-400 mt-1"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Global Executive Controls -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <button onclick="toggleAutoLaunch()" id="autoLaunchBtn" title="When ARMED, new In-Stock drops under your buy trigger automatically pop open the checkout tab."
+                class="px-2.5 py-1.5 rounded-xl text-xs font-bold border transition flex items-center gap-1.5 bg-[#161329] text-slate-300 border-white/10 hover:border-cyan-400/50">
+          <span>🚀 Launch Now:</span>
+          <span id="autoLaunchState" class="font-mono-num text-slate-400">OFF</span>
+        </button>
+
+        <button onclick="toggleCryAudio()" id="cryAudioBtn" title="Toggle Authentic Pokédex Cry Audio on Evolution &amp; Shiny Transformation"
+                class="px-2.5 py-1.5 rounded-xl text-xs font-bold border transition flex items-center gap-1.5 bg-cyan-500/15 text-cyan-300 border-cyan-500/30 hover:bg-cyan-500/25">
+          <span id="cryAudioIcon">🔊</span>
+          <span class="hidden md:inline">Cry Audio</span>
+        </button>
+
+        <button onclick="sweepLiveCompsGlobal()" id="sweepCompsBtn" title="Sweep live comps &amp; refresh Market Tape + Bounty Recon"
+                class="px-3 py-1.5 rounded-xl text-xs font-extrabold bg-gradient-to-r from-cyan-500/20 to-blue-600/20 hover:from-cyan-500/35 hover:to-blue-600/35 text-cyan-200 border border-cyan-400/40 transition flex items-center gap-1.5">
+          <span>⚡ Sweep Comps</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Toast Banner -->
+  <div id="evoToast" class="fixed bottom-5 right-5 z-50 pointer-events-none opacity-0 translate-y-2 transition-all duration-300 machined-card px-4 py-2.5 rounded-xl border border-cyan-400/50 text-xs font-extrabold text-white shadow-2xl flex items-center gap-2">
+    <span id="evoToastText">✨ Synchronized with DropBot Commander</span>
+  </div>
+
+  <!-- MAIN SHELL: COLLAPSIBLE LEFT SIDEBAR + ACTIVE VIEWPORT -->
+  <div class="flex-1 flex min-h-0">
+    <!-- Left Sidebar -->
+    <aside id="appSidebar" class="w-64 shrink-0 bg-[#0D0B18]/95 border-r border-white/10 flex flex-col justify-between transition-all duration-200">
+      <div class="p-3 space-y-1">
+        <div class="px-3 py-2 text-[10px] font-mono-num font-bold uppercase tracking-widest text-slate-500">Command Views</div>
+
+        <button onclick="switchMainView('LIVE_COMMAND')" id="nav_LIVE_COMMAND" class="nav-item active w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition">
+          <span class="flex items-center gap-2.5">
+            <svg class="w-4 h-4 text-cyan-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>
+            <span class="sidebar-label">📡 Live Command</span>
+          </span>
+          <span id="navLiveBadge" class="sidebar-label font-mono-num text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">0</span>
+        </button>
+
+        <button onclick="switchMainView('BOUNTY_HUNTER')" id="nav_BOUNTY_HUNTER" class="nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition">
+          <span class="flex items-center gap-2.5">
+            <svg class="w-4 h-4 text-orange-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            <span class="sidebar-label">🎯 Bounty Hunter</span>
+          </span>
+          <span class="sidebar-label font-mono-num text-[10px] px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-300">RECON</span>
+        </button>
+
+        <button onclick="switchMainView('CONQUERED_VAULT')" id="nav_CONQUERED_VAULT" class="nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition">
+          <span class="flex items-center gap-2.5">
+            <svg class="w-4 h-4 text-amber-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            <span class="sidebar-label">🏆 The Conquered Vault</span>
+          </span>
+          <span id="navVaultBadge" class="sidebar-label font-mono-num text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">2</span>
+        </button>
+
+        <button onclick="switchMainView('TARGET_MATRIX')" id="nav_TARGET_MATRIX" class="nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition">
+          <span class="flex items-center gap-2.5">
+            <svg class="w-4 h-4 text-purple-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+            <span class="sidebar-label">⚙️ Target Matrix &amp; Config</span>
+          </span>
+          <span id="navMatrixBadge" class="sidebar-label font-mono-num text-[10px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300">38</span>
+        </button>
+      </div>
+
+      <!-- Bottom Telemetry Pod -->
+      <div class="p-3 border-t border-white/10 space-y-2.5">
+        <div class="machined-card rounded-xl p-3 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 sidebar-label">Sniper Telemetry</span>
+            <span class="inline-flex items-center gap-1 text-[10px] font-mono-num font-bold text-emerald-400">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>31/31 LGS
+            </span>
+          </div>
+          <div class="text-[11px] text-slate-300 font-mono-num sidebar-label" id="sidebarStreamStatus">
+            31 Shopify + 9 Big-Box + TCGP
+          </div>
+          <div class="pt-1 border-t border-white/10 flex items-center justify-between text-[10px] text-slate-400 sidebar-label">
+            <span> Collector Rank:</span>
+            <span id="sidebarRankBadge" class="font-bold text-amber-300">🔥 Case Commander</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Viewport -->
+    <main class="flex-1 min-w-0 p-4 lg:p-6 space-y-6 overflow-y-auto">
+
+      <!-- =================================================================== -->
+      <!-- VIEW 1: 📡 LIVE COMMAND (DEFAULT HOME VIEW)                         -->
+      <!-- =================================================================== -->
+      <section id="view_LIVE_COMMAND" class="space-y-6">
+        <!-- Top Bento Row (3 Hero KPI Cards) -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <!-- Card 1 — Vault & Portfolio Value -->
+          <div class="machined-card rounded-2xl p-5 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">🏛️ Vault &amp; Portfolio Value</span>
+                <span id="kpiPortfolioGainBadge" class="font-mono-num text-[11px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">+$129.55 Unrealized</span>
+              </div>
+              <div class="flex items-baseline gap-3 my-1">
+                <div id="kpiTotalPortfolioValue" class="text-2xl sm:text-3xl font-black font-mono-num text-white">$0.00</div>
+                <div id="kpiCostBasisSub" class="text-xs font-mono-num text-slate-400">Basis: $1,580.45</div>
+              </div>
+            </div>
+            <div class="space-y-2.5 pt-3 mt-3 border-t border-white/10">
+              <div>
+                <div class="flex justify-between text-[11px] font-semibold mb-1">
+                  <span class="text-slate-300">Wall Display ETBs</span>
+                  <span id="kpiWallEtbProgressText" class="font-mono-num text-cyan-300 font-bold">0 / 38</span>
+                </div>
+                <div class="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden">
+                  <div id="kpiWallEtbBar" class="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full transition-all duration-300" style="width: 35%"></div>
+                </div>
+              </div>
+              <div class="flex items-center justify-between text-[11px] pt-1">
+                <span class="text-slate-400">Conquered Vault Trophies:</span>
+                <button onclick="switchMainView('CONQUERED_VAULT')" id="kpiConqueredCountPill" class="font-mono-num font-extrabold text-amber-300 hover:underline">🏆 2 Plaques Locked ↗</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2 — Active Sniper Radar -->
+          <div class="machined-card rounded-2xl p-5 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">📡 Active Sniper Radar</span>
+                <span id="kpiStoreSweepHealth" class="font-mono-num text-[11px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">31/31 LGS + Big-Box</span>
+              </div>
+              <div class="flex items-baseline gap-3 my-1">
+                <div id="kpiInStockCount" class="text-2xl sm:text-3xl font-black font-mono-num text-emerald-400">0</div>
+                <div class="text-xs text-slate-300 font-semibold">Targets Under Buy Trigger</div>
+              </div>
+              <div id="kpiActiveRadarPills" class="flex flex-wrap gap-1.5 mt-2">
+                <span class="text-[11px] text-slate-400">Scanning live shelves across 31 WPN LGS + TCGPlayer...</span>
+              </div>
+            </div>
+            <div class="pt-3 mt-3 border-t border-white/10 flex items-center justify-between text-[11px]">
+              <span class="text-slate-400">6-Hour Baseline Sync &amp; Proxy Pool:</span>
+              <span class="font-mono-num text-emerald-400 font-bold">● ARMED &amp; NOMINAL</span>
+            </div>
+          </div>
+
+          <!-- Card 3 — 💎 Unicorn MSRP Trophy Counter -->
+          <div class="unicorn-holo-card rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[11px] font-extrabold uppercase tracking-wider text-cyan-300 flex items-center gap-1.5">
+                  <span>💎 Unicorn MSRP Trophy Counter</span>
+                </span>
+                <span class="font-mono-num text-[10px] font-black px-2 py-0.5 rounded bg-cyan-400/20 text-cyan-200 border border-cyan-400/40">DEFCON-1 OVERRIDE</span>
+              </div>
+              <div class="flex items-baseline gap-3 my-1">
+                <div id="kpiMsrpHitCount" class="text-2xl sm:text-3xl font-black font-mono-num text-cyan-300">1</div>
+                <div class="text-xs font-bold text-white">True Retail MSRP Catches</div>
+              </div>
+              <div id="kpiLatestMsrpCatchBox" class="mt-2 p-2.5 rounded-xl bg-black/45 border border-cyan-400/30 text-xs">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="font-extrabold text-white truncate">Mega Evolution: Chaos Rising ETB</span>
+                  <span class="font-mono-num font-black text-emerald-400 shrink-0">$51.00</span>
+                </div>
+                <div class="text-[11px] text-cyan-200/90 mt-0.5 flex items-center justify-between">
+                  <span>Cooperstown Cards • 7% Below $54.99 MSRP</span>
+                  <button onclick="switchMainView('CONQUERED_VAULT')" class="text-amber-300 font-bold hover:underline">Trophy #2 ↗</button>
+                </div>
+              </div>
+            </div>
+            <div class="pt-2.5 mt-2.5 border-t border-cyan-400/20 flex items-center justify-between text-[10px] text-cyan-200/80">
+              <span>Bypasses Vault Lock on &le; MSRP</span>
+              <span class="font-mono-num font-bold text-amber-300">Order #B108C090-96CCFE-CA0AF</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Deal Feed & Recent Discord Alert Hits -->
+        <div class="machined-card rounded-2xl p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-white/10">
+            <div>
+              <h2 class="text-sm font-extrabold uppercase tracking-wider text-white flex items-center gap-2">
+                <span class="text-emerald-400">⚡</span> Live Deal Feed &amp; Recent Discord Alert Hits
+              </h2>
+              <p class="text-[11px] text-slate-400">Instant Rule-of-3 Shopify Checkout links, <span class="font-mono-num text-emerald-400 font-semibold">$/Pack</span> Rip Math (&le; $4.25/pk glows Emerald), and 1-Click Trophy Claim</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="openClaimModal()" class="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-extrabold transition">
+                🏆 + Log Manual Trophy
+              </button>
+            </div>
+          </div>
+
+          <div id="liveDealFeedGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+        </div>
+
+        <!-- Market Intelligence Bento (3 Columns) + Collapsible 14-Day Market Ledger -->
+        <div class="space-y-4">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <!-- Col 1: 48h Distributor Wave Radar -->
+            <div class="machined-card rounded-2xl p-4 space-y-2.5">
+              <div class="text-xs font-extrabold uppercase tracking-wider text-purple-300 flex items-center justify-between">
+                <span>🌊 48h Distributor Wave Radar</span>
+                <span class="text-[10px] font-mono-num text-slate-400">3+ Stores</span>
+              </div>
+              <div id="bentoWaveRadar" class="space-y-2"></div>
+            </div>
+
+            <!-- Col 2: Top Store DNA (14d Leaders) -->
+            <div class="machined-card rounded-2xl p-4 space-y-2.5">
+              <div class="text-xs font-extrabold uppercase tracking-wider text-emerald-400 flex items-center justify-between">
+                <span>🍯 Top Store DNA (14d Leaders)</span>
+                <span class="text-[10px] font-mono-num text-slate-400">Floor Frequency</span>
+              </div>
+              <div id="bentoStoreDna" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+            </div>
+
+            <!-- Col 3: Fast Sell-Out Velocity Tape -->
+            <div class="machined-card rounded-2xl p-4 space-y-2.5">
+              <div class="text-xs font-extrabold uppercase tracking-wider text-cyan-300 flex items-center justify-between">
+                <span>⚡ Fast Sell-Out Velocity Tape</span>
+                <span class="text-[10px] font-mono-num text-slate-400">14d NRT</span>
+              </div>
+              <div id="bentoVelocityTape" class="space-y-1.5 max-h-52 overflow-y-auto pr-1"></div>
+            </div>
+          </div>
+
+          <!-- Collapsible 14-Day Market Ledger -->
+          <div class="machined-card rounded-2xl p-4">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <button onclick="toggleLedgerTable()" class="flex items-center gap-2 text-left">
+                <span class="text-sm font-black uppercase tracking-wider text-white">📈 14-Day Market Ledger &amp; Sunday-to-Sunday Weekly Checkpoints</span>
+                <span id="ledgerToggleLabel" class="text-[11px] font-mono-num px-2 py-0.5 rounded bg-white/10 text-cyan-300">Expand Table ▼</span>
+              </button>
+              <button onclick="triggerSundaySnapshot()" id="sundaySnapBtn" class="px-3 py-1.5 rounded-lg bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-500/25 text-xs font-bold">
+                📌 Refresh Sunday Checkpoint
+              </button>
+            </div>
+            <div id="collapsibleLedgerWrap" class="hidden mt-4 pt-3 border-t border-white/10 overflow-x-auto">
+              <table class="w-full text-left text-[11px] leading-snug">
+                <thead>
+                  <tr class="border-b border-white/10 text-[10px] uppercase tracking-wider text-slate-400">
+                    <th class="py-2 px-2">Target SKU</th>
+                    <th class="py-2 px-2">Market Value</th>
+                    <th class="py-2 px-2">$/Pack Math</th>
+                    <th class="py-2 px-2">7d NRT Trend</th>
+                    <th class="py-2 px-2">Last Clear vs. Floor</th>
+                    <th class="py-2 px-2">Top Store DNA</th>
+                    <th class="py-2 px-2">Sun-to-Sun WoW</th>
+                    <th class="py-2 px-2">Verdict</th>
+                  </tr>
+                </thead>
+                <tbody id="marketLedgerTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- VIEW 2: 🎯 BOUNTY HUNTER (LIVE ON-DEMAND STORE & COMP RECON)        -->
+      <!-- =================================================================== -->
+      <section id="view_BOUNTY_HUNTER" class="hidden space-y-6">
+        <div class="machined-card rounded-2xl p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 class="text-base font-black uppercase tracking-wider text-white flex items-center gap-2">
+                <span>🎯 Bounty Hunter — Live Store &amp; Comp Recon</span>
+              </h2>
+              <p class="text-xs text-slate-400">Instant cross-store ranking of Top 5 Lowest Landed Options with <span class="font-mono-num text-emerald-400">$/Pack</span> Rip Math</p>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <select id="bountySkuSelect" onchange="runBountyRecon(this.value, false)" class="bg-[#0B0914] border border-white/15 rounded-xl px-3 py-2 text-xs text-white font-semibold focus:outline-none focus:border-cyan-400"></select>
+              <div class="flex items-center bg-[#0B0914] border border-white/15 rounded-xl overflow-hidden">
+                <input id="bountyQueryInput" type="text" placeholder="Search set or format (e.g. Chaos Rising, Prismatic, 30th)..."
+                       onkeydown="if(event.key==='Enter') runBountyRecon('', false)"
+                       class="bg-transparent px-3 py-2 text-xs text-white w-56 sm:w-72 focus:outline-none" />
+                <button onclick="runBountyRecon('', false)" class="px-3.5 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-extrabold">Recon</button>
+              </div>
+              <button onclick="runBountyRecon('', true)" id="bountyLiveProbeBtn" class="px-3 py-2 rounded-xl bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 border border-orange-500/40 text-xs font-extrabold">
+                ⚡ Deep Live Probe
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick-Pick Pills -->
+          <div class="flex items-center gap-1.5 flex-wrap pt-1">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mr-1">Quick Recon:</span>
+            <button onclick="quickBountyPick('me-chaos-rising-etb')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-[11px] font-semibold text-cyan-300 border border-cyan-500/30">Chaos Rising ETB</button>
+            <button onclick="quickBountyPick('me-30th-celebration-etb-case')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-[11px] font-semibold text-amber-300 border border-amber-500/30">30th Celebration 10-ETB Case</button>
+            <button onclick="quickBountyPick('sv-prismatic-evolutions-etb')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-[11px] font-semibold text-purple-300 border border-purple-500/30">Prismatic Evolutions ETB</button>
+            <button onclick="quickBountyPick('sv-surging-sparks-booster-box')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-[11px] font-semibold text-emerald-300 border border-emerald-500/30">Surging Sparks Booster Box</button>
+            <button onclick="quickBountyPick('me-delta-reign-etb')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-[11px] font-semibold text-rose-300 border border-rose-500/30">Delta Reign ETB (Pre-Release)</button>
+          </div>
+        </div>
+
+        <!-- Top 2 Callout Cards: #1 Best Sealed Hold & #1 Cheapest Pack Rip -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4" id="bountyCalloutsRow"></div>
+
+        <!-- Top 5 Lowest Landed Options Table/Cards -->
+        <div class="machined-card rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between border-b border-white/10 pb-3">
+            <h3 class="text-sm font-extrabold uppercase tracking-wider text-white">Top 5 Lowest Landed Options Right Now</h3>
+            <span id="bountyMetaCount" class="text-xs font-mono-num text-slate-400">Evaluating sources...</span>
+          </div>
+          <div id="bountyTop5Container" class="space-y-2.5"></div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- VIEW 3: 🏆 THE CONQUERED VAULT (TROPHY ROOM & WALL CHECKLIST)       -->
+      <!-- =================================================================== -->
+      <section id="view_CONQUERED_VAULT" class="hidden space-y-8">
+        <!-- Section A — ⚔️ Conquered Drop Trophy Plaques -->
+        <div class="space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2.5">
+                <h2 class="text-lg font-black uppercase tracking-wider text-white">⚔️ Conquered Drop Trophy Plaques</h2>
+                <span id="vaultRankHeaderBadge" class="px-3 py-0.5 rounded-full text-xs font-mono-num font-extrabold bg-amber-500/20 text-amber-300 border border-amber-500/40">🔥 Case Commander</span>
+              </div>
+              <p class="text-xs text-slate-400 mt-0.5">Permanent hall of fame for Scott &amp; Logan's verified floor snipes and Defcon-1 MSRP catches</p>
+            </div>
+            <button onclick="openClaimModal()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 text-xs font-extrabold shadow-lg">
+              + Log Manual Trophy
+            </button>
+          </div>
+
+          <div id="conqueredPlaquesGrid" class="grid grid-cols-1 xl:grid-cols-2 gap-5"></div>
+        </div>
+
+        <!-- Section B — 🏛️ Wall Display Checklist -->
+        <div class="machined-card rounded-2xl p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-white/10">
+            <div>
+              <h3 class="text-base font-black uppercase tracking-wider text-white">🏛️ Wall Display Checklist &amp; Sealed Case Vault</h3>
+              <p class="text-xs text-slate-400">1-Click toggle between <span class="text-emerald-400 font-semibold">Owned In Vault</span> and <span class="text-amber-300 font-semibold">🎯 Still Needed for Wall</span></p>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <button onclick="setVaultChecklistFilter('ALL')" id="vchk_ALL" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-cyan-500 text-slate-950">All Tracked (38)</button>
+              <button onclick="setVaultChecklistFilter('OWNED')" id="vchk_OWNED" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#161329] text-emerald-300 border border-emerald-500/30">🏛️ Owned In Vault</button>
+              <button onclick="setVaultChecklistFilter('NEEDED_ETB')" id="vchk_NEEDED_ETB" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#161329] text-amber-300 border border-amber-500/30">🎯 Still Needed ETBs</button>
+              <button onclick="setVaultChecklistFilter('CASES')" id="vchk_CASES" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#161329] text-purple-300 border border-purple-500/30">📦 Sealed Cases</button>
+            </div>
+          </div>
+
+          <div id="wallChecklistGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- VIEW 4: ⚙️ TARGET MATRIX & CONFIG (ALL 38 SLIDERS & ADMIN)          -->
+      <!-- =================================================================== -->
+      <section id="view_TARGET_MATRIX" class="hidden space-y-5">
+        <!-- Universal Calibrate & Admin Bar -->
+        <div class="machined-card rounded-2xl p-4 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-300 mr-1">⚙️ Universal Calibrate:</span>
+              <select id="calibScope" class="bg-[#090710] border border-white/15 text-[11px] font-bold text-cyan-300 px-2.5 py-1 rounded-lg focus:outline-none">
+                <option value="ALL">Scope: All 38 Targets</option>
+                <option value="FILTERED">Scope: Current Filter</option>
+              </select>
+              <button onclick="applyUniversalPreset('MKT5')" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-[#18142B] text-slate-200 hover:bg-cyan-500 hover:text-slate-950 border border-white/10">5% Under</button>
+              <button onclick="applyUniversalPreset('MKT10')" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-[#18142B] text-slate-200 hover:bg-cyan-500 hover:text-slate-950 border border-white/10">10% Under</button>
+              <button onclick="applyUniversalPreset('MKT15')" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-[#18142B] text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 border border-white/10">15% Under</button>
+              <button onclick="applyUniversalPreset('MKT20')" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-[#18142B] text-emerald-300 hover:bg-emerald-500 hover:text-slate-950 border border-white/10">20% Under</button>
+              <button onclick="applyUniversalPreset('MKT30')" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-[#18142B] text-amber-400 hover:bg-amber-500 hover:text-slate-950 border border-white/10">30% Under</button>
+              <button onclick="applyUniversalPreset('AT_MSRP')" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-[#18142B] text-cyan-300 hover:bg-cyan-500 hover:text-slate-950 border border-white/10">At MSRP</button>
+              <button onclick="applyUniversalPreset('MSRP_PLUS_5_DOLLARS')" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-[#18142B] text-slate-300 hover:bg-cyan-500 hover:text-slate-950 border border-white/10">MSRP + $5</button>
+              <button onclick="applyUniversalPreset('MSRP_MINUS_10_PCT')" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-[#18142B] text-purple-300 hover:bg-purple-500 hover:text-white border border-white/10">10% Under MSRP</button>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <div class="flex items-center bg-[#090710] border border-white/15 rounded-lg overflow-hidden">
+                <input type="number" id="customCalibPct" placeholder="Custom %" min="-50" max="80" step="1" class="w-20 bg-transparent text-[11px] text-white px-2 py-1 focus:outline-none font-mono-num" />
+                <button onclick="applyCustomPct()" class="px-2.5 py-1 bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-[11px] font-extrabold">Apply %</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Admin Utilities Row -->
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-white/10">
+            <div class="flex items-center gap-2 flex-wrap">
+              <button onclick="toggleSpectatorLock()" id="lockBtn" class="px-3 py-1 rounded-lg text-xs font-bold bg-[#18142B] text-slate-300 border border-white/10 hover:border-cyan-400">🔓 Commander Unlocked</button>
+              <button onclick="toggleMuteVaulted()" id="muteVaultBtn" class="px-3 py-1 rounded-lg text-xs font-bold bg-purple-600/20 text-purple-300 border border-purple-500/30 hover:bg-purple-600 hover:text-white transition">📢 Vaulted ETBs: Alerting Crew</button>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <button onclick="resetDedupMemory()" id="resetDedupBtn" class="px-3 py-1 rounded-lg text-xs font-bold bg-emerald-600/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-600 hover:text-white transition">🔄 Clear Alert Cooldowns</button>
+              <button onclick="triggerTestAlert()" id="testAlertBtn" class="px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-600 hover:text-white transition">🔔 Test Discord Embed</button>
+              <button onclick="sendDigestToDiscord()" id="sendDigestBtn" class="px-3 py-1 rounded-lg text-xs font-bold bg-cyan-600/20 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-600 hover:text-white transition">📲 Send Digest</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Era / Format Filters -->
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex flex-wrap items-center gap-1.5" id="filterPills">
+            <button onclick="setFilter('ALL')" class="pill-btn active px-3 py-1.5 rounded-xl text-xs font-bold bg-cyan-500 text-slate-950" data-filter="ALL">All (38)</button>
+            <button onclick="setFilter('INSTOCK')" id="inStockPillBtn" class="pill-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-950/60 text-emerald-400 border border-emerald-700/50" data-filter="INSTOCK">● In-Stock Now (0)</button>
+            <button onclick="setFilter('NEED_VAULT')" class="pill-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-purple-950/60 text-purple-300 border border-purple-700/50" data-filter="NEED_VAULT">🎯 Needed ETBs</button>
+            <button onclick="setFilter('Master Case')" class="pill-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#161329] text-slate-300 border border-white/10" data-filter="Master Case">6-Box Cases</button>
+            <button onclick="setFilter('ETB Case')" class="pill-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#161329] text-slate-300 border border-white/10" data-filter="ETB Case">10-ETB Cases</button>
+            <button onclick="setFilter('Booster Box')" class="pill-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#161329] text-slate-300 border border-white/10" data-filter="Booster Box">36-Pack Boxes</button>
+            <button onclick="setFilter('ETB')" class="pill-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#161329] text-slate-300 border border-white/10" data-filter="ETB">ETBs</button>
+            <button onclick="setFilter('Booster Bundle')" class="pill-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#161329] text-slate-300 border border-white/10" data-filter="Booster Bundle">6-Pack Bundles</button>
+          </div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <select id="eraFilter" onchange="renderMatrixCatalog()" class="bg-[#120F22] border border-white/15 text-xs text-slate-200 px-3 py-1.5 rounded-xl focus:outline-none">
+              <option value="ALL_ERAS">All Eras</option>
+            </select>
+            <select id="sortMode" onchange="renderMatrixCatalog()" class="bg-[#120F22] border border-white/15 text-xs text-slate-200 px-3 py-1.5 rounded-xl focus:outline-none">
+              <option value="ERA">Sort: By Era</option>
+              <option value="SPREAD_DESC">Sort: Biggest Target Discount %</option>
+              <option value="VALUE_DESC">Sort: Highest Market Value ($)</option>
+              <option value="VALUE_ASC">Sort: Lowest Market Value ($)</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="Filter targets..." oninput="renderMatrixCatalog()" class="bg-[#120F22] border border-white/15 text-xs text-white px-3 py-1.5 rounded-xl focus:outline-none w-44" />
+          </div>
+        </div>
+
+        <div id="catalogContainer" class="space-y-8"></div>
+      </section>
+
+    </main>
+  </div>
+  <script>
+    // =========================================================================
+    // 1. DYNAMIC POKÉDEX CHAMELEON & TAG-TEAM / BATTLE HEADER ENGINE
+    // =========================================================================
+    const ELEMENTAL_SPECTRUM = {
+      water:    { hex: '#00F0FF', rgb: '0, 240, 255',   secondary: '#3B82F6', label: 'WATER',    badgeCls: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30' },
+      fire:     { hex: '#F97316', rgb: '249, 115, 22',  secondary: '#FACC15', label: 'FIRE',     badgeCls: 'bg-orange-500/20 text-orange-300 border-orange-500/30' },
+      dark:     { hex: '#F43F5E', rgb: '244, 63, 94',   secondary: '#CBD5E1', label: 'DARK',     badgeCls: 'bg-rose-500/20 text-rose-300 border-rose-500/30' },
+      electric: { hex: '#FACC15', rgb: '250, 204, 21',  secondary: '#A855F7', label: 'ELECTRIC', badgeCls: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30' },
+      poison:   { hex: '#C084FC', rgb: '192, 132, 252', secondary: '#4ADE80', label: 'POISON',   badgeCls: 'bg-purple-500/20 text-purple-300 border-purple-500/30' },
+      psychic:  { hex: '#E879F9', rgb: '232, 121, 249', secondary: '#8B5CF6', label: 'PSYCHIC',  badgeCls: 'bg-fuchsia-500/20 text-fuchsia-300 border-fuchsia-500/30' },
+      dragon:   { hex: '#6366F1', rgb: '99, 102, 241',  secondary: '#FACC15', label: 'DRAGON',   badgeCls: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30' },
+      grass:    { hex: '#10B981', rgb: '16, 185, 129',  secondary: '#34D399', label: 'GRASS',    badgeCls: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' },
+      normal:   { hex: '#E2E8F0', rgb: '226, 232, 240', secondary: '#F59E0B', label: 'NORMAL',   badgeCls: 'bg-slate-500/20 text-slate-200 border-slate-400/30' },
+      fairy:    { hex: '#F472B6', rgb: '244, 114, 182', secondary: '#38BDF8', label: 'FAIRY',    badgeCls: 'bg-pink-500/20 text-pink-300 border-pink-500/30' },
+      flying:   { hex: '#38BDF8', rgb: '56, 189, 248',  secondary: '#FBBF24', label: 'FLYING',   badgeCls: 'bg-sky-500/20 text-sky-300 border-sky-500/30' }
+    };
+
+    const HALL_OF_FAME_DEX = {
+      129: { id: 129, name: 'Magikarp',   type: 'water',    nextId: 130 },
+      130: { id: 130, name: 'Gyarados',   type: 'water',    nextId: null },
+      58:  { id: 58,  name: 'Growlithe',  type: 'fire',     nextId: 59 },
+      59:  { id: 59,  name: 'Arcanine',   type: 'fire',     nextId: null },
+      359: { id: 359, name: 'Absol',      type: 'dark',     nextId: null },
+      133: { id: 133, name: 'Eevee',      type: 'normal',   eeveeCycle: [134, 135, 136, 196, 197, 700] },
+      134: { id: 134, name: 'Vaporeon',   type: 'water',    nextId: 135 },
+      135: { id: 135, name: 'Jolteon',    type: 'electric', nextId: 136 },
+      136: { id: 136, name: 'Flareon',    type: 'fire',     nextId: 196 },
+      196: { id: 196, name: 'Espeon',     type: 'psychic',  nextId: 197 },
+      197: { id: 197, name: 'Umbreon',    type: 'dark',     nextId: 700 },
+      700: { id: 700, name: 'Sylveon',    type: 'fairy',    nextId: null },
+      349: { id: 349, name: 'Feebas',     type: 'water',    nextId: 350 },
+      350: { id: 350, name: 'Milotic',    type: 'water',    nextId: null },
+      181: { id: 181, name: 'Ampharos',   type: 'electric', nextId: null },
+      88:  { id: 88,  name: 'Grimer',     type: 'poison',   nextId: 89 },
+      89:  { id: 89,  name: 'Alolan Muk', type: 'poison',   nextId: null },
+      16:  { id: 16,  name: 'Pidgey',     type: 'normal',   nextId: 17 },
+      17:  { id: 17,  name: 'Pidgeotto',  type: 'normal',   nextId: 18 },
+      18:  { id: 18,  name: 'Pidgeot',    type: 'normal',   nextId: null },
+      149: { id: 149, name: 'Dragonite',  type: 'dragon',   nextId: null },
+      6:   { id: 6,   name: 'Charizard',  type: 'fire',     nextId: null },
+      25:  { id: 25,  name: 'Pikachu',    type: 'electric', nextId: null },
+      1:   { id: 1,   name: 'Bulbasaur',  type: 'grass',    nextId: 2 },
+      2:   { id: 2,   name: 'Ivysaur',    type: 'grass',    nextId: 3 },
+      3:   { id: 3,   name: 'Venusaur',   type: 'grass',    nextId: null },
+      65:  { id: 65,  name: 'Alakazam',   type: 'psychic',  nextId: null },
+      143: { id: 143, name: 'Snorlax',    type: 'normal',   nextId: null },
+      150: { id: 150, name: 'Mewtwo',     type: 'psychic',  nextId: null },
+      9:   { id: 9,   name: 'Blastoise',  type: 'water',    nextId: null }
+    };
+
+    const HOF_ROSTER_BUTTONS = [
+      { id: 130, label: 'Gyarados' },
+      { id: 129, label: 'Magikarp ➔' },
+      { id: 59,  label: 'Arcanine' },
+      { id: 58,  label: 'Growlithe ➔' },
+      { id: 359, label: 'Absol' },
+      { id: 133, label: 'Eevee (Cycle)' },
+      { id: 349, label: 'Feebas ➔ Milotic' },
+      { id: 181, label: 'Ampharos' },
+      { id: 88,  label: 'Grimer ➔ Muk' },
+      { id: 16,  label: 'Pidgey ➔ Pidgeot' },
+      { id: 149, label: 'Dragonite' },
+      { id: 6,   label: 'Charizard' },
+      { id: 25,  label: 'Pikachu' },
+      { id: 1,   label: 'Bulbasaur ➔' },
+      { id: 65,  label: 'Alakazam' },
+      { id: 143, label: 'Snorlax' }
+    ];
+
+    let activeRosterTargetSlot = 1;
+    let partnerState = {
+      slot1: { id: 130, name: 'Gyarados', type: 'water', shiny: false, nextId: null },
+      slot2: { id: 59,  name: 'Arcanine', type: 'fire',  shiny: false, nextId: null },
+      cryAudio: true,
+      autoLaunch: false
+    };
+
+    function loadPartnerStateFromStorage() {
+      try {
+        const saved = localStorage.getItem('dropbot_v4_partner_state');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && parsed.slot1 && parsed.slot2) {
+            partnerState = { ...partnerState, ...parsed };
+          }
+        }
+      } catch (e) {}
+    }
+
+    function savePartnerStateToStorage() {
+      try {
+        localStorage.setItem('dropbot_v4_partner_state', JSON.stringify(partnerState));
+      } catch (e) {}
+    }
+
+    function getSpriteUrl(id, shiny) {
+      if (shiny) {
+        return 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/shiny/' + id + '.gif';
+      }
+      return 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/' + id + '.gif';
+    }
+
+    function getArtworkFallbackUrl(id, shiny) {
+      if (shiny) {
+        return 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/' + id + '.png';
+      }
+      return 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + id + '.png';
+    }
+
+    function playPokemonCry(id) {
+      if (!partnerState.cryAudio) return;
+      try {
+        const audio = new Audio('https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/' + id + '.ogg');
+        audio.volume = 0.35;
+        audio.play().catch(() => {});
+      } catch (e) {}
+    }
+
+    function showCommanderToast(msg) {
+      const el = document.getElementById('evoToast');
+      const txt = document.getElementById('evoToastText');
+      if (!el || !txt) return;
+      txt.innerText = msg;
+      el.classList.remove('opacity-0', 'translate-y-2');
+      el.classList.add('opacity-100', 'translate-y-0');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => {
+        el.classList.remove('opacity-100', 'translate-y-0');
+        el.classList.add('opacity-0', 'translate-y-2');
+      }, 3000);
+    }
+
+    function applyPartnerThemeAndHeader() {
+      const s1 = partnerState.slot1;
+      const s2 = partnerState.slot2;
+      const spec1 = ELEMENTAL_SPECTRUM[s1.type] || ELEMENTAL_SPECTRUM.water;
+      const spec2 = ELEMENTAL_SPECTRUM[s2.type] || ELEMENTAL_SPECTRUM.fire;
+
+      document.documentElement.style.setProperty('--accent-primary', spec1.hex);
+      document.documentElement.style.setProperty('--accent-primary-rgb', spec1.rgb);
+      document.documentElement.style.setProperty('--accent-secondary', spec2.hex);
+      document.documentElement.style.setProperty('--accent-secondary-rgb', spec2.rgb);
+
+      const updateSlotDOM = (slotNum, slotObj, spec) => {
+        const img = document.getElementById('slot' + slotNum + 'Sprite');
+        const nameEl = document.getElementById('slot' + slotNum + 'Name');
+        const badgeEl = document.getElementById('slot' + slotNum + 'TypeBadge');
+        const shinyEl = document.getElementById('slot' + slotNum + 'ShinyBadge');
+        const hintEl = document.getElementById('slot' + slotNum + 'ActionHint');
+
+        if (img) {
+          img.onerror = function() {
+            this.onerror = null;
+            this.src = getArtworkFallbackUrl(slotObj.id, slotObj.shiny);
+          };
+          img.src = getSpriteUrl(slotObj.id, slotObj.shiny);
+        }
+        if (nameEl) nameEl.innerText = (slotObj.shiny ? '✨ ' : '') + slotObj.name;
+        if (badgeEl) {
+          badgeEl.innerText = spec.label;
+          badgeEl.className = 'text-[9px] font-mono-num uppercase px-1.5 py-0.2 rounded border font-bold ' + spec.badgeCls;
+        }
+        if (shinyEl) {
+          if (slotObj.shiny) shinyEl.classList.remove('hidden');
+          else shinyEl.classList.add('hidden');
+        }
+        if (hintEl) {
+          const dexEntry = HALL_OF_FAME_DEX[slotObj.id];
+          const hasEvo = Boolean(slotObj.nextId || (dexEntry && (dexEntry.nextId || dexEntry.eeveeCycle)));
+          hintEl.innerText = hasEvo ? '⚡ Evolve' : (slotObj.shiny ? '✨ Shiny ON' : '✨ Shiny');
+        }
+      };
+
+      updateSlotDOM(1, s1, spec1);
+      updateSlotDOM(2, s2, spec2);
+
+      const callsign = document.getElementById('activeTeamCallsign');
+      if (callsign) {
+        callsign.innerText = '⚔️ Tag-Team: ' + s1.name + (s1.shiny ? ' ✨' : '') + ' & ' + s2.name + (s2.shiny ? ' ✨' : '') + ' • Scott & Logan HQ';
+      }
+
+      const cryBtn = document.getElementById('cryAudioBtn');
+      const cryIcon = document.getElementById('cryAudioIcon');
+      if (cryBtn && cryIcon) {
+        cryIcon.innerText = partnerState.cryAudio ? '🔊' : '🔇';
+        cryBtn.className = partnerState.cryAudio
+          ? 'px-2.5 py-1.5 rounded-xl text-xs font-bold border transition flex items-center gap-1.5 bg-cyan-500/15 text-cyan-300 border-cyan-500/30 hover:bg-cyan-500/25'
+          : 'px-2.5 py-1.5 rounded-xl text-xs font-bold border transition flex items-center gap-1.5 bg-[#161329] text-slate-400 border-white/10';
+      }
+
+      const launchBtn = document.getElementById('autoLaunchBtn');
+      const launchState = document.getElementById('autoLaunchState');
+      if (launchBtn && launchState) {
+        launchState.innerText = partnerState.autoLaunch ? 'ARMED' : 'OFF';
+        launchState.className = partnerState.autoLaunch ? 'font-mono-num text-emerald-400 font-black' : 'font-mono-num text-slate-400';
+        launchBtn.className = partnerState.autoLaunch
+          ? 'px-2.5 py-1.5 rounded-xl text-xs font-bold border transition flex items-center gap-1.5 bg-emerald-500/15 text-emerald-300 border-emerald-500/40 shadow-lg'
+          : 'px-2.5 py-1.5 rounded-xl text-xs font-bold border transition flex items-center gap-1.5 bg-[#161329] text-slate-300 border-white/10 hover:border-cyan-400/50';
+      }
+
+      savePartnerStateToStorage();
+    }
+
+    function onPartnerSpriteClick(slotNum) {
+      const key = slotNum === 1 ? 'slot1' : 'slot2';
+      const current = partnerState[key];
+      const imgEl = document.getElementById('slot' + slotNum + 'Sprite');
+      if (imgEl) {
+        imgEl.classList.remove('evolving-sprite');
+        void imgEl.offsetWidth;
+        imgEl.classList.add('evolving-sprite');
+      }
+
+      const dex = HALL_OF_FAME_DEX[current.id];
+      let targetEvoId = current.nextId || (dex ? dex.nextId : null);
+      if (dex && dex.eeveeCycle) {
+        targetEvoId = dex.eeveeCycle[0];
+      }
+
+      if (targetEvoId && HALL_OF_FAME_DEX[targetEvoId]) {
+        const nextDex = HALL_OF_FAME_DEX[targetEvoId];
+        const prevName = current.name;
+        partnerState[key] = {
+          id: nextDex.id,
+          name: nextDex.name,
+          type: nextDex.type,
+          shiny: current.shiny,
+          nextId: nextDex.nextId || null
+        };
+        applyPartnerThemeAndHeader();
+        playPokemonCry(nextDex.id);
+        showCommanderToast('✨ What? ' + prevName + ' evolved into ' + nextDex.name.toUpperCase() + '!');
+      } else {
+        partnerState[key].shiny = !partnerState[key].shiny;
+        applyPartnerThemeAndHeader();
+        playPokemonCry(current.id);
+        showCommanderToast(
+          partnerState[key].shiny
+            ? ('✨ SHINY TRANSFORMATION! Shiny ' + current.name + ' activated!')
+            : ('Standard ' + current.name + ' form restored.')
+        );
+      }
+    }
+
+    function renderHofRosterButtons() {
+      const grid = document.getElementById('hofRosterGrid');
+      if (!grid) return;
+      grid.innerHTML = HOF_ROSTER_BUTTONS.map(item => {
+        const dex = HALL_OF_FAME_DEX[item.id];
+        return (
+          '<button onclick="selectHofPokemon(' + item.id + ')" class="p-1.5 rounded-xl bg-[#161229] hover:bg-[#231D40] border border-white/10 hover:border-cyan-400/40 flex flex-col items-center gap-1 text-center transition">' +
+            '<img src="' + getSpriteUrl(item.id, false) + '" onerror="this.onerror=null;this.src=\'' + getArtworkFallbackUrl(item.id, false) + '\'" class="w-8 h-8 object-contain" />' +
+            '<span class="text-[10px] font-bold text-slate-200 leading-tight truncate w-full">' + item.label + '</span>' +
+          '</button>'
+        );
+      }).join('');
+    }
+
+    function openRosterPopover(slotNum) {
+      activeRosterTargetSlot = slotNum || 1;
+      switchRosterTargetSlot(activeRosterTargetSlot);
+      renderHofRosterButtons();
+      document.getElementById('rosterPopover')?.classList.remove('hidden');
+    }
+
+    function closeRosterPopover() {
+      document.getElementById('rosterPopover')?.classList.add('hidden');
+    }
+
+    function switchRosterTargetSlot(slotNum) {
+      activeRosterTargetSlot = slotNum;
+      const ind = document.getElementById('rosterSlotIndicator');
+      const b1 = document.getElementById('rosterSlot1Btn');
+      const b2 = document.getElementById('rosterSlot2Btn');
+      if (ind) {
+        ind.innerText = slotNum === 1
+          ? 'Selecting Partner for Slot 1 (Primary Accent)'
+          : 'Selecting Partner for Slot 2 (Secondary Accent)';
+      }
+      if (b1 && b2) {
+        b1.className = slotNum === 1
+          ? 'px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
+          : 'px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-400 border border-white/10';
+        b2.className = slotNum === 2
+          ? 'px-2 py-0.5 rounded text-[10px] font-bold bg-orange-500/20 text-orange-300 border border-orange-500/40'
+          : 'px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-400 border border-white/10';
+      }
+    }
+
+    function selectHofPokemon(id) {
+      const dex = HALL_OF_FAME_DEX[id];
+      if (!dex) return;
+      const key = activeRosterTargetSlot === 1 ? 'slot1' : 'slot2';
+      partnerState[key] = {
+        id: dex.id,
+        name: dex.name,
+        type: dex.type,
+        shiny: false,
+        nextId: dex.nextId || null
+      };
+      applyPartnerThemeAndHeader();
+      playPokemonCry(dex.id);
+      showCommanderToast('⚡ ' + dex.name + ' deployed to Slot ' + activeRosterTargetSlot + '!');
+    }
+
+    function applyTeamPreset(presetKey) {
+      if (presetKey === 'GYARADOS_ARCANINE') {
+        partnerState.slot1 = { id: 130, name: 'Gyarados', type: 'water', shiny: false, nextId: null };
+        partnerState.slot2 = { id: 59,  name: 'Arcanine', type: 'fire',  shiny: false, nextId: null };
+      } else if (presetKey === 'ABSOL_DISASTER') {
+        partnerState.slot1 = { id: 359, name: 'Absol',    type: 'dark',  shiny: false, nextId: null };
+        partnerState.slot2 = { id: 197, name: 'Umbreon',  type: 'dark',  shiny: true,  nextId: null };
+      } else if (presetKey === 'MEWTWO_CHARIZARD') {
+        partnerState.slot1 = { id: 150, name: 'Mewtwo',    type: 'psychic', shiny: false, nextId: null };
+        partnerState.slot2 = { id: 6,   name: 'Charizard', type: 'fire',    shiny: true,  nextId: null };
+      } else if (presetKey === 'KANTO_ORIGINALS') {
+        partnerState.slot1 = { id: 1,   name: 'Bulbasaur', type: 'grass', shiny: false, nextId: 2 };
+        partnerState.slot2 = { id: 6,   name: 'Charizard', type: 'fire',  shiny: false, nextId: null };
+      }
+      applyPartnerThemeAndHeader();
+      playPokemonCry(partnerState.slot1.id);
+      closeRosterPopover();
+      showCommanderToast('🔥 Tag-Team Preset Activated: ' + partnerState.slot1.name + ' & ' + partnerState.slot2.name + '!');
+    }
+
+    async function searchPokeApiLive() {
+      const input = document.getElementById('pokeSearchInput');
+      const status = document.getElementById('pokeSearchStatus');
+      const q = (input?.value || '').trim().toLowerCase();
+      if (!q) return;
+      if (status) status.innerText = 'Fetching PokéAPI data for "' + q + '"...';
+      try {
+        const res = await fetch('https://pokeapi.co/api/v2/pokemon/' + encodeURIComponent(q));
+        if (!res.ok) throw new Error('Pokémon not found');
+        const data = await res.json();
+        const pokeId = data.id;
+        const pokeName = data.name.charAt(0).toUpperCase() + data.name.slice(1);
+        const primaryType = (data.types && data.types[0]?.type?.name) || 'normal';
+        const mappedType = ELEMENTAL_SPECTRUM[primaryType] ? primaryType : 'normal';
+
+        let nextId = null;
+        try {
+          const spRes = await fetch('https://pokeapi.co/api/v2/pokemon-species/' + pokeId);
+          if (spRes.ok) {
+            const spData = await spRes.json();
+            if (spData.evolution_chain?.url) {
+              const chRes = await fetch(spData.evolution_chain.url);
+              if (chRes.ok) {
+                const chData = await chRes.json();
+                const findNext = (node) => {
+                  if (!node) return null;
+                  if (node.species?.name === data.name && node.evolves_to?.length > 0) {
+                    const m = node.evolves_to[0].species.url.match(/\/pokemon-species\/(\d+)\//);
+                    return m ? Number(m[1]) : null;
+                  }
+                  for (const child of (node.evolves_to || [])) {
+                    const found = findNext(child);
+                    if (found) return found;
+                  }
+                  return null;
+                };
+                nextId = findNext(chData.chain);
+              }
+            }
+          }
+        } catch (e) {}
+
+        HALL_OF_FAME_DEX[pokeId] = { id: pokeId, name: pokeName, type: mappedType, nextId };
+        const key = activeRosterTargetSlot === 1 ? 'slot1' : 'slot2';
+        partnerState[key] = { id: pokeId, name: pokeName, type: mappedType, shiny: false, nextId };
+        applyPartnerThemeAndHeader();
+        playPokemonCry(pokeId);
+        if (status) status.innerText = 'Loaded #' + pokeId + ' ' + pokeName + ' (' + mappedType.toUpperCase() + ')!';
+        showCommanderToast('⚡ PokéAPI Loaded: #' + pokeId + ' ' + pokeName + '!');
+      } catch (err) {
+        if (status) status.innerText = 'Could not find "' + q + '". Try name or # (1-1025).';
+      }
+    }
+
+    function toggleCryAudio() {
+      partnerState.cryAudio = !partnerState.cryAudio;
+      applyPartnerThemeAndHeader();
+      if (partnerState.cryAudio) playPokemonCry(partnerState.slot1.id);
+      showCommanderToast(partnerState.cryAudio ? '🔊 Pokédex Cry Audio Unmuted' : '🔇 Pokédex Cry Audio Muted');
+    }
+
+    function toggleAutoLaunch() {
+      partnerState.autoLaunch = !partnerState.autoLaunch;
+      applyPartnerThemeAndHeader();
+      showCommanderToast(partnerState.autoLaunch ? '🚀 Auto-Pop Checkout ARMED for new In-Stock drops!' : '🚀 Auto-Pop Checkout disarmed.');
+    }
+
+    // =========================================================================
+    // 2. CORE APPLICATION STATE & NAVIGATION
+    // =========================================================================
+    let policies = [];
+    let telemetry = {};
+    let liveStock = {};
+    let recentDrops = [];
+    let msrpTrophies = { totalMsrpHits: 1, catches: [] };
+    let conqueredVault = { totalConquered: 2, collectorRank: { level: 3, title: '🔥 Case Commander', score: 200 }, ruleOf3Progress: {}, trophies: [] };
+    let marketTape = { targets: {}, honeyHoleStores: [], recentSalesTape: [], weeklyCheckpoints: {} };
+    let activeMainView = 'LIVE_COMMAND';
+    let activeFilter = 'ALL';
+    let vaultChecklistFilter = 'ALL';
+    let spectatorLocked = false;
+    let botSettings = { muteVaulted: false };
+    let sidebarCollapsed = false;
+    let saveTimeout = null;
+    let seenAutoLaunchKeys = new Set();
+    const cacheBuster = Date.now();
+
+    function toggleSidebar() {
+      sidebarCollapsed = !sidebarCollapsed;
+      const sb = document.getElementById('appSidebar');
+      const labels = document.querySelectorAll('.sidebar-label');
+      if (sidebarCollapsed) {
+        sb.classList.remove('w-64');
+        sb.classList.add('w-16');
+        labels.forEach(l => l.classList.add('hidden'));
+      } else {
+        sb.classList.remove('w-16');
+        sb.classList.add('w-64');
+        labels.forEach(l => l.classList.remove('hidden'));
+      }
+    }
+
+    function switchMainView(viewName) {
+      activeMainView = viewName;
+      ['LIVE_COMMAND', 'BOUNTY_HUNTER', 'CONQUERED_VAULT', 'TARGET_MATRIX'].forEach(v => {
+        const sec = document.getElementById('view_' + v);
+        const nav = document.getElementById('nav_' + v);
+        if (sec) {
+          if (v === viewName) sec.classList.remove('hidden');
+          else sec.classList.add('hidden');
+        }
+        if (nav) {
+          if (v === viewName) nav.classList.add('active');
+          else nav.classList.remove('active');
+        }
+      });
+
+      if (viewName === 'BOUNTY_HUNTER') {
+        runBountyRecon(document.getElementById('bountySkuSelect')?.value || '', false);
+      } else if (viewName === 'CONQUERED_VAULT') {
+        renderConqueredVaultView();
+      } else if (viewName === 'TARGET_MATRIX') {
+        renderMatrixCatalog();
+      } else {
+        renderLiveCommandView();
+      }
+    }
+
+    function toggleLedgerTable() {
+      const wrap = document.getElementById('collapsibleLedgerWrap');
+      const lbl = document.getElementById('ledgerToggleLabel');
+      if (!wrap) return;
+      const isHidden = wrap.classList.contains('hidden');
+      if (isHidden) {
+        wrap.classList.remove('hidden');
+        if (lbl) lbl.innerText = 'Collapse Table ▲';
+      } else {
+        wrap.classList.add('hidden');
+        if (lbl) lbl.innerText = 'Expand Table ▼';
+      }
+    }
+
+    // =========================================================================
+    // 3. DATA LOADING & POLLING
+    // =========================================================================
+    async function loadAllState() {
+      try {
+        const [polRes, telRes, lsRes, drRes, trRes, cvRes, mtRes, stRes] = await Promise.all([
+          fetch('/api/policies'),
+          fetch('/api/telemetry'),
+          fetch('/api/live-stock'),
+          fetch('/api/drops'),
+          fetch('/api/trophies'),
+          fetch('/api/conquered-vault'),
+          fetch('/api/market-tape'),
+          fetch('/api/settings')
+        ]);
+
+        if (polRes.ok) policies = await polRes.json();
+        if (telRes.ok) telemetry = await telRes.json();
+        if (lsRes.ok) liveStock = await lsRes.json();
+        if (drRes.ok) recentDrops = await drRes.json();
+        if (trRes.ok) msrpTrophies = await trRes.json();
+        if (cvRes.ok) conqueredVault = await cvRes.json();
+        if (mtRes.ok) marketTape = await mtRes.json();
+        if (stRes.ok) botSettings = await stRes.json();
+
+        populateSelectDropdowns();
+        updateMuteVaultUI();
+        renderAllActiveViews();
+      } catch (e) {
+        console.error('State load error:', e);
+      }
+    }
+
+    function populateSelectDropdowns() {
+      const eraSel = document.getElementById('eraFilter');
+      if (eraSel && eraSel.options.length <= 1) {
+        const eras = [...new Set(policies.map(p => p.era || 'General Releases'))];
+        eraSel.innerHTML = '<option value="ALL_ERAS">All Eras (' + eras.length + ')</option>' +
+          eras.map(e => '<option value="' + e + '">' + e + '</option>').join('');
+      }
+
+      const bountySel = document.getElementById('bountySkuSelect');
+      if (bountySel && bountySel.options.length === 0) {
+        bountySel.innerHTML = '<option value="">All Tracked Targets (Top Lowest)</option>' +
+          policies.map(p => '<option value="' + p.id + '">' + p.name + ' (' + p.formFactor + ')</option>').join('');
+      }
+
+      const claimSel = document.getElementById('claimSkuSelect');
+      if (claimSel && claimSel.options.length === 0) {
+        claimSel.innerHTML = policies.map(p => '<option value="' + p.id + '">' + p.name + ' (' + p.formFactor + ')</option>').join('');
+      }
+    }
+
+    function renderAllActiveViews() {
+      updateGlobalBadgesAndKPIs();
+      renderLiveCommandView();
+      if (activeMainView === 'CONQUERED_VAULT') renderConqueredVaultView();
+      if (activeMainView === 'TARGET_MATRIX') renderMatrixCatalog();
+    }
+
+    function isPolicyInStockNow(p) {
+      const ls = liveStock[p.id];
+      if (ls && ls.inStock && ls.price <= Math.max(p.msrpCeiling || 0, p.maxMarketBuyPrice || 0)) {
+        return true;
+      }
+      const tel = telemetry[p.id];
+      if (tel && tel.inStock === true && tel.lowestStore && !tel.lowestStore.includes('Market') && !tel.lowestStore.includes('TCGPlayer') && !tel.lowestStore.includes('Catalog') && tel.lowestPrice <= Math.max(p.msrpCeiling || 0, p.maxMarketBuyPrice || 0)) {
+        return true;
+      }
+      return false;
+    }
+
+    function getPackBadgeHtml(pricePerPack, packCount, isRipValueLeader) {
+      const pp = Number(pricePerPack || 0);
+      if (pp <= 0) return '';
+      const leader = isRipValueLeader || pp <= 4.25;
+      if (leader) {
+        return '<span class="font-mono-num text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/50 shadow-[0_0_12px_rgba(16,185,129,0.35)]">🔥 $' + pp.toFixed(2) + '/pack (' + (packCount || 36) + 'p)</span>';
+      }
+      return '<span class="font-mono-num text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/5 text-slate-300 border border-white/10">$' + pp.toFixed(2) + '/pack</span>';
+    }
+
+    // =========================================================================
+    // 4. VIEW 1: LIVE COMMAND RENDERING
+    // =========================================================================
+    function updateGlobalBadgesAndKPIs() {
+      const etbs = policies.filter(p => p.formFactor === 'ETB');
+      const ownedEtbs = etbs.filter(p => p.owned === true);
+      const trophies = conqueredVault.trophies || [];
+
+      const ownedEtbMarketSum = ownedEtbs.reduce((sum, p) => {
+        const tel = telemetry[p.id];
+        const m = (tel && tel.rollingAverage > 0) ? tel.rollingAverage : (p.estimatedMarketValue || 0);
+        return sum + m;
+      }, 0);
+
+      // Include non-ETB conquered trophies (e.g. 30th Celebration 10-ETB Case) so portfolio reflects full vault
+      const nonEtbTrophyMarketSum = trophies
+        .filter(t => t.formFactor !== 'etb' && t.formFactor !== 'ETB')
+        .reduce((sum, t) => sum + Number(t.marketValueAtCapture || t.landedPrice || 0), 0);
+
+      const totalPortfolioValue = ownedEtbMarketSum + nonEtbTrophyMarketSum;
+      const trophyCostBasis = trophies.reduce((sum, t) => sum + Number(t.landedPrice || 0), 0);
+      const trophyMarketVal = trophies.reduce((sum, t) => sum + Number(t.marketValueAtCapture || t.landedPrice || 0), 0);
+      const trophyGain = trophyMarketVal - trophyCostBasis;
+
+      const kpiVal = document.getElementById('kpiTotalPortfolioValue');
+      if (kpiVal) kpiVal.innerText = '$' + totalPortfolioValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      const kpiBasis = document.getElementById('kpiCostBasisSub');
+      if (kpiBasis) kpiBasis.innerText = 'Trophy Basis: $' + trophyCostBasis.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      const kpiGain = document.getElementById('kpiPortfolioGainBadge');
+      if (kpiGain) {
+        const sign = trophyGain >= 0 ? '+' : '';
+        kpiGain.innerText = sign + '$' + trophyGain.toFixed(2) + ' Trophy Alpha';
+      }
+
+      const wallText = document.getElementById('kpiWallEtbProgressText');
+      if (wallText) wallText.innerText = ownedEtbs.length + ' / ' + policies.length + ' Tracked (' + etbs.length + ' ETBs)';
+
+      const wallBar = document.getElementById('kpiWallEtbBar');
+      if (wallBar && policies.length > 0) {
+        wallBar.style.width = Math.min(100, Math.round((ownedEtbs.length / Math.max(1, etbs.length)) * 100)) + '%';
+      }
+
+      const conqPill = document.getElementById('kpiConqueredCountPill');
+      if (conqPill) conqPill.innerText = '🏆 ' + trophies.length + ' Plaques Locked ↗';
+
+      const navVault = document.getElementById('navVaultBadge');
+      if (navVault) navVault.innerText = String(trophies.length);
+
+      const navMatrix = document.getElementById('navMatrixBadge');
+      if (navMatrix) navMatrix.innerText = String(policies.length || 38);
+
+      const rankTitle = conqueredVault.collectorRank?.title || '🔥 Case Commander';
+      const sbRank = document.getElementById('sidebarRankBadge');
+      if (sbRank) sbRank.innerText = rankTitle;
+      const vhRank = document.getElementById('vaultRankHeaderBadge');
+      if (vhRank) vhRank.innerText = rankTitle + ' • Score ' + (conqueredVault.collectorRank?.score || 200);
+
+      // Card 2: Active Sniper Radar
+      const inStockPolicies = policies.filter(p => isPolicyInStockNow(p));
+      const inStockCount = inStockPolicies.length;
+      const kpiInStock = document.getElementById('kpiInStockCount');
+      if (kpiInStock) kpiInStock.innerText = String(inStockCount);
+      const navLive = document.getElementById('navLiveBadge');
+      if (navLive) navLive.innerText = String(inStockCount);
+      const matrixPill = document.getElementById('inStockPillBtn');
+      if (matrixPill) matrixPill.innerText = '● In-Stock Now (' + inStockCount + ')';
+
+      const radarPills = document.getElementById('kpiActiveRadarPills');
+      if (radarPills) {
+        if (inStockPolicies.length > 0) {
+          radarPills.innerHTML = inStockPolicies.slice(0, 3).map(p => {
+            const ls = liveStock[p.id];
+            const pr = ls?.price || telemetry[p.id]?.lowestPrice || p.maxMarketBuyPrice;
+            return '<span class="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold">' + p.name + ' ($' + Number(pr).toFixed(2) + ')</span>';
+          }).join('');
+        } else {
+          radarPills.innerHTML = '<span class="text-[11px] text-slate-400">0 SKUs under trigger right now • Monitoring 31 Shopify LGS + 9 Big-Box + TCGPlayer</span>';
+        }
+      }
+
+      // Card 3: Unicorn MSRP Trophy Counter
+      const msrpCountEl = document.getElementById('kpiMsrpHitCount');
+      if (msrpCountEl) msrpCountEl.innerText = String(msrpTrophies?.totalMsrpHits ?? 1);
+      const latestCatch = (msrpTrophies?.catches && msrpTrophies.catches[0]) || null;
+      const catchBox = document.getElementById('kpiLatestMsrpCatchBox');
+      if (catchBox && latestCatch) {
+        catchBox.innerHTML =
+          '<div class="flex items-center justify-between gap-2">' +
+            '<span class="font-extrabold text-white truncate">' + latestCatch.productName + '</span>' +
+            '<span class="font-mono-num font-black text-emerald-400 shrink-0">$' + Number(latestCatch.price || 51).toFixed(2) + '</span>' +
+          '</div>' +
+          '<div class="text-[11px] text-cyan-200/90 mt-0.5 flex items-center justify-between">' +
+            '<span class="truncate">' + (latestCatch.store || 'Cooperstown Cards') + ' • Below $' + Number(latestCatch.msrp || 54.99).toFixed(2) + ' MSRP</span>' +
+            '<button onclick="switchMainView(\'CONQUERED_VAULT\')" class="text-amber-300 font-bold hover:underline shrink-0 ml-2">Trophy #2 ↗</button>' +
+          '</div>';
+      }
+    }
+
+    function renderLiveCommandView() {
+      const feedGrid = document.getElementById('liveDealFeedGrid');
+      if (!feedGrid) return;
+
+      // Combine live in-stock deals + recent Discord alert hits
+      const items = [];
+      const seenRuleStores = new Set();
+
+      Object.entries(liveStock || {}).forEach(([ruleId, ls]) => {
+        if (!ls || !ls.inStock) return;
+        const pol = policies.find(p => p.id === ruleId);
+        if (!pol) return;
+        const key = ruleId + '__' + ls.retailer;
+        seenRuleStores.add(key);
+        items.push({
+          isLiveNow: true,
+          skuId: pol.id,
+          title: pol.name,
+          formFactor: pol.formFactor,
+          retailer: ls.retailer || 'Verified Store',
+          price: Number(ls.price),
+          landedPrice: Number(ls.landedPrice || ls.price),
+          marketValue: (telemetry[pol.id]?.rollingAverage > 0) ? telemetry[pol.id].rollingAverage : pol.estimatedMarketValue,
+          msrp: pol.msrpCeiling,
+          packCount: ls.packCount || pol.packCount,
+          pricePerPack: ls.pricePerPack || pol.pricePerPack,
+          isRipValueLeader: ls.isRipValueLeader || pol.isRipValueLeader,
+          isPreRelease: ls.isPreRelease || pol.isPreRelease,
+          preReleaseStatusTag: ls.preReleaseStatusTag || pol.preReleaseStatusTag,
+          url: ls.productUrl || ls.url,
+          cart1xUrl: ls.cart1xUrl,
+          cart2xUrl: ls.cart2xUrl,
+          cart3xUrl: ls.cart3xUrl,
+          timeStr: ls.timeStr || 'LIVE NOW',
+          discountPct: Math.max(0, Math.round((((pol.estimatedMarketValue || 60) - Number(ls.price)) / (pol.estimatedMarketValue || 60)) * 100))
+        });
+      });
+
+      (recentDrops || []).slice(0, 9).forEach(d => {
+        const pol = policies.find(p => p.id === d.ruleId);
+        const key = (d.ruleId || d.title) + '__' + d.retailer;
+        if (seenRuleStores.has(key)) return;
+        seenRuleStores.add(key);
+        items.push({
+          isLiveNow: !d.soldOut,
+          soldOut: Boolean(d.soldOut),
+          skuId: d.ruleId || (pol ? pol.id : 'me-chaos-rising-etb'),
+          title: pol ? pol.name : (d.title || 'Pokemon Sealed Drop'),
+          formFactor: d.formFactor || (pol ? pol.formFactor : 'ETB'),
+          retailer: d.retailer || 'Verified Store',
+          price: Number(d.price || 0),
+          landedPrice: Number(d.landedPrice || d.price || 0),
+          marketValue: Number(d.marketValue || (pol ? pol.estimatedMarketValue : 60)),
+          msrp: Number(d.msrp || (pol ? pol.msrpCeiling : 54.99)),
+          packCount: d.packCount || (pol ? pol.packCount : 9),
+          pricePerPack: d.pricePerPack || (pol ? pol.pricePerPack : 5.67),
+          isRipValueLeader: d.isRipValueLeader,
+          isPreRelease: pol ? pol.isPreRelease : false,
+          preReleaseStatusTag: pol ? pol.preReleaseStatusTag : undefined,
+          url: d.productUrl || d.url,
+          cart1xUrl: d.cart1xUrl,
+          cart2xUrl: d.cart2xUrl,
+          cart3xUrl: d.cart3xUrl,
+          timeStr: d.timeStr || 'Recent Hit',
+          discountPct: Number(d.discountPct || 0)
+        });
+      });
+
+      // Fallback showcase card if dropsHistory is empty
+      if (items.length === 0) {
+        items.push({
+          isLiveNow: false,
+          skuId: 'me-chaos-rising-etb',
+          title: 'Mega Evolution: Chaos Rising Elite Trainer Box',
+          formFactor: 'ETB',
+          retailer: 'Cooperstown Cards (TCGPlayer Verified Seller)',
+          price: 51.00,
+          landedPrice: 51.00,
+          marketValue: 60.00,
+          msrp: 54.99,
+          packCount: 9,
+          pricePerPack: 5.67,
+          isRipValueLeader: false,
+          isPreRelease: false,
+          url: 'https://www.tcgplayer.com/product/684450?Language=English',
+          timeStr: '10:53 PM Defcon-1 Catch',
+          discountPct: 15
+        });
+      }
+
+      feedGrid.innerHTML = items.slice(0, 6).map((item, idx) => {
+        const imgPath = '/art/' + item.skuId + '.jpg?v=' + cacheBuster;
+        const packPill = getPackBadgeHtml(item.pricePerPack, item.packCount, item.isRipValueLeader);
+        const preBleedBadge = item.isPreRelease
+          ? '<div class="mt-1 inline-flex items-center px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-extrabold">⏳ PRE-RELEASE BLEED</div>'
+          : '';
+        const statusBadge = item.soldOut
+          ? '<span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 text-[10px] font-bold">SOLD OUT</span>'
+          : (item.isLiveNow
+              ? '<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-extrabold">● IN STOCK</span>'
+              : '<span class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[10px] font-bold">ALERT HIT</span>');
+
+        const c1 = item.cart1xUrl || (item.url && item.url.includes('/cart/') ? item.url : null);
+        const c2 = item.cart2xUrl || (c1 ? c1.replace(/:1$/, ':2') : null);
+        const c3 = item.cart3xUrl || (c1 ? c1.replace(/:1$/, ':3') : null);
+
+        const checkoutBtns = c1
+          ? '<div class="flex items-center gap-1.5 flex-wrap">' +
+              '<a href="' + c1 + '" target="_blank" class="px-2.5 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono-num text-[11px] font-extrabold">⚡ 1x</a>' +
+              (c2 ? '<a href="' + c2 + '" target="_blank" class="px-2.5 py-1 rounded-lg bg-cyan-500/25 hover:bg-cyan-500/40 text-cyan-200 border border-cyan-400/40 font-mono-num text-[11px] font-extrabold">⚡ 2x</a>' : '') +
+              (c3 ? '<a href="' + c3 + '" target="_blank" class="px-2.5 py-1 rounded-lg bg-amber-500/25 hover:bg-amber-500/40 text-amber-200 border border-amber-400/40 font-mono-num text-[11px] font-extrabold">⚡ 3x Family Pack</a>' : '') +
+            '</div>'
+          : '<a href="' + (item.url || '#') + '" target="_blank" class="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-extrabold">Buy Now ↗</a>';
+
+        const encodedItem = encodeURIComponent(JSON.stringify({
+          skuId: item.skuId,
+          productName: item.title,
+          formFactor: item.formFactor,
+          store: item.retailer,
+          landedPrice: item.landedPrice || item.price,
+          marketValueAtCapture: item.marketValue,
+          discountPct: item.discountPct
+        }));
+
+        return (
+          '<div class="machined-card rounded-2xl p-4 flex flex-col justify-between gap-3">' +
+            '<div>' +
+              '<div class="flex items-center justify-between gap-2 mb-2.5">' +
+                '<span class="text-[10px] font-bold text-slate-400 truncate">' + item.retailer + ' • ' + item.timeStr + '</span>' +
+                statusBadge +
+              '</div>' +
+              '<div class="flex items-center gap-3.5">' +
+                '<div class="w-16 h-16 art-pedestal rounded-xl p-1.5 flex items-center justify-center shrink-0">' +
+                  '<img src="' + imgPath + '" class="max-h-full max-w-full object-contain" alt="Art" />' +
+                '</div>' +
+                '<div class="min-w-0 flex-1">' +
+                  '<div class="text-xs font-extrabold text-white leading-snug line-clamp-2">' + item.title + '</div>' +
+                  '<div class="flex items-center gap-2 mt-1 flex-wrap">' +
+                    '<span class="text-base font-black font-mono-num text-emerald-400">$' + Number(item.landedPrice || item.price).toFixed(2) + '</span>' +
+                    '<span class="text-[11px] font-mono-num text-slate-400">Market Value: <strong class="text-amber-300">$' + Number(item.marketValue || 0).toFixed(2) + '</strong></span>' +
+                  '</div>' +
+                  '<div class="mt-1 flex items-center gap-1.5 flex-wrap">' +
+                    packPill +
+                    (item.discountPct > 0 ? '<span class="font-mono-num text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300">' + item.discountPct + '% Under Mkt</span>' : '') +
+                  '</div>' +
+                  preBleedBadge +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pt-2.5 border-t border-white/10 flex items-center justify-between gap-2 flex-wrap">' +
+              checkoutBtns +
+              '<button onclick="openClaimModalFromDeal(\'' + encodedItem + '\')" class="px-2.5 py-1 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 text-[11px] font-extrabold">🏆 Claim Trophy</button>' +
+            '</div>' +
+          '</div>'
+        );
+      }).join('');
+
+      renderMarketIntelligenceBento();
+    }
+
+    function renderMarketIntelligenceBento() {
+      const tMap = (marketTape && marketTape.targets) ? marketTape.targets : {};
+      const allMetrics = Object.values(tMap);
+      const waves = allMetrics.filter(m => m.isDistributorWave);
+      const honeyStores = (marketTape && Array.isArray(marketTape.honeyHoleStores)) ? marketTape.honeyHoleStores : [];
+      const recentTape = (marketTape && Array.isArray(marketTape.recentSalesTape)) ? marketTape.recentSalesTape : [];
+
+      const waveEl = document.getElementById('bentoWaveRadar');
+      if (waveEl) {
+        waveEl.innerHTML = waves.length > 0
+          ? waves.map(w =>
+              '<div class="p-2.5 rounded-xl bg-purple-950/40 border border-purple-500/40 flex items-center justify-between gap-2">' +
+                '<div>' +
+                  '<div class="text-xs font-extrabold text-purple-200">🌊 ' + w.targetName + '</div>' +
+                  '<div class="text-[10px] text-purple-300">' + w.waveStores48h.length + ' stores in 48h: ' + w.waveStores48h.join(', ') + '</div>' +
+                '</div>' +
+                '<span class="px-2 py-0.5 rounded bg-purple-500/30 text-purple-200 text-[9px] font-mono-num font-bold shrink-0">WAIT UNDERCUT</span>' +
+              '</div>'
+            ).join('')
+          : '<div class="p-3 rounded-xl bg-black/30 border border-white/5 text-xs text-slate-400">No 3+ store distributor allocation waves in the last 48h. Monitoring 31 Shopify LGS + 9 Big-Box retailers.</div>';
+      }
+
+      const dnaEl = document.getElementById('bentoStoreDna');
+      if (dnaEl) {
+        dnaEl.innerHTML = honeyStores.length > 0
+          ? honeyStores.slice(0, 6).map((s, idx) =>
+              '<div class="p-2.5 rounded-xl bg-black/35 border border-white/10 flex items-center justify-between gap-2">' +
+                '<div class="min-w-0">' +
+                  '<div class="text-xs font-bold text-white truncate">#' + (idx + 1) + ' ' + s.store + '</div>' +
+                  '<div class="text-[10px] font-mono-num text-slate-400">' + s.restocks + ' Drops • ' + s.lowestHits + ' Floors</div>' +
+                '</div>' +
+                '<span class="px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-mono-num text-[10px] font-extrabold shrink-0">-' + s.avgDiscountPct + '%</span>' +
+              '</div>'
+            ).join('')
+          : '<div class="text-xs text-slate-400 col-span-2">Accumulating 14-day store DNA...</div>';
+      }
+
+      const velEl = document.getElementById('bentoVelocityTape');
+      if (velEl) {
+        velEl.innerHTML = recentTape.length > 0
+          ? recentTape.slice(0, 8).map(ev => {
+              const velBadge = ev.status === 'CLEARED'
+                ? '<span class="px-2 py-0.5 rounded bg-rose-500/20 border border-rose-500/30 text-rose-300 font-mono-num text-[10px] font-bold">' + ev.velocity + ' (' + (ev.durationMins || 1) + 'm)</span>'
+                : '<span class="px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 font-mono-num text-[10px] font-bold">ACTIVE</span>';
+              return (
+                '<div class="p-2 rounded-xl bg-black/35 border border-white/10 flex items-center justify-between gap-2 text-xs">' +
+                  '<div class="min-w-0">' +
+                    '<div class="font-bold text-white truncate">' + ev.targetName + '</div>' +
+                    '<div class="text-[10px] font-mono-num text-slate-400">' + ev.store + ' • $' + Number(ev.price).toFixed(2) + '</div>' +
+                  '</div>' +
+                  velBadge +
+                '</div>'
+              );
+            }).join('')
+          : '<div class="text-xs text-slate-400">No recent velocity events recorded.</div>';
+      }
+
+      const tbody = document.getElementById('marketLedgerTableBody');
+      if (tbody) {
+        tbody.innerHTML = allMetrics.map(m => {
+          const nrtColor = m.nrt7dDeltaPct < 0 ? 'text-emerald-400' : (m.nrt7dDeltaPct > 0 ? 'text-amber-400' : 'text-slate-300');
+          const nrtStr = (m.nrt7dDeltaPct > 0 ? '+' : '') + Number(m.nrt7dDeltaPct || 0).toFixed(1) + '%';
+          const clearStr = m.lastClearPrice
+            ? ('$' + Number(m.lastClearPrice).toFixed(2) + ' @ ' + m.lastClearStore)
+            : 'No 14d Clear';
+          const floorStr = m.staleFloorPrice ? ('$' + Number(m.staleFloorPrice).toFixed(2)) : ('$' + Number(m.marketPrice).toFixed(2));
+          const wk = m.latestWeekly;
+          const wowStr = wk ? ((wk.wowDeltaPct > 0 ? '+' : '') + wk.wowDeltaPct.toFixed(1) + '%') : '0.0%';
+          const packPill = getPackBadgeHtml(m.pricePerPack, m.packCount, m.isRipValueLeader);
+          const preTag = m.isPreRelease ? '<div class="text-[9px] font-bold text-amber-300">⏳ PRE-RELEASE BLEED</div>' : '';
+
+          return (
+            '<tr class="border-b border-white/5 hover:bg-white/5 align-top">' +
+              '<td class="py-2 px-2 font-bold text-white">' + m.targetName + preTag + '<div class="text-[10px] font-mono-num text-slate-400 font-normal">' + m.formFactor + ' • MSRP $' + Number(m.msrp).toFixed(2) + '</div></td>' +
+              '<td class="py-2 px-2 font-mono-num font-extrabold text-amber-300">$' + Number(m.marketPrice).toFixed(2) + '</td>' +
+              '<td class="py-2 px-2">' + packPill + '</td>' +
+              '<td class="py-2 px-2 font-mono-num font-bold ' + nrtColor + '">' + nrtStr + '</td>' +
+              '<td class="py-2 px-2 font-mono-num text-slate-200"><div>Clear: <span class="text-emerald-300 font-bold">' + clearStr + '</span></div><div class="text-[10px] text-slate-400">Floor: ' + floorStr + '</div></td>' +
+              '<td class="py-2 px-2 text-cyan-300 font-bold">' + (m.topStore || 'TCGPlayer') + '</td>' +
+              '<td class="py-2 px-2 font-mono-num text-slate-300">' + wowStr + '</td>' +
+              '<td class="py-2 px-2"><span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px] font-bold text-slate-200">' + (m.verdictBadge || 'HOLD') + '</span></td>' +
+            '</tr>'
+          );
+        }).join('');
+      }
+    }
+
+    // =========================================================================
+    // 5. VIEW 2: 🎯 BOUNTY HUNTER (LIVE ON-DEMAND RECON)
+    // =========================================================================
+    function quickBountyPick(skuId) {
+      const sel = document.getElementById('bountySkuSelect');
+      const inp = document.getElementById('bountyQueryInput');
+      if (sel) sel.value = skuId;
+      if (inp) inp.value = '';
+      runBountyRecon(skuId, false);
+    }
+
+    async function runBountyRecon(explicitSkuId, liveProbe) {
+      const skuId = explicitSkuId !== '' ? explicitSkuId : (document.getElementById('bountySkuSelect')?.value || '');
+      const query = (document.getElementById('bountyQueryInput')?.value || '').trim();
+      const calloutsRow = document.getElementById('bountyCalloutsRow');
+      const top5Container = document.getElementById('bountyTop5Container');
+      const metaEl = document.getElementById('bountyMetaCount');
+      const probeBtn = document.getElementById('bountyLiveProbeBtn');
+
+      if (probeBtn && liveProbe) probeBtn.innerText = '⚡ Probing TCGP + eBay...';
+      if (metaEl) metaEl.innerText = 'Scanning live shelves & comp caches...';
+
+      try {
+        const params = new URLSearchParams();
+        if (skuId) params.set('skuId', skuId);
+        if (query) params.set('query', query);
+        if (liveProbe) params.set('live', 'true');
+
+        const res = await fetch('/api/bounty-recon?' + params.toString());
+        const data = await res.json();
+
+        if (probeBtn) probeBtn.innerText = '⚡ Deep Live Probe';
+        if (metaEl) {
+          metaEl.innerText = (data.totalCandidatesEvaluated || 0) + ' Offers Evaluated Across ' + (data.matchedTargetsCount || 0) + ' Target(s)';
+        }
+
+        const hold = data.bestSealedHold;
+        const rip = data.cheapestPackRip;
+
+        if (calloutsRow) {
+          const holdCard = hold && hold.option
+            ? '<div class="machined-trophy-card rounded-2xl p-5 flex items-center justify-between gap-4">' +
+                '<div class="space-y-1 min-w-0">' +
+                  '<div class="text-[11px] font-black uppercase tracking-wider text-amber-300">🏛️ #1 Best Sealed Hold</div>' +
+                  '<div class="text-sm font-extrabold text-white truncate">' + hold.option.productName + '</div>' +
+                  '<div class="text-xs text-slate-300">' + hold.reason + '</div>' +
+                  '<div class="pt-1 flex items-center gap-2 flex-wrap">' +
+                    '<span class="text-lg font-black font-mono-num text-emerald-400">$' + Number(hold.option.landedPrice).toFixed(2) + ' Landed</span>' +
+                    '<span class="text-xs font-mono-num text-slate-400">Market Value: $' + Number(hold.option.marketValue).toFixed(2) + '</span>' +
+                    getPackBadgeHtml(hold.option.pricePerPack, hold.option.packCount, hold.option.isRipValueLeader) +
+                  '</div>' +
+                '</div>' +
+                '<a href="' + (hold.option.url || '#') + '" target="_blank" class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold shrink-0">Inspect ↗</a>' +
+              '</div>'
+            : '<div class="machined-card rounded-2xl p-5 text-xs text-slate-400">No sealed hold candidate matched.</div>';
+
+          const ripCard = rip && rip.option
+            ? '<div class="unicorn-holo-card rounded-2xl p-5 flex items-center justify-between gap-4">' +
+                '<div class="space-y-1 min-w-0">' +
+                  '<div class="text-[11px] font-black uppercase tracking-wider text-cyan-300">🔥 #1 Cheapest Pack Rip ($/Pack)</div>' +
+                  '<div class="text-sm font-extrabold text-white truncate">' + rip.option.productName + '</div>' +
+                  '<div class="text-xs text-cyan-100/90">' + rip.reason + '</div>' +
+                  '<div class="pt-1 flex items-center gap-2 flex-wrap">' +
+                    '<span class="text-lg font-black font-mono-num text-emerald-400">$' + Number(rip.option.pricePerPack).toFixed(2) + '/pack</span>' +
+                    '<span class="text-xs font-mono-num text-slate-300">$' + Number(rip.option.landedPrice).toFixed(2) + ' Landed (' + rip.option.packCount + ' packs)</span>' +
+                  '</div>' +
+                '</div>' +
+                '<a href="' + (rip.option.url || '#') + '" target="_blank" class="px-3.5 py-2 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 text-xs font-extrabold shrink-0">Rip Option ↗</a>' +
+              '</div>'
+            : '<div class="machined-card rounded-2xl p-5 text-xs text-slate-400">No pack rip candidate matched.</div>';
+
+          calloutsRow.innerHTML = holdCard + ripCard;
+        }
+
+        if (top5Container) {
+          const list = data.top5LowestLanded || [];
+          if (list.length === 0) {
+            top5Container.innerHTML = '<div class="text-xs text-slate-400 py-4">No matching offers found.</div>';
+          } else {
+            top5Container.innerHTML = list.map(opt => {
+              const imgPath = '/art/' + opt.skuId + '.jpg?v=' + cacheBuster;
+              return (
+                '<div class="p-3.5 rounded-xl bg-black/40 border border-white/10 hover:border-cyan-400/40 flex flex-wrap items-center justify-between gap-3 transition">' +
+                  '<div class="flex items-center gap-3 min-w-0">' +
+                    '<span class="w-7 h-7 rounded-lg bg-white/10 font-mono-num text-xs font-black text-cyan-300 flex items-center justify-center shrink-0">#' + opt.rank + '</span>' +
+                    '<img src="' + imgPath + '" class="w-11 h-11 object-contain rounded bg-black/50 p-1 shrink-0" />' +
+                    '<div class="min-w-0">' +
+                      '<div class="text-xs font-extrabold text-white truncate">' + opt.productName + '</div>' +
+                      '<div class="text-[11px] text-slate-400">' + opt.store + ' • <span class="text-cyan-300 font-mono-num">' + opt.sourceType + '</span></div>' +
+                    '</div>' +
+                  '</div>' +
+                  '<div class="flex items-center gap-3 flex-wrap">' +
+                    getPackBadgeHtml(opt.pricePerPack, opt.packCount, opt.isRipValueLeader) +
+                    '<div class="text-right font-mono-num">' +
+                      '<div class="text-sm font-black text-emerald-400">$' + Number(opt.landedPrice).toFixed(2) + '</div>' +
+                      '<div class="text-[10px] text-slate-400">Market Value: $' + Number(opt.marketValue).toFixed(2) + ' (' + opt.discountPct + '% Off)</div>' +
+                    '</div>' +
+                    '<a href="' + (opt.url || '#') + '" target="_blank" class="px-3 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 border border-cyan-500/40 text-xs font-extrabold transition">Open ↗</a>' +
+                  '</div>' +
+                '</div>'
+              );
+            }).join('');
+          }
+        }
+      } catch (e) {
+        if (probeBtn) probeBtn.innerText = '⚡ Deep Live Probe';
+        if (metaEl) metaEl.innerText = 'Error running recon.';
+      }
+    }
+
+    // =========================================================================
+    // 6. VIEW 3: 🏆 THE CONQUERED VAULT (PLAQUES & WALL CHECKLIST)
+    // =========================================================================
+    function renderConqueredVaultView() {
+      const grid = document.getElementById('conqueredPlaquesGrid');
+      const trophies = conqueredVault.trophies || [];
+
+      if (grid) {
+        grid.innerHTML = trophies.map((t, idx) => {
+          const imgPath = '/art/' + t.skuId + '.jpg?v=' + cacheBuster;
+          const r3 = t.ruleOf3Status || { ripped: false, onWall: true, subsidized: false, sealedCase: false };
+          const snap = t.discordAlertSnapshot || {};
+          const isUnicorn = (t.id && t.id.includes('msrp')) || (snap.headline && snap.headline.includes('UNICORN'));
+          const cardClass = isUnicorn ? 'unicorn-holo-card' : 'machined-trophy-card';
+          const priceNoteHtml = t.landedPriceNote
+            ? '<div class="text-[11px] font-mono-num text-cyan-200 font-semibold mt-0.5">' + t.landedPriceNote + '</div>'
+            : '';
+
+          const pipBtn = (field, label, active) => {
+            const cls = active
+              ? 'bg-emerald-500/25 text-emerald-200 border-emerald-400/60 shadow-[0_0_10px_rgba(16,185,129,0.25)]'
+              : 'bg-black/40 text-slate-400 border-white/10 hover:border-white/25';
+            return '<button onclick="toggleTrophyPip(\'' + t.id + '\', \'' + field + '\', ' + (!active) + ')" class="px-2.5 py-1 rounded-lg border text-[11px] font-extrabold transition ' + cls + '">' + label + '</button>';
+          };
+
+          return (
+            '<div class="' + cardClass + ' rounded-2xl p-5 flex flex-col justify-between gap-4">' +
+              '<div class="space-y-3.5">' +
+                '<!-- Top Plaque Header -->' +
+                '<div class="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-white/10">' +
+                  '<div class="flex items-center gap-2">' +
+                    '<span class="px-2.5 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-400/40 font-mono-num text-[10px] font-black uppercase">TROPHY #' + (idx + 1) + '</span>' +
+                    '<span class="text-xs font-bold text-slate-300">' + t.store + '</span>' +
+                  '</div>' +
+                  '<span class="px-2.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-200 border border-cyan-400/30 font-mono-num text-[10px] font-bold">📦 ' + (t.deliveryWindow || 'In Transit') + '</span>' +
+                '</div>' +
+
+                '<!-- Product Art & Core Financials -->' +
+                '<div class="flex items-center gap-4">' +
+                  '<div class="w-24 h-24 art-pedestal rounded-2xl p-2 flex items-center justify-center shrink-0 relative">' +
+                    '<img src="' + imgPath + '" class="max-h-full max-w-full object-contain" alt="Trophy Art" />' +
+                  '</div>' +
+                  '<div class="min-w-0 flex-1 space-y-1">' +
+                    '<h3 class="text-base font-black text-white leading-snug">' + t.productName + '</h3>' +
+                    '<div class="flex items-baseline gap-2.5 flex-wrap">' +
+                      '<span class="text-2xl font-black font-mono-num text-emerald-400">$' + Number(t.landedPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</span>' +
+                      '<span class="text-xs font-mono-num text-slate-400">Market Capture: <strong class="text-amber-300">$' + Number(t.marketValueAtCapture).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</strong></span>' +
+                      '<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono-num text-[10px] font-extrabold">' + t.discountPct + '% OFF</span>' +
+                    '</div>' +
+                    priceNoteHtml +
+                    '<div class="flex items-center gap-2 pt-1 flex-wrap">' +
+                      getPackBadgeHtml(t.pricePerPack, t.packCount, t.isRipValueLeader) +
+                      (t.orderRef ? '<span class="font-mono-num text-[10px] text-slate-400 bg-black/40 px-2 py-0.5 rounded border border-white/10">Order #' + t.orderRef + '</span>' : '') +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+
+                '<!-- Recreated Discord Alert Banner -->' +
+                '<div class="p-3 rounded-xl bg-[#090812]/90 border-l-4 border-cyan-400 border-t border-r border-b border-white/10 space-y-1">' +
+                  '<div class="flex items-center justify-between gap-2">' +
+                    '<span class="text-[10px] font-mono-num uppercase font-bold text-cyan-300">' + (snap.capturedFrom || 'Discord Alert Snapshot') + '</span>' +
+                    '<span class="px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-200 font-mono-num text-[9px] font-black">' + (snap.badgeText || 'VERIFIED SNIPE') + '</span>' +
+                  '</div>' +
+                  '<div class="text-xs font-extrabold text-white">' + (snap.headline || t.productName) + '</div>' +
+                  '<div class="text-[11px] text-slate-300">' + (snap.triggerReason || '') + '</div>' +
+                '</div>' +
+
+                '<!-- Rule of 3 Interactive Status Pips -->' +
+                '<div>' +
+                  '<div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Rule of 3 Collector Status Pips (Click to Toggle)</div>' +
+                  '<div class="flex items-center gap-1.5 flex-wrap">' +
+                    pipBtn('ripped', '🔥 Ripped with Logan', Boolean(r3.ripped)) +
+                    pipBtn('onWall', '🏛️ On Wall', Boolean(r3.onWall)) +
+                    pipBtn('subsidized', '💰 Subsidized', Boolean(r3.subsidized)) +
+                    pipBtn('sealedCase', '📦 Sealed Case', Boolean(r3.sealedCase)) +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+
+              '<!-- Editable Memory Note -->' +
+              '<div class="pt-3 border-t border-white/10">' +
+                '<label class="block text-[10px] font-bold uppercase tracking-wider text-amber-300/90 mb-1">📝 Scott &amp; Logan Memory Note</label>' +
+                '<div class="flex gap-1.5">' +
+                  '<input id="memNote_' + t.id + '" type="text" value="' + (t.memoryNote || '').replace(/"/g, '&quot;') + '" class="flex-1 bg-black/45 border border-white/15 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400" />' +
+                  '<button onclick="saveTrophyMemoryNote(\'' + t.id + '\')" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-amber-500 hover:text-slate-950 text-xs font-bold text-slate-200 transition">Save</button>' +
+                '</div>' +
+              '</div>' +
+            '</div>'
+          );
+        }).join('');
+      }
+
+      renderWallChecklistGrid();
+    }
+
+    async function toggleTrophyPip(trophyId, pipKey, newVal) {
+      try {
+        const res = await fetch('/api/conquered-vault/' + encodeURIComponent(trophyId), {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ruleOf3Status: { [pipKey]: newVal } })
+        });
+        const data = await res.json();
+        if (data && data.vault) {
+          conqueredVault = data.vault;
+          renderConqueredVaultView();
+          updateGlobalBadgesAndKPIs();
+          showCommanderToast('🏆 Updated Trophy Rule-of-3 Status!');
+        }
+      } catch (e) {}
+    }
+
+    async function saveTrophyMemoryNote(trophyId) {
+      const inp = document.getElementById('memNote_' + trophyId);
+      if (!inp) return;
+      try {
+        const res = await fetch('/api/conquered-vault/' + encodeURIComponent(trophyId), {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ memoryNote: inp.value })
+        });
+        const data = await res.json();
+        if (data && data.vault) {
+          conqueredVault = data.vault;
+          showCommanderToast('📝 Memory Note saved to Conquered Vault!');
+        }
+      } catch (e) {}
+    }
+
+    function setVaultChecklistFilter(mode) {
+      vaultChecklistFilter = mode;
+      ['ALL', 'OWNED', 'NEEDED_ETB', 'CASES'].forEach(k => {
+        const btn = document.getElementById('vchk_' + k);
+        if (!btn) return;
+        if (k === mode) {
+          btn.className = 'px-3 py-1.5 rounded-lg text-xs font-extrabold bg-cyan-500 text-slate-950';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-[#161329] text-slate-300 border border-white/10 hover:text-white';
+        }
+      });
+      renderWallChecklistGrid();
+    }
+
+    function renderWallChecklistGrid() {
+      const grid = document.getElementById('wallChecklistGrid');
+      if (!grid) return;
+
+      const filtered = policies.filter(p => {
+        if (vaultChecklistFilter === 'OWNED') return Boolean(p.owned);
+        if (vaultChecklistFilter === 'NEEDED_ETB') return p.formFactor === 'ETB' && !p.owned;
+        if (vaultChecklistFilter === 'CASES') return p.formFactor === 'ETB Case' || p.formFactor === 'Master Case';
+        return true;
+      });
+
+      grid.innerHTML = filtered.map(p => {
+        const idx = policies.findIndex(x => x.id === p.id);
+        const imgPath = '/art/' + p.id + '.jpg?v=' + cacheBuster;
+        const isOwned = Boolean(p.owned);
+        const isEtbCase = p.formFactor === 'ETB Case';
+        const isMasterCase = p.formFactor === 'Master Case';
+        const caseOverlay = isEtbCase
+          ? '<span class="absolute top-1.5 left-1.5 px-2 py-0.5 rounded bg-gradient-to-r from-amber-500 to-yellow-300 text-slate-950 font-mono-num text-[9px] font-black shadow">📦 10-ETB CASE</span>'
+          : (isMasterCase
+              ? '<span class="absolute top-1.5 left-1.5 px-2 py-0.5 rounded bg-gradient-to-r from-purple-500 to-indigo-400 text-white font-mono-num text-[9px] font-black shadow">📦 6-BOX CASE</span>'
+              : '');
+
+        const mVal = (telemetry[p.id]?.rollingAverage > 0) ? telemetry[p.id].rollingAverage : p.estimatedMarketValue;
+
+        return (
+          '<div class="machined-card rounded-2xl p-4 flex flex-col justify-between gap-3 ' + (isOwned ? 'border-emerald-500/40' : '') + '">' +
+            '<div class="flex items-center gap-3">' +
+              '<div onclick="openModalByIndex(' + idx + ')" class="w-16 h-16 art-pedestal rounded-xl p-1.5 flex items-center justify-center shrink-0 relative cursor-zoom-in">' +
+                caseOverlay +
+                '<img src="' + imgPath + '" class="max-h-full max-w-full object-contain" alt="Art" />' +
+              '</div>' +
+              '<div class="min-w-0 flex-1">' +
+                '<div class="text-xs font-extrabold text-white leading-snug line-clamp-2">' + p.name + '</div>' +
+                '<div class="text-[11px] font-mono-num text-slate-400 mt-0.5">Market Value: <strong class="text-amber-300">$' + Number(mVal || 0).toFixed(2) + '</strong></div>' +
+                '<div class="mt-1">' + getPackBadgeHtml(p.pricePerPack, p.packCount, p.isRipValueLeader) + '</div>' +
+              '</div>' +
+            '</div>' +
+            '<button onclick="toggleOwned(' + idx + ', ' + (!isOwned) + ')" class="w-full py-1.5 rounded-xl text-xs font-extrabold transition ' +
+              (isOwned
+                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30'
+                : 'bg-white/5 text-amber-300 border border-amber-500/30 hover:bg-amber-500/20') + '">' +
+              (isOwned ? '🏛️ Owned In Vault ✓' : '🎯 Still Needed for Wall (Click to Vault)') +
+            '</button>' +
+          '</div>'
+        );
+      }).join('');
+    }
+
+    // =========================================================================
+    // 7. ONE-CLICK CLAIM TROPHY MODAL
+    // =========================================================================
+    function openClaimModal() {
+      populateSelectDropdowns();
+      onClaimSkuChange();
+      document.getElementById('claimTrophyModal')?.classList.remove('hidden');
+    }
+
+    function openClaimModalFromDeal(encodedJson) {
+      populateSelectDropdowns();
+      try {
+        const deal = JSON.parse(decodeURIComponent(encodedJson));
+        const sel = document.getElementById('claimSkuSelect');
+        if (sel && deal.skuId) sel.value = deal.skuId;
+        document.getElementById('claimProductName').value = deal.productName || '';
+        document.getElementById('claimStore').value = deal.store || '';
+        document.getElementById('claimLandedPrice').value = deal.landedPrice || '';
+        document.getElementById('claimMarketVal').value = deal.marketValueAtCapture || '';
+        document.getElementById('claimHeadline').value = '🚨 SNIPED: ' + (deal.productName || '') + ' @ $' + Number(deal.landedPrice || 0).toFixed(2);
+      } catch (e) {}
+      document.getElementById('claimTrophyModal')?.classList.remove('hidden');
+    }
+
+    function onClaimSkuChange() {
+      const skuId = document.getElementById('claimSkuSelect')?.value;
+      const pol = policies.find(p => p.id === skuId);
+      if (!pol) return;
+      document.getElementById('claimProductName').value = pol.name;
+      document.getElementById('claimLandedPrice').value = pol.maxMarketBuyPrice || pol.msrpCeiling || 50;
+      document.getElementById('claimMarketVal').value = pol.estimatedMarketValue || 60;
+    }
+
+    function closeClaimModal() {
+      document.getElementById('claimTrophyModal')?.classList.add('hidden');
+    }
+
+    async function submitClaimTrophy() {
+      const btn = document.getElementById('submitClaimBtn');
+      if (btn) btn.innerText = 'Locking Plaque...';
+      try {
+        const skuId = document.getElementById('claimSkuSelect')?.value;
+        const productName = document.getElementById('claimProductName')?.value;
+        const store = document.getElementById('claimStore')?.value || 'Verified Store';
+        const landedPrice = parseFloat(document.getElementById('claimLandedPrice')?.value || '0');
+        const marketValueAtCapture = parseFloat(document.getElementById('claimMarketVal')?.value || '0');
+        const orderRef = document.getElementById('claimOrderRef')?.value || '';
+        const deliveryWindow = document.getElementById('claimDelivery')?.value || 'In Transit';
+        const headline = document.getElementById('claimHeadline')?.value || ('🎯 SNIPED: ' + productName);
+        const memoryNote = document.getElementById('claimMemoryNote')?.value || 'Conquered with Logan via DropBot Commander!';
+
+        const res = await fetch('/api/conquered-vault/claim', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            skuId,
+            productName,
+            store,
+            landedPrice,
+            marketValueAtCapture,
+            orderRef,
+            deliveryWindow,
+            memoryNote,
+            discordAlertSnapshot: {
+              headline,
+              triggerReason: 'Captured @ $' + landedPrice.toFixed(2) + ' from ' + store,
+              badgeText: 'CONQUERED VAULT TROPHY',
+              capturedFrom: 'DropBot Commander Live Radar'
+            }
+          })
+        });
+        const data = await res.json();
+        if (data && data.vault) {
+          conqueredVault = data.vault;
+          const pol = policies.find(p => p.id === skuId);
+          if (pol) pol.owned = true;
+          closeClaimModal();
+          switchMainView('CONQUERED_VAULT');
+          updateGlobalBadgesAndKPIs();
+          playPokemonCry(partnerState.slot1.id);
+          showCommanderToast('🏆 New Trophy Plaque Locked in The Conquered Vault!');
+        }
+      } catch (e) {}
+      if (btn) btn.innerText = '🏆 Lock Into Conquered Vault';
+    }
+
+    // =========================================================================
+    // 8. VIEW 4: ⚙️ TARGET MATRIX & CONFIG (ALL 38 SLIDERS & ADMIN UTILITIES)
+    // =========================================================================
+    function getFilteredPolicies() {
+      const query = (document.getElementById('searchInput')?.value || '').toLowerCase();
+      const selectedEra = document.getElementById('eraFilter')?.value || 'ALL_ERAS';
+      return policies.filter(p => {
+        let matchesType = true;
+        if (activeFilter === 'INSTOCK') matchesType = isPolicyInStockNow(p);
+        else if (activeFilter === 'NEED_VAULT') matchesType = (p.formFactor === 'ETB' && !p.owned);
+        else if (activeFilter !== 'ALL') matchesType = (p.formFactor === activeFilter);
+        const matchesEra = (selectedEra === 'ALL_ERAS') || ((p.era || 'General Releases') === selectedEra);
+        const matchesQuery = p.name.toLowerCase().includes(query) || (p.era && p.era.toLowerCase().includes(query));
+        return matchesType && matchesEra && matchesQuery;
+      });
+    }
+
+    function setFilter(type) {
+      activeFilter = type;
+      document.querySelectorAll('.pill-btn').forEach(b => {
+        if (b.dataset.filter === type) {
+          b.className = 'pill-btn active px-3 py-1.5 rounded-xl text-xs font-extrabold bg-cyan-500 text-slate-950';
+        } else {
+          b.className = 'pill-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#161329] text-slate-300 border border-white/10 hover:text-white';
+        }
+      });
+      renderMatrixCatalog();
+    }
+
+    function renderMatrixCatalog() {
+      const container = document.getElementById('catalogContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const sortMode = document.getElementById('sortMode')?.value || 'ERA';
+      const filtered = getFilteredPolicies();
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="p-8 text-center machined-card rounded-2xl text-slate-400 text-sm">No products match the current filter (' + activeFilter + ').</div>';
+        return;
+      }
+
+      if (sortMode !== 'ERA') {
+        filtered.sort((a, b) => {
+          const mA = (telemetry[a.id]?.rollingAverage > 0) ? telemetry[a.id].rollingAverage : a.estimatedMarketValue;
+          const mB = (telemetry[b.id]?.rollingAverage > 0) ? telemetry[b.id].rollingAverage : b.estimatedMarketValue;
+          if (sortMode === 'VALUE_DESC') return mB - mA;
+          if (sortMode === 'VALUE_ASC') return mA - mB;
+          if (sortMode === 'SPREAD_DESC') {
+            return ((mB - b.maxMarketBuyPrice) / mB) - ((mA - a.maxMarketBuyPrice) / mA);
+          }
+          return 0;
+        });
+      }
+
+      const eras = [...new Set(filtered.map(p => p.era || 'General Releases'))];
+      eras.forEach(era => {
+        const itemsInEra = filtered.filter(p => (p.era || 'General Releases') === era);
+        if (itemsInEra.length === 0) return;
+        const section = document.createElement('section');
+        section.innerHTML =
+          '<div class="flex items-center gap-3 mb-4">' +
+            '<h2 class="text-xs font-black uppercase tracking-widest text-cyan-300">' + era + '</h2>' +
+            '<div class="h-px bg-white/10 flex-1"></div>' +
+            '<span class="text-xs font-mono-num text-slate-400">' + itemsInEra.length + ' Targets</span>' +
+          '</div>' +
+          '<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">' +
+            itemsInEra.map(p => renderMatrixCard(p)).join('') +
+          '</div>';
+        container.appendChild(section);
+      });
+    }
+
+    function renderMatrixCard(p) {
+      const index = policies.findIndex(x => x.id === p.id);
+      const tel = telemetry[p.id];
+      const ls = liveStock[p.id];
+      const marketVal = (tel && tel.rollingAverage > 0) ? tel.rollingAverage : (p.estimatedMarketValue || 50);
+      const buyVal = p.maxMarketBuyPrice || 0;
+      const diffPct = Math.round(((marketVal - buyVal) / marketVal) * 100);
+      const spreadLabel = diffPct >= 0 ? (diffPct + '% Under Market') : (Math.abs(diffPct) + '% Above Market');
+      const imgPath = (p.image && p.image.startsWith('http')) ? p.image : ('/art/' + p.id + '.jpg?v=' + cacheBuster);
+      const sliderMax = Math.ceil(Math.max(marketVal * 1.5, buyVal * 1.2, 100));
+      const disabledAttr = spectatorLocked ? 'disabled' : '';
+
+      const packPill = getPackBadgeHtml(p.pricePerPack, p.packCount, p.isRipValueLeader);
+      const preBleedBadge = p.isPreRelease
+        ? '<div class="mt-1 inline-flex items-center px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-extrabold">⏳ PRE-RELEASE BLEED</div>'
+        : '';
+
+      const bestOfferPrice = (ls && ls.inStock && ls.price > 0)
+        ? Number(ls.price)
+        : ((tel && tel.lowestPrice > 0) ? Number(tel.lowestPrice) : marketVal);
+      const bestOfferStore = (ls && ls.inStock && ls.retailer)
+        ? ls.retailer
+        : (tel?.lowestStore || 'TCGPlayer Verified');
+      const bestOfferUrl = (ls && ls.inStock && ls.url)
+        ? ls.url
+        : (tel?.lowestUrl || ('https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=' + encodeURIComponent(p.name)));
+
+      const vaultToggle =
+        '<label class="flex items-center gap-1.5 text-[11px] font-bold ' + (p.owned ? 'text-emerald-400' : 'text-slate-400') + ' cursor-pointer">' +
+          '<input type="checkbox" ' + (p.owned ? 'checked' : '') + ' onchange="toggleOwned(' + index + ', this.checked)" class="rounded bg-slate-900 border-white/20 text-emerald-500 focus:ring-0">' +
+          '<span>Vaulted</span>' +
+        '</label>';
+
+      return (
+        '<div class="machined-card rounded-2xl p-5 flex flex-col justify-between">' +
+          '<div>' +
+            '<div class="flex justify-between items-center mb-3 gap-2">' +
+              '<div class="flex items-center gap-1.5 flex-wrap">' +
+                '<span class="text-[10px] font-mono-num font-bold uppercase px-2 py-0.5 rounded bg-white/5 text-cyan-300 border border-white/10">' + p.formFactor + '</span>' +
+                packPill +
+                '<button onclick="inspectLiveComps(' + index + ')" class="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500 hover:text-white">⚡ Comps</button>' +
+              '</div>' +
+              '<div class="flex items-center gap-3">' +
+                vaultToggle +
+                '<label class="relative inline-flex items-center cursor-pointer">' +
+                  '<input type="checkbox" ' + (p.active !== false ? 'checked' : '') + ' onchange="toggleActive(' + index + ', this.checked)" ' + disabledAttr + ' class="sr-only peer">' +
+                  '<div class="w-8 h-4 bg-slate-800 rounded-full peer peer-checked:after:translate-x-full after:content-[\'\'] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-emerald-500"></div>' +
+                '</label>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="flex items-center gap-3.5 mb-3.5">' +
+              '<div onclick="openModalByIndex(' + index + ')" class="w-20 h-20 art-pedestal rounded-xl flex items-center justify-center p-1.5 shrink-0 cursor-zoom-in group">' +
+                '<img src="' + imgPath + '" class="max-h-full max-w-full object-contain transition-transform duration-200 group-hover:scale-110" alt="Art" />' +
+              '</div>' +
+              '<div class="min-w-0">' +
+                '<h3 class="text-sm font-extrabold text-white leading-snug">' + p.name + '</h3>' +
+                '<div class="text-[11px] font-mono-num text-slate-400 mt-0.5">Retail MSRP: $' + (p.msrpCeiling ? p.msrpCeiling.toFixed(2) : '0.00') + '</div>' +
+                preBleedBadge +
+              '</div>' +
+            '</div>' +
+
+            '<div class="mb-3 px-3 py-2 bg-black/40 border border-white/10 rounded-xl flex items-center justify-between gap-2 text-xs">' +
+              '<div class="min-w-0">' +
+                '<div class="text-[10px] font-bold uppercase text-slate-400">Best Current Offer</div>' +
+                '<div class="font-mono-num font-extrabold text-white truncate">$' + bestOfferPrice.toFixed(2) + ' <span class="text-slate-400 font-sans font-normal">via ' + bestOfferStore + '</span></div>' +
+              '</div>' +
+              '<a href="' + bestOfferUrl + '" target="_blank" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 text-[11px] font-extrabold shrink-0 transition">Best Offer ↗</a>' +
+            '</div>' +
+
+            '<div class="bg-black/40 border border-white/10 rounded-xl p-3 grid grid-cols-2 gap-2 mb-3.5 items-center">' +
+              '<div>' +
+                '<div class="text-[10px] uppercase font-bold text-slate-400">Market Value</div>' +
+                '<div class="text-sm font-black font-mono-num text-amber-300">$' + marketVal.toFixed(2) + '</div>' +
+              '</div>' +
+              '<div>' +
+                '<div class="text-[10px] uppercase font-bold text-slate-400 mb-0.5">Max Buy Trigger ($)</div>' +
+                '<div class="flex items-center bg-[#08070E] border border-white/15 focus-within:border-emerald-400 rounded-lg px-2 py-0.5">' +
+                  '<span class="text-emerald-400 font-mono-num font-extrabold text-xs mr-1">$</span>' +
+                  '<input type="number" step="1" id="priceInput_' + index + '" value="' + buyVal + '" ' + disabledAttr + ' onchange="onDirectPriceInput(' + index + ', this.value, ' + marketVal + ')" class="w-full bg-transparent text-sm font-mono-num font-extrabold text-emerald-400 focus:outline-none" />' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="mb-2">' +
+              '<div class="flex justify-between text-xs mb-1">' +
+                '<span class="text-slate-400 font-medium">Alert Threshold</span>' +
+                '<span class="font-mono-num font-bold ' + (diffPct >= 15 ? 'text-emerald-400' : (diffPct >= 0 ? 'text-cyan-300' : 'text-amber-400')) + '" id="spreadDisplay_' + index + '">' + spreadLabel + '</span>' +
+              '</div>' +
+              '<input type="range" id="slider_' + index + '" min="' + Math.floor((p.msrpCeiling || 20) * 0.8) + '" max="' + sliderMax + '" step="1" value="' + buyVal + '" ' + disabledAttr + ' oninput="onSliderMove(' + index + ', this.value, ' + marketVal + ')" class="w-full h-1.5 bg-slate-800 rounded-lg cursor-pointer" />' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="grid grid-cols-4 gap-1.5 pt-3 border-t border-white/10 font-mono-num">' +
+            '<button onclick="setPreset(' + index + ', ' + p.msrpCeiling + ')" ' + disabledAttr + ' class="py-1 rounded-lg text-[10px] font-bold bg-white/5 text-cyan-300 hover:bg-cyan-500 hover:text-slate-950">MSRP</button>' +
+            '<button onclick="setPreset(' + index + ', ' + (marketVal * 0.75) + ')" ' + disabledAttr + ' class="py-1 rounded-lg text-[10px] font-bold bg-white/5 text-emerald-400 hover:bg-emerald-500 hover:text-slate-950">-25%</button>' +
+            '<button onclick="setPreset(' + index + ', ' + (marketVal * 0.90) + ')" ' + disabledAttr + ' class="py-1 rounded-lg text-[10px] font-bold bg-white/5 text-slate-300 hover:bg-white/20">-10%</button>' +
+            '<button onclick="setPreset(' + index + ', ' + marketVal + ')" ' + disabledAttr + ' class="py-1 rounded-lg text-[10px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30 hover:bg-amber-500 hover:text-slate-950">At Mkt</button>' +
+          '</div>' +
+        '</div>'
+      );
+    }
+
+    // =========================================================================
+    // 9. SLIDER, CALIBRATION & ADMIN ACTIONS
+    // =========================================================================
+    function onSliderMove(index, val, marketVal) {
+      if (spectatorLocked) return;
+      const num = parseFloat(val) || 0;
+      policies[index].maxMarketBuyPrice = num;
+      const diffPct = Math.round(((marketVal - num) / marketVal) * 100);
+      const spreadLabel = diffPct >= 0 ? (diffPct + '% Under Market') : (Math.abs(diffPct) + '% Above Market');
+      const pi = document.getElementById('priceInput_' + index);
+      if (pi) pi.value = num;
+      const sd = document.getElementById('spreadDisplay_' + index);
+      if (sd) sd.innerText = spreadLabel;
+      debouncedSave();
+    }
+
+    function onDirectPriceInput(index, val, marketVal) {
+      if (spectatorLocked) return;
+      const num = Math.round((parseFloat(val) || 0) * 100) / 100;
+      policies[index].maxMarketBuyPrice = num;
+      renderMatrixCatalog();
+      saveInstant();
+    }
+
+    function setPreset(index, targetVal) {
+      if (spectatorLocked) return;
+      policies[index].maxMarketBuyPrice = Math.round(targetVal);
+      renderMatrixCatalog();
+      saveInstant();
+    }
+
+    function toggleActive(index, state) {
+      if (spectatorLocked) return;
+      policies[index].active = state;
+      saveInstant();
+    }
+
+    function toggleOwned(index, state) {
+      if (spectatorLocked) return;
+      if (!policies[index]) return;
+      policies[index].owned = state;
+      updateGlobalBadgesAndKPIs();
+      if (activeMainView === 'CONQUERED_VAULT') renderWallChecklistGrid();
+      if (activeMainView === 'TARGET_MATRIX') renderMatrixCatalog();
+      saveInstant();
+    }
+
+    function getTargetSetForCalibration() {
+      const scope = document.getElementById('calibScope')?.value || 'ALL';
+      return scope === 'FILTERED' ? getFilteredPolicies() : policies;
+    }
+
+    function applyUniversalPreset(mode) {
+      if (spectatorLocked) return;
+      const targets = getTargetSetForCalibration();
+      targets.forEach(p => {
+        const tel = telemetry[p.id];
+        const m = (tel && tel.rollingAverage > 0) ? tel.rollingAverage : (p.estimatedMarketValue || 50);
+        const msrp = p.msrpCeiling || 30;
+        if (mode === 'MKT5') p.maxMarketBuyPrice = Math.round(m * 0.95);
+        else if (mode === 'MKT10') p.maxMarketBuyPrice = Math.round(m * 0.90);
+        else if (mode === 'MKT15') p.maxMarketBuyPrice = Math.round(m * 0.85);
+        else if (mode === 'MKT20') p.maxMarketBuyPrice = Math.round(m * 0.80);
+        else if (mode === 'MKT30') p.maxMarketBuyPrice = Math.round(m * 0.70);
+        else if (mode === 'AT_MSRP') p.maxMarketBuyPrice = Math.round(msrp);
+        else if (mode === 'MSRP_PLUS_5_DOLLARS') p.maxMarketBuyPrice = Math.round(msrp + 5);
+        else if (mode === 'MSRP_MINUS_10_PCT') p.maxMarketBuyPrice = Math.round(msrp * 0.90);
+      });
+      renderMatrixCatalog();
+      saveInstant();
+    }
+
+    function applyCustomPct() {
+      if (spectatorLocked) return;
+      const raw = parseFloat(document.getElementById('customCalibPct')?.value);
+      if (isNaN(raw)) return;
+      const targets = getTargetSetForCalibration();
+      const mult = Math.max(0.1, (100 - raw) / 100);
+      targets.forEach(p => {
+        const tel = telemetry[p.id];
+        const m = (tel && tel.rollingAverage > 0) ? tel.rollingAverage : (p.estimatedMarketValue || 50);
+        p.maxMarketBuyPrice = Math.round(m * mult);
+      });
+      renderMatrixCatalog();
+      saveInstant();
+    }
+
+    async function sendPoliciesToDisk() {
+      await fetch('/api/policies', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(policies)
+      });
+      showCommanderToast('⚡ Policies synced & hot-reloaded to DropBot');
+    }
+
+    function saveInstant() { clearTimeout(saveTimeout); sendPoliciesToDisk(); }
+    function debouncedSave() { clearTimeout(saveTimeout); saveTimeout = setTimeout(sendPoliciesToDisk, 400); }
+
+    function toggleSpectatorLock() {
+      spectatorLocked = !spectatorLocked;
+      const btn = document.getElementById('lockBtn');
+      if (btn) {
+        if (spectatorLocked) {
+          btn.innerHTML = '🔒 Spectator Mode (Locked)';
+          btn.className = 'px-3 py-1 rounded-lg text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30';
+        } else {
+          btn.innerHTML = '🔓 Commander Unlocked';
+          btn.className = 'px-3 py-1 rounded-lg text-xs font-bold bg-[#18142B] text-slate-300 border border-white/10 hover:border-cyan-400';
+        }
+      }
+      renderMatrixCatalog();
+    }
+
+    function updateMuteVaultUI() {
+      const btn = document.getElementById('muteVaultBtn');
+      if (!btn) return;
+      if (botSettings.muteVaulted) {
+        btn.innerHTML = '🔇 Vaulted ETBs: Muted (MSRP Overrides Active)';
+        btn.className = 'px-3 py-1 rounded-lg text-xs font-bold bg-rose-600/20 text-rose-300 border border-rose-500/30';
+      } else {
+        btn.innerHTML = '📢 Vaulted ETBs: Alerting Crew';
+        btn.className = 'px-3 py-1 rounded-lg text-xs font-bold bg-purple-600/20 text-purple-300 border border-purple-500/30';
+      }
+    }
+
+    async function toggleMuteVaulted() {
+      botSettings.muteVaulted = !botSettings.muteVaulted;
+      updateMuteVaultUI();
+      await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(botSettings)
+      });
+    }
+
+    async function resetDedupMemory() {
+      const btn = document.getElementById('resetDedupBtn');
+      if (btn) btn.innerText = 'Clearing...';
+      await fetch('/api/reset-dedup', { method: 'POST' });
+      if (btn) btn.innerText = 'Cooldowns Cleared!';
+      showCommanderToast('🔄 4-Hour Alert Cooldown Memory Cleared!');
+      setTimeout(() => { if (btn) btn.innerText = '🔄 Clear Alert Cooldowns'; }, 2000);
+    }
+
+    async function triggerTestAlert() {
+      const btn = document.getElementById('testAlertBtn');
+      if (btn) btn.innerText = 'Sending...';
+      await fetch('/api/test-alert', { method: 'POST' });
+      if (btn) btn.innerText = 'Sent!';
+      showCommanderToast('🔔 Sample Discord Alert Dispatched!');
+      setTimeout(() => { if (btn) btn.innerText = '🔔 Test Discord Embed'; }, 2000);
+    }
+
+    async function sendDigestToDiscord() {
+      const btn = document.getElementById('sendDigestBtn');
+      if (btn) btn.innerText = 'Pushing...';
+      try {
+        const res = await fetch('/api/send-digest', { method: 'POST' });
+        const data = await res.json();
+        showCommanderToast(data?.sent ? ('📲 Live Shelf Digest Sent (' + data.count + ')!') : (data?.reason || '0 In-Stock Deals'));
+      } catch (e) {}
+      setTimeout(() => { if (btn) btn.innerText = '📲 Send Digest'; }, 2000);
+    }
+
+    async function triggerSundaySnapshot() {
+      const btn = document.getElementById('sundaySnapBtn');
+      if (btn) btn.innerText = 'Recording...';
+      try {
+        const res = await fetch('/api/market-tape/checkpoint', { method: 'POST' });
+        const data = await res.json();
+        if (data && data.tape) marketTape = data.tape;
+        renderMarketIntelligenceBento();
+        showCommanderToast('📌 Sunday Weekly Checkpoint Recorded!');
+      } catch (e) {}
+      setTimeout(() => { if (btn) btn.innerText = '📌 Refresh Sunday Checkpoint'; }, 2000);
+    }
+
+    async function sweepLiveCompsGlobal() {
+      const btn = document.getElementById('sweepCompsBtn');
+      if (btn) btn.innerText = '⚡ Sweeping...';
+      showCommanderToast('⚡ Sweeping live TCGPlayer + eBay comps & refreshing radar...');
+      try {
+        await Promise.all([
+          loadAllState(),
+          fetch('/api/bounty-recon?skuId=me-chaos-rising-etb&live=true')
+        ]);
+        showCommanderToast('✅ Live Comps & Radar Telemetry Synchronized!');
+      } catch (e) {}
+      if (btn) btn.innerText = '⚡ Sweep Comps';
+    }
+
+    // Modals
+    function openModalByIndex(index) {
+      const p = policies[index];
+      if (!p) return;
+      const imgPath = (p.image && p.image.startsWith('http')) ? p.image : ('/art/' + p.id + '.jpg?v=' + cacheBuster);
+      document.getElementById('modalImg').src = imgPath;
+      document.getElementById('modalTitle').innerText = p.name;
+      document.getElementById('artModal').classList.remove('hidden');
+    }
+
+    function closeModal() { document.getElementById('artModal')?.classList.add('hidden'); }
+    function closeCompModal() { document.getElementById('compModal')?.classList.add('hidden'); }
+
+    async function inspectLiveComps(index) {
+      const p = policies[index];
+      if (!p) return;
+      const tel = telemetry[p.id];
+      const mVal = (tel && tel.rollingAverage > 0) ? tel.rollingAverage : p.estimatedMarketValue;
+      document.getElementById('compModalTitle').innerText = p.name;
+      document.getElementById('compModalBody').innerHTML = '<div class="text-slate-400 animate-pulse">Querying live TCGPlayer Seller Table &amp; eBay Buy-It-Now index...</div>';
+      document.getElementById('compModal').classList.remove('hidden');
+
+      const pushBtn = document.getElementById('pushCompDiscordBtn');
+      pushBtn.onclick = async () => {
+        pushBtn.innerText = 'Sending...';
+        await fetch('/api/live-comp', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: p.id, name: p.name, marketValue: mVal, sendToDiscord: true }) });
+        pushBtn.innerText = 'Sent to Discord!';
+        setTimeout(() => { pushBtn.innerText = 'Push Card to Discord'; }, 2000);
+      };
+
+      try {
+        const res = await fetch('/api/live-comp', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: p.id, name: p.name, marketValue: mVal, sendToDiscord: false }) });
+        const comps = await res.json();
+        let tcgHtml = '<div class="p-3 rounded-xl bg-black/50 border border-white/10 text-slate-400">No live TCGPlayer listing matched</div>';
+        if (comps.tcgplayer && comps.tcgplayer.price > 0) {
+          tcgHtml = '<div class="p-3 rounded-xl bg-black/50 border border-cyan-500/40 flex justify-between items-center"><div><div class="text-[10px] font-bold text-cyan-300 uppercase">TCGPlayer Lowest Verified</div><div class="text-sm font-mono-num font-extrabold text-white">$' + comps.tcgplayer.price.toFixed(2) + ' <span class="text-xs font-normal text-slate-400">' + comps.tcgplayer.shippingLabel + '</span></div></div><a href="' + comps.tcgplayer.url + '" target="_blank" class="px-2.5 py-1 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-lg text-xs font-extrabold">Open ↗</a></div>';
+        }
+        let ebayHtml = '<div class="p-3 rounded-xl bg-black/50 border border-white/10 flex justify-between items-center"><div><div class="text-[10px] font-bold text-amber-400 uppercase">eBay Buy-It-Now</div><div class="text-xs text-slate-400">View live sorted lowest BIN listings</div></div><a href="https://www.ebay.com/sch/i.html?_nkw=' + encodeURIComponent('Pokemon ' + p.name + ' Sealed') + '&LH_BIN=1&_sop=15" target="_blank" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 text-amber-300 rounded-lg text-xs font-bold">eBay Search ↗</a></div>';
+        if (comps.ebay && comps.ebay.price > 0) {
+          ebayHtml = '<div class="p-3 rounded-xl bg-black/50 border border-amber-500/40 flex justify-between items-center"><div><div class="text-[10px] font-bold text-amber-400 uppercase">eBay Direct Buy-It-Now</div><div class="text-sm font-mono-num font-extrabold text-white">$' + comps.ebay.price.toFixed(2) + ' <span class="text-xs font-normal text-slate-400">' + comps.ebay.shippingLabel + '</span></div></div><a href="' + comps.ebay.url + '" target="_blank" class="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg text-xs font-extrabold">Open Item ↗</a></div>';
+        }
+        document.getElementById('compModalBody').innerHTML = tcgHtml + ebayHtml;
+      } catch (e) {
+        document.getElementById('compModalBody').innerHTML = '<div class="text-rose-400">Error loading comps.</div>';
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+        closeCompModal();
+        closeClaimModal();
+        closeRosterPopover();
+      }
+    });
+
+    // Boot Sequence
+    loadPartnerStateFromStorage();
+    applyPartnerThemeAndHeader();
+    loadAllState();
+
+    // Background 8s Live Refresh Loop
+    setInterval(async () => {
+      try {
+        const [lsRes, drRes, trRes, cvRes] = await Promise.all([
+          fetch('/api/live-stock'),
+          fetch('/api/drops'),
+          fetch('/api/trophies'),
+          fetch('/api/conquered-vault')
+        ]);
+        if (lsRes.ok) {
+          const newStock = await lsRes.json();
+          // Check Auto-Launch if armed
+          if (partnerState.autoLaunch) {
+            Object.entries(newStock || {}).forEach(([ruleId, entry]) => {
+              if (!entry || !entry.inStock) return;
+              const k = ruleId + '_' + entry.price + '_' + entry.retailer;
+              if (!seenAutoLaunchKeys.has(k)) {
+                seenAutoLaunchKeys.add(k);
+                const targetUrl = entry.cart3xUrl || entry.cart1xUrl || entry.url;
+                if (targetUrl) window.open(targetUrl, '_blank');
+              }
+            });
+          }
+          liveStock = newStock;
+        }
+        if (drRes.ok) recentDrops = await drRes.json();
+        if (trRes.ok) msrpTrophies = await trRes.json();
+        if (cvRes.ok) conqueredVault = await cvRes.json();
+        updateGlobalBadgesAndKPIs();
+        if (activeMainView === 'LIVE_COMMAND') renderLiveCommandView();
+      } catch (e) {}
+    }, 8000);
+  </script>
+</body>
+</html>

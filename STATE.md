@@ -74,7 +74,7 @@
 
 All persistent JSON files are written via `atomicWriteJson()` (`.tmp` write + `fs.renameSync`) to prevent corruption:
 - `policies.json`: Master target matrix (SKUs, matchers, `msrpCeiling`, `maxMarketBuyPrice`, `estimatedMarketValue`, `owned`, `releaseDate`).
-- `conqueredVault.json`: Gamified Trophy Plaque ledger (seeded with Trophy #1: `me-30th-celebration-etb-case` from `Player One Services (Verified WPN)` @ `$1,529.45`, Order `8E2261C4-EEED7D-7D4DB`).
+- `conqueredVault.json`: Gamified Trophy Plaque ledger (seeded with Trophy #1: `me-30th-celebration-etb-case` from `Player One Services (Verified WPN)` @ `$1,529.45`, Order `8E2261C4-EEED7D-7D4DB`, and Trophy #2: `me-chaos-rising-etb` from `Cooperstown Cards (TCGPlayer Verified Seller)` @ `$51.00` MSRP catch, Order `B108C090-96CCFE-CA0AF`).
 - `data/msrpTrophies.json`: Persistent Tier-A Retail MSRP Unicorn counter (`totalMsrpHits` and last 20 catches).
 - `marketCache.json` / `salesHistory.json` / `dailySnapshots.json` / `weeklyCheckpoints.json` (`marketHistory.json` equivalents): Rolling price telemetry and 14-day Market Tape state.
 - `liveStock.json`: Real-time in-stock shelf state and 4-hour recent OOS list.
@@ -85,20 +85,27 @@ All persistent JSON files are written via `atomicWriteJson()` (`.tmp` write + `f
 
 ---
 
-## 5. Next Planned Session (V4 Step 2B — Executive UI Overhaul)
+## 5. Executive UI Architecture (V4 Step 2B — Live in `public/index.html` & `dashboard.html`)
 
 - **Collapsible 4-Tab Sidebar Navigation:**
-  1. `Live Command`: Real-time radar, in-stock shelf, recent Discord drops, MSRP Unicorn Trophy counter, and Rule of 3 instant-cart buttons (`⚡ 1x`, `⚡ 2x`, `⚡ 3x`).
-  2. `Bounty Hunter`: On-demand live recon interface powered by `/api/bounty-recon`, comparing Top 5 lowest landed options, `$/Pack` rip math (`🔥 RIP VALUE LEADER <= $4.25/pk`), `#1 Best Sealed Hold`, and `#1 Cheapest Pack Rip`.
-  3. `The Vault`: Gamified Conquered Vault & Trophy Plaque showcase powered by `/api/conquered-vault` (featuring the 30th Celebration 10-ETB Case Trophy #1 conquered with Logan, interactive `ruleOf3Status` pips: `ripped`, `onWall`, `subsidized`, `sealedCase`, collector rank progression, and one-click claim modal).
-  4. `Target Matrix`: Full policy configuration grid with `$/Pack` badges, Pre-Release Bleed warnings (`⏳ PRE-RELEASE BLEED`), and slider controls.
+  1. `📡 Live Command`: Real-time radar, 3 Hero KPI cards (Vault & Portfolio Value, Active Sniper Radar, `💎 Unicorn MSRP Trophy Counter`), Live Deal Feed with Rule of 3 instant-cart buttons (`⚡ 1x`, `⚡ 2x`, `⚡ 3x Family Pack`) and 1-Click `🏆 Claim Trophy`, plus 3-column Market Intelligence Bento and collapsible 14-Day Market Ledger.
+  2. `🎯 Bounty Hunter`: On-demand live recon interface powered by `/api/bounty-recon`, comparing Top 5 lowest landed options, `$/Pack` rip math (`🔥 RIP VALUE LEADER <= $4.25/pk`), `#1 Best Sealed Hold`, and `#1 Cheapest Pack Rip`.
+  3. `🏆 The Conquered Vault`: Gamified Conquered Vault & Trophy Plaque showcase powered by `/api/conquered-vault` (featuring Trophy #1 `30th Celebration 10-ETB Case` and Trophy #2 `Chaos Rising ETB @ $51.00 MSRP`, recreated Discord alert banners, interactive `ruleOf3Status` pips, editable memory notes, and Wall Display Checklist with case overlay badges).
+  4. `⚙️ Target Matrix & Config`: Full 38-target policy configuration grid with `$/Pack` badges, Pre-Release Bleed warnings (`⏳ PRE-RELEASE BLEED`), Universal Calibrate presets, and admin controls.
 - **Dynamic Pokédex Chameleon / Click-to-Evolve & Shiny Header Engine:**
-  - Defaults to **Scott's Gyarados + Logan's Arcanine Tag-Team** over a **Royal Purple / Obsidian** executive theme.
-  - Supports interactive **Click-to-Evolve & Shiny toggle** across the Hall of Fame roster (including **Absol** and iconic partners), dynamically shifting header sprites, cries/animations, and accent glow palettes.
+  - Defaults to **Scott's Gyarados + Logan's Arcanine Tag-Team** over a **Royal Purple / Obsidian** executive theme (`#08070E` / `#110F1D`).
+  - Supports interactive **Click-to-Evolve & Shiny toggle** across the Hall of Fame roster + live PokeAPI search (`1-1025`), dynamically shifting header sprites, `.ogg` cries (`0.35` volume), and `--accent-primary` / `--accent-secondary` elemental palettes.
 
 ---
 
 ## 6. Last Touch Log
+
+- **2026-10-18 | Agent: Gemini 4 Argon (via `agy`)**
+  - Completed V4 Step 2B ("DropBot Commander — Gyarados & Arcanine Executive UI Overhaul" + Trophy #2 Seed):
+    - Seeded Trophy #2 (`trophy-2-chaos-rising-etb-msrp` — `Mega Evolution: Chaos Rising Elite Trainer Box` @ `$51.00` MSRP catch from `Cooperstown Cards`, Order `B108C090-96CCFE-CA0AF`, `ripped: true, onWall: true`) in `conqueredVault.json`, `data/msrpTrophies.json`, and `server.js`.
+    - Built the full Machined Dark Mode Executive UI in `public/index.html` (and synced `dashboard.html`) with `Plus Jakarta Sans` + `JetBrains Mono` (`tabular-nums`), top-edge specular borders, collapsible 4-view sidebar (`📡 Live Command`, `🎯 Bounty Hunter`, `🏆 The Conquered Vault`, `⚙️ Target Matrix & Config`), and 1-click Trophy Claim modal.
+    - Built the interactive **Dynamic Pokédex Chameleon & Tag-Team / Battle Header Engine** defaulting to Gyarados & Arcanine, featuring pre-loaded Scott & Logan Hall of Fame presets, live PokeAPI search (1–1,025), elemental CSS variable mapping, click-to-evolve / click-to-toggle-Shiny animations, and authentic Pokédex `.ogg` cries.
+    - Verified `npx tsc --noEmit` (0 errors), restarted PM2 (`pokemon-drop-bot` & `drop-bot-dashboard`), and verified HTTP 200 across `http://localhost:3000`, `/api/conquered-vault`, and `/api/trophies`.
 
 - **2026-10-17 | Agent: Gemini 4 Argon (via `agy`)**
   - Completed V4 Phase 2 & Step 2A Backend Upgrades:

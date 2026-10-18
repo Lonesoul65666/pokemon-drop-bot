@@ -28,7 +28,37 @@
         "sealedCase": true
       },
       "memoryNote": "First major case conquered with Logan sitting in the room!"
+    },
+    {
+      "id": "trophy-2-chaos-rising-etb-msrp",
+      "skuId": "me-chaos-rising-etb",
+      "productName": "Mega Evolution: Chaos Rising Elite Trainer Box",
+      "formFactor": "etb",
+      "store": "Cooperstown Cards (TCGPlayer Verified Seller)",
+      "conqueredAt": "2026-10-18T03:53:00.000Z",
+      "deliveryWindow": "Oct 27 – Oct 30, 2026",
+      "orderRef": "B108C090-96CCFE-CA0AF",
+      "landedPrice": 51.00,
+      "landedPriceNote": "$51.00 MSRP Drop ($67.11 after tax/ship)",
+      "marketValueAtCapture": 60.00,
+      "discountPct": 15,
+      "packCount": 9,
+      "pricePerPack": 5.67,
+      "isRipValueLeader": false,
+      "discordAlertSnapshot": {
+        "headline": "🚨💎 UNICORN RETAIL MSRP HIT — Mega Evolution: Chaos Rising ETB at $51.00!",
+        "triggerReason": "DEFCON-1 OVERRIDE (In Vault — MSRP Rip Alert! Slashed from $60.00)",
+        "badgeText": "7% BELOW $54.99 RETAIL MSRP",
+        "capturedFrom": "Discord @everyone Defcon-1 Flare • 10:53 PM"
+      },
+      "ruleOf3Status": {
+        "ripped": true,
+        "onWall": true,
+        "subsidized": false,
+        "sealedCase": false
+      },
+      "memoryNote": "First live V4 Defcon-1 MSRP Override catch! Sniped at 10:53 PM from Cooperstown Cards to rip with Logan!"
     }
   ],
-  "updatedAt": "2026-10-17T16:45:00.000Z"
+  "updatedAt": "2026-10-18T03:53:00.000Z"
 }

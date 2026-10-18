@@ -1,4 +1,20 @@
 {
-  "totalMsrpHits": 0,
-  "catches": []
+  "totalMsrpHits": 1,
+  "catches": [
+    {
+      "productName": "Mega Evolution: Chaos Rising Elite Trainer Box",
+      "ruleId": "me-chaos-rising-etb",
+      "store": "Cooperstown Cards (TCGPlayer Verified Seller)",
+      "price": 51,
+      "landedPrice": 51,
+      "landedPriceNote": "$51.00 MSRP Drop ($67.11 after tax/ship)",
+      "msrp": 54.99,
+      "marketValue": 60.00,
+      "discountPct": 15,
+      "orderRef": "B108C090-96CCFE-CA0AF",
+      "url": "https://www.tcgplayer.com/product/684450?Language=English",
+      "timestamp": 1792295593850,
+      "timeStr": "2026-10-18T03:53:00.000Z"
+    }
+  ]
 }
