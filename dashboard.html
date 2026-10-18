@@ -10,11 +10,15 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
-      --bg-obsidian: #08070E;
+      --bg-obsidian: #08070F;
       --bg-royal: #110F1D;
       --bg-elevated: #171426;
+      --slot1-primary: #00F0FF;
+      --slot1-glow: #0284C7;
       --accent-primary: #00F0FF;
       --accent-primary-rgb: 0, 240, 255;
+      --slot2-primary: #FACC15;
+      --slot2-glow: #EA580C;
       --accent-secondary: #F97316;
       --accent-secondary-rgb: 249, 115, 22;
       --accent-gold: #FACC15;
@@ -25,12 +29,45 @@
     body {
       background-color: var(--bg-obsidian);
       background-image:
-        radial-gradient(circle at 18% 0%, rgba(var(--accent-primary-rgb), 0.08) 0%, transparent 42%),
-        radial-gradient(circle at 85% 4%, rgba(var(--accent-secondary-rgb), 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 50% 100%, rgba(88, 28, 135, 0.12) 0%, transparent 60%);
+        radial-gradient(circle at 12% 14%, rgba(var(--accent-primary-rgb), 0.22) 0%, transparent 46%),
+        radial-gradient(circle at 88% 84%, rgba(var(--accent-secondary-rgb), 0.22) 0%, transparent 46%),
+        linear-gradient(115deg,
+          rgba(var(--accent-primary-rgb), 0.14) 0%,
+          rgba(var(--accent-primary-rgb), 0.05) 38%,
+          rgba(88, 28, 135, 0.35) 50%,
+          rgba(var(--accent-secondary-rgb), 0.06) 62%,
+          rgba(var(--accent-secondary-rgb), 0.15) 100%
+        );
+      background-attachment: fixed;
       color: #F8FAFC;
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       overflow-x: hidden;
+    }
+
+    /* Subtle Angled Clash Energy Rift Overlay */
+    .clash-rift-overlay {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        linear-gradient(115deg,
+          transparent 48.2%,
+          rgba(var(--accent-primary-rgb), 0.12) 49.5%,
+          rgba(255, 255, 255, 0.07) 50%,
+          rgba(var(--accent-secondary-rgb), 0.12) 50.5%,
+          transparent 51.8%
+        );
+    }
+
+    @keyframes auraPulse {
+      0% { opacity: 1; filter: brightness(1); }
+      45% { opacity: 1; filter: brightness(1.45); }
+      100% { opacity: 1; filter: brightness(1); }
+    }
+
+    .aura-clash-pulse {
+      animation: auraPulse 0.75s ease-out;
     }
 
     .font-mono-num {
@@ -38,53 +75,132 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* Machined Depth (Anti-Flatness) */
+    /* Machined Depth & Boosted Contrast */
     .machined-card {
-      background: linear-gradient(180deg, rgba(25, 22, 42, 0.92) 0%, rgba(15, 13, 26, 0.96) 100%);
-      border-top: 1px solid rgba(255, 255, 255, 0.16);
-      border-left: 1px solid rgba(255, 255, 255, 0.05);
-      border-right: 1px solid rgba(255, 255, 255, 0.05);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.65), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+      background: linear-gradient(180deg, rgba(24, 21, 42, 0.94) 0%, rgba(13, 11, 24, 0.97) 100%);
+      border-top: 1px solid rgba(255, 255, 255, 0.18);
+      border-left: 1px solid rgba(255, 255, 255, 0.07);
+      border-right: 1px solid rgba(255, 255, 255, 0.07);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 14px 34px -8px rgba(0, 0, 0, 0.72), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
       transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
     }
 
     .machined-card:hover {
-      border-top-color: rgba(var(--accent-primary-rgb), 0.45);
-      box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.75), 0 0 24px -6px rgba(var(--accent-primary-rgb), 0.16);
+      border-top-color: rgba(var(--accent-primary-rgb), 0.55);
+      box-shadow: 0 18px 38px -8px rgba(0, 0, 0, 0.82), 0 0 26px -6px rgba(var(--accent-primary-rgb), 0.2);
+    }
+
+    /* Directional Top-Edge Specular Borders for Hero KPI Row */
+    .kpi-card-slot1 {
+      border-top: 2px solid var(--slot1-primary) !important;
+      box-shadow: 0 14px 34px -8px rgba(0, 0, 0, 0.75), 0 -4px 20px -6px rgba(var(--accent-primary-rgb), 0.32);
+    }
+
+    .kpi-card-clash {
+      border-top: 2px solid transparent !important;
+      border-image: linear-gradient(90deg, var(--slot1-primary), #A855F7, var(--slot2-primary)) 1;
+      box-shadow: 0 14px 34px -8px rgba(0, 0, 0, 0.75), 0 -4px 20px -6px rgba(168, 85, 247, 0.28);
     }
 
     .machined-trophy-card {
-      background: linear-gradient(165deg, rgba(28, 23, 48, 0.95) 0%, rgba(13, 11, 24, 0.98) 100%);
-      border-top: 1px solid rgba(var(--accent-secondary-rgb), 0.45);
-      border-left: 1px solid rgba(255, 255, 255, 0.07);
-      border-right: 1px solid rgba(255, 255, 255, 0.07);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.8), 0 0 28px -8px rgba(var(--accent-secondary-rgb), 0.15);
+      background: linear-gradient(165deg, rgba(28, 23, 48, 0.96) 0%, rgba(13, 11, 24, 0.98) 100%);
+      border-top: 1px solid rgba(var(--accent-secondary-rgb), 0.52);
+      border-left: 1px solid rgba(255, 255, 255, 0.08);
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.82), 0 0 28px -8px rgba(var(--accent-secondary-rgb), 0.18);
     }
 
     .unicorn-holo-card {
-      background: linear-gradient(145deg, rgba(8, 35, 52, 0.72) 0%, rgba(17, 15, 29, 0.96) 65%);
-      border-top: 1px solid rgba(0, 240, 255, 0.55);
-      border-left: 1px solid rgba(0, 240, 255, 0.22);
-      border-right: 1px solid rgba(250, 204, 21, 0.22);
-      border-bottom: 1px solid rgba(0, 240, 255, 0.15);
-      box-shadow: 0 14px 36px -8px rgba(0, 240, 255, 0.18), inset 0 0 24px rgba(0, 240, 255, 0.06);
+      background: linear-gradient(145deg, rgba(10, 38, 58, 0.82) 0%, rgba(17, 15, 30, 0.97) 65%);
+      border-top: 2px solid #00F0FF;
+      border-left: 1px solid rgba(0, 240, 255, 0.26);
+      border-right: 1px solid rgba(var(--accent-secondary-rgb), 0.28);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.18);
+      box-shadow: 0 14px 36px -8px rgba(0, 240, 255, 0.22), inset 0 0 24px rgba(0, 240, 255, 0.08);
     }
 
     .art-pedestal {
-      background: radial-gradient(circle at 50% 50%, rgba(var(--accent-primary-rgb), 0.16) 0%, rgba(11, 9, 20, 0.92) 72%);
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      background: radial-gradient(circle at 50% 50%, rgba(var(--accent-primary-rgb), 0.22) 0%, rgba(10, 8, 19, 0.95) 74%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: inset 0 0 18px rgba(var(--accent-primary-rgb), 0.12);
     }
 
-    .accent-primary-text { color: var(--accent-primary); }
-    .accent-secondary-text { color: var(--accent-secondary); }
-    .accent-primary-border { border-color: rgba(var(--accent-primary-rgb), 0.45); }
-    .accent-secondary-border { border-color: rgba(var(--accent-secondary-rgb), 0.45); }
+    /* Split Diagonal Battle Arena Header Pod */
+    .battle-arena-pod {
+      min-width: 530px;
+      background:
+        linear-gradient(115deg,
+          rgba(var(--accent-primary-rgb), 0.24) 0%,
+          rgba(var(--accent-primary-rgb), 0.10) 45%,
+          rgba(88, 28, 135, 0.48) 50%,
+          rgba(var(--accent-secondary-rgb), 0.12) 55%,
+          rgba(var(--accent-secondary-rgb), 0.26) 100%
+        ),
+        #110E20;
+      border-top: 1px solid rgba(255, 255, 255, 0.22);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-left: 1px solid rgba(var(--accent-primary-rgb), 0.45);
+      border-right: 1px solid rgba(var(--accent-secondary-rgb), 0.45);
+      box-shadow:
+        -10px 0 26px -10px rgba(var(--accent-primary-rgb), 0.35),
+        10px 0 26px -10px rgba(var(--accent-secondary-rgb), 0.35),
+        0 10px 28px -6px rgba(0, 0, 0, 0.75);
+    }
+
+    @media (max-width: 1100px) {
+      .battle-arena-pod { min-width: 0; width: 100%; }
+    }
+
+    /* Sticky Sidebar & Clean Collapsed State */
+    .sidebar {
+      position: sticky;
+      top: 76px;
+      height: calc(100vh - 76px);
+      width: 260px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 20px;
+      overflow-y: auto;
+      transition: width 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .sidebar.collapsed {
+      width: 68px !important;
+    }
+
+    .sidebar.collapsed .sidebar-section-title,
+    .sidebar.collapsed .nav-label-text,
+    .sidebar.collapsed .nav-badge,
+    .sidebar.collapsed .telemetry-expanded-content {
+      display: none !important;
+    }
+
+    .sidebar.collapsed .nav-item {
+      justify-content: center !important;
+      padding: 12px 0 !important;
+    }
+
+    .sidebar.collapsed .nav-item-left {
+      justify-content: center !important;
+      gap: 0 !important;
+    }
+
+    .sidebar .telemetry-collapsed-icon {
+      display: none;
+    }
+
+    .sidebar.collapsed .telemetry-collapsed-icon {
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0;
+    }
 
     .nav-item.active {
-      background: linear-gradient(90deg, rgba(var(--accent-primary-rgb), 0.16) 0%, rgba(var(--accent-primary-rgb), 0.03) 100%);
+      background: linear-gradient(90deg, rgba(var(--accent-primary-rgb), 0.2) 0%, rgba(var(--accent-primary-rgb), 0.04) 100%);
       border-left: 3px solid var(--accent-primary);
       color: #FFFFFF;
     }
@@ -92,9 +208,9 @@
     /* Evolution Flash & Shiny Sparkle */
     @keyframes evolveFlash {
       0% { filter: brightness(1) drop-shadow(0 0 0px #fff); transform: scale(1); }
-      35% { filter: brightness(8) saturate(0) drop-shadow(0 0 22px #00F0FF); transform: scale(1.25); }
-      70% { filter: brightness(5) drop-shadow(0 0 28px #FACC15); transform: scale(0.92); }
-      100% { filter: brightness(1) drop-shadow(0 0 10px rgba(var(--accent-primary-rgb), 0.6)); transform: scale(1); }
+      35% { filter: brightness(8) saturate(0) drop-shadow(0 0 24px #00F0FF); transform: scale(1.22); }
+      70% { filter: brightness(5) drop-shadow(0 0 28px #FACC15); transform: scale(0.94); }
+      100% { filter: brightness(1) drop-shadow(0 0 12px rgba(var(--accent-primary-rgb), 0.65)); transform: scale(1); }
     }
 
     .evolving-sprite {
@@ -106,24 +222,39 @@
     }
 
     ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #08070E; }
+    ::-webkit-scrollbar-track { background: #08070F; }
     ::-webkit-scrollbar-thumb { background: #26223B; border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: #3B3559; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-cyan-500/30 selection:text-cyan-200">
+<body class="app-shell min-h-screen flex flex-col selection:bg-cyan-500/30 selection:text-cyan-200 relative">
+
+  <!-- Diagonal Clash Rift & Low-Opacity High-Res Watermark Renders -->
+  <div id="clashRiftOverlay" class="clash-rift-overlay"></div>
+  <div class="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+    <img id="bgWatermarkSlot1"
+         src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/130.png"
+         class="fixed -left-16 top-20 w-[440px] h-[440px] object-contain opacity-[0.08] select-none transition-all duration-500"
+         style="filter: drop-shadow(0 0 40px var(--slot1-primary));"
+         alt="" />
+    <img id="bgWatermarkSlot2"
+         src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/59.png"
+         class="fixed -right-16 bottom-8 w-[440px] h-[440px] object-contain opacity-[0.08] select-none transition-all duration-500"
+         style="filter: drop-shadow(0 0 40px var(--slot2-primary));"
+         alt="" />
+  </div>
 
   <!-- Enlarged Artwork Modal -->
   <div id="artModal" onclick="closeModal()" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-4 cursor-zoom-out">
     <div class="machined-card rounded-2xl max-w-lg w-full p-6 flex flex-col items-center" onclick="event.stopPropagation()">
       <div class="w-full flex justify-between items-center mb-4 pb-2 border-b border-white/10">
         <h3 id="modalTitle" class="text-sm font-bold text-white">Product Artwork</h3>
-        <button onclick="closeModal()" class="text-slate-400 hover:text-white text-lg font-bold px-2">&times;</button>
+        <button onclick="closeModal()" class="text-slate-300 hover:text-white text-lg font-bold px-2">&times;</button>
       </div>
       <div class="w-80 h-80 art-pedestal rounded-xl flex items-center justify-center p-4 overflow-hidden">
         <img id="modalImg" src="" class="max-h-full max-w-full object-contain" alt="Enlarged Product Art" />
       </div>
-      <p class="text-[11px] text-slate-400 mt-3">Click outside or press ESC to close</p>
+      <p class="text-[11px] text-slate-300 mt-3">Click outside or press ESC to close</p>
     </div>
   </div>
 
@@ -132,12 +263,12 @@
     <div class="machined-card rounded-2xl max-w-md w-full p-6" onclick="event.stopPropagation()">
       <div class="flex justify-between items-center pb-3 border-b border-white/10">
         <h3 id="compModalTitle" class="text-sm font-bold text-white">Live Market Comps</h3>
-        <button onclick="closeCompModal()" class="text-slate-400 hover:text-white text-lg font-bold px-2">&times;</button>
+        <button onclick="closeCompModal()" class="text-slate-300 hover:text-white text-lg font-bold px-2">&times;</button>
       </div>
-      <div id="compModalBody" class="py-5 space-y-3 text-xs text-slate-300">Scanning live TCGPlayer &amp; eBay Buy-It-Now listings...</div>
+      <div id="compModalBody" class="py-5 space-y-3 text-xs text-slate-200">Scanning live TCGPlayer &amp; eBay Buy-It-Now listings...</div>
       <div class="flex justify-end gap-2 pt-3 border-t border-white/10">
         <button id="pushCompDiscordBtn" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold">Push Card to Discord</button>
-        <button onclick="closeCompModal()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold">Close</button>
+        <button onclick="closeCompModal()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold">Close</button>
       </div>
     </div>
   </div>
@@ -150,149 +281,178 @@
           <span class="text-lg">🏆</span>
           <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Record Conquered Vault Trophy</h3>
         </div>
-        <button onclick="closeClaimModal()" class="text-slate-400 hover:text-white text-lg font-bold px-2">&times;</button>
+        <button onclick="closeClaimModal()" class="text-slate-300 hover:text-white text-lg font-bold px-2">&times;</button>
       </div>
       <div class="space-y-3 py-4 text-xs">
         <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Target SKU</label>
+          <label class="block text-[10px] font-bold uppercase text-slate-300 mb-1">Target SKU</label>
           <select id="claimSkuSelect" onchange="onClaimSkuChange()" class="w-full bg-[#0B0914] border border-white/15 rounded-lg px-3 py-2 text-white font-semibold focus:outline-none focus:border-cyan-400"></select>
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Product Name</label>
+            <label class="block text-[10px] font-bold uppercase text-slate-300 mb-1">Product Name</label>
             <input id="claimProductName" type="text" class="w-full bg-[#0B0914] border border-white/15 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-cyan-400" />
           </div>
           <div>
-            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Store / Seller</label>
+            <label class="block text-[10px] font-bold uppercase text-slate-300 mb-1">Store / Seller</label>
             <input id="claimStore" type="text" placeholder="e.g. Cooperstown Cards" class="w-full bg-[#0B0914] border border-white/15 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-cyan-400" />
           </div>
         </div>
         <div class="grid grid-cols-3 gap-3">
           <div>
-            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Landed Price ($)</label>
+            <label class="block text-[10px] font-bold uppercase text-slate-300 mb-1">Landed Price ($)</label>
             <input id="claimLandedPrice" type="number" step="0.01" class="w-full bg-[#0B0914] border border-white/15 rounded-lg px-3 py-1.5 text-emerald-400 font-mono-num font-bold focus:outline-none focus:border-cyan-400" />
           </div>
           <div>
-            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Market Value ($)</label>
+            <label class="block text-[10px] font-bold uppercase text-slate-300 mb-1">Market Value ($)</label>
             <input id="claimMarketVal" type="number" step="0.01" class="w-full bg-[#0B0914] border border-white/15 rounded-lg px-3 py-1.5 text-amber-300 font-mono-num font-bold focus:outline-none focus:border-cyan-400" />
           </div>
           <div>
-            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Order Ref #</label>
+            <label class="block text-[10px] font-bold uppercase text-slate-300 mb-1">Order Ref #</label>
             <input id="claimOrderRef" type="text" placeholder="Order ID" class="w-full bg-[#0B0914] border border-white/15 rounded-lg px-3 py-1.5 text-slate-200 font-mono-num focus:outline-none focus:border-cyan-400" />
           </div>
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Delivery Window</label>
+            <label class="block text-[10px] font-bold uppercase text-slate-300 mb-1">Delivery Window</label>
             <input id="claimDelivery" type="text" value="Oct 27 – Oct 30, 2026" class="w-full bg-[#0B0914] border border-white/15 rounded-lg px-3 py-1.5 text-slate-200 focus:outline-none focus:border-cyan-400" />
           </div>
           <div>
-            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Alert Headline Snapshot</label>
+            <label class="block text-[10px] font-bold uppercase text-slate-300 mb-1">Alert Headline Snapshot</label>
             <input id="claimHeadline" type="text" placeholder="🚨💎 UNICORN RETAIL MSRP HIT..." class="w-full bg-[#0B0914] border border-white/15 rounded-lg px-3 py-1.5 text-cyan-300 focus:outline-none focus:border-cyan-400" />
           </div>
         </div>
         <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Scott &amp; Logan Memory Note</label>
+          <label class="block text-[10px] font-bold uppercase text-slate-300 mb-1">Scott &amp; Logan Memory Note</label>
           <input id="claimMemoryNote" type="text" placeholder="Sniped live to rip with Logan!" class="w-full bg-[#0B0914] border border-white/15 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-cyan-400" />
         </div>
       </div>
       <div class="flex justify-end gap-2 pt-3 border-t border-white/10">
-        <button onclick="closeClaimModal()" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold">Cancel</button>
+        <button onclick="closeClaimModal()" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold">Cancel</button>
         <button onclick="submitClaimTrophy()" id="submitClaimBtn" class="px-4 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 text-xs font-extrabold tracking-wide">🏆 Lock Into Conquered Vault</button>
       </div>
     </div>
   </div>
 
-  <!-- TOP EXECUTIVE COMMAND HEADER BAR -->
-  <header class="sticky top-0 z-40 bg-[#0B0914]/90 backdrop-blur-xl border-b border-white/10 px-4 lg:px-6 py-2.5">
-    <div class="flex flex-wrap items-center justify-between gap-3">
+  <!-- TOP EXECUTIVE COMMAND HEADER BAR (76px height) -->
+  <header class="sticky top-0 z-40 min-h-[76px] bg-[#090812]/90 backdrop-blur-xl border-b border-white/15 px-4 lg:px-6 py-2 flex items-center">
+    <div class="w-full flex flex-wrap items-center justify-between gap-3">
       <!-- Left: Brand Crest + Active Callsign -->
       <div class="flex items-center gap-3">
-        <button onclick="toggleSidebar()" title="Collapse / Expand Sidebar" class="p-2 rounded-lg bg-[#161329] hover:bg-[#211C3A] border border-white/10 text-slate-300 hover:text-white transition">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <button onclick="toggleSidebar()" title="Collapse / Expand Sidebar" class="p-2.5 rounded-xl bg-[#161329] hover:bg-[#211C3A] border border-white/15 text-slate-200 hover:text-white transition">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
         <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-xl flex items-center justify-center bg-gradient-to-br from-cyan-500/25 via-purple-600/20 to-orange-500/25 border border-white/15 shadow-inner">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-cyan-500/30 via-purple-600/25 to-orange-500/30 border border-white/20 shadow-inner">
             <span class="text-lg">⚡</span>
           </div>
           <div>
             <div class="flex items-center gap-2">
               <span class="text-sm sm:text-base font-extrabold tracking-tight text-white">DROPBOT COMMANDER</span>
-              <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-mono-num font-bold uppercase tracking-wider bg-purple-500/20 text-purple-300 border border-purple-400/30">V4 EXECUTIVE</span>
+              <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-mono-num font-bold uppercase tracking-wider bg-purple-500/25 text-purple-200 border border-purple-400/40">V4 EXECUTIVE</span>
             </div>
-            <div id="activeTeamCallsign" class="text-[11px] font-semibold text-slate-400">🌊🔥 Tag-Team: Gyarados &amp; Arcanine • Scott &amp; Logan HQ</div>
+            <div id="activeTeamCallsign" class="text-[11px] font-semibold text-slate-300">🌊🔥 Tag-Team: Gyarados &amp; Arcanine • Scott &amp; Logan HQ</div>
           </div>
         </div>
       </div>
 
-      <!-- Center: Interactive Dynamic Pokédex Chameleon & Tag-Team Battle Arena -->
-      <div class="relative flex items-center gap-2 bg-[#120F22]/95 border border-white/15 rounded-2xl px-3 py-1.5 shadow-lg">
-        <!-- Slot 1 Partner -->
-        <div class="flex items-center gap-2 pr-2 border-r border-white/10">
-          <div class="relative group cursor-pointer" onclick="onPartnerSpriteClick(1)" title="Click Sprite to Evolve or Toggle ✨ Shiny!">
-            <img id="slot1Sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/130.gif"
+      <!-- Center: Upgraded "Poké Ball VS / Tag-Team Battle Arena" Header Pod -->
+      <div class="relative battle-arena-pod rounded-2xl px-3.5 py-1.5 flex items-center justify-between gap-2">
+        <!-- Slot 1 (Left Flank) -->
+        <div class="flex items-center gap-2.5 flex-1 min-w-0">
+          <!-- High-Res Official Artwork (68x68) + Animated Pixel Sprite (32x32) -->
+          <div class="relative flex items-end cursor-pointer group shrink-0" onclick="onPartnerSpriteClick(1)" title="Click to Evolve or Toggle ✨ Shiny!">
+            <img id="slot1HiResArt"
+                 src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/130.png"
+                 class="w-[68px] h-[68px] -my-2 object-contain transition-transform duration-200 group-hover:scale-110"
+                 style="filter: drop-shadow(0 0 12px var(--slot1-primary));"
+                 alt="Slot 1 Hi-Res Artwork" />
+            <img id="slot1Sprite"
+                 src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/130.gif"
                  onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/130.png'"
-                 class="w-10 h-10 object-contain transition-transform group-hover:scale-110" alt="Slot 1 Partner" />
-            <span id="slot1ShinyBadge" class="hidden absolute -top-1 -right-1 text-[10px] bg-amber-500/90 text-slate-950 font-black rounded-full px-1 leading-tight">✨</span>
+                 class="w-8 h-8 object-contain -ml-3 mb-0.5 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]"
+                 alt="Slot 1 Animated Sprite" />
+            <span id="slot1ShinyBadge" class="hidden absolute -top-1 right-0 text-[10px] bg-amber-400 text-slate-950 font-black rounded-full px-1 leading-tight shadow">✨</span>
           </div>
-          <div class="leading-tight">
-            <div class="flex items-center gap-1">
-              <button onclick="openRosterPopover(1)" class="text-xs font-extrabold text-white hover:text-cyan-300 flex items-center gap-1">
-                <span id="slot1Name">Gyarados</span>
-                <svg class="w-3 h-3 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-              </button>
+
+          <div class="min-w-0 leading-tight">
+            <div class="flex items-center gap-1.5">
+              <span id="slot1Name" onclick="onPartnerSpriteClick(1)" class="text-sm font-black text-white hover:text-cyan-300 cursor-pointer truncate">Gyarados</span>
+              <button onclick="openRosterPopover(1)" class="px-1.5 py-0.5 rounded bg-white/10 hover:bg-white/20 text-[10px] font-extrabold text-cyan-200 border border-white/15 shrink-0">▾ Switch</button>
             </div>
-            <div class="flex items-center gap-1 mt-0.5">
-              <span id="slot1TypeBadge" class="text-[9px] font-mono-num uppercase px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold">WATER</span>
-              <button onclick="onPartnerSpriteClick(1)" id="slot1ActionHint" class="text-[9px] text-slate-400 hover:text-amber-300 font-semibold">✨ Shiny</button>
+            <div class="flex items-center gap-1.5 mt-1">
+              <span id="slot1TypeBadge" class="text-[9px] font-mono-num uppercase px-1.5 py-0.5 rounded bg-cyan-500/25 text-cyan-200 border border-cyan-400/40 font-extrabold">WATER</span>
+              <button onclick="onPartnerSpriteClick(1)" id="slot1ActionHint" class="text-[10px] text-slate-200 hover:text-amber-300 font-bold">✨ Shiny</button>
             </div>
           </div>
         </div>
 
-        <!-- Tag-Team / VS Emblem -->
-        <button onclick="openRosterPopover(1)" title="Open Hall of Fame &amp; PokeAPI Roster" class="px-1.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-[10px] font-black text-amber-400 tracking-tighter">
-          🌊🔥
+        <!-- Center Glowing SVG Poké Ball / VS Emblem on the Diagonal Seam -->
+        <button onclick="openRosterPopover(1)" title="Open Hall of Fame &amp; Live PokéAPI Roster"
+                class="relative z-10 mx-1 w-11 h-11 rounded-full bg-[#130F24] border-2 border-white/30 flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.65)] hover:scale-110 transition-transform shrink-0 group">
+          <svg class="w-8 h-8" viewBox="0 0 100 100">
+            <defs>
+              <linearGradient id="pkBallTop" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00F0FF" />
+                <stop offset="50%" stop-color="#A855F7" />
+                <stop offset="100%" stop-color="#F97316" />
+              </linearGradient>
+            </defs>
+            <path d="M 8 50 A 42 42 0 0 1 92 50 Z" fill="url(#pkBallTop)" />
+            <path d="M 8 50 A 42 42 0 0 0 92 50 Z" fill="#1E1B2E" />
+            <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="5" />
+            <line x1="8" y1="50" x2="92" y2="50" stroke="#090812" stroke-width="7" />
+            <circle cx="50" cy="50" r="16" fill="#090812" stroke="#F8FAFC" stroke-width="4" />
+            <text x="50" y="54" text-anchor="middle" fill="#FACC15" font-family="Plus Jakarta Sans, sans-serif" font-weight="900" font-size="13">VS</text>
+          </svg>
         </button>
 
-        <!-- Slot 2 Partner -->
-        <div class="flex items-center gap-2 pl-1">
-          <div class="relative group cursor-pointer" onclick="onPartnerSpriteClick(2)" title="Click Sprite to Evolve or Toggle ✨ Shiny!">
-            <img id="slot2Sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/59.gif"
-                 onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/59.png'"
-                 class="w-10 h-10 object-contain transition-transform group-hover:scale-110" alt="Slot 2 Partner" />
-            <span id="slot2ShinyBadge" class="hidden absolute -top-1 -right-1 text-[10px] bg-amber-500/90 text-slate-950 font-black rounded-full px-1 leading-tight">✨</span>
+        <!-- Slot 2 (Right Flank) -->
+        <div class="flex items-center justify-end gap-2.5 flex-1 min-w-0">
+          <div class="min-w-0 leading-tight text-right">
+            <div class="flex items-center justify-end gap-1.5">
+              <button onclick="openRosterPopover(2)" class="px-1.5 py-0.5 rounded bg-white/10 hover:bg-white/20 text-[10px] font-extrabold text-amber-200 border border-white/15 shrink-0">▾ Switch</button>
+              <span id="slot2Name" onclick="onPartnerSpriteClick(2)" class="text-sm font-black text-white hover:text-orange-300 cursor-pointer truncate">Arcanine</span>
+            </div>
+            <div class="flex items-center justify-end gap-1.5 mt-1">
+              <button onclick="onPartnerSpriteClick(2)" id="slot2ActionHint" class="text-[10px] text-slate-200 hover:text-amber-300 font-bold">✨ Shiny</button>
+              <span id="slot2TypeBadge" class="text-[9px] font-mono-num uppercase px-1.5 py-0.5 rounded bg-orange-500/25 text-orange-200 border border-orange-400/40 font-extrabold">FIRE</span>
+            </div>
           </div>
-          <div class="leading-tight">
-            <div class="flex items-center gap-1">
-              <button onclick="openRosterPopover(2)" class="text-xs font-extrabold text-white hover:text-orange-300 flex items-center gap-1">
-                <span id="slot2Name">Arcanine</span>
-                <svg class="w-3 h-3 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-              </button>
-            </div>
-            <div class="flex items-center gap-1 mt-0.5">
-              <span id="slot2TypeBadge" class="text-[9px] font-mono-num uppercase px-1.5 py-0.2 rounded bg-orange-500/20 text-orange-300 border border-orange-500/30 font-bold">FIRE</span>
-              <button onclick="onPartnerSpriteClick(2)" id="slot2ActionHint" class="text-[9px] text-slate-400 hover:text-amber-300 font-semibold">✨ Shiny</button>
-            </div>
+
+          <!-- Animated Pixel Sprite (32x32) + High-Res Official Artwork (68x68) -->
+          <div class="relative flex items-end cursor-pointer group shrink-0" onclick="onPartnerSpriteClick(2)" title="Click to Evolve or Toggle ✨ Shiny!">
+            <img id="slot2Sprite"
+                 src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/59.gif"
+                 onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/59.png'"
+                 class="w-8 h-8 object-contain -mr-3 mb-0.5 z-10 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]"
+                 alt="Slot 2 Animated Sprite" />
+            <img id="slot2HiResArt"
+                 src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/59.png"
+                 class="w-[68px] h-[68px] -my-2 object-contain transition-transform duration-200 group-hover:scale-110"
+                 style="filter: drop-shadow(0 0 12px var(--slot2-primary));"
+                 alt="Slot 2 Hi-Res Artwork" />
+            <span id="slot2ShinyBadge" class="hidden absolute -top-1 right-0 text-[10px] bg-amber-400 text-slate-950 font-black rounded-full px-1 leading-tight shadow">✨</span>
           </div>
         </div>
 
         <!-- Roster Popover Drawer -->
-        <div id="rosterPopover" class="hidden absolute top-full mt-2 left-1/2 -translate-x-1/2 w-[360px] sm:w-[430px] machined-card rounded-2xl p-4 z-50 shadow-2xl border border-white/20">
+        <div id="rosterPopover" class="hidden absolute top-full mt-2.5 left-1/2 -translate-x-1/2 w-[360px] sm:w-[440px] machined-card rounded-2xl p-4 z-50 shadow-2xl border border-white/20">
           <div class="flex items-center justify-between pb-2.5 mb-3 border-b border-white/10">
             <div>
               <div class="text-xs font-extrabold text-white uppercase tracking-wider">⚡ Scott &amp; Logan Hall of Fame Roster</div>
-              <div id="rosterSlotIndicator" class="text-[10px] text-cyan-300 font-semibold">Selecting Partner for Slot 1 (Primary Accent)</div>
+              <div id="rosterSlotIndicator" class="text-[10px] text-cyan-300 font-semibold">Selecting Partner for Slot 1 (Left Flank Aura)</div>
             </div>
             <div class="flex items-center gap-1">
               <button onclick="switchRosterTargetSlot(1)" id="rosterSlot1Btn" class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">Slot 1</button>
-              <button onclick="switchRosterTargetSlot(2)" id="rosterSlot2Btn" class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-400 border border-white/10">Slot 2</button>
-              <button onclick="closeRosterPopover()" class="ml-1 text-slate-400 hover:text-white font-bold px-1.5">&times;</button>
+              <button onclick="switchRosterTargetSlot(2)" id="rosterSlot2Btn" class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-300 border border-white/10">Slot 2</button>
+              <button onclick="closeRosterPopover()" class="ml-1 text-slate-300 hover:text-white font-bold px-1.5">&times;</button>
             </div>
           </div>
 
           <!-- Featured Tag-Team Presets -->
           <div class="mb-3">
-            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Featured Tag-Team Presets</div>
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Featured Tag-Team Presets</div>
             <div class="grid grid-cols-2 gap-1.5">
               <button onclick="applyTeamPreset('GYARADOS_ARCANINE')" class="px-2.5 py-1.5 rounded-lg bg-[#1B1630] hover:bg-[#251E42] border border-cyan-500/30 text-left text-[11px] font-bold text-white flex items-center justify-between">
                 <span>🌊🔥 Gyarados &amp; Arcanine</span>
@@ -315,20 +475,20 @@
 
           <!-- Individual Hall of Fame Roster -->
           <div class="mb-3">
-            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Hall of Fame Roster (Click Sprite in Header to Evolve / Shiny)</div>
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Hall of Fame Roster (Click Render in Header to Evolve / Shiny)</div>
             <div id="hofRosterGrid" class="grid grid-cols-3 sm:grid-cols-4 gap-1.5 max-h-48 overflow-y-auto pr-1"></div>
           </div>
 
           <!-- Live PokeAPI Search (All 1,025 Pokémon) -->
           <div class="pt-2 border-t border-white/10">
-            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Live PokéAPI Search (1 – 1,025)</div>
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1">Live PokéAPI Search (1 – 1,025)</div>
             <div class="flex gap-1.5">
               <input id="pokeSearchInput" type="text" placeholder="Type name or # (e.g. umbreon, rayquaza, 249)..."
                      onkeydown="if(event.key==='Enter') searchPokeApiLive()"
                      class="flex-1 bg-[#090710] border border-white/15 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-400" />
               <button onclick="searchPokeApiLive()" id="pokeSearchBtn" class="px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-extrabold text-xs">Load</button>
             </div>
-            <div id="pokeSearchStatus" class="text-[10px] text-slate-400 mt-1"></div>
+            <div id="pokeSearchStatus" class="text-[10px] text-slate-300 mt-1"></div>
           </div>
         </div>
       </div>
@@ -336,19 +496,19 @@
       <!-- Right: Global Executive Controls -->
       <div class="flex items-center gap-2 flex-wrap">
         <button onclick="toggleAutoLaunch()" id="autoLaunchBtn" title="When ARMED, new In-Stock drops under your buy trigger automatically pop open the checkout tab."
-                class="px-2.5 py-1.5 rounded-xl text-xs font-bold border transition flex items-center gap-1.5 bg-[#161329] text-slate-300 border-white/10 hover:border-cyan-400/50">
+                class="px-2.5 py-1.5 rounded-xl text-xs font-bold border transition flex items-center gap-1.5 bg-[#161329] text-slate-200 border-white/15 hover:border-cyan-400/50">
           <span>🚀 Launch Now:</span>
-          <span id="autoLaunchState" class="font-mono-num text-slate-400">OFF</span>
+          <span id="autoLaunchState" class="font-mono-num text-slate-300">OFF</span>
         </button>
 
         <button onclick="toggleCryAudio()" id="cryAudioBtn" title="Toggle Authentic Pokédex Cry Audio on Evolution &amp; Shiny Transformation"
-                class="px-2.5 py-1.5 rounded-xl text-xs font-bold border transition flex items-center gap-1.5 bg-cyan-500/15 text-cyan-300 border-cyan-500/30 hover:bg-cyan-500/25">
+                class="px-2.5 py-1.5 rounded-xl text-xs font-bold border transition flex items-center gap-1.5 bg-cyan-500/15 text-cyan-200 border-cyan-500/35 hover:bg-cyan-500/25">
           <span id="cryAudioIcon">🔊</span>
           <span class="hidden md:inline">Cry Audio</span>
         </button>
 
         <button onclick="sweepLiveCompsGlobal()" id="sweepCompsBtn" title="Sweep live comps &amp; refresh Market Tape + Bounty Recon"
-                class="px-3 py-1.5 rounded-xl text-xs font-extrabold bg-gradient-to-r from-cyan-500/20 to-blue-600/20 hover:from-cyan-500/35 hover:to-blue-600/35 text-cyan-200 border border-cyan-400/40 transition flex items-center gap-1.5">
+                class="px-3 py-1.5 rounded-xl text-xs font-extrabold bg-gradient-to-r from-cyan-500/25 to-blue-600/25 hover:from-cyan-500/40 hover:to-blue-600/40 text-cyan-100 border border-cyan-400/50 transition flex items-center gap-1.5">
           <span>⚡ Sweep Comps</span>
         </button>
       </div>
@@ -360,61 +520,78 @@
     <span id="evoToastText">✨ Synchronized with DropBot Commander</span>
   </div>
 
-  <!-- MAIN SHELL: COLLAPSIBLE LEFT SIDEBAR + ACTIVE VIEWPORT -->
-  <div class="flex-1 flex min-h-0">
-    <!-- Left Sidebar -->
-    <aside id="appSidebar" class="w-64 shrink-0 bg-[#0D0B18]/95 border-r border-white/10 flex flex-col justify-between transition-all duration-200">
-      <div class="p-3 space-y-1">
-        <div class="px-3 py-2 text-[10px] font-mono-num font-bold uppercase tracking-widest text-slate-500">Command Views</div>
+  <!-- MAIN SHELL: STICKY COLLAPSIBLE LEFT SIDEBAR + ACTIVE VIEWPORT -->
+  <div class="relative z-10 flex-1 flex min-h-0">
+    <!-- Left Sidebar (Sticky, Eye-Level Telemetry directly under 4 Navigation Tabs) -->
+    <aside id="appSidebar" class="sidebar shrink-0 bg-[#0B0916]/90 backdrop-blur-xl border-r border-white/10 p-3">
+      <!-- 4 Navigation Tabs -->
+      <div class="space-y-1.5">
+        <div class="sidebar-section-title px-3 py-1.5 text-[10px] font-mono-num font-bold uppercase tracking-widest text-slate-300">Command Views</div>
 
-        <button onclick="switchMainView('LIVE_COMMAND')" id="nav_LIVE_COMMAND" class="nav-item active w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition">
-          <span class="flex items-center gap-2.5">
+        <button onclick="switchMainView('LIVE_COMMAND')" id="nav_LIVE_COMMAND" title="📡 Live Command" class="nav-item active w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 transition">
+          <span class="nav-item-left flex items-center gap-2.5">
             <svg class="w-4 h-4 text-cyan-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>
-            <span class="sidebar-label">📡 Live Command</span>
+            <span class="nav-label-text">📡 Live Command</span>
           </span>
-          <span id="navLiveBadge" class="sidebar-label font-mono-num text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">0</span>
+          <span id="navLiveBadge" class="nav-badge font-mono-num text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">0</span>
         </button>
 
-        <button onclick="switchMainView('BOUNTY_HUNTER')" id="nav_BOUNTY_HUNTER" class="nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition">
-          <span class="flex items-center gap-2.5">
+        <button onclick="switchMainView('BOUNTY_HUNTER')" id="nav_BOUNTY_HUNTER" title="🎯 Bounty Hunter" class="nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 transition">
+          <span class="nav-item-left flex items-center gap-2.5">
             <svg class="w-4 h-4 text-orange-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-            <span class="sidebar-label">🎯 Bounty Hunter</span>
+            <span class="nav-label-text">🎯 Bounty Hunter</span>
           </span>
-          <span class="sidebar-label font-mono-num text-[10px] px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-300">RECON</span>
+          <span class="nav-badge font-mono-num text-[10px] px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-300">RECON</span>
         </button>
 
-        <button onclick="switchMainView('CONQUERED_VAULT')" id="nav_CONQUERED_VAULT" class="nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition">
-          <span class="flex items-center gap-2.5">
+        <button onclick="switchMainView('CONQUERED_VAULT')" id="nav_CONQUERED_VAULT" title="🏆 The Conquered Vault" class="nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 transition">
+          <span class="nav-item-left flex items-center gap-2.5">
             <svg class="w-4 h-4 text-amber-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
-            <span class="sidebar-label">🏆 The Conquered Vault</span>
+            <span class="nav-label-text">🏆 The Conquered Vault</span>
           </span>
-          <span id="navVaultBadge" class="sidebar-label font-mono-num text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">2</span>
+          <span id="navVaultBadge" class="nav-badge font-mono-num text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">2</span>
         </button>
 
-        <button onclick="switchMainView('TARGET_MATRIX')" id="nav_TARGET_MATRIX" class="nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition">
-          <span class="flex items-center gap-2.5">
+        <button onclick="switchMainView('TARGET_MATRIX')" id="nav_TARGET_MATRIX" title="⚙️ Target Matrix &amp; Config" class="nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 transition">
+          <span class="nav-item-left flex items-center gap-2.5">
             <svg class="w-4 h-4 text-purple-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
-            <span class="sidebar-label">⚙️ Target Matrix &amp; Config</span>
+            <span class="nav-label-text">⚙️ Target Matrix &amp; Config</span>
           </span>
-          <span id="navMatrixBadge" class="sidebar-label font-mono-num text-[10px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300">38</span>
+          <span id="navMatrixBadge" class="nav-badge font-mono-num text-[10px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300">38</span>
         </button>
       </div>
 
-      <!-- Bottom Telemetry Pod -->
-      <div class="p-3 border-t border-white/10 space-y-2.5">
-        <div class="machined-card rounded-xl p-3 space-y-2">
+      <!-- Eye-Level Sniper Telemetry Pod (Directly Under Navigation Tabs) -->
+      <div class="pt-3 border-t border-white/10">
+        <!-- Collapsed Mode Compact Status Dot -->
+        <div class="telemetry-collapsed-icon" title="Sniper Telemetry: 31/31 Stores Nominal • Proxy Pool Armed">
+          <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_#10B981]"></span>
+        </div>
+
+        <!-- Expanded Mode Full Eye-Level Telemetry Card -->
+        <div class="telemetry-expanded-content machined-card rounded-xl p-3.5 space-y-2.5">
           <div class="flex items-center justify-between">
-            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 sidebar-label">Sniper Telemetry</span>
-            <span class="inline-flex items-center gap-1 text-[10px] font-mono-num font-bold text-emerald-400">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>31/31 LGS
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-300">Sniper Telemetry</span>
+            <span class="inline-flex items-center gap-1.5 text-[10px] font-mono-num font-bold text-emerald-400">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>31/31 Stores
             </span>
           </div>
-          <div class="text-[11px] text-slate-300 font-mono-num sidebar-label" id="sidebarStreamStatus">
+          <div class="text-[11px] text-slate-200 font-mono-num" id="sidebarStreamStatus">
             31 Shopify + 9 Big-Box + TCGP
           </div>
-          <div class="pt-1 border-t border-white/10 flex items-center justify-between text-[10px] text-slate-400 sidebar-label">
-            <span> Collector Rank:</span>
-            <span id="sidebarRankBadge" class="font-bold text-amber-300">🔥 Case Commander</span>
+          <div class="grid grid-cols-2 gap-1.5 pt-1 text-[10px] font-mono-num">
+            <div class="p-1.5 rounded bg-black/40 border border-white/5">
+              <div class="text-slate-400">Proxy Gateway</div>
+              <div class="text-emerald-300 font-bold">● ARMED</div>
+            </div>
+            <div class="p-1.5 rounded bg-black/40 border border-white/5">
+              <div class="text-slate-400">Last Poll</div>
+              <div id="sidebarLastPollTime" class="text-cyan-300 font-bold">Just now</div>
+            </div>
+          </div>
+          <div class="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-300">
+            <span>Collector Rank:</span>
+            <span id="sidebarRankBadge" class="font-extrabold text-amber-300">🔥 Case Commander</span>
           </div>
         </div>
       </div>
@@ -427,54 +604,53 @@
       <!-- VIEW 1: 📡 LIVE COMMAND (DEFAULT HOME VIEW)                         -->
       <!-- =================================================================== -->
       <section id="view_LIVE_COMMAND" class="space-y-6">
-        <!-- Top Bento Row (3 Hero KPI Cards) -->
+        <!-- Top Bento Row (3 Hero KPI Cards with Directional Clash Specular Borders) -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <!-- Card 1 — Vault & Portfolio Value -->
-          <div class="machined-card rounded-2xl p-5 flex flex-col justify-between">
+          <!-- Card 1 — Vault & Portfolio Value (Tinted with Slot 1 Primary) -->
+          <div class="machined-card kpi-card-slot1 rounded-2xl p-5 flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between mb-2">
-                <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">🏛️ Vault &amp; Portfolio Value</span>
-                <span id="kpiPortfolioGainBadge" class="font-mono-num text-[11px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">+$129.55 Unrealized</span>
+                <span class="text-xs font-extrabold uppercase tracking-wider text-slate-200">🏛️ Vault &amp; Portfolio Value</span>
+                <span id="kpiPortfolioGainBadge" class="font-mono-num text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">+$129.55 Trophy Alpha</span>
               </div>
-              <div class="flex items-baseline gap-3 my-1">
-                <div id="kpiTotalPortfolioValue" class="text-2xl sm:text-3xl font-black font-mono-num text-white">$0.00</div>
-                <div id="kpiCostBasisSub" class="text-xs font-mono-num text-slate-400">Basis: $1,580.45</div>
+              <div class="flex items-baseline gap-3 my-1.5">
+                <div id="kpiTotalPortfolioValue" class="text-3xl font-black font-mono-num text-[#F8FAFC]">$0.00</div>
+                <div id="kpiCostBasisSub" class="text-xs font-mono-num text-slate-300">Trophy Basis: $1,580.45</div>
               </div>
             </div>
             <div class="space-y-2.5 pt-3 mt-3 border-t border-white/10">
               <div>
-                <div class="flex justify-between text-[11px] font-semibold mb-1">
-                  <span class="text-slate-300">Wall Display ETBs</span>
+                <div class="flex justify-between text-xs font-semibold mb-1.5">
+                  <span class="text-slate-200">Wall Display ETBs</span>
                   <span id="kpiWallEtbProgressText" class="font-mono-num text-cyan-300 font-bold">0 / 38</span>
                 </div>
-                <div class="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden">
+                <div class="w-full h-2 bg-slate-900 rounded-full overflow-hidden border border-white/5">
                   <div id="kpiWallEtbBar" class="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full transition-all duration-300" style="width: 35%"></div>
                 </div>
               </div>
-              <div class="flex items-center justify-between text-[11px] pt-1">
-                <span class="text-slate-400">Conquered Vault Trophies:</span>
+              <div class="flex items-center justify-between text-xs pt-1">
+                <span class="text-slate-300">Conquered Vault Trophies:</span>
                 <button onclick="switchMainView('CONQUERED_VAULT')" id="kpiConqueredCountPill" class="font-mono-num font-extrabold text-amber-300 hover:underline">🏆 2 Plaques Locked ↗</button>
               </div>
             </div>
           </div>
 
-          <!-- Card 2 — Active Sniper Radar -->
-          <div class="machined-card rounded-2xl p-5 flex flex-col justify-between">
+          <!-- Card 2 — Active Sniper Radar (Compact Telemetry Mini-Table) -->
+          <div class="machined-card kpi-card-clash rounded-2xl p-5 flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between mb-2">
-                <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">📡 Active Sniper Radar</span>
-                <span id="kpiStoreSweepHealth" class="font-mono-num text-[11px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">31/31 LGS + Big-Box</span>
+                <span class="text-xs font-extrabold uppercase tracking-wider text-slate-200">📡 Active Sniper Radar</span>
+                <span id="kpiStoreSweepHealth" class="font-mono-num text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-200 border border-cyan-400/40">31/31 LGS + Big-Box</span>
               </div>
-              <div class="flex items-baseline gap-3 my-1">
-                <div id="kpiInStockCount" class="text-2xl sm:text-3xl font-black font-mono-num text-emerald-400">0</div>
-                <div class="text-xs text-slate-300 font-semibold">Targets Under Buy Trigger</div>
+              <div class="flex items-baseline gap-2.5 mb-2">
+                <div id="kpiInStockCount" class="text-3xl font-black font-mono-num text-emerald-400">0</div>
+                <div class="text-xs text-slate-200 font-bold">Targets Under Buy Trigger</div>
               </div>
-              <div id="kpiActiveRadarPills" class="flex flex-wrap gap-1.5 mt-2">
-                <span class="text-[11px] text-slate-400">Scanning live shelves across 31 WPN LGS + TCGPlayer...</span>
-              </div>
+              <!-- Scannable Compact Telemetry Mini-Table (3 Aligned Rows) -->
+              <div id="kpiActiveRadarPills" class="space-y-1.5 mt-1"></div>
             </div>
-            <div class="pt-3 mt-3 border-t border-white/10 flex items-center justify-between text-[11px]">
-              <span class="text-slate-400">6-Hour Baseline Sync &amp; Proxy Pool:</span>
+            <div class="pt-2.5 mt-2.5 border-t border-white/10 flex items-center justify-between text-[11px]">
+              <span class="text-slate-300">6-Hour Baseline Sync &amp; Proxy Pool:</span>
               <span class="font-mono-num text-emerald-400 font-bold">● ARMED &amp; NOMINAL</span>
             </div>
           </div>
@@ -483,27 +659,27 @@
           <div class="unicorn-holo-card rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden">
             <div>
               <div class="flex items-center justify-between mb-2">
-                <span class="text-[11px] font-extrabold uppercase tracking-wider text-cyan-300 flex items-center gap-1.5">
+                <span class="text-xs font-extrabold uppercase tracking-wider text-cyan-200 flex items-center gap-1.5">
                   <span>💎 Unicorn MSRP Trophy Counter</span>
                 </span>
-                <span class="font-mono-num text-[10px] font-black px-2 py-0.5 rounded bg-cyan-400/20 text-cyan-200 border border-cyan-400/40">DEFCON-1 OVERRIDE</span>
+                <span class="font-mono-num text-[10px] font-black px-2 py-0.5 rounded bg-cyan-400/25 text-cyan-100 border border-cyan-300/50">DEFCON-1 OVERRIDE</span>
               </div>
               <div class="flex items-baseline gap-3 my-1">
-                <div id="kpiMsrpHitCount" class="text-2xl sm:text-3xl font-black font-mono-num text-cyan-300">1</div>
+                <div id="kpiMsrpHitCount" class="text-3xl font-black font-mono-num text-cyan-300">1</div>
                 <div class="text-xs font-bold text-white">True Retail MSRP Catches</div>
               </div>
-              <div id="kpiLatestMsrpCatchBox" class="mt-2 p-2.5 rounded-xl bg-black/45 border border-cyan-400/30 text-xs">
+              <div id="kpiLatestMsrpCatchBox" class="mt-2 p-2.5 rounded-xl bg-black/55 border border-cyan-400/35 text-xs">
                 <div class="flex items-center justify-between gap-2">
                   <span class="font-extrabold text-white truncate">Mega Evolution: Chaos Rising ETB</span>
                   <span class="font-mono-num font-black text-emerald-400 shrink-0">$51.00</span>
                 </div>
-                <div class="text-[11px] text-cyan-200/90 mt-0.5 flex items-center justify-between">
+                <div class="text-[11px] text-cyan-100 mt-1 flex items-center justify-between">
                   <span>Cooperstown Cards • 7% Below $54.99 MSRP</span>
                   <button onclick="switchMainView('CONQUERED_VAULT')" class="text-amber-300 font-bold hover:underline">Trophy #2 ↗</button>
                 </div>
               </div>
             </div>
-            <div class="pt-2.5 mt-2.5 border-t border-cyan-400/20 flex items-center justify-between text-[10px] text-cyan-200/80">
+            <div class="pt-2.5 mt-2.5 border-t border-cyan-400/25 flex items-center justify-between text-[11px] text-cyan-100">
               <span>Bypasses Vault Lock on &le; MSRP</span>
               <span class="font-mono-num font-bold text-amber-300">Order #B108C090-96CCFE-CA0AF</span>
             </div>
@@ -891,24 +1067,67 @@
       }, 3000);
     }
 
+    function getEffectiveSlotSpectrum(slotObj) {
+      const base = ELEMENTAL_SPECTRUM[slotObj.type] || ELEMENTAL_SPECTRUM.water;
+      if (!slotObj.shiny) return base;
+      // Dynamic Shiny elemental aura shifts (e.g. Red Gyarados, Golden Arcanine, Obsidian Charizard, Blue-Ring Umbreon)
+      if (slotObj.id === 130) {
+        return { ...base, hex: '#EF4444', rgb: '239, 68, 68', label: 'SHINY WATER' };
+      }
+      if (slotObj.id === 59 || slotObj.id === 58) {
+        return { ...base, hex: '#FACC15', rgb: '250, 204, 21', label: 'SHINY FIRE' };
+      }
+      if (slotObj.id === 6) {
+        return { ...base, hex: '#F43F5E', rgb: '244, 63, 94', label: 'SHINY FIRE' };
+      }
+      if (slotObj.id === 197) {
+        return { ...base, hex: '#38BDF8', rgb: '56, 189, 248', label: 'SHINY DARK' };
+      }
+      return { ...base, hex: '#FACC15', rgb: '250, 204, 21', label: '✨ ' + base.label };
+    }
+
+    function pulseScreenClashAura() {
+      document.body.classList.remove('aura-clash-pulse');
+      void document.body.offsetWidth;
+      document.body.classList.add('aura-clash-pulse');
+    }
+
     function applyPartnerThemeAndHeader() {
       const s1 = partnerState.slot1;
       const s2 = partnerState.slot2;
-      const spec1 = ELEMENTAL_SPECTRUM[s1.type] || ELEMENTAL_SPECTRUM.water;
-      const spec2 = ELEMENTAL_SPECTRUM[s2.type] || ELEMENTAL_SPECTRUM.fire;
+      const spec1 = getEffectiveSlotSpectrum(s1);
+      const spec2 = getEffectiveSlotSpectrum(s2);
+
+      document.documentElement.style.setProperty('--slot1-primary', spec1.hex);
+      document.documentElement.style.setProperty('--slot1-primary-rgb', spec1.rgb);
+      document.documentElement.style.setProperty('--slot2-primary', spec2.hex);
+      document.documentElement.style.setProperty('--slot2-primary-rgb', spec2.rgb);
 
       document.documentElement.style.setProperty('--accent-primary', spec1.hex);
       document.documentElement.style.setProperty('--accent-primary-rgb', spec1.rgb);
       document.documentElement.style.setProperty('--accent-secondary', spec2.hex);
       document.documentElement.style.setProperty('--accent-secondary-rgb', spec2.rgb);
 
+      const wm1 = document.getElementById('bgWatermarkSlot1');
+      if (wm1) wm1.src = getArtworkFallbackUrl(s1.id, s1.shiny);
+      const wm2 = document.getElementById('bgWatermarkSlot2');
+      if (wm2) wm2.src = getArtworkFallbackUrl(s2.id, s2.shiny);
+
       const updateSlotDOM = (slotNum, slotObj, spec) => {
+        const hiResImg = document.getElementById('slot' + slotNum + 'HiResArt');
         const img = document.getElementById('slot' + slotNum + 'Sprite');
         const nameEl = document.getElementById('slot' + slotNum + 'Name');
         const badgeEl = document.getElementById('slot' + slotNum + 'TypeBadge');
         const shinyEl = document.getElementById('slot' + slotNum + 'ShinyBadge');
         const hintEl = document.getElementById('slot' + slotNum + 'ActionHint');
 
+        if (hiResImg) {
+          hiResImg.onerror = function() {
+            this.onerror = null;
+            this.src = getArtworkFallbackUrl(slotObj.id, false);
+          };
+          hiResImg.src = getArtworkFallbackUrl(slotObj.id, slotObj.shiny);
+        }
         if (img) {
           img.onerror = function() {
             this.onerror = null;
@@ -919,7 +1138,7 @@
         if (nameEl) nameEl.innerText = (slotObj.shiny ? '✨ ' : '') + slotObj.name;
         if (badgeEl) {
           badgeEl.innerText = spec.label;
-          badgeEl.className = 'text-[9px] font-mono-num uppercase px-1.5 py-0.2 rounded border font-bold ' + spec.badgeCls;
+          badgeEl.className = 'text-[9px] font-mono-num uppercase px-1.5 py-0.2 rounded border font-extrabold ' + spec.badgeCls;
         }
         if (shinyEl) {
           if (slotObj.shiny) shinyEl.classList.remove('hidden');
@@ -966,11 +1185,14 @@
       const key = slotNum === 1 ? 'slot1' : 'slot2';
       const current = partnerState[key];
       const imgEl = document.getElementById('slot' + slotNum + 'Sprite');
-      if (imgEl) {
-        imgEl.classList.remove('evolving-sprite');
-        void imgEl.offsetWidth;
-        imgEl.classList.add('evolving-sprite');
-      }
+      const hiResEl = document.getElementById('slot' + slotNum + 'HiResArt');
+      [imgEl, hiResEl].forEach(el => {
+        if (!el) return;
+        el.classList.remove('evolving-sprite');
+        void el.offsetWidth;
+        el.classList.add('evolving-sprite');
+      });
+      pulseScreenClashAura();
 
       const dex = HALL_OF_FAME_DEX[current.id];
       let targetEvoId = current.nextId || (dex ? dex.nextId : null);
@@ -997,8 +1219,8 @@
         playPokemonCry(current.id);
         showCommanderToast(
           partnerState[key].shiny
-            ? ('✨ SHINY TRANSFORMATION! Shiny ' + current.name + ' activated!')
-            : ('Standard ' + current.name + ' form restored.')
+            ? ('✨ SHINY TRANSFORMATION! Shiny ' + current.name + ' elemental aura activated!')
+            : ('Standard ' + current.name + ' elemental aura restored.')
         );
       }
     }
@@ -1007,11 +1229,10 @@
       const grid = document.getElementById('hofRosterGrid');
       if (!grid) return;
       grid.innerHTML = HOF_ROSTER_BUTTONS.map(item => {
-        const dex = HALL_OF_FAME_DEX[item.id];
         return (
           '<button onclick="selectHofPokemon(' + item.id + ')" class="p-1.5 rounded-xl bg-[#161229] hover:bg-[#231D40] border border-white/10 hover:border-cyan-400/40 flex flex-col items-center gap-1 text-center transition">' +
-            '<img src="' + getSpriteUrl(item.id, false) + '" onerror="this.onerror=null;this.src=\'' + getArtworkFallbackUrl(item.id, false) + '\'" class="w-8 h-8 object-contain" />' +
-            '<span class="text-[10px] font-bold text-slate-200 leading-tight truncate w-full">' + item.label + '</span>' +
+            '<img src="' + getArtworkFallbackUrl(item.id, false) + '" class="w-9 h-9 object-contain" />' +
+            '<span class="text-[10px] font-bold text-slate-100 leading-tight truncate w-full">' + item.label + '</span>' +
           '</button>'
         );
       }).join('');
@@ -1035,8 +1256,8 @@
       const b2 = document.getElementById('rosterSlot2Btn');
       if (ind) {
         ind.innerText = slotNum === 1
-          ? 'Selecting Partner for Slot 1 (Primary Accent)'
-          : 'Selecting Partner for Slot 2 (Secondary Accent)';
+          ? 'Selecting Partner for Slot 1 (Upper-Left Aura)'
+          : 'Selecting Partner for Slot 2 (Lower-Right Aura)';
       }
       if (b1 && b2) {
         b1.className = slotNum === 1
@@ -1060,6 +1281,7 @@
         nextId: dex.nextId || null
       };
       applyPartnerThemeAndHeader();
+      pulseScreenClashAura();
       playPokemonCry(dex.id);
       showCommanderToast('⚡ ' + dex.name + ' deployed to Slot ' + activeRosterTargetSlot + '!');
     }
@@ -1079,6 +1301,7 @@
         partnerState.slot2 = { id: 6,   name: 'Charizard', type: 'fire',  shiny: false, nextId: null };
       }
       applyPartnerThemeAndHeader();
+      pulseScreenClashAura();
       playPokemonCry(partnerState.slot1.id);
       closeRosterPopover();
       showCommanderToast('🔥 Tag-Team Preset Activated: ' + partnerState.slot1.name + ' & ' + partnerState.slot2.name + '!');
@@ -1130,6 +1353,7 @@
         const key = activeRosterTargetSlot === 1 ? 'slot1' : 'slot2';
         partnerState[key] = { id: pokeId, name: pokeName, type: mappedType, shiny: false, nextId };
         applyPartnerThemeAndHeader();
+        pulseScreenClashAura();
         playPokemonCry(pokeId);
         if (status) status.innerText = 'Loaded #' + pokeId + ' ' + pokeName + ' (' + mappedType.toUpperCase() + ')!';
         showCommanderToast('⚡ PokéAPI Loaded: #' + pokeId + ' ' + pokeName + '!');
@@ -1174,15 +1398,8 @@
     function toggleSidebar() {
       sidebarCollapsed = !sidebarCollapsed;
       const sb = document.getElementById('appSidebar');
-      const labels = document.querySelectorAll('.sidebar-label');
-      if (sidebarCollapsed) {
-        sb.classList.remove('w-64');
-        sb.classList.add('w-16');
-        labels.forEach(l => l.classList.add('hidden'));
-      } else {
-        sb.classList.remove('w-16');
-        sb.classList.add('w-64');
-        labels.forEach(l => l.classList.remove('hidden'));
+      if (sb) {
+        sb.classList.toggle('collapsed', sidebarCollapsed);
       }
     }
 
@@ -1303,15 +1520,20 @@
       if (pp <= 0) return '';
       const leader = isRipValueLeader || pp <= 4.25;
       if (leader) {
-        return '<span class="font-mono-num text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/50 shadow-[0_0_12px_rgba(16,185,129,0.35)]">🔥 $' + pp.toFixed(2) + '/pack (' + (packCount || 36) + 'p)</span>';
+        return '<span class="font-mono-num text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/50 shadow-[0_0_12px_rgba(16,185,129,0.35)]">🔥 $' + pp.toFixed(2) + '/pack (' + (packCount || 36) + 'p)</span>';
       }
-      return '<span class="font-mono-num text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/5 text-slate-300 border border-white/10">$' + pp.toFixed(2) + '/pack</span>';
+      return '<span class="font-mono-num text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-white/10 text-slate-200 border border-white/15">$' + pp.toFixed(2) + '/pack (' + (packCount || 9) + 'p)</span>';
     }
 
     // =========================================================================
     // 4. VIEW 1: LIVE COMMAND RENDERING
     // =========================================================================
     function updateGlobalBadgesAndKPIs() {
+      const pollTimeEl = document.getElementById('sidebarLastPollTime');
+      if (pollTimeEl) {
+        pollTimeEl.innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      }
+
       const etbs = policies.filter(p => p.formFactor === 'ETB');
       const ownedEtbs = etbs.filter(p => p.owned === true);
       const trophies = conqueredVault.trophies || [];
@@ -1367,7 +1589,7 @@
       const vhRank = document.getElementById('vaultRankHeaderBadge');
       if (vhRank) vhRank.innerText = rankTitle + ' • Score ' + (conqueredVault.collectorRank?.score || 200);
 
-      // Card 2: Active Sniper Radar
+      // Card 2: Active Sniper Radar — Compact 3-Row Executive Telemetry Mini-Table
       const inStockPolicies = policies.filter(p => isPolicyInStockNow(p));
       const inStockCount = inStockPolicies.length;
       const kpiInStock = document.getElementById('kpiInStockCount');
@@ -1379,15 +1601,54 @@
 
       const radarPills = document.getElementById('kpiActiveRadarPills');
       if (radarPills) {
-        if (inStockPolicies.length > 0) {
-          radarPills.innerHTML = inStockPolicies.slice(0, 3).map(p => {
-            const ls = liveStock[p.id];
-            const pr = ls?.price || telemetry[p.id]?.lowestPrice || p.maxMarketBuyPrice;
-            return '<span class="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold">' + p.name + ' ($' + Number(pr).toFixed(2) + ')</span>';
-          }).join('');
-        } else {
-          radarPills.innerHTML = '<span class="text-[11px] text-slate-400">0 SKUs under trigger right now • Monitoring 31 Shopify LGS + 9 Big-Box + TCGPlayer</span>';
+        const rows = [];
+        inStockPolicies.slice(0, 3).forEach(p => {
+          const ls = liveStock[p.id];
+          const pr = ls?.price || telemetry[p.id]?.lowestPrice || p.maxMarketBuyPrice;
+          rows.push({
+            name: p.name,
+            price: Number(pr || 0),
+            live: true
+          });
+        });
+
+        if (rows.length < 3) {
+          (recentDrops || []).forEach(d => {
+            if (rows.length >= 3) return;
+            const title = d.title || d.ruleId;
+            if (rows.some(r => r.name === title)) return;
+            rows.push({
+              name: title,
+              price: Number(d.landedPrice || d.price || 0),
+              live: !d.soldOut
+            });
+          });
         }
+
+        if (rows.length < 3) {
+          policies.slice(0, 5).forEach(p => {
+            if (rows.length >= 3) return;
+            if (rows.some(r => r.name === p.name)) return;
+            rows.push({
+              name: p.name,
+              price: Number(telemetry[p.id]?.lowestPrice || p.maxMarketBuyPrice || p.msrpCeiling || 0),
+              live: false
+            });
+          });
+        }
+
+        radarPills.innerHTML = rows.slice(0, 3).map(r => {
+          const pillCls = r.live
+            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+            : 'bg-cyan-500/15 text-cyan-200 border-cyan-500/30';
+          const dot = r.live ? '● ' : '';
+          return (
+            '<div class="flex items-center justify-between gap-3 py-1 px-2.5 rounded-lg bg-black/35 border border-white/10">' +
+              '<span class="text-xs font-bold text-slate-100 truncate">' + r.name + '</span>' +
+              '<span class="font-mono-num text-[11px] font-extrabold px-2 py-0.5 rounded border shrink-0 ' + pillCls + '">' + dot + '$' + r.price.toFixed(2) + '</span>' +
+            '</div>'
+          );
+        }).join('');
       }
 
       // Card 3: Unicorn MSRP Trophy Counter
@@ -1401,11 +1662,20 @@
             '<span class="font-extrabold text-white truncate">' + latestCatch.productName + '</span>' +
             '<span class="font-mono-num font-black text-emerald-400 shrink-0">$' + Number(latestCatch.price || 51).toFixed(2) + '</span>' +
           '</div>' +
-          '<div class="text-[11px] text-cyan-200/90 mt-0.5 flex items-center justify-between">' +
+          '<div class="text-[11px] text-cyan-200 mt-1 flex items-center justify-between">' +
             '<span class="truncate">' + (latestCatch.store || 'Cooperstown Cards') + ' • Below $' + Number(latestCatch.msrp || 54.99).toFixed(2) + ' MSRP</span>' +
             '<button onclick="switchMainView(\'CONQUERED_VAULT\')" class="text-amber-300 font-bold hover:underline shrink-0 ml-2">Trophy #2 ↗</button>' +
           '</div>';
       }
+    }
+
+    function formatShortTag(formFactor) {
+      const f = String(formFactor || 'ETB').toUpperCase();
+      if (f.includes('MASTER')) return '6-BOX CASE';
+      if (f.includes('ETB CASE')) return '10-ETB CASE';
+      if (f.includes('BOOSTER BOX')) return '36-PK BOX';
+      if (f.includes('BUNDLE')) return '6-PK BUNDLE';
+      return 'ETB';
     }
 
     function renderLiveCommandView() {
@@ -1498,68 +1768,78 @@
         });
       }
 
-      feedGrid.innerHTML = items.slice(0, 6).map((item, idx) => {
+      feedGrid.innerHTML = items.slice(0, 6).map((item) => {
         const imgPath = '/art/' + item.skuId + '.jpg?v=' + cacheBuster;
+        const landed = Number(item.landedPrice || item.price || 0);
+        const msrpVal = Number(item.msrp || 54.99);
+        const isMsrpDefcon = landed > 0 && landed <= msrpVal;
         const packPill = getPackBadgeHtml(item.pricePerPack, item.packCount, item.isRipValueLeader);
+        const formatTag = formatShortTag(item.formFactor);
         const preBleedBadge = item.isPreRelease
-          ? '<div class="mt-1 inline-flex items-center px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-extrabold">⏳ PRE-RELEASE BLEED</div>'
+          ? '<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-extrabold">⏳ PRE-RELEASE BLEED</span>'
           : '';
+
         const statusBadge = item.soldOut
-          ? '<span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 text-[10px] font-bold">SOLD OUT</span>'
-          : (item.isLiveNow
-              ? '<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-extrabold">● IN STOCK</span>'
-              : '<span class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[10px] font-bold">ALERT HIT</span>');
+          ? '<span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 text-[10px] font-extrabold shrink-0">SOLD OUT</span>'
+          : (isMsrpDefcon
+              ? '<span class="px-2 py-0.5 rounded bg-cyan-500/25 text-cyan-200 border border-cyan-400/50 text-[10px] font-extrabold shrink-0">🚨 MSRP DEFCON-1</span>'
+              : (item.isLiveNow
+                  ? '<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-extrabold shrink-0">● IN STOCK</span>'
+                  : '<span class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[10px] font-bold shrink-0">ALERT HIT</span>'));
 
         const c1 = item.cart1xUrl || (item.url && item.url.includes('/cart/') ? item.url : null);
         const c2 = item.cart2xUrl || (c1 ? c1.replace(/:1$/, ':2') : null);
         const c3 = item.cart3xUrl || (c1 ? c1.replace(/:1$/, ':3') : null);
 
         const checkoutBtns = c1
-          ? '<div class="flex items-center gap-1.5 flex-wrap">' +
-              '<a href="' + c1 + '" target="_blank" class="px-2.5 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono-num text-[11px] font-extrabold">⚡ 1x</a>' +
-              (c2 ? '<a href="' + c2 + '" target="_blank" class="px-2.5 py-1 rounded-lg bg-cyan-500/25 hover:bg-cyan-500/40 text-cyan-200 border border-cyan-400/40 font-mono-num text-[11px] font-extrabold">⚡ 2x</a>' : '') +
-              (c3 ? '<a href="' + c3 + '" target="_blank" class="px-2.5 py-1 rounded-lg bg-amber-500/25 hover:bg-amber-500/40 text-amber-200 border border-amber-400/40 font-mono-num text-[11px] font-extrabold">⚡ 3x Family Pack</a>' : '') +
+          ? '<div class="inline-flex items-center rounded-lg overflow-hidden border border-emerald-500/40 bg-[#0D1518] shrink-0">' +
+              '<a href="' + c1 + '" target="_blank" class="px-2.5 py-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono-num text-[11px] font-black transition">⚡ 1x</a>' +
+              (c2 ? '<a href="' + c2 + '" target="_blank" class="px-2 py-1 hover:bg-cyan-500/25 text-cyan-200 border-l border-white/10 font-mono-num text-[11px] font-extrabold transition">2x</a>' : '') +
+              (c3 ? '<a href="' + c3 + '" target="_blank" class="px-2 py-1 hover:bg-amber-500/25 text-amber-300 border-l border-white/10 font-mono-num text-[11px] font-extrabold transition">3x</a>' : '') +
             '</div>'
-          : '<a href="' + (item.url || '#') + '" target="_blank" class="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-extrabold">Buy Now ↗</a>';
+          : '<a href="' + (item.url || '#') + '" target="_blank" class="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-extrabold whitespace-nowrap shrink-0">Buy Now ↗</a>';
 
         const encodedItem = encodeURIComponent(JSON.stringify({
           skuId: item.skuId,
           productName: item.title,
           formFactor: item.formFactor,
           store: item.retailer,
-          landedPrice: item.landedPrice || item.price,
+          landedPrice: landed,
           marketValueAtCapture: item.marketValue,
           discountPct: item.discountPct
         }));
 
+        const priceColorCls = isMsrpDefcon ? 'text-[#00F0FF]' : 'text-[#10B981]';
+
         return (
-          '<div class="machined-card rounded-2xl p-4 flex flex-col justify-between gap-3">' +
+          '<div class="machined-card rounded-2xl p-4" style="display:flex;flex-direction:column;justify-content:space-between;min-height:235px;">' +
             '<div>' +
-              '<div class="flex items-center justify-between gap-2 mb-2.5">' +
-                '<span class="text-[10px] font-bold text-slate-400 truncate">' + item.retailer + ' • ' + item.timeStr + '</span>' +
+              '<div class="flex items-center justify-between gap-2 mb-3">' +
+                '<span class="text-[11px] font-bold text-slate-300 truncate">' + item.retailer + ' • <span class="text-slate-400 font-mono-num">' + item.timeStr + '</span></span>' +
                 statusBadge +
               '</div>' +
-              '<div class="flex items-center gap-3.5">' +
-                '<div class="w-16 h-16 art-pedestal rounded-xl p-1.5 flex items-center justify-center shrink-0">' +
-                  '<img src="' + imgPath + '" class="max-h-full max-w-full object-contain" alt="Art" />' +
+              '<div style="display:grid;grid-template-columns:96px 1fr;gap:16px;align-items:center;">' +
+                '<div class="art-pedestal rounded-xl p-2 flex flex-col items-center justify-between relative overflow-hidden" style="width:96px;height:96px;">' +
+                  '<img src="' + imgPath + '" class="w-[82px] h-[68px] object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)]" alt="Art" />' +
+                  '<span class="text-[9px] font-mono-num font-extrabold uppercase tracking-wider px-1.5 py-0.2 rounded bg-black/75 text-slate-200 border border-white/10 leading-tight">' + formatTag + '</span>' +
                 '</div>' +
-                '<div class="min-w-0 flex-1">' +
-                  '<div class="text-xs font-extrabold text-white leading-snug line-clamp-2">' + item.title + '</div>' +
-                  '<div class="flex items-center gap-2 mt-1 flex-wrap">' +
-                    '<span class="text-base font-black font-mono-num text-emerald-400">$' + Number(item.landedPrice || item.price).toFixed(2) + '</span>' +
-                    '<span class="text-[11px] font-mono-num text-slate-400">Market Value: <strong class="text-amber-300">$' + Number(item.marketValue || 0).toFixed(2) + '</strong></span>' +
+                '<div class="min-w-0">' +
+                  '<div class="text-[16px] font-extrabold text-white leading-snug line-clamp-2" style="min-height:42px;">' + item.title + '</div>' +
+                  '<div class="flex items-baseline gap-2.5 mt-1.5 flex-wrap">' +
+                    '<span class="text-[26px] leading-none font-black font-mono-num ' + priceColorCls + '">$' + landed.toFixed(2) + '</span>' +
+                    '<span class="text-xs font-mono-num text-slate-300">Market: <strong class="text-amber-300">$' + Number(item.marketValue || 0).toFixed(2) + '</strong></span>' +
+                    (item.discountPct > 0 ? '<span class="font-mono-num text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">-' + item.discountPct + '% Under Mkt</span>' : '') +
                   '</div>' +
-                  '<div class="mt-1 flex items-center gap-1.5 flex-wrap">' +
+                  '<div class="mt-2 flex items-center gap-1.5 flex-wrap">' +
                     packPill +
-                    (item.discountPct > 0 ? '<span class="font-mono-num text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300">' + item.discountPct + '% Under Mkt</span>' : '') +
+                    preBleedBadge +
                   '</div>' +
-                  preBleedBadge +
                 '</div>' +
               '</div>' +
             '</div>' +
-            '<div class="pt-2.5 border-t border-white/10 flex items-center justify-between gap-2 flex-wrap">' +
+            '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:12px;margin-top:12px;border-top:1px solid rgba(255,255,255,0.08);flex-wrap:nowrap;">' +
               checkoutBtns +
-              '<button onclick="openClaimModalFromDeal(\'' + encodedItem + '\')" class="px-2.5 py-1 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 text-[11px] font-extrabold">🏆 Claim Trophy</button>' +
+              '<button onclick="openClaimModalFromDeal(\'' + encodedItem + '\')" class="px-2.5 py-1 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 border border-amber-500/35 text-[11px] font-extrabold whitespace-nowrap shrink-0 transition">🏆 Claim</button>' +
             '</div>' +
           '</div>'
         );
