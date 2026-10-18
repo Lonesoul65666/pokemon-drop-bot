@@ -24,59 +24,66 @@
       --accent-secondary: #F97316;
       --accent-secondary-rgb: 249, 115, 22;
       --accent-gold: #FACC15;
-      --clash-angle: 125deg;
-      --slot1-stop: 46%;
-      --clash-mid-stop: 58%;
-      --slot2-stop: 70%;
+      /* Collinear Polygon Seam Coordinates (X1% at top, X2% at bottom) */
+      --seam-x1: 68%;
+      --seam-x2: 46%;
     }
 
     * { box-sizing: border-box; }
 
     body {
       background-color: var(--bg-obsidian);
-      background-image:
-        radial-gradient(circle at 18% 18%, rgba(var(--accent-primary-rgb), 0.25) 0%, transparent 48%),
-        radial-gradient(circle at 86% 82%, rgba(var(--accent-secondary-rgb), 0.25) 0%, transparent 48%),
-        linear-gradient(var(--clash-angle),
-          rgba(var(--accent-primary-rgb), 0.16) 0%,
-          rgba(var(--accent-primary-rgb), 0.06) var(--slot1-stop),
-          rgba(88, 28, 135, 0.36) var(--clash-mid-stop),
-          rgba(var(--accent-secondary-rgb), 0.07) var(--slot2-stop),
-          rgba(var(--accent-secondary-rgb), 0.17) 100%
-        );
-      background-attachment: fixed;
       color: #F8FAFC;
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       overflow-x: hidden;
     }
 
-    /* Dynamic Type-Matchup Angled Clash Rift Overlay */
-    .clash-rift-overlay {
+    /* ===================================================================== */
+    /* FLUSH POLYGON DIAGONAL BACKGROUND SEAM (100% Collinear X1% -> X2%)    */
+    /* ===================================================================== */
+    .ambient-left-polygon {
       pointer-events: none;
       position: fixed;
       inset: 0;
       z-index: 0;
+      clip-path: polygon(0 0, var(--seam-x1) 0, var(--seam-x2) 100%, 0 100%);
       background:
-        linear-gradient(var(--clash-angle),
-          transparent calc(var(--clash-mid-stop) - 1.8%),
-          rgba(var(--accent-primary-rgb), 0.14) calc(var(--clash-mid-stop) - 0.5%),
-          rgba(255, 255, 255, 0.08) var(--clash-mid-stop),
-          rgba(var(--accent-secondary-rgb), 0.14) calc(var(--clash-mid-stop) + 0.5%),
-          transparent calc(var(--clash-mid-stop) + 1.8%)
-        );
-      transition: background 0.4s ease;
+        radial-gradient(circle at 22% 24%, rgba(var(--slot1-primary-rgb), 0.32) 0%, rgba(var(--slot1-primary-rgb), 0.10) 48%, rgba(8, 7, 15, 0.96) 90%),
+        linear-gradient(135deg, rgba(var(--slot1-primary-rgb), 0.18) 0%, rgba(17, 15, 29, 0.92) 100%);
+      transition: clip-path 0.55s cubic-bezier(0.22, 1, 0.36, 1), background 0.45s ease;
     }
 
-    /* Unobstructed Background Watermarks (Visible Through Smoked-Glass Cards) */
+    .ambient-right-polygon {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      clip-path: polygon(var(--seam-x1) 0, 100% 0, 100% 100%, var(--seam-x2) 100%);
+      background:
+        radial-gradient(circle at 82% 76%, rgba(var(--slot2-primary-rgb), 0.32) 0%, rgba(var(--slot2-primary-rgb), 0.10) 48%, rgba(8, 7, 15, 0.96) 90%),
+        linear-gradient(135deg, rgba(17, 15, 29, 0.92) 0%, rgba(var(--slot2-primary-rgb), 0.18) 100%);
+      transition: clip-path 0.55s cubic-bezier(0.22, 1, 0.36, 1), background 0.45s ease;
+    }
+
+    .ambient-seam-svg {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+    }
+
+    /* High-Visibility Background Watermarks (0.26 Opacity, Clear of Sidebar) */
     #bgWatermarkSlot1 {
       position: fixed;
-      left: 250px;
-      top: 110px;
-      width: 460px;
-      height: 460px;
+      left: 265px;
+      top: 96px;
+      width: 470px;
+      height: 470px;
       object-fit: contain;
-      opacity: 0.18;
-      filter: saturate(1.25) contrast(1.1) drop-shadow(0 0 38px var(--slot1-primary));
+      opacity: 0.26;
+      filter: saturate(1.30) contrast(1.12) drop-shadow(0 0 42px var(--slot1-primary));
       pointer-events: none;
       user-select: none;
       transition: all 0.45s cubic-bezier(0.22, 1, 0.36, 1);
@@ -84,16 +91,38 @@
 
     #bgWatermarkSlot2 {
       position: fixed;
-      right: 30px;
-      bottom: 40px;
-      width: 460px;
-      height: 460px;
+      right: 28px;
+      bottom: 32px;
+      width: 470px;
+      height: 470px;
       object-fit: contain;
-      opacity: 0.18;
-      filter: saturate(1.25) contrast(1.1) drop-shadow(0 0 38px var(--slot2-primary));
+      opacity: 0.26;
+      filter: saturate(1.30) contrast(1.12) drop-shadow(0 0 42px var(--slot2-primary));
       pointer-events: none;
       user-select: none;
       transition: all 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Peek Art Mode: Fades UI cards to 5% opacity & boosts watermarks to 92% */
+    body.peek-art-active #mainDashboardShell {
+      opacity: 0.05;
+      filter: blur(1px);
+      transition: opacity 0.35s ease, filter 0.35s ease;
+    }
+
+    body.peek-art-active #bgWatermarkSlot1,
+    body.peek-art-active #bgWatermarkSlot2 {
+      opacity: 0.92 !important;
+      transform: scale(1.06);
+      filter: saturate(1.4) contrast(1.15) drop-shadow(0 0 55px rgba(255,255,255,0.45));
+    }
+
+    #peekArtBanner {
+      display: none;
+    }
+
+    body.peek-art-active #peekArtBanner {
+      display: flex;
     }
 
     @keyframes auraPulse {
@@ -111,7 +140,7 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* Permanent Smoked-Glass Translucency (Unobstructed Watermark Visibility) */
+    /* Ultra-Translucent Smoked-Glass Cards (0.36 Opacity + blur(6px)) */
     .glass-card,
     .kpi-card,
     .deal-card,
@@ -120,14 +149,14 @@
     .machined-card,
     .machined-trophy-card,
     .unicorn-holo-card {
-      background: rgba(12, 11, 20, 0.50);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border-top: 1px solid rgba(255, 255, 255, 0.16);
-      border-right: 1px solid rgba(255, 255, 255, 0.06);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      border-left: 1px solid rgba(255, 255, 255, 0.06);
-      box-shadow: 0 14px 34px -8px rgba(0, 0, 0, 0.62), inset 0 1px 0 0 rgba(255, 255, 255, 0.07);
+      background: rgba(11, 10, 19, 0.36);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-top: 1px solid rgba(255, 255, 255, 0.18);
+      border-right: 1px solid rgba(255, 255, 255, 0.07);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      border-left: 1px solid rgba(255, 255, 255, 0.07);
+      box-shadow: 0 14px 34px -8px rgba(0, 0, 0, 0.58), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
       transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
     }
 
@@ -136,25 +165,25 @@
     .bounty-card:hover,
     .matrix-card:hover,
     .machined-card:hover {
-      background: rgba(16, 14, 28, 0.58);
-      border-top-color: rgba(var(--accent-primary-rgb), 0.52);
-      box-shadow: 0 18px 38px -8px rgba(0, 0, 0, 0.75), 0 0 24px -6px rgba(var(--accent-primary-rgb), 0.18);
+      background: rgba(16, 14, 28, 0.46);
+      border-top-color: rgba(var(--accent-primary-rgb), 0.55);
+      box-shadow: 0 18px 38px -8px rgba(0, 0, 0, 0.72), 0 0 24px -6px rgba(var(--accent-primary-rgb), 0.20);
     }
 
     /* Directional Top-Edge Specular Borders for Hero KPI Row */
     .kpi-card-slot1 {
       border-top: 2px solid var(--slot1-primary) !important;
-      box-shadow: 0 14px 34px -8px rgba(0, 0, 0, 0.65), 0 -4px 20px -6px rgba(var(--accent-primary-rgb), 0.28);
+      box-shadow: 0 14px 34px -8px rgba(0, 0, 0, 0.62), 0 -4px 20px -6px rgba(var(--accent-primary-rgb), 0.28);
     }
 
     .kpi-card-clash {
       border-top: 2px solid rgba(168, 85, 247, 0.85) !important;
-      box-shadow: 0 14px 34px -8px rgba(0, 0, 0, 0.65), 0 -4px 20px -6px rgba(168, 85, 247, 0.28);
+      box-shadow: 0 14px 34px -8px rgba(0, 0, 0, 0.62), 0 -4px 20px -6px rgba(168, 85, 247, 0.28);
     }
 
     .machined-trophy-card {
       border-top: 1px solid rgba(var(--accent-secondary-rgb), 0.55);
-      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.7), 0 0 26px -8px rgba(var(--accent-secondary-rgb), 0.16);
+      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.68), 0 0 26px -8px rgba(var(--accent-secondary-rgb), 0.16);
     }
 
     .unicorn-holo-card {
@@ -166,72 +195,102 @@
     }
 
     .art-pedestal {
-      background: radial-gradient(circle at 50% 50%, rgba(var(--accent-primary-rgb), 0.20) 0%, rgba(10, 8, 19, 0.68) 76%);
+      background: radial-gradient(circle at 50% 50%, rgba(var(--accent-primary-rgb), 0.20) 0%, rgba(10, 8, 19, 0.62) 76%);
       border: 1px solid rgba(255, 255, 255, 0.12);
       box-shadow: inset 0 0 16px rgba(var(--accent-primary-rgb), 0.10);
     }
 
-    /* Single-Row 68px Top Command Header Bar */
+    /* ===================================================================== */
+    /* TIER 1: CLEAN, NON-OVERFLOWING 56px TOP EXECUTIVE BAR                 */
+    /* ===================================================================== */
     .top-header {
       position: sticky;
       top: 0;
       z-index: 40;
-      height: 68px;
-      min-height: 68px;
-      max-height: 68px;
+      height: 56px;
+      min-height: 56px;
+      max-height: 56px;
       display: flex;
       flex-wrap: nowrap;
       align-items: center;
       justify-content: space-between;
-      padding: 0 20px;
-      gap: 14px;
-      background: rgba(9, 8, 18, 0.84);
+      padding: 0 18px;
+      gap: 12px;
+      background: rgba(9, 8, 18, 0.86);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     }
 
-    /* Streamlined Center Tag-Team Battle Arena Pod (52px height, 540px max-width) */
-    .battle-arena-pod {
-      height: 52px;
-      max-width: 540px;
-      width: 100%;
-      flex: 1 1 auto;
+    .top-ctrl-pill {
+      padding: 6px 11px;
+      font-size: 12px;
+      line-height: 1;
+      white-space: nowrap;
+      border-radius: 9px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.16s ease;
+    }
+
+    /* ===================================================================== */
+    /* TIER 2: PREMIER "POKÉDEX TAG-TEAM & VERSUS STAGE" HERO BANNER         */
+    /* ===================================================================== */
+    .premier-battle-stage {
+      margin-bottom: 18px;
+      border-radius: 16px;
+      position: relative;
+      overflow: visible;
       background:
-        linear-gradient(var(--clash-angle),
-          rgba(var(--slot1-primary-rgb), 0.26) 0%,
-          rgba(var(--slot1-primary-rgb), 0.10) 43%,
-          rgba(255, 255, 255, 0.22) 49.5%,
-          rgba(168, 85, 247, 0.42) 50%,
-          rgba(255, 255, 255, 0.22) 50.5%,
-          rgba(var(--slot2-primary-rgb), 0.12) 57%,
-          rgba(var(--slot2-primary-rgb), 0.26) 100%
+        linear-gradient(120deg,
+          rgba(var(--slot1-primary-rgb), 0.22) 0%,
+          rgba(var(--slot1-primary-rgb), 0.08) 44%,
+          rgba(168, 85, 247, 0.28) 50%,
+          rgba(var(--slot2-primary-rgb), 0.08) 56%,
+          rgba(var(--slot2-primary-rgb), 0.22) 100%
         ),
-        rgba(15, 13, 28, 0.78);
-      border-top: 1px solid rgba(255, 255, 255, 0.20);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-      border-left: 1px solid rgba(var(--accent-primary-rgb), 0.42);
-      border-right: 1px solid rgba(var(--accent-secondary-rgb), 0.42);
+        rgba(11, 10, 19, 0.44);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-top: 1px solid rgba(255, 255, 255, 0.22);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-left: 2px solid var(--slot1-primary);
+      border-right: 2px solid var(--slot2-primary);
       box-shadow:
-        -8px 0 22px -10px rgba(var(--accent-primary-rgb), 0.32),
-        8px 0 22px -10px rgba(var(--accent-secondary-rgb), 0.32),
-        0 8px 22px -6px rgba(0, 0, 0, 0.7);
+        -12px 0 32px -12px rgba(var(--slot1-primary-rgb), 0.30),
+        12px 0 32px -12px rgba(var(--slot2-primary-rgb), 0.30),
+        0 14px 36px -8px rgba(0, 0, 0, 0.65);
+      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Fluid Hero Typography & Responsive Deal Grid */
+    .hero-kpi-value {
+      font-size: clamp(1.65rem, 2.2vw, 2.35rem);
+      line-height: 1.08;
+    }
+
+    .live-deal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 16px;
     }
 
     /* Sticky Sidebar & Clean Collapsed State */
     .sidebar {
       position: sticky;
-      top: 68px;
-      height: calc(100vh - 68px);
-      width: 240px;
+      top: 56px;
+      height: calc(100vh - 56px);
+      width: 236px;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
       gap: 18px;
       overflow-y: auto;
-      background: rgba(11, 9, 22, 0.65);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(11, 9, 22, 0.58);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       transition: width 0.2s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
@@ -286,7 +345,7 @@
     }
 
     /* ===================================================================== */
-    /* V4 STEP 2B.3: 2.4s TYPE-MATCHUP HIGH-GROUND CARTOON WIPE TRANSITION   */
+    /* V4 STEP 2B.4: FLUSH POLYGON SEAM + CLICK-TO-DISMISS STAT BATTLE       */
     /* ===================================================================== */
     #clash-cutin-overlay {
       pointer-events: none;
@@ -299,19 +358,20 @@
       z-index: 99999;
       opacity: 0;
       visibility: hidden;
-      transition: opacity 0.18s ease, visibility 0.18s ease;
+      cursor: pointer;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
     }
 
     #clash-cutin-overlay.active {
+      pointer-events: auto;
       opacity: 1;
       visibility: visible;
     }
 
-    /* Cartoon Iris-Wipe Ring Effect for Neutral / Retro Wipe Transitions */
     .cutin-cartoon-iris {
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at 50% 50%, transparent 0%, transparent 38%, rgba(6, 5, 12, 0.92) 72%, #05040A 100%);
+      background: radial-gradient(circle at 50% 50%, transparent 0%, transparent 40%, rgba(5, 4, 11, 0.88) 80%, #05040A 100%);
       opacity: 0;
       transition: opacity 0.45s ease;
       z-index: 1;
@@ -322,68 +382,33 @@
       opacity: 1;
     }
 
-    #clash-cutin-overlay.phase-wipeout .cutin-cartoon-iris {
-      opacity: 0;
-    }
-
-    /* Default / Case A: Slot 1 Has High Ground (58% Top-Left slashing down at 125deg onto Slot 2 42% Bottom-Right) */
+    /* Left & Right Shutters use exact --seam-x1 and --seam-x2 polygon coordinates */
     .cutin-left-slash {
       position: absolute;
       inset: 0;
       z-index: 2;
-      clip-path: polygon(0 0, 68% 0, 48% 100%, 0 100%);
+      clip-path: polygon(0 0, var(--seam-x1) 0, var(--seam-x2) 100%, 0 100%);
       background:
-        radial-gradient(circle at 26% 38%, rgba(var(--slot1-primary-rgb), 0.78) 0%, rgba(var(--slot1-primary-rgb), 0.30) 50%, rgba(8, 7, 15, 0.95) 86%),
-        repeating-linear-gradient(125deg, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 2px, transparent 2px, transparent 18px),
-        linear-gradient(125deg, rgba(var(--slot1-primary-rgb), 0.62) 0%, rgba(12, 10, 24, 0.96) 100%);
-      transform: translate3d(-105%, -8%, 0);
-      transition: transform 0.50s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.65s ease;
-      box-shadow: inset -6px 0 38px rgba(var(--slot1-primary-rgb), 0.95);
+        radial-gradient(circle at 24% 38%, rgba(var(--slot1-primary-rgb), 0.72) 0%, rgba(var(--slot1-primary-rgb), 0.24) 52%, rgba(8, 7, 15, 0.96) 88%),
+        repeating-linear-gradient(125deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 18px),
+        linear-gradient(125deg, rgba(var(--slot1-primary-rgb), 0.52) 0%, rgba(10, 9, 20, 0.97) 100%);
+      transform: translate3d(-105%, -6%, 0);
+      transition: transform 0.50s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.55s ease, clip-path 0.45s ease;
     }
 
     .cutin-right-slash {
       position: absolute;
       inset: 0;
       z-index: 2;
-      clip-path: polygon(68% 0, 100% 0, 100% 100%, 48% 100%);
+      clip-path: polygon(var(--seam-x1) 0, 100% 0, 100% 100%, var(--seam-x2) 100%);
       background:
-        radial-gradient(circle at 76% 64%, rgba(var(--slot2-primary-rgb), 0.78) 0%, rgba(var(--slot2-primary-rgb), 0.30) 50%, rgba(8, 7, 15, 0.95) 86%),
-        repeating-linear-gradient(125deg, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 2px, transparent 2px, transparent 18px),
-        linear-gradient(125deg, rgba(12, 10, 24, 0.96) 0%, rgba(var(--slot2-primary-rgb), 0.62) 100%);
-      transform: translate3d(105%, 8%, 0);
-      transition: transform 0.50s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.65s ease;
-      box-shadow: inset 6px 0 38px rgba(var(--slot2-primary-rgb), 0.95);
+        radial-gradient(circle at 76% 62%, rgba(var(--slot2-primary-rgb), 0.72) 0%, rgba(var(--slot2-primary-rgb), 0.24) 52%, rgba(8, 7, 15, 0.96) 88%),
+        repeating-linear-gradient(125deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 18px),
+        linear-gradient(125deg, rgba(10, 9, 20, 0.97) 0%, rgba(var(--slot2-primary-rgb), 0.52) 100%);
+      transform: translate3d(105%, 6%, 0);
+      transition: transform 0.50s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.55s ease, clip-path 0.45s ease;
     }
 
-    /* Case B: Slot 2 Has High Ground (58% Top-Right slashing down at 55deg onto Slot 1 42% Bottom-Left) */
-    #clash-cutin-overlay.matchup-slot2-high .cutin-left-slash {
-      clip-path: polygon(0 0, 32% 0, 52% 100%, 0 100%);
-      background:
-        radial-gradient(circle at 22% 66%, rgba(var(--slot1-primary-rgb), 0.75) 0%, rgba(var(--slot1-primary-rgb), 0.28) 50%, rgba(8, 7, 15, 0.95) 86%),
-        repeating-linear-gradient(55deg, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 2px, transparent 2px, transparent 18px),
-        linear-gradient(55deg, rgba(var(--slot1-primary-rgb), 0.58) 0%, rgba(12, 10, 24, 0.96) 100%);
-      transform: translate3d(-105%, 8%, 0);
-    }
-
-    #clash-cutin-overlay.matchup-slot2-high .cutin-right-slash {
-      clip-path: polygon(32% 0, 100% 0, 100% 100%, 52% 100%);
-      background:
-        radial-gradient(circle at 72% 34%, rgba(var(--slot2-primary-rgb), 0.80) 0%, rgba(var(--slot2-primary-rgb), 0.32) 50%, rgba(8, 7, 15, 0.95) 86%),
-        repeating-linear-gradient(55deg, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 2px, transparent 2px, transparent 18px),
-        linear-gradient(55deg, rgba(12, 10, 24, 0.96) 0%, rgba(var(--slot2-primary-rgb), 0.65) 100%);
-      transform: translate3d(105%, -8%, 0);
-    }
-
-    /* Case C: Neutral Matchup (50/50 Balanced Center Clash + Spinning Poké Ball Iris-Wipe) */
-    #clash-cutin-overlay.matchup-neutral .cutin-left-slash {
-      clip-path: polygon(0 0, 58% 0, 42% 100%, 0 100%);
-    }
-
-    #clash-cutin-overlay.matchup-neutral .cutin-right-slash {
-      clip-path: polygon(58% 0, 100% 0, 100% 100%, 42% 100%);
-    }
-
-    /* Phase 1 (0.0s - 0.50s Shutter Wipe-In) & Phase 2 (0.50s - 1.70s 1.2s Dramatic Hold) */
     #clash-cutin-overlay.phase-wipein .cutin-left-slash,
     #clash-cutin-overlay.phase-wipein .cutin-right-slash,
     #clash-cutin-overlay.phase-hold .cutin-left-slash,
@@ -392,165 +417,120 @@
       opacity: 1;
     }
 
-    /* Phase 3 (1.70s - 2.40s Cartoon Shutter Wipe-Out: Shutters Part Outward) */
     #clash-cutin-overlay.phase-wipeout .cutin-left-slash {
-      transition: transform 0.70s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.65s ease;
+      transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.50s ease;
       transform: translate3d(-106%, -6%, 0);
       opacity: 0;
     }
 
     #clash-cutin-overlay.phase-wipeout .cutin-right-slash {
-      transition: transform 0.70s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.65s ease;
+      transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.50s ease;
       transform: translate3d(106%, 6%, 0);
       opacity: 0;
     }
 
-    /* Giant 420px High-Res Pokémon Cut-In Renders */
-    .cutin-art-slot1 {
-      position: fixed;
-      left: 7%;
-      top: 11%;
-      width: 420px;
-      height: 420px;
-      z-index: 4;
-      object-fit: contain;
-      filter: drop-shadow(0 0 48px var(--slot1-primary)) drop-shadow(0 16px 32px rgba(0,0,0,0.9));
-      transform: translate3d(-120%, -10%, 0) scale(0.84);
-      opacity: 0;
-      transition: transform 0.50s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.38s ease, top 0.35s ease, left 0.35s ease;
-    }
-
-    .cutin-art-slot2 {
-      position: fixed;
-      right: 7%;
-      bottom: 9%;
-      width: 420px;
-      height: 420px;
-      z-index: 4;
-      object-fit: contain;
-      filter: drop-shadow(0 0 48px var(--slot2-primary)) drop-shadow(0 16px 32px rgba(0,0,0,0.9));
-      transform: translate3d(120%, 10%, 0) scale(0.84);
-      opacity: 0;
-      transition: transform 0.50s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.38s ease, bottom 0.35s ease, right 0.35s ease;
-    }
-
-    /* When Slot 2 has Type Advantage, Slot 2 takes Top-Right High Ground and Slot 1 drops to Bottom-Left Low Ground */
-    #clash-cutin-overlay.matchup-slot2-high .cutin-art-slot1 {
-      left: 6%;
-      top: 44%;
-    }
-
-    #clash-cutin-overlay.matchup-slot2-high .cutin-art-slot2 {
-      right: 6%;
-      bottom: 42%;
-    }
-
-    #clash-cutin-overlay.phase-wipein .cutin-art-slot1,
-    #clash-cutin-overlay.phase-wipein .cutin-art-slot2 {
-      transform: translate3d(0, 0, 0) scale(1.0);
-      opacity: 1;
-    }
-
-    /* 0.50s - 1.70s (The 1.2s Dramatic Hold: Slow Drift scale(1.0) -> scale(1.06)) */
-    #clash-cutin-overlay.phase-hold .cutin-art-slot1 {
-      transition: transform 1.20s linear, opacity 0.3s ease;
-      transform: translate3d(10px, -6px, 0) scale(1.06);
-      opacity: 1;
-    }
-
-    #clash-cutin-overlay.phase-hold .cutin-art-slot2 {
-      transition: transform 1.20s linear, opacity 0.3s ease;
-      transform: translate3d(-10px, 6px, 0) scale(1.06);
-      opacity: 1;
-    }
-
-    /* 1.70s - 2.40s (Glide & Fade Directly Into Unobstructed 0.18 Watermark Coordinates) */
-    #clash-cutin-overlay.phase-wipeout .cutin-art-slot1 {
-      transition: all 0.70s cubic-bezier(0.22, 1, 0.36, 1);
-      left: 250px !important;
-      top: 110px !important;
-      width: 460px;
-      height: 460px;
-      transform: translate3d(0, 0, 0) scale(1.0);
-      opacity: 0.18;
-    }
-
-    #clash-cutin-overlay.phase-wipeout .cutin-art-slot2 {
-      transition: all 0.70s cubic-bezier(0.22, 1, 0.36, 1);
-      right: 30px !important;
-      bottom: 40px !important;
-      width: 460px;
-      height: 460px;
-      transform: translate3d(0, 0, 0) scale(1.0);
-      opacity: 0.18;
-    }
-
-    /* Diagonal Lightning Seam & Center Shockwave */
-    .cutin-center-seam {
+    /* Collinear SVG Seam Beam Overlay */
+    .cutin-seam-svg {
       position: absolute;
       inset: 0;
+      width: 100vw;
+      height: 100vh;
       z-index: 3;
-      background: linear-gradient(125deg,
-        transparent 56.2%,
-        rgba(var(--slot1-primary-rgb), 0.90) 57.4%,
-        #FFFFFF 58%,
-        rgba(var(--slot2-primary-rgb), 0.90) 58.6%,
-        transparent 59.8%
-      );
+      pointer-events: none;
       opacity: 0;
-      transform: scale(1.12);
-      transition: opacity 0.30s ease, transform 0.45s ease;
+      transition: opacity 0.35s ease;
     }
 
-    #clash-cutin-overlay.matchup-slot2-high .cutin-center-seam {
-      background: linear-gradient(55deg,
-        transparent 40.2%,
-        rgba(var(--slot1-primary-rgb), 0.90) 41.4%,
-        #FFFFFF 42%,
-        rgba(var(--slot2-primary-rgb), 0.90) 42.6%,
-        transparent 43.8%
-      );
-    }
-
-    #clash-cutin-overlay.matchup-neutral .cutin-center-seam {
-      background: linear-gradient(115deg,
-        transparent 48.2%,
-        rgba(var(--slot1-primary-rgb), 0.90) 49.4%,
-        #FFFFFF 50%,
-        rgba(var(--slot2-primary-rgb), 0.90) 50.6%,
-        transparent 51.8%
-      );
-    }
-
-    #clash-cutin-overlay.phase-wipein .cutin-center-seam,
-    #clash-cutin-overlay.phase-hold .cutin-center-seam {
+    #clash-cutin-overlay.phase-wipein .cutin-seam-svg,
+    #clash-cutin-overlay.phase-hold .cutin-seam-svg {
       opacity: 1;
-      transform: scale(1);
     }
 
-    #clash-cutin-overlay.phase-wipeout .cutin-center-seam {
+    /* Battle Showcase Panels (380px Pokémon + Official 6-Stat Pokédex Card) */
+    .cutin-combatant-stage {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 3.5vw;
+      pointer-events: none;
+    }
+
+    .cutin-wing-left {
+      transform: translate3d(-80px, 0, 0);
       opacity: 0;
+      transition: transform 0.50s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.40s ease;
+    }
+
+    .cutin-wing-right {
+      transform: translate3d(80px, 0, 0);
+      opacity: 0;
+      transition: transform 0.50s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.40s ease;
+    }
+
+    #clash-cutin-overlay.phase-wipein .cutin-wing-left,
+    #clash-cutin-overlay.phase-wipein .cutin-wing-right,
+    #clash-cutin-overlay.phase-hold .cutin-wing-left,
+    #clash-cutin-overlay.phase-hold .cutin-wing-right {
+      transform: translate3d(0, 0, 0);
+      opacity: 1;
+    }
+
+    #clash-cutin-overlay.phase-wipeout .cutin-wing-left {
+      transform: translate3d(-90px, 0, 0) scale(0.95);
+      opacity: 0;
+    }
+
+    #clash-cutin-overlay.phase-wipeout .cutin-wing-right {
+      transform: translate3d(90px, 0, 0) scale(0.95);
+      opacity: 0;
+    }
+
+    .cutin-art-380 {
+      width: clamp(230px, 24vw, 380px);
+      height: clamp(230px, 24vw, 380px);
+      object-fit: contain;
+      transition: transform 3.5s ease-out;
+    }
+
+    #clash-cutin-overlay.phase-hold .cutin-art-380 {
+      transform: scale(1.05);
+    }
+
+    .pokedex-stat-card {
+      background: rgba(9, 8, 18, 0.84);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(255, 255, 255, 0.24);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+      border-left: 1px solid rgba(255, 255, 255, 0.12);
+      border-right: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 14px 16px;
+      width: clamp(260px, 23vw, 340px);
+      box-shadow: 0 20px 44px rgba(0, 0, 0, 0.85);
     }
 
     .cutin-center-impact {
       position: absolute;
       left: 50%;
       top: 50%;
-      z-index: 5;
-      transform: translate(-50%, -50%) scale(0.25) rotate(-180deg);
+      z-index: 6;
+      transform: translate(-50%, -50%) scale(0.35);
       opacity: 0;
-      transition: transform 0.50s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.32s ease;
+      transition: transform 0.50s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease;
     }
 
     #clash-cutin-overlay.phase-wipein .cutin-center-impact,
     #clash-cutin-overlay.phase-hold .cutin-center-impact {
-      transform: translate(-50%, -50%) scale(1) rotate(0deg);
+      transform: translate(-50%, -50%) scale(1);
       opacity: 1;
     }
 
     #clash-cutin-overlay.phase-wipeout .cutin-center-impact {
-      transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.55s ease;
-      transform: translate(-50%, -50%) scale(1.65) rotate(90deg);
+      transform: translate(-50%, -50%) scale(1.4);
       opacity: 0;
     }
 
@@ -573,10 +553,23 @@
     ::-webkit-scrollbar-thumb:hover { background: #3B3559; }
   </style>
 </head>
-<body class="app-shell min-h-screen flex flex-col selection:bg-cyan-500/30 selection:text-cyan-200 relative">
+<body class="app-shell min-h-screen flex flex-col selection:bg-cyan-500/30 selection:text-cyan-200 relative" onclick="if(document.body.classList.contains('peek-art-active')) disablePeekArtMode(event)">
 
-  <!-- Diagonal Clash Rift & Unobstructed High-Res Watermark Renders (0.18 Opacity) -->
-  <div id="clashRiftOverlay" class="clash-rift-overlay"></div>
+  <!-- Flush Collinear Polygon Diagonal Background + SVG Energy Beam + 0.26 Watermarks -->
+  <div class="ambient-left-polygon"></div>
+  <div class="ambient-right-polygon"></div>
+  <svg class="ambient-seam-svg" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="ambientSeamGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="var(--slot1-primary)" stop-opacity="0.55" />
+        <stop offset="50%" stop-color="#A855F7" stop-opacity="0.75" />
+        <stop offset="100%" stop-color="var(--slot2-primary)" stop-opacity="0.55" />
+      </linearGradient>
+    </defs>
+    <line id="ambientSeamGlow" x1="68%" y1="0%" x2="46%" y2="100%" stroke="url(#ambientSeamGrad)" stroke-width="14" stroke-opacity="0.24" />
+    <line id="ambientSeamCore" x1="68%" y1="0%" x2="46%" y2="100%" stroke="rgba(255,255,255,0.22)" stroke-width="1.5" />
+  </svg>
+
   <div class="pointer-events-none fixed inset-0 z-0 overflow-hidden">
     <img id="bgWatermarkSlot1"
          src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/130.png"
@@ -586,45 +579,77 @@
          alt="" />
   </div>
 
+  <!-- Peek Art Floating Restore Pill -->
+  <div id="peekArtBanner" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-2.5 rounded-full bg-[#090812]/95 border border-cyan-400/60 text-xs font-extrabold text-white shadow-[0_0_30px_rgba(0,240,255,0.45)] items-center gap-3 cursor-pointer" onclick="disablePeekArtMode(event)">
+    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+    <span>PEEK ART MODE ACTIVE — Click Anywhere to Restore Command Cards</span>
+  </div>
+
   <!-- ===================================================================== -->
-  <!-- FULL-SCREEN 2.4s TYPE-MATCHUP HIGH-GROUND CUT-IN OVERLAY              -->
+  <!-- CLICK-TO-DISMISS FULL-SCREEN STAT BATTLE SHOWCASE OVERLAY             -->
   <!-- ===================================================================== -->
-  <div id="clash-cutin-overlay" class="matchup-slot1-high" aria-hidden="true">
+  <div id="clash-cutin-overlay" onclick="dismissClashCutIn()" aria-hidden="true">
     <div class="cutin-cartoon-iris"></div>
 
-    <!-- Left Slash Banner (Slot 1) -->
-    <div class="cutin-left-slash">
-      <div class="absolute left-8 top-10 sm:left-14 sm:top-12">
-        <div id="cutinLeftSub" class="text-xs sm:text-sm font-mono-num font-black uppercase tracking-[0.22em] text-cyan-200 drop-shadow">HIGH GROUND ADVANTAGE • 2x SUPER EFFECTIVE</div>
-        <div id="cutinLeftTitle" class="text-3xl sm:text-5xl font-black italic uppercase tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)]">GYARADOS</div>
+    <!-- Left Polygon Shutter (Slot 1) -->
+    <div class="cutin-left-slash"></div>
+
+    <!-- Right Polygon Shutter (Slot 2) -->
+    <div class="cutin-right-slash"></div>
+
+    <!-- 100% Collinear SVG Energy Beam along (X1%, 0%) -> (X2%, 100%) -->
+    <svg class="cutin-seam-svg" preserveAspectRatio="none">
+      <line id="cutinSeamGlowLine" x1="68%" y1="0%" x2="46%" y2="100%" stroke="url(#ambientSeamGrad)" stroke-width="26" stroke-opacity="0.75" />
+      <line id="cutinSeamCoreLine" x1="68%" y1="0%" x2="46%" y2="100%" stroke="#FFFFFF" stroke-width="4" />
+    </svg>
+
+    <!-- Full-Screen Combatant Showcase (380px Renders + Official Pokédex 6-Stat Cards) -->
+    <div class="cutin-combatant-stage">
+      <!-- Left Wing: Slot 1 Artwork + Pokédex Base Stat Card -->
+      <div class="cutin-wing-left flex flex-col xl:flex-row items-center gap-5 max-w-[44vw]">
+        <div class="relative flex flex-col items-center">
+          <div id="cutinLeftSub" class="mb-1 px-3 py-0.5 rounded-full bg-black/75 border border-cyan-400/50 text-[10px] font-mono-num font-black uppercase tracking-widest text-cyan-200">
+            HIGH GROUND ADVANTAGE • 2x SUPER EFFECTIVE
+          </div>
+          <img id="cutinArtSlot1"
+               src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/130.png"
+               class="cutin-art-380"
+               style="filter: drop-shadow(0 0 46px var(--slot1-primary)) drop-shadow(0 16px 32px rgba(0,0,0,0.92));"
+               alt="" />
+          <div id="cutinLeftTitle" class="text-2xl sm:text-4xl font-black italic uppercase tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)]">
+            GYARADOS
+          </div>
+        </div>
+
+        <!-- Slot 1 Official Pokédex Stat Card -->
+        <div id="cutinStatCardSlot1" class="pokedex-stat-card" style="border-top: 2px solid var(--slot1-primary);"></div>
+      </div>
+
+      <!-- Right Wing: Slot 2 Pokédex Base Stat Card + Artwork -->
+      <div class="cutin-wing-right flex flex-col-reverse xl:flex-row items-center gap-5 max-w-[44vw]">
+        <!-- Slot 2 Official Pokédex Stat Card -->
+        <div id="cutinStatCardSlot2" class="pokedex-stat-card" style="border-top: 2px solid var(--slot2-primary);"></div>
+
+        <div class="relative flex flex-col items-center">
+          <div id="cutinRightSub" class="mb-1 px-3 py-0.5 rounded-full bg-black/75 border border-amber-400/50 text-[10px] font-mono-num font-black uppercase tracking-widest text-amber-200">
+            LOW GROUND DEFENSE • 0.5x RESISTED
+          </div>
+          <img id="cutinArtSlot2"
+               src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/59.png"
+               class="cutin-art-380"
+               style="filter: drop-shadow(0 0 46px var(--slot2-primary)) drop-shadow(0 16px 32px rgba(0,0,0,0.92));"
+               alt="" />
+          <div id="cutinRightTitle" class="text-2xl sm:text-4xl font-black italic uppercase tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)]">
+            ARCANINE
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Right Slash Banner (Slot 2) -->
-    <div class="cutin-right-slash">
-      <div class="absolute right-8 bottom-10 sm:right-14 sm:bottom-12 text-right">
-        <div id="cutinRightSub" class="text-xs sm:text-sm font-mono-num font-black uppercase tracking-[0.22em] text-amber-200 drop-shadow">LOW GROUND DEFENSE • 0.5x RESISTED</div>
-        <div id="cutinRightTitle" class="text-3xl sm:text-5xl font-black italic uppercase tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)]">ARCANINE</div>
-      </div>
-    </div>
-
-    <!-- Diagonal Lightning Seam -->
-    <div class="cutin-center-seam"></div>
-
-    <!-- Giant 420px High-Res Official Artworks that Hold for 1.2s & Glide Into Watermarks -->
-    <img id="cutinArtSlot1"
-         src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/130.png"
-         class="cutin-art-slot1"
-         alt="" />
-    <img id="cutinArtSlot2"
-         src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/59.png"
-         class="cutin-art-slot2"
-         alt="" />
-
-    <!-- Center Spinning Poké Ball Cartoon Iris-Wipe & Arcade Matchup Banner -->
+    <!-- Center Poké Ball VS Emblem + Matchup Verdict + Click-to-Dismiss Bar -->
     <div class="cutin-center-impact flex flex-col items-center">
-      <div class="w-28 h-28 rounded-full bg-[#090812] border-4 border-white shadow-[0_0_65px_#FFFFFF,0_0_110px_#A855F7] flex items-center justify-center">
-        <svg class="w-22 h-22" viewBox="0 0 100 100">
+      <div class="w-24 h-24 rounded-full bg-[#090812] border-4 border-white shadow-[0_0_65px_#FFFFFF,0_0_110px_#A855F7] flex items-center justify-center">
+        <svg class="w-20 h-20" viewBox="0 0 100 100">
           <path d="M 6 50 A 44 44 0 0 1 94 50 Z" fill="url(#pkBallTop)" />
           <path d="M 6 50 A 44 44 0 0 0 94 50 Z" fill="#181528" />
           <circle cx="50" cy="50" r="44" fill="none" stroke="#FFFFFF" stroke-width="6" />
@@ -633,11 +658,21 @@
           <text x="50" y="55" text-anchor="middle" fill="#FACC15" font-family="Plus Jakarta Sans, sans-serif" font-weight="900" font-size="14">VS</text>
         </svg>
       </div>
-      <div id="cutinBannerHeadline" class="mt-3 px-5 py-1.5 rounded-full bg-[#090812]/95 border-2 border-white/80 text-white font-black italic uppercase tracking-wider text-sm sm:text-base shadow-[0_0_40px_rgba(0,240,255,0.8)] whitespace-nowrap">
+      <div id="cutinBannerHeadline" class="mt-3 px-5 py-1.5 rounded-full bg-[#090812]/95 border-2 border-white/85 text-white font-black italic uppercase tracking-wider text-sm sm:text-base shadow-[0_0_40px_rgba(0,240,255,0.8)] whitespace-nowrap">
         GYARADOS VS ARCANINE
       </div>
-      <div id="cutinMatchupBadge" class="mt-1.5 px-3.5 py-0.5 rounded-full bg-purple-950/90 border border-cyan-400/60 text-cyan-200 font-mono-num text-[11px] font-extrabold uppercase tracking-widest">
+      <div id="cutinMatchupBadge" class="mt-1.5 px-3.5 py-0.5 rounded-full bg-purple-950/95 border border-cyan-400/60 text-cyan-200 font-mono-num text-[11px] font-extrabold uppercase tracking-widest whitespace-nowrap">
         HIGH GROUND ADVANTAGE • 2x SUPER EFFECTIVE
+      </div>
+
+      <!-- 7-Second Auto-Dismiss Progress Bar + Interactive Click Prompt -->
+      <div class="mt-4 w-64 bg-black/80 border border-white/20 rounded-full p-1 shadow-xl">
+        <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+          <div id="cutinProgressBar" class="h-full bg-gradient-to-r from-cyan-400 via-purple-400 to-amber-400 rounded-full" style="width: 100%; transition: width 7s linear;"></div>
+        </div>
+        <div class="text-center text-[10px] font-mono-num font-bold text-slate-200 mt-1">
+          Click Anywhere or Press Space / Esc to Dismiss
+        </div>
       </div>
     </div>
   </div>
@@ -732,191 +767,69 @@
     </div>
   </div>
 
-  <!-- TOP EXECUTIVE COMMAND HEADER BAR (Single Row 68px — Never Wraps) -->
+  <!-- TIER 1: CLEAN, NON-OVERFLOWING 56px TOP EXECUTIVE BAR -->
   <header class="top-header">
-    <!-- Left: Compact Brand Mark + DROPBOT COMMANDER (V4) -->
-    <div class="flex items-center gap-2.5 shrink-0">
-      <button onclick="toggleSidebar()" title="Collapse / Expand Sidebar" class="p-2 rounded-xl bg-[#161329]/90 hover:bg-[#211C3A] border border-white/15 text-slate-200 hover:text-white transition">
+    <!-- Left: Redesigned Geometric Brand Crest + DROPBOT Wordmark + Live Armed Status Pill -->
+    <div class="flex items-center gap-3 shrink-0">
+      <button onclick="toggleSidebar()" title="Collapse / Expand Navigation Sidebar" class="p-1.5 rounded-lg bg-[#161329]/90 hover:bg-[#211C3A] border border-white/15 text-slate-200 hover:text-white transition">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
-      <div class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br from-cyan-500/30 via-purple-600/25 to-orange-500/30 border border-white/20 shadow-inner shrink-0">
-          <svg class="w-4 h-4 text-cyan-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+
+      <div class="flex items-center gap-2.5">
+        <!-- Sleek Geometric Hex Crest -->
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-[#151226] border border-cyan-400/40 shadow-[0_0_14px_rgba(0,240,255,0.2)] shrink-0">
+          <svg class="w-4 h-4 text-cyan-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <polygon points="12 2 21 7 21 17 12 22 3 17 3 7 12 2"/>
+            <circle cx="12" cy="12" r="3" fill="#FACC15" stroke="none"/>
+          </svg>
         </div>
-        <div class="leading-tight">
-          <div class="flex items-center gap-1.5">
-            <span class="text-xs sm:text-sm font-extrabold tracking-tight text-white whitespace-nowrap">DROPBOT COMMANDER</span>
-            <span class="px-1.5 py-0.5 rounded text-[9px] font-mono-num font-bold uppercase tracking-wider bg-purple-500/25 text-purple-200 border border-purple-400/40">V4</span>
-          </div>
-          <div id="activeTeamCallsign" class="text-[10px] font-semibold text-slate-300 whitespace-nowrap">Tag-Team: Gyarados &amp; Arcanine • 2x High Ground</div>
-        </div>
+        <span class="text-base font-extrabold text-white whitespace-nowrap" style="letter-spacing: -0.03em;">DROPBOT</span>
+        <span class="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/35 text-[11px] font-mono-num font-bold text-emerald-300 inline-flex items-center gap-1.5 whitespace-nowrap">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_#10B981]"></span>
+          <span id="headerArmedStoresText">31 STORES ARMED</span>
+        </span>
       </div>
     </div>
 
-    <!-- Center: Streamlined Tag-Team Battle Arena Pod (height: 52px; max-width: 540px) -->
-    <div class="relative battle-arena-pod rounded-2xl px-3 flex items-center justify-between gap-2">
-      <!-- Slot 1 (Left Flank) -->
-      <div class="flex items-center gap-2 flex-1 min-w-0">
-        <div class="relative flex items-end cursor-pointer group shrink-0" onclick="onEvolveClick(1)" title="Click Artwork to Evolve or Reset Stage 1">
-          <img id="slot1HiResArt"
-               src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/130.png"
-               class="w-[54px] h-[54px] -my-2 object-contain transition-transform duration-200 group-hover:scale-110"
-               style="filter: drop-shadow(0 0 10px var(--slot1-primary));"
-               alt="Slot 1 Artwork" />
-          <img id="slot1Sprite"
-               src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/130.gif"
-               onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/130.png'"
-               class="w-6 h-6 object-contain -ml-2.5 mb-0.5 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]"
-               alt="Slot 1 Sprite" />
-          <span id="slot1ShinyBadge" class="hidden absolute -top-1 right-0 text-[8px] font-mono-num bg-amber-400 text-slate-950 font-black rounded px-1 leading-tight shadow">SHINY</span>
-        </div>
-
-        <div class="min-w-0 leading-tight">
-          <div class="flex items-center gap-1">
-            <span id="slot1Name" onclick="onEvolveClick(1)" class="text-xs font-black text-white hover:text-cyan-300 cursor-pointer whitespace-nowrap shrink-0">Gyarados</span>
-            <button onclick="openRosterPopover(1)" class="px-1.5 py-0.2 rounded bg-white/10 hover:bg-white/20 text-[9px] font-extrabold text-cyan-200 border border-white/15 shrink-0">Switch ▾</button>
-          </div>
-          <div class="flex items-center gap-1 mt-0.5 flex-nowrap">
-            <span id="slot1TypeBadge" class="text-[8px] font-mono-num uppercase px-1.5 py-0.2 rounded bg-cyan-500/25 text-cyan-200 border border-cyan-400/40 font-extrabold whitespace-nowrap">WATER</span>
-            <button onclick="onEvolveClick(1)" id="slot1EvolveBtn" class="px-1.5 py-0.2 rounded bg-cyan-500/20 hover:bg-cyan-500/35 text-cyan-200 border border-cyan-400/40 text-[9px] font-extrabold transition whitespace-nowrap">Reset Base</button>
-            <button onclick="onShinyToggleClick(1)" id="slot1ShinyBtn" class="px-1.5 py-0.2 rounded bg-white/10 hover:bg-amber-500/30 text-slate-200 hover:text-amber-200 border border-white/15 text-[9px] font-bold transition whitespace-nowrap">Shiny</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Center Glowing SVG Poké Ball / VS Emblem on the Diagonal Seam -->
-      <button onclick="replayTagTeamClash()" title="Click to Replay Full-Screen Type-Matchup Clash"
-              class="relative z-10 mx-0.5 w-9 h-9 rounded-full bg-[#130F24] border-2 border-white/30 flex items-center justify-center shadow-[0_0_18px_rgba(168,85,247,0.65)] hover:scale-110 active:scale-95 transition-transform shrink-0 group">
-        <svg class="w-7 h-7" viewBox="0 0 100 100">
-          <defs>
-            <linearGradient id="pkBallTop" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#00F0FF" />
-              <stop offset="50%" stop-color="#A855F7" />
-              <stop offset="100%" stop-color="#F97316" />
-            </linearGradient>
-          </defs>
-          <path d="M 8 50 A 42 42 0 0 1 92 50 Z" fill="url(#pkBallTop)" />
-          <path d="M 8 50 A 42 42 0 0 0 92 50 Z" fill="#1E1B2E" />
-          <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="5" />
-          <line x1="8" y1="50" x2="92" y2="50" stroke="#090812" stroke-width="7" />
-          <circle cx="50" cy="50" r="16" fill="#090812" stroke="#F8FAFC" stroke-width="4" />
-          <text x="50" y="54" text-anchor="middle" fill="#FACC15" font-family="Plus Jakarta Sans, sans-serif" font-weight="900" font-size="13">VS</text>
-        </svg>
+    <!-- Right: Compact, Self-Explanatory Controls (Never Clip Off-Screen on 1080p) -->
+    <div class="flex items-center gap-1.5 flex-nowrap shrink-0">
+      <button onclick="toggleHeroStageMode()" id="stageModeBtn" title="Collapse or expand the Premier Pokédex Tag-Team Hero Stage below"
+              class="top-ctrl-pill bg-[#161329]/85 hover:bg-[#221D3B] text-slate-200 border border-white/15">
+        <span id="stageModeDot" class="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#00F0FF]"></span>
+        <span id="stageModeLabel">Stage: Open</span>
       </button>
 
-      <!-- Slot 2 (Right Flank) -->
-      <div class="flex items-center justify-end gap-2 flex-1 min-w-0">
-        <div class="min-w-0 leading-tight text-right">
-          <div class="flex items-center justify-end gap-1">
-            <button onclick="openRosterPopover(2)" class="px-1.5 py-0.2 rounded bg-white/10 hover:bg-white/20 text-[9px] font-extrabold text-amber-200 border border-white/15 shrink-0">Switch ▾</button>
-            <span id="slot2Name" onclick="onEvolveClick(2)" class="text-xs font-black text-white hover:text-orange-300 cursor-pointer whitespace-nowrap shrink-0">Arcanine</span>
-          </div>
-          <div class="flex items-center justify-end gap-1 mt-0.5 flex-nowrap">
-            <button onclick="onShinyToggleClick(2)" id="slot2ShinyBtn" class="px-1.5 py-0.2 rounded bg-white/10 hover:bg-amber-500/30 text-slate-200 hover:text-amber-200 border border-white/15 text-[9px] font-bold transition whitespace-nowrap">Shiny</button>
-            <button onclick="onEvolveClick(2)" id="slot2EvolveBtn" class="px-1.5 py-0.2 rounded bg-orange-500/20 hover:bg-orange-500/35 text-orange-200 border border-orange-400/40 text-[9px] font-extrabold transition whitespace-nowrap">Reset Base</button>
-            <span id="slot2TypeBadge" class="text-[8px] font-mono-num uppercase px-1.5 py-0.2 rounded bg-orange-500/25 text-orange-200 border border-orange-400/40 font-extrabold whitespace-nowrap">FIRE</span>
-          </div>
-        </div>
+      <button onclick="togglePeekArtMode(event)" id="peekArtBtn" title="Fade UI cards down to 5% opacity so you can admire the full-screen background Pokémon clash unobstructed (click anywhere to restore)"
+              class="top-ctrl-pill bg-[#161329]/85 hover:bg-[#221D3B] text-slate-200 border border-white/15">
+        <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+        <span>Peek Art</span>
+      </button>
 
-        <div class="relative flex items-end cursor-pointer group shrink-0" onclick="onEvolveClick(2)" title="Click Artwork to Evolve or Reset Stage 1">
-          <img id="slot2Sprite"
-               src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/59.gif"
-               onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/59.png'"
-               class="w-6 h-6 object-contain -mr-2.5 mb-0.5 z-10 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]"
-               alt="Slot 2 Sprite" />
-          <img id="slot2HiResArt"
-               src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/59.png"
-               class="w-[54px] h-[54px] -my-2 object-contain transition-transform duration-200 group-hover:scale-110"
-               style="filter: drop-shadow(0 0 10px var(--slot2-primary));"
-               alt="Slot 2 Artwork" />
-          <span id="slot2ShinyBadge" class="hidden absolute -top-1 right-0 text-[8px] font-mono-num bg-amber-400 text-slate-950 font-black rounded px-1 leading-tight shadow">SHINY</span>
-        </div>
-      </div>
-
-      <!-- Roster Popover Drawer -->
-      <div id="rosterPopover" class="hidden absolute top-full mt-2 left-1/2 -translate-x-1/2 w-[380px] sm:w-[460px] glass-card rounded-2xl p-4 z-50 shadow-2xl border border-white/20">
-        <div class="flex items-center justify-between pb-2.5 mb-3 border-b border-white/10">
-          <div>
-            <div class="text-xs font-extrabold text-white uppercase tracking-wider">Scott &amp; Logan Hall of Fame Roster</div>
-            <div id="rosterSlotIndicator" class="text-[10px] text-cyan-300 font-semibold">Selecting Partner for Slot 1 (Left Flank Aura)</div>
-          </div>
-          <div class="flex items-center gap-1">
-            <button onclick="switchRosterTargetSlot(1)" id="rosterSlot1Btn" class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">Slot 1</button>
-            <button onclick="switchRosterTargetSlot(2)" id="rosterSlot2Btn" class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-300 border border-white/10">Slot 2</button>
-            <button onclick="closeRosterPopover()" class="ml-1 text-slate-300 hover:text-white font-bold px-1.5">&times;</button>
-          </div>
-        </div>
-
-        <!-- Featured Tag-Team Presets -->
-        <div class="mb-3">
-          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Featured Tag-Team Presets</div>
-          <div class="grid grid-cols-2 gap-1.5">
-            <button onclick="applyTeamPreset('GYARADOS_ARCANINE')" class="px-2.5 py-1.5 rounded-lg bg-[#1B1630]/80 hover:bg-[#251E42] border border-cyan-500/30 text-left text-[11px] font-bold text-white flex items-center justify-between">
-              <span>Gyarados &amp; Arcanine</span>
-              <span class="text-[9px] text-cyan-300 font-mono-num">2x High</span>
-            </button>
-            <button onclick="applyTeamPreset('ABSOL_DISASTER')" class="px-2.5 py-1.5 rounded-lg bg-[#1B1630]/80 hover:bg-[#251E42] border border-rose-500/30 text-left text-[11px] font-bold text-white flex items-center justify-between">
-              <span>Absol &amp; Umbreon</span>
-              <span class="text-[9px] text-rose-300 font-mono-num">Dark</span>
-            </button>
-            <button onclick="applyTeamPreset('MEWTWO_CHARIZARD')" class="px-2.5 py-1.5 rounded-lg bg-[#1B1630]/80 hover:bg-[#251E42] border border-purple-500/30 text-left text-[11px] font-bold text-white flex items-center justify-between">
-              <span>Mewtwo vs. Charizard</span>
-              <span class="text-[9px] text-purple-300 font-mono-num">Clash</span>
-            </button>
-            <button onclick="applyTeamPreset('KANTO_ORIGINALS')" class="px-2.5 py-1.5 rounded-lg bg-[#1B1630]/80 hover:bg-[#251E42] border border-emerald-500/30 text-left text-[11px] font-bold text-white flex items-center justify-between">
-              <span>Squirtle vs. Charmander</span>
-              <span class="text-[9px] text-emerald-300 font-mono-num">2x High</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Individual Hall of Fame Roster -->
-        <div class="mb-3">
-          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Hall of Fame Roster (Full Evolution Chains Ready)</div>
-          <div id="hofRosterGrid" class="grid grid-cols-3 sm:grid-cols-4 gap-1.5 max-h-48 overflow-y-auto pr-1"></div>
-        </div>
-
-        <!-- Live PokeAPI Search (All 1,025 Pokémon) -->
-        <div class="pt-2 border-t border-white/10">
-          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1">Live PokéAPI Search (1 – 1,025 • Auto-Resolves Full Evolution Chain)</div>
-          <div class="flex gap-1.5">
-            <input id="pokeSearchInput" type="text" placeholder="Type name or # (e.g. lillipup, squirtle, pikachu, rayquaza)..."
-                   onkeydown="if(event.key==='Enter') searchPokeApiLive()"
-                   class="flex-1 bg-[#090710] border border-white/15 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-400" />
-            <button onclick="searchPokeApiLive()" id="pokeSearchBtn" class="px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-extrabold text-xs">Load</button>
-          </div>
-          <div id="pokeSearchStatus" class="text-[10px] text-slate-300 mt-1"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Right: Sleek Single-Line Segmented Control Bar (Zero Emojis, 6px Status Dots) -->
-    <div class="flex items-center gap-1.5 flex-nowrap shrink-0">
-      <button onclick="toggleCutInFx()" id="cutInFxBtn" title="Toggle 2.4s Type-Matchup Cartoon Cut-In Wipe"
-              class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold border transition flex items-center gap-1.5 bg-purple-500/15 text-purple-200 border-purple-400/40 hover:bg-purple-500/25 whitespace-nowrap">
+      <button onclick="toggleCutInFx()" id="cutInFxBtn" title="Toggle the full-screen VS Stat Battle Showcase on Pokémon switch or evolution"
+              class="top-ctrl-pill bg-purple-500/15 text-purple-200 border border-purple-400/40 hover:bg-purple-500/25">
         <span id="cutInFxDot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#10B981]"></span>
-        <span>Cut-In FX</span>
+        <span>Battle FX:</span>
         <span id="cutInFxState" class="font-mono-num text-emerald-400 font-extrabold">ON</span>
       </button>
 
-      <button onclick="toggleAutoLaunch()" id="autoLaunchBtn" title="Auto-open checkout tab when new In-Stock drops hit under buy trigger"
-              class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold border transition flex items-center gap-1.5 bg-[#161329]/80 text-slate-200 border-white/15 hover:border-cyan-400/50 whitespace-nowrap">
-        <span id="autoLaunchDot" class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
-        <span>Auto-Launch</span>
-        <span id="autoLaunchState" class="font-mono-num text-slate-400 font-extrabold">OFF</span>
-      </button>
-
-      <button onclick="toggleCryAudio()" id="cryAudioBtn" title="Toggle Pokédex Cry Audio on Evolution &amp; Clash"
-              class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold border transition flex items-center gap-1.5 bg-cyan-500/15 text-cyan-200 border-cyan-500/35 hover:bg-cyan-500/25 whitespace-nowrap">
+      <button onclick="toggleCryAudio()" id="cryAudioBtn" title="Toggle authentic Pokédex voice cries on evolution and battle clash"
+              class="top-ctrl-pill bg-cyan-500/15 text-cyan-200 border border-cyan-500/35 hover:bg-cyan-500/25">
         <span id="cryAudioDot" class="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#00F0FF]"></span>
-        <span>Audio</span>
+        <span>Cry Audio:</span>
         <span id="cryAudioState" class="font-mono-num text-cyan-300 font-extrabold">ON</span>
       </button>
 
-      <button onclick="sweepLiveCompsGlobal()" id="sweepCompsBtn" title="Sweep live comps &amp; refresh Market Tape + Bounty Recon"
-              class="px-3 py-1.5 rounded-lg text-[11px] font-extrabold bg-gradient-to-r from-cyan-500/25 to-blue-600/25 hover:from-cyan-500/40 hover:to-blue-600/40 text-cyan-100 border border-cyan-400/50 transition flex items-center gap-1.5 whitespace-nowrap">
+      <button onclick="toggleAutoLaunch()" id="autoLaunchBtn" title="Automatically open a browser checkout tab when a new Defcon-1 / In-Stock drop hits below your buy trigger"
+              class="top-ctrl-pill bg-[#161329]/85 text-slate-200 border border-white/15 hover:border-cyan-400/50">
+        <span id="autoLaunchDot" class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
+        <span>Auto-Checkout:</span>
+        <span id="autoLaunchState" class="font-mono-num text-slate-400 font-extrabold">OFF</span>
+      </button>
+
+      <button onclick="sweepLiveCompsGlobal()" id="sweepCompsBtn" title="Trigger live TCGPlayer + eBay market comp sweep and refresh radar"
+              class="top-ctrl-pill bg-gradient-to-r from-cyan-500/25 to-blue-600/25 hover:from-cyan-500/40 hover:to-blue-600/40 text-cyan-100 border border-cyan-400/50">
         <span class="w-1.5 h-1.5 rounded-full bg-cyan-300"></span>
-        <span id="sweepCompsText">Sweep Comps</span>
+        <span id="sweepCompsText">Sync Prices</span>
       </button>
     </div>
   </header>
@@ -1004,121 +917,308 @@
       </div>
     </aside>
 
-    <!-- Main Content Viewport -->
-    <main class="flex-1 min-w-0 p-4 lg:p-6 space-y-6 overflow-y-auto">
+    <!-- Main Content Viewport (Centered up to 1920px for 2K/4K Displays) -->
+    <main class="flex-1 min-w-0 p-4 lg:p-6 overflow-y-auto">
+      <div class="max-w-[1920px] mx-auto space-y-5">
 
-      <!-- =================================================================== -->
-      <!-- VIEW 1: LIVE COMMAND (DEFAULT HOME VIEW)                            -->
-      <!-- =================================================================== -->
-      <section id="view_LIVE_COMMAND" class="space-y-6">
-        <!-- Top Bento Row (3 Hero KPI Cards with Directional Clash Specular Borders) -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <!-- Card 1 — Vault & Portfolio Value (Tinted with Slot 1 Primary) -->
-          <div class="kpi-card machined-card kpi-card-slot1 rounded-2xl p-5 flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-extrabold uppercase tracking-wider text-slate-200 flex items-center gap-2">
-                  <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#00F0FF]"></span>
-                  <span>Vault &amp; Portfolio Value</span>
-                </span>
-                <span id="kpiPortfolioGainBadge" class="font-mono-num text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">+$129.55 Trophy Alpha</span>
+        <!-- =================================================================== -->
+        <!-- TIER 2: PREMIER "POKÉDEX TAG-TEAM & VERSUS STAGE" HERO BANNER       -->
+        <!-- =================================================================== -->
+        <div id="premierBattleStage" class="premier-battle-stage">
+          <!-- Expanded Showcase Mode (Stage: Open) -->
+          <div id="heroStageExpanded" class="px-5 py-3.5 grid grid-cols-1 xl:grid-cols-[1fr_auto_1fr] items-center gap-4">
+            <!-- Left Wing: Slot 1 Showcase -->
+            <div class="flex items-center gap-4 min-w-0">
+              <div class="relative flex items-end cursor-pointer group shrink-0" onclick="onEvolveClick(1)" title="Click Artwork to Evolve or Reset Stage 1">
+                <img id="slot1HiResArt"
+                     src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/130.png"
+                     class="w-[96px] h-[96px] sm:w-[108px] sm:h-[108px] -my-2 object-contain transition-transform duration-200 group-hover:scale-108"
+                     style="filter: drop-shadow(0 0 18px var(--slot1-primary));"
+                     alt="Slot 1 Artwork" />
+                <img id="slot1Sprite"
+                     src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/130.gif"
+                     onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/130.png'"
+                     class="w-[38px] h-[38px] object-contain -ml-4 mb-1 drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]"
+                     alt="Slot 1 Sprite" />
+                <span id="slot1ShinyBadge" class="hidden absolute top-0 right-0 text-[9px] font-mono-num bg-amber-400 text-slate-950 font-black rounded px-1.5 py-0.5 leading-tight shadow">SHINY</span>
               </div>
-              <div class="flex items-baseline gap-3 my-1.5">
-                <div id="kpiTotalPortfolioValue" class="text-3xl font-black font-mono-num text-[#F8FAFC]">$0.00</div>
-                <div id="kpiCostBasisSub" class="text-xs font-mono-num text-slate-300">Trophy Basis: $1,580.45</div>
+
+              <div class="min-w-0 flex-1 space-y-1.5">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span id="slot1Name" onclick="onEvolveClick(1)" class="text-[20px] font-black text-white hover:text-cyan-300 cursor-pointer whitespace-nowrap leading-none">Gyarados</span>
+                  <span id="slot1TypeBadge" class="text-[10px] font-mono-num uppercase px-2 py-0.5 rounded bg-cyan-500/25 text-cyan-200 border border-cyan-400/40 font-extrabold whitespace-nowrap">WATER / FLYING</span>
+                </div>
+                <div id="slot1InlineStats" class="text-[11px] font-mono-num text-slate-200 whitespace-nowrap">
+                  BST: <strong class="text-cyan-300">540</strong> • HP 95 / ATK 125 / DEF 79 / SPD 81
+                </div>
+                <!-- Spacious Non-Overlapping Action Pills -->
+                <div class="flex items-center gap-1.5 flex-wrap pt-0.5">
+                  <button onclick="openRosterPopover(1)" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] font-extrabold text-cyan-200 border border-white/15 whitespace-nowrap transition">Switch ▾</button>
+                  <button onclick="onEvolveClick(1)" id="slot1EvolveBtn" class="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/35 text-cyan-200 border border-cyan-400/40 text-[11px] font-extrabold whitespace-nowrap transition">Reset Base</button>
+                  <button onclick="onShinyToggleClick(1)" id="slot1ShinyBtn" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-amber-500/30 text-slate-200 hover:text-amber-200 border border-white/15 text-[11px] font-bold whitespace-nowrap transition">Shiny OFF</button>
+                  <button onclick="onResetBaseClick(1)" id="slot1ResetBaseBtn" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/15 text-slate-300 border border-white/10 text-[11px] font-semibold whitespace-nowrap transition">Stage 1</button>
+                </div>
               </div>
             </div>
-            <div class="space-y-2.5 pt-3 mt-3 border-t border-white/10">
+
+            <!-- Center Clash Core (58px Poké Ball VS Core + Verdict Badge + Full-Screen Battle Button) -->
+            <div class="flex flex-col items-center justify-center px-3 py-1 border-y xl:border-y-0 xl:border-x border-white/10">
+              <div class="flex items-center gap-3">
+                <button onclick="replayTagTeamClash()" title="Launch Full-Screen Interactive Stat Battle Showcase"
+                        class="relative w-[58px] h-[58px] rounded-full bg-[#130F24] border-2 border-white/45 flex items-center justify-center shadow-[0_0_26px_rgba(168,85,247,0.75)] hover:scale-110 active:scale-95 transition-transform shrink-0">
+                  <svg class="w-12 h-12" viewBox="0 0 100 100">
+                    <defs>
+                      <linearGradient id="pkBallTop" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#00F0FF" />
+                        <stop offset="50%" stop-color="#A855F7" />
+                        <stop offset="100%" stop-color="#F97316" />
+                      </linearGradient>
+                    </defs>
+                    <path d="M 8 50 A 42 42 0 0 1 92 50 Z" fill="url(#pkBallTop)" />
+                    <path d="M 8 50 A 42 42 0 0 0 92 50 Z" fill="#1E1B2E" />
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="5" />
+                    <line x1="8" y1="50" x2="92" y2="50" stroke="#090812" stroke-width="7" />
+                    <circle cx="50" cy="50" r="16" fill="#090812" stroke="#F8FAFC" stroke-width="4" />
+                    <text x="50" y="54" text-anchor="middle" fill="#FACC15" font-family="Plus Jakarta Sans, sans-serif" font-weight="900" font-size="13">VS</text>
+                  </svg>
+                </button>
+              </div>
+              <div id="stageCenterVerdictBadge" class="mt-1.5 px-3 py-0.5 rounded-full bg-black/55 border border-cyan-400/45 text-[10px] font-mono-num font-extrabold uppercase tracking-wider text-cyan-200 whitespace-nowrap">
+                2x HIGH GROUND ADVANTAGE
+              </div>
+              <div class="mt-1.5 flex items-center gap-1.5">
+                <button onclick="replayTagTeamClash()" class="px-2.5 py-0.5 rounded-md bg-purple-500/25 hover:bg-purple-500/40 text-purple-100 border border-purple-400/40 text-[10px] font-extrabold whitespace-nowrap transition">
+                  Full-Screen Battle
+                </button>
+                <button onclick="toggleHeroStageMode()" class="px-2 py-0.5 rounded-md bg-white/5 hover:bg-white/15 text-slate-300 border border-white/10 text-[10px] font-bold whitespace-nowrap transition">
+                  Mini ▴
+                </button>
+              </div>
+            </div>
+
+            <!-- Right Wing: Slot 2 Showcase -->
+            <div class="flex items-center justify-end gap-4 min-w-0">
+              <div class="min-w-0 flex-1 space-y-1.5 text-right">
+                <div class="flex items-center justify-end gap-2 flex-wrap">
+                  <span id="slot2TypeBadge" class="text-[10px] font-mono-num uppercase px-2 py-0.5 rounded bg-orange-500/25 text-orange-200 border border-orange-400/40 font-extrabold whitespace-nowrap">FIRE</span>
+                  <span id="slot2Name" onclick="onEvolveClick(2)" class="text-[20px] font-black text-white hover:text-orange-300 cursor-pointer whitespace-nowrap leading-none">Arcanine</span>
+                </div>
+                <div id="slot2InlineStats" class="text-[11px] font-mono-num text-slate-200 whitespace-nowrap">
+                  BST: <strong class="text-amber-300">555</strong> • HP 90 / ATK 110 / DEF 80 / SPD 95
+                </div>
+                <!-- Spacious Non-Overlapping Action Pills -->
+                <div class="flex items-center justify-end gap-1.5 flex-wrap pt-0.5">
+                  <button onclick="onResetBaseClick(2)" id="slot2ResetBaseBtn" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/15 text-slate-300 border border-white/10 text-[11px] font-semibold whitespace-nowrap transition">Stage 1</button>
+                  <button onclick="onShinyToggleClick(2)" id="slot2ShinyBtn" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-amber-500/30 text-slate-200 hover:text-amber-200 border border-white/15 text-[11px] font-bold whitespace-nowrap transition">Shiny OFF</button>
+                  <button onclick="onEvolveClick(2)" id="slot2EvolveBtn" class="px-2.5 py-1 rounded-lg bg-orange-500/20 hover:bg-orange-500/35 text-orange-200 border border-orange-400/40 text-[11px] font-extrabold whitespace-nowrap transition">Reset Base</button>
+                  <button onclick="openRosterPopover(2)" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] font-extrabold text-amber-200 border border-white/15 whitespace-nowrap transition">Switch ▾</button>
+                </div>
+              </div>
+
+              <div class="relative flex items-end cursor-pointer group shrink-0" onclick="onEvolveClick(2)" title="Click Artwork to Evolve or Reset Stage 1">
+                <img id="slot2Sprite"
+                     src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/59.gif"
+                     onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/59.png'"
+                     class="w-[38px] h-[38px] object-contain -mr-4 mb-1 z-10 drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]"
+                     alt="Slot 2 Sprite" />
+                <img id="slot2HiResArt"
+                     src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/59.png"
+                     class="w-[96px] h-[96px] sm:w-[108px] sm:h-[108px] -my-2 object-contain transition-transform duration-200 group-hover:scale-108"
+                     style="filter: drop-shadow(0 0 18px var(--slot2-primary));"
+                     alt="Slot 2 Artwork" />
+                <span id="slot2ShinyBadge" class="hidden absolute top-0 right-0 text-[9px] font-mono-num bg-amber-400 text-slate-950 font-black rounded px-1.5 py-0.5 leading-tight shadow">SHINY</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Collapsed Slim Ribbon Mode (Stage: Mini, 44px height) -->
+          <div id="heroStageMini" class="hidden h-[44px] px-4 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <img id="miniSlot1Sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/130.png" class="w-7 h-7 object-contain" alt="" />
+              <span id="activeTeamCallsign" class="text-xs font-extrabold text-white truncate">Gyarados vs. Arcanine • 2x High Ground Advantage</span>
+              <img id="miniSlot2Sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/59.png" class="w-7 h-7 object-contain" alt="" />
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button onclick="openRosterPopover(1)" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] font-bold text-cyan-200 whitespace-nowrap">Switch Slot 1</button>
+              <button onclick="openRosterPopover(2)" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] font-bold text-amber-200 whitespace-nowrap">Switch Slot 2</button>
+              <button onclick="replayTagTeamClash()" class="px-2.5 py-1 rounded-lg bg-purple-500/25 hover:bg-purple-500/40 text-[11px] font-extrabold text-purple-200 border border-purple-400/40 whitespace-nowrap">Full-Screen Battle</button>
+              <button onclick="toggleHeroStageMode()" class="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/35 text-[11px] font-extrabold text-cyan-200 border border-cyan-400/40 whitespace-nowrap">Expand Arena ▾</button>
+            </div>
+          </div>
+
+          <!-- Roster Popover Drawer -->
+          <div id="rosterPopover" class="hidden absolute top-full mt-2 left-1/2 -translate-x-1/2 w-[380px] sm:w-[480px] glass-card rounded-2xl p-4 z-50 shadow-2xl border border-white/25" style="background: rgba(11, 10, 20, 0.94); backdrop-filter: blur(16px);">
+            <div class="flex items-center justify-between pb-2.5 mb-3 border-b border-white/10">
               <div>
-                <div class="flex justify-between text-xs font-semibold mb-1.5">
-                  <span class="text-slate-200">Wall Display ETBs</span>
-                  <span id="kpiWallEtbProgressText" class="font-mono-num text-cyan-300 font-bold">0 / 38</span>
+                <div class="text-xs font-extrabold text-white uppercase tracking-wider">Scott &amp; Logan Hall of Fame Roster</div>
+                <div id="rosterSlotIndicator" class="text-[10px] text-cyan-300 font-semibold">Selecting Partner for Slot 1 (Left Flank Aura)</div>
+              </div>
+              <div class="flex items-center gap-1">
+                <button onclick="switchRosterTargetSlot(1)" id="rosterSlot1Btn" class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">Slot 1</button>
+                <button onclick="switchRosterTargetSlot(2)" id="rosterSlot2Btn" class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-300 border border-white/10">Slot 2</button>
+                <button onclick="closeRosterPopover()" class="ml-1 text-slate-300 hover:text-white font-bold px-1.5">&times;</button>
+              </div>
+            </div>
+
+            <!-- Featured Tag-Team Presets -->
+            <div class="mb-3">
+              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Featured Tag-Team Presets</div>
+              <div class="grid grid-cols-2 gap-1.5">
+                <button onclick="applyTeamPreset('GYARADOS_ARCANINE')" class="px-2.5 py-1.5 rounded-lg bg-[#1B1630]/80 hover:bg-[#251E42] border border-cyan-500/30 text-left text-[11px] font-bold text-white flex items-center justify-between">
+                  <span>Gyarados &amp; Arcanine</span>
+                  <span class="text-[9px] text-cyan-300 font-mono-num">2x High</span>
+                </button>
+                <button onclick="applyTeamPreset('ABSOL_DISASTER')" class="px-2.5 py-1.5 rounded-lg bg-[#1B1630]/80 hover:bg-[#251E42] border border-rose-500/30 text-left text-[11px] font-bold text-white flex items-center justify-between">
+                  <span>Absol &amp; Umbreon</span>
+                  <span class="text-[9px] text-rose-300 font-mono-num">Dark</span>
+                </button>
+                <button onclick="applyTeamPreset('MEWTWO_CHARIZARD')" class="px-2.5 py-1.5 rounded-lg bg-[#1B1630]/80 hover:bg-[#251E42] border border-purple-500/30 text-left text-[11px] font-bold text-white flex items-center justify-between">
+                  <span>Mewtwo vs. Charizard</span>
+                  <span class="text-[9px] text-purple-300 font-mono-num">Clash</span>
+                </button>
+                <button onclick="applyTeamPreset('KANTO_ORIGINALS')" class="px-2.5 py-1.5 rounded-lg bg-[#1B1630]/80 hover:bg-[#251E42] border border-emerald-500/30 text-left text-[11px] font-bold text-white flex items-center justify-between">
+                  <span>Squirtle vs. Charmander</span>
+                  <span class="text-[9px] text-emerald-300 font-mono-num">2x High</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Individual Hall of Fame Roster -->
+            <div class="mb-3">
+              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Hall of Fame Roster (Full Evolution Chains Ready)</div>
+              <div id="hofRosterGrid" class="grid grid-cols-3 sm:grid-cols-4 gap-1.5 max-h-48 overflow-y-auto pr-1"></div>
+            </div>
+
+            <!-- Live PokeAPI Search (All 1,025 Pokémon) -->
+            <div class="pt-2 border-t border-white/10">
+              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1">Live PokéAPI Search (1 – 1,025 • Auto-Resolves Full Evolution Chain &amp; Base Stats)</div>
+              <div class="flex gap-1.5">
+                <input id="pokeSearchInput" type="text" placeholder="Type name or # (e.g. lillipup, squirtle, pikachu, rayquaza)..."
+                       onkeydown="if(event.key==='Enter') searchPokeApiLive()"
+                       class="flex-1 bg-[#090710] border border-white/15 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-400" />
+                <button onclick="searchPokeApiLive()" id="pokeSearchBtn" class="px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-extrabold text-xs">Load</button>
+              </div>
+              <div id="pokeSearchStatus" class="text-[10px] text-slate-300 mt-1"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- =================================================================== -->
+        <!-- VIEW 1: LIVE COMMAND (DEFAULT HOME VIEW)                            -->
+        <!-- =================================================================== -->
+        <section id="view_LIVE_COMMAND" class="space-y-6">
+          <!-- Top Bento Row (3 Hero KPI Cards — 1080p/2K/4K Responsive, Zero Broken Wrapping) -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <!-- Card 1 — Vault & Portfolio Value (Hero Number on Own Line, Basis Directly Underneath) -->
+            <div class="kpi-card machined-card kpi-card-slot1 rounded-2xl p-5 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <span class="text-xs font-extrabold uppercase tracking-wider text-slate-200 flex items-center gap-2 whitespace-nowrap">
+                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#00F0FF]"></span>
+                    <span>Vault &amp; Portfolio Value</span>
+                  </span>
+                  <span id="kpiPortfolioGainBadge" class="font-mono-num text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 whitespace-nowrap shrink-0">+$129.55 Trophy Alpha</span>
                 </div>
-                <div class="w-full h-2 bg-slate-900/80 rounded-full overflow-hidden border border-white/5">
-                  <div id="kpiWallEtbBar" class="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full transition-all duration-300" style="width: 35%"></div>
+                <!-- Hero Value on Own Clean Line + Trophy Basis Directly Underneath -->
+                <div id="kpiTotalPortfolioValue" class="hero-kpi-value font-black font-mono-num text-[#F8FAFC] mt-1">$0.00</div>
+                <div id="kpiCostBasisSub" class="text-xs font-mono-num text-slate-300 mt-1 whitespace-nowrap">Trophy Basis: $1,580.45</div>
+              </div>
+              <div class="space-y-2.5 pt-3 mt-3 border-t border-white/10">
+                <div>
+                  <div class="flex justify-between items-center text-xs font-semibold mb-1.5 gap-2">
+                    <span class="text-slate-200 whitespace-nowrap">Wall Display ETBs</span>
+                    <span id="kpiWallEtbProgressText" class="font-mono-num text-cyan-300 font-bold whitespace-nowrap">0 / 38</span>
+                  </div>
+                  <div class="w-full h-2 bg-slate-900/80 rounded-full overflow-hidden border border-white/5">
+                    <div id="kpiWallEtbBar" class="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full transition-all duration-300" style="width: 35%"></div>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between gap-2 text-xs pt-1">
+                  <span class="text-slate-300 whitespace-nowrap">Conquered Vault Trophies</span>
+                  <button onclick="switchMainView('CONQUERED_VAULT')" id="kpiConqueredCountPill" class="font-mono-num font-extrabold text-amber-300 hover:underline whitespace-nowrap shrink-0">2 Plaques Locked ↗</button>
                 </div>
               </div>
-              <div class="flex items-center justify-between text-xs pt-1">
-                <span class="text-slate-300">Conquered Vault Trophies</span>
-                <button onclick="switchMainView('CONQUERED_VAULT')" id="kpiConqueredCountPill" class="font-mono-num font-extrabold text-amber-300 hover:underline">2 Plaques Locked ↗</button>
+            </div>
+
+            <!-- Card 2 — Active Sniper Radar (Clickable Rows with Discount % + Single-Line Footer) -->
+            <div class="kpi-card machined-card kpi-card-clash rounded-2xl p-5 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <span class="text-xs font-extrabold uppercase tracking-wider text-slate-200 flex items-center gap-2 whitespace-nowrap">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981]"></span>
+                    <span>Active Sniper Radar</span>
+                  </span>
+                  <span id="kpiStoreSweepHealth" class="font-mono-num text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-200 border border-cyan-400/40 whitespace-nowrap shrink-0">31/31 LGS + Big-Box</span>
+                </div>
+                <div class="flex items-baseline gap-2.5 mb-2">
+                  <div id="kpiInStockCount" class="hero-kpi-value font-black font-mono-num text-emerald-400">0</div>
+                  <div class="text-xs text-slate-200 font-bold whitespace-nowrap">Targets Under Buy Trigger</div>
+                </div>
+                <!-- Scannable Compact Telemetry Mini-Table (3 Clickable Rows with Discount %) -->
+                <div id="kpiActiveRadarPills" class="space-y-1.5 mt-1"></div>
+              </div>
+              <div class="pt-2.5 mt-2.5 border-t border-white/10 flex items-center justify-between gap-2 text-[11px] whitespace-nowrap">
+                <span class="text-slate-300 truncate">6-Hour Sync &amp; Proxy Pool</span>
+                <span class="font-mono-num text-emerald-400 font-bold flex items-center gap-1.5 shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>6-Hour Sync • ARMED</span>
+              </div>
+            </div>
+
+            <!-- Card 3 — Unicorn MSRP Trophy Counter -->
+            <div class="kpi-card unicorn-holo-card rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden">
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <span class="text-xs font-extrabold uppercase tracking-wider text-cyan-200 flex items-center gap-2 whitespace-nowrap">
+                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-300 shadow-[0_0_8px_#00F0FF]"></span>
+                    <span>Unicorn MSRP Trophy Counter</span>
+                  </span>
+                  <span class="font-mono-num text-[10px] font-black px-2 py-0.5 rounded bg-cyan-400/25 text-cyan-100 border border-cyan-300/50 whitespace-nowrap shrink-0">DEFCON-1 OVERRIDE</span>
+                </div>
+                <div class="flex items-baseline gap-3 my-1">
+                  <div id="kpiMsrpHitCount" class="hero-kpi-value font-black font-mono-num text-cyan-300">1</div>
+                  <div class="text-xs font-bold text-white whitespace-nowrap">True Retail MSRP Catches</div>
+                </div>
+                <div id="kpiLatestMsrpCatchBox" class="mt-2 p-2.5 rounded-xl bg-black/45 border border-cyan-400/35 text-xs">
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="font-extrabold text-white truncate">Mega Evolution: Chaos Rising ETB</span>
+                    <span class="font-mono-num font-black text-emerald-400 shrink-0">$51.00</span>
+                  </div>
+                  <div class="text-[11px] text-cyan-100 mt-1 flex items-center justify-between gap-2">
+                    <span class="truncate">Cooperstown Cards • 7% Below $54.99 MSRP</span>
+                    <button onclick="switchMainView('CONQUERED_VAULT')" class="text-amber-300 font-bold hover:underline whitespace-nowrap shrink-0">Trophy #2 ↗</button>
+                  </div>
+                </div>
+              </div>
+              <div class="pt-2.5 mt-2.5 border-t border-cyan-400/25 flex items-center justify-between gap-2 text-[11px] text-cyan-100 whitespace-nowrap">
+                <span class="truncate">Bypasses Vault Lock on &le; MSRP</span>
+                <span class="font-mono-num font-bold text-amber-300 shrink-0">Order #B108C090-96CCFE-CA0AF</span>
               </div>
             </div>
           </div>
 
-          <!-- Card 2 — Active Sniper Radar (Compact Telemetry Mini-Table) -->
-          <div class="kpi-card machined-card kpi-card-clash rounded-2xl p-5 flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-extrabold uppercase tracking-wider text-slate-200 flex items-center gap-2">
+          <!-- Live Deal Feed & Recent Discord Alert Hits -->
+          <div class="glass-card machined-card rounded-2xl p-5 space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-white/10">
+              <div>
+                <h2 class="text-sm font-extrabold uppercase tracking-wider text-white flex items-center gap-2">
                   <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981]"></span>
-                  <span>Active Sniper Radar</span>
-                </span>
-                <span id="kpiStoreSweepHealth" class="font-mono-num text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-200 border border-cyan-400/40">31/31 LGS + Big-Box</span>
+                  <span>Live Deal Feed &amp; Recent Discord Alert Hits</span>
+                </h2>
+                <p class="text-[11px] text-slate-300 mt-0.5">Complete Spread Math (<span class="font-mono-num text-emerald-400 font-semibold">-XX% Under Mkt / Save $XX</span>), <span class="font-mono-num text-emerald-400 font-semibold">$/Pack</span> Rip Math, and Configured <span class="font-mono-num text-cyan-300 font-semibold">Trigger: $XXX</span> on every card</p>
               </div>
-              <div class="flex items-baseline gap-2.5 mb-2">
-                <div id="kpiInStockCount" class="text-3xl font-black font-mono-num text-emerald-400">0</div>
-                <div class="text-xs text-slate-200 font-bold">Targets Under Buy Trigger</div>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <button onclick="setDealFeedFilter('ALL')" id="dfPill_ALL" class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-cyan-500 text-slate-950 whitespace-nowrap transition">All Hits</button>
+                <button onclick="setDealFeedFilter('UNDER_TRIGGER')" id="dfPill_UNDER_TRIGGER" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-slate-200 border border-white/10 hover:text-white whitespace-nowrap transition">Under Trigger</button>
+                <button onclick="setDealFeedFilter('CASES')" id="dfPill_CASES" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-slate-200 border border-white/10 hover:text-white whitespace-nowrap transition">Sealed Cases</button>
+                <button onclick="setDealFeedFilter('ETBS_BOXES')" id="dfPill_ETBS_BOXES" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-slate-200 border border-white/10 hover:text-white whitespace-nowrap transition">ETBs &amp; Boxes</button>
+                <button onclick="setDealFeedFilter('BEST_PACK')" id="dfPill_BEST_PACK" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20 whitespace-nowrap transition">Best $/Pack</button>
+                <button onclick="openClaimModal()" class="ml-1 px-3 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-extrabold whitespace-nowrap transition">
+                  + Log Manual Trophy
+                </button>
               </div>
-              <!-- Scannable Compact Telemetry Mini-Table (3 Aligned Rows) -->
-              <div id="kpiActiveRadarPills" class="space-y-1.5 mt-1"></div>
             </div>
-            <div class="pt-2.5 mt-2.5 border-t border-white/10 flex items-center justify-between text-[11px]">
-              <span class="text-slate-300">6-Hour Baseline Sync &amp; Proxy Pool</span>
-              <span class="font-mono-num text-emerald-400 font-bold flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>ARMED &amp; NOMINAL</span>
-            </div>
-          </div>
 
-          <!-- Card 3 — Unicorn MSRP Trophy Counter -->
-          <div class="kpi-card unicorn-holo-card rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden">
-            <div>
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-extrabold uppercase tracking-wider text-cyan-200 flex items-center gap-2">
-                  <span class="w-1.5 h-1.5 rounded-full bg-cyan-300 shadow-[0_0_8px_#00F0FF]"></span>
-                  <span>Unicorn MSRP Trophy Counter</span>
-                </span>
-                <span class="font-mono-num text-[10px] font-black px-2 py-0.5 rounded bg-cyan-400/25 text-cyan-100 border border-cyan-300/50">DEFCON-1 OVERRIDE</span>
-              </div>
-              <div class="flex items-baseline gap-3 my-1">
-                <div id="kpiMsrpHitCount" class="text-3xl font-black font-mono-num text-cyan-300">1</div>
-                <div class="text-xs font-bold text-white">True Retail MSRP Catches</div>
-              </div>
-              <div id="kpiLatestMsrpCatchBox" class="mt-2 p-2.5 rounded-xl bg-black/45 border border-cyan-400/35 text-xs">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="font-extrabold text-white truncate">Mega Evolution: Chaos Rising ETB</span>
-                  <span class="font-mono-num font-black text-emerald-400 shrink-0">$51.00</span>
-                </div>
-                <div class="text-[11px] text-cyan-100 mt-1 flex items-center justify-between">
-                  <span>Cooperstown Cards • 7% Below $54.99 MSRP</span>
-                  <button onclick="switchMainView('CONQUERED_VAULT')" class="text-amber-300 font-bold hover:underline">Trophy #2 ↗</button>
-                </div>
-              </div>
-            </div>
-            <div class="pt-2.5 mt-2.5 border-t border-cyan-400/25 flex items-center justify-between text-[11px] text-cyan-100">
-              <span>Bypasses Vault Lock on &le; MSRP</span>
-              <span class="font-mono-num font-bold text-amber-300">Order #B108C090-96CCFE-CA0AF</span>
-            </div>
+            <div id="liveDealFeedGrid" class="live-deal-grid"></div>
           </div>
-        </div>
-
-        <!-- Live Deal Feed & Recent Discord Alert Hits -->
-        <div class="glass-card machined-card rounded-2xl p-5 space-y-4">
-          <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-white/10">
-            <div>
-              <h2 class="text-sm font-extrabold uppercase tracking-wider text-white flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981]"></span>
-                <span>Live Deal Feed &amp; Recent Discord Alert Hits</span>
-              </h2>
-              <p class="text-[11px] text-slate-300 mt-0.5">Instant Rule-of-3 Shopify Checkout links, <span class="font-mono-num text-emerald-400 font-semibold">$/Pack</span> Rip Math (&le; $4.25/pk glows Emerald), and 1-Click Trophy Claim</p>
-            </div>
-            <div class="flex items-center gap-2">
-              <button onclick="openClaimModal()" class="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-extrabold transition">
-                + Log Manual Trophy
-              </button>
-            </div>
-          </div>
-
-          <div id="liveDealFeedGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
-        </div>
 
         <!-- Market Intelligence Bento (3 Columns) + Collapsible 14-Day Market Ledger -->
         <div class="space-y-4">
@@ -1359,11 +1459,12 @@
         <div id="catalogContainer" class="space-y-8"></div>
       </section>
 
+      </div>
     </main>
   </div>
   <script>
     // =========================================================================
-    // 1. DYNAMIC POKÉDEX CHAMELEON, 18-TYPE MATCHUP & 2.4s CUT-IN ENGINE
+    // 1. DYNAMIC POKÉDEX CHAMELEON, 18-TYPE MATCHUP & STAT BATTLE SHOWCASE ENGINE
     // =========================================================================
     const ELEMENTAL_SPECTRUM = {
       water:    { hex: '#00F0FF', rgb: '0, 240, 255',   secondary: '#3B82F6', label: 'WATER',    badgeCls: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30' },
@@ -1386,7 +1487,6 @@
       bug:      { hex: '#84CC16', rgb: '132, 204, 22',  secondary: '#10B981', label: 'BUG',      badgeCls: 'bg-lime-500/20 text-lime-300 border-lime-500/30' }
     };
 
-    // Complete 18-Type Pokémon Offensive Effectiveness Chart
     const TYPE_CHART_18 = {
       normal:   { rock: 0.5, ghost: 0, steel: 0.5 },
       fire:     { fire: 0.5, water: 0.5, grass: 2, ice: 2, bug: 2, rock: 0.5, dragon: 0.5, steel: 2 },
@@ -1428,7 +1528,7 @@
       const s1Mult = calcBestOffensiveMultiplier(slot1Types, slot2Types);
       const s2Mult = calcBestOffensiveMultiplier(slot2Types, slot1Types);
 
-      // Case A: Slot 1 Has Type Advantage (> 1x and >= Slot 2) -> Dominant Top-Left High Ground (58%) slashing down at 125deg
+      // Case A: Slot 1 Has Type Advantage (> 1x and >= Slot 2) -> Flush Seam (X1=68% top, X2=46% bottom)
       if (s1Mult > 1 && s1Mult >= s2Mult) {
         return {
           winner: 1,
@@ -1436,17 +1536,17 @@
           slot2Mult: s2Mult,
           overlayClass: 'matchup-slot1-high',
           clashAngle: '125deg',
-          slot1Stop: '46%',
-          midStop: '58%',
-          slot2Stop: '70%',
+          seamX1: '68%',
+          seamX2: '46%',
           bannerText: 'HIGH GROUND ADVANTAGE • ' + s1Mult + 'x SUPER EFFECTIVE',
           leftSub: 'HIGH GROUND ADVANTAGE • ' + s1Mult + 'x SUPER EFFECTIVE',
           rightSub: 'LOW GROUND DEFENSE • ' + (s2Mult < 1 ? (s2Mult + 'x RESISTED') : (s2Mult + 'x NEUTRAL')),
-          callsignSuffix: s1Mult + 'x High Ground (Slot 1)'
+          callsignSuffix: s1Mult + 'x High Ground (Slot 1)',
+          verdictShort: s1Mult + 'x SLOT 1'
         };
       }
 
-      // Case B: Slot 2 Has Type Advantage (> 1x over Slot 1) -> Dominant Top-Right High Ground (58%) slashing down at 55deg
+      // Case B: Slot 2 Has Type Advantage (> 1x over Slot 1) -> Flush Seam (X1=54% top, X2=32% bottom)
       if (s2Mult > 1 && s2Mult > s1Mult) {
         return {
           winner: 2,
@@ -1454,96 +1554,81 @@
           slot2Mult: s2Mult,
           overlayClass: 'matchup-slot2-high',
           clashAngle: '55deg',
-          slot1Stop: '30%',
-          midStop: '42%',
-          slot2Stop: '54%',
+          seamX1: '54%',
+          seamX2: '32%',
           bannerText: 'HIGH GROUND ADVANTAGE • ' + s2Mult + 'x SUPER EFFECTIVE',
           leftSub: 'LOW GROUND DEFENSE • ' + (s1Mult < 1 ? (s1Mult + 'x RESISTED') : (s1Mult + 'x NEUTRAL')),
           rightSub: 'HIGH GROUND ADVANTAGE • ' + s2Mult + 'x SUPER EFFECTIVE',
-          callsignSuffix: s2Mult + 'x High Ground (Slot 2)'
+          callsignSuffix: s2Mult + 'x High Ground (Slot 2)',
+          verdictShort: s2Mult + 'x SLOT 2'
         };
       }
 
-      // Case C: Neutral Matchup (1x) -> Balanced 50/50 Center Clash + Spinning Poké Ball Cartoon Iris-Wipe
+      // Case C: Neutral Matchup (1x) -> Balanced Flush Seam (X1=56% top, X2=44% bottom)
       return {
         winner: 0,
         slot1Mult: s1Mult,
         slot2Mult: s2Mult,
         overlayClass: 'matchup-neutral',
         clashAngle: '115deg',
-        slot1Stop: '38%',
-        midStop: '50%',
-        slot2Stop: '62%',
+        seamX1: '56%',
+        seamX2: '44%',
         bannerText: 'BALANCED ELEMENTAL CLASH • 1x NEUTRAL MATCHUP',
         leftSub: 'SLOT 1 VANGUARD • ' + s1Mult + 'x EVEN CLASH',
         rightSub: 'SLOT 2 STRIKER • ' + s2Mult + 'x EVEN CLASH',
-        callsignSuffix: 'Balanced 50/50 Arena'
+        callsignSuffix: 'Balanced 50/50 Arena',
+        verdictShort: '1x EVEN'
       };
     }
 
     const HALL_OF_FAME_DEX = {
-      // Magikarp ➔ Gyarados
-      129: { id: 129, name: 'Magikarp',   type: 'water',    types: ['water'],           nextId: 130,  baseId: 129, chain: [129, 130] },
-      130: { id: 130, name: 'Gyarados',   type: 'water',    types: ['water', 'flying'], nextId: null, baseId: 129, chain: [129, 130] },
-      // Growlithe ➔ Arcanine
-      58:  { id: 58,  name: 'Growlithe',  type: 'fire',     types: ['fire'],            nextId: 59,   baseId: 58,  chain: [58, 59] },
-      59:  { id: 59,  name: 'Arcanine',   type: 'fire',     types: ['fire'],            nextId: null, baseId: 58,  chain: [58, 59] },
-      // Squirtle ➔ Wartortle ➔ Blastoise
-      7:   { id: 7,   name: 'Squirtle',   type: 'water',    types: ['water'],           nextId: 8,    baseId: 7,   chain: [7, 8, 9] },
-      8:   { id: 8,   name: 'Wartortle',  type: 'water',    types: ['water'],           nextId: 9,    baseId: 7,   chain: [7, 8, 9] },
-      9:   { id: 9,   name: 'Blastoise',  type: 'water',    types: ['water'],           nextId: null, baseId: 7,   chain: [7, 8, 9] },
-      // Charmander ➔ Charmeleon ➔ Charizard
-      4:   { id: 4,   name: 'Charmander', type: 'fire',     types: ['fire'],            nextId: 5,    baseId: 4,   chain: [4, 5, 6] },
-      5:   { id: 5,   name: 'Charmeleon', type: 'fire',     types: ['fire'],            nextId: 6,    baseId: 4,   chain: [4, 5, 6] },
-      6:   { id: 6,   name: 'Charizard',  type: 'fire',     types: ['fire', 'flying'],  nextId: null, baseId: 4,   chain: [4, 5, 6] },
-      // Bulbasaur ➔ Ivysaur ➔ Venusaur
-      1:   { id: 1,   name: 'Bulbasaur',  type: 'grass',    types: ['grass', 'poison'], nextId: 2,    baseId: 1,   chain: [1, 2, 3] },
-      2:   { id: 2,   name: 'Ivysaur',    type: 'grass',    types: ['grass', 'poison'], nextId: 3,    baseId: 1,   chain: [1, 2, 3] },
-      3:   { id: 3,   name: 'Venusaur',   type: 'grass',    types: ['grass', 'poison'], nextId: null, baseId: 1,   chain: [1, 2, 3] },
-      // Lillipup ➔ Herdier ➔ Stoutland
-      506: { id: 506, name: 'Lillipup',   type: 'normal',   types: ['normal'],          nextId: 507,  baseId: 506, chain: [506, 507, 508] },
-      507: { id: 507, name: 'Herdier',    type: 'normal',   types: ['normal'],          nextId: 508,  baseId: 506, chain: [506, 507, 508] },
-      508: { id: 508, name: 'Stoutland',  type: 'normal',   types: ['normal'],          nextId: null, baseId: 506, chain: [506, 507, 508] },
-      // Eevee Multi-Branch Evolution Cycle
-      133: { id: 133, name: 'Eevee',      type: 'normal',   types: ['normal'],          nextId: 134,  baseId: 133, chain: [133, 134, 135, 136, 196, 197, 470, 471, 700] },
-      134: { id: 134, name: 'Vaporeon',   type: 'water',    types: ['water'],           nextId: 135,  baseId: 133, chain: [133, 134, 135, 136, 196, 197, 470, 471, 700] },
-      135: { id: 135, name: 'Jolteon',    type: 'electric', types: ['electric'],        nextId: 136,  baseId: 133, chain: [133, 134, 135, 136, 196, 197, 470, 471, 700] },
-      136: { id: 136, name: 'Flareon',    type: 'fire',     types: ['fire'],            nextId: 196,  baseId: 133, chain: [133, 134, 135, 136, 196, 197, 470, 471, 700] },
-      196: { id: 196, name: 'Espeon',     type: 'psychic',  types: ['psychic'],         nextId: 197,  baseId: 133, chain: [133, 134, 135, 136, 196, 197, 470, 471, 700] },
-      197: { id: 197, name: 'Umbreon',    type: 'dark',     types: ['dark'],            nextId: 470,  baseId: 133, chain: [133, 134, 135, 136, 196, 197, 470, 471, 700] },
-      470: { id: 470, name: 'Leafeon',    type: 'grass',    types: ['grass'],           nextId: 471,  baseId: 133, chain: [133, 134, 135, 136, 196, 197, 470, 471, 700] },
-      471: { id: 471, name: 'Glaceon',    type: 'ice',      types: ['ice'],             nextId: 700,  baseId: 133, chain: [133, 134, 135, 136, 196, 197, 470, 471, 700] },
-      700: { id: 700, name: 'Sylveon',    type: 'fairy',    types: ['fairy'],           nextId: null, baseId: 133, chain: [133, 134, 135, 136, 196, 197, 470, 471, 700] },
-      // Feebas ➔ Milotic
-      349: { id: 349, name: 'Feebas',     type: 'water',    types: ['water'],           nextId: 350,  baseId: 349, chain: [349, 350] },
-      350: { id: 350, name: 'Milotic',    type: 'water',    types: ['water'],           nextId: null, baseId: 349, chain: [349, 350] },
-      // Mareep ➔ Flaaffy ➔ Ampharos
-      179: { id: 179, name: 'Mareep',     type: 'electric', types: ['electric'],        nextId: 180,  baseId: 179, chain: [179, 180, 181] },
-      180: { id: 180, name: 'Flaaffy',    type: 'electric', types: ['electric'],        nextId: 181,  baseId: 179, chain: [179, 180, 181] },
-      181: { id: 181, name: 'Ampharos',   type: 'electric', types: ['electric'],        nextId: null, baseId: 179, chain: [179, 180, 181] },
-      // Grimer ➔ Alolan Muk
-      88:  { id: 88,  name: 'Grimer',     type: 'poison',   types: ['poison'],          nextId: 89,   baseId: 88,  chain: [88, 89] },
-      89:  { id: 89,  name: 'Alolan Muk', type: 'poison',   types: ['poison', 'dark'],  nextId: null, baseId: 88,  chain: [88, 89] },
-      // Pidgey ➔ Pidgeotto ➔ Pidgeot
-      16:  { id: 16,  name: 'Pidgey',     type: 'normal',   types: ['normal', 'flying'], nextId: 17,  baseId: 16,  chain: [16, 17, 18] },
-      17:  { id: 17,  name: 'Pidgeotto',  type: 'normal',   types: ['normal', 'flying'], nextId: 18,  baseId: 16,  chain: [16, 17, 18] },
-      18:  { id: 18,  name: 'Pidgeot',    type: 'normal',   types: ['normal', 'flying'], nextId: null, baseId: 16, chain: [16, 17, 18] },
-      // Dratini ➔ Dragonair ➔ Dragonite
-      147: { id: 147, name: 'Dratini',    type: 'dragon',   types: ['dragon'],          nextId: 148,  baseId: 147, chain: [147, 148, 149] },
-      148: { id: 148, name: 'Dragonair',  type: 'dragon',   types: ['dragon'],          nextId: 149,  baseId: 147, chain: [147, 148, 149] },
-      149: { id: 149, name: 'Dragonite',  type: 'dragon',   types: ['dragon', 'flying'], nextId: null, baseId: 147, chain: [147, 148, 149] },
-      // Pichu ➔ Pikachu ➔ Raichu
-      172: { id: 172, name: 'Pichu',      type: 'electric', types: ['electric'],        nextId: 25,   baseId: 172, chain: [172, 25, 26] },
-      25:  { id: 25,  name: 'Pikachu',    type: 'electric', types: ['electric'],        nextId: 26,   baseId: 172, chain: [172, 25, 26] },
-      26:  { id: 26,  name: 'Raichu',     type: 'electric', types: ['electric'],        nextId: null, baseId: 172, chain: [172, 25, 26] },
-      // Abra ➔ Kadabra ➔ Alakazam
-      63:  { id: 63,  name: 'Abra',       type: 'psychic',  types: ['psychic'],         nextId: 64,   baseId: 63,  chain: [63, 64, 65] },
-      64:  { id: 64,  name: 'Kadabra',    type: 'psychic',  types: ['psychic'],         nextId: 65,   baseId: 63,  chain: [63, 64, 65] },
-      65:  { id: 65,  name: 'Alakazam',   type: 'psychic',  types: ['psychic'],         nextId: null, baseId: 63,  chain: [63, 64, 65] },
-      // Single-stage Icons (MAX FORM)
-      359: { id: 359, name: 'Absol',      type: 'dark',     types: ['dark'],            nextId: null, baseId: 359, chain: [359] },
-      143: { id: 143, name: 'Snorlax',    type: 'normal',   types: ['normal'],          nextId: null, baseId: 143, chain: [143] },
-      150: { id: 150, name: 'Mewtwo',     type: 'psychic',  types: ['psychic'],         nextId: null, baseId: 150, chain: [150] }
+      129: { id: 129, name: 'Magikarp',   type: 'water',    types: ['water'],           nextId: 130,  baseId: 129, chain: [129, 130], stats: { hp: 20, atk: 10, def: 55, spa: 15, spd: 20, spe: 80, bst: 200 }, abilities: ['Swift Swim', 'Rattled'] },
+      130: { id: 130, name: 'Gyarados',   type: 'water',    types: ['water', 'flying'], nextId: null, baseId: 129, chain: [129, 130], stats: { hp: 95, atk: 125, def: 79, spa: 60, spd: 100, spe: 81, bst: 540 }, abilities: ['Intimidate', 'Moxie'] },
+      58:  { id: 58,  name: 'Growlithe',  type: 'fire',     types: ['fire'],            nextId: 59,   baseId: 58,  chain: [58, 59],   stats: { hp: 55, atk: 70, def: 45, spa: 70, spd: 50, spe: 60, bst: 350 }, abilities: ['Intimidate', 'Flash Fire'] },
+      59:  { id: 59,  name: 'Arcanine',   type: 'fire',     types: ['fire'],            nextId: null, baseId: 58,  chain: [58, 59],   stats: { hp: 90, atk: 110, def: 80, spa: 100, spd: 80, spe: 95, bst: 555 }, abilities: ['Intimidate', 'Flash Fire'] },
+      7:   { id: 7,   name: 'Squirtle',   type: 'water',    types: ['water'],           nextId: 8,    baseId: 7,   chain: [7, 8, 9],  stats: { hp: 44, atk: 48, def: 65, spa: 50, spd: 64, spe: 43, bst: 314 }, abilities: ['Torrent', 'Rain Dish'] },
+      8:   { id: 8,   name: 'Wartortle',  type: 'water',    types: ['water'],           nextId: 9,    baseId: 7,   chain: [7, 8, 9],  stats: { hp: 59, atk: 63, def: 80, spa: 65, spd: 80, spe: 58, bst: 405 }, abilities: ['Torrent', 'Rain Dish'] },
+      9:   { id: 9,   name: 'Blastoise',  type: 'water',    types: ['water'],           nextId: null, baseId: 7,   chain: [7, 8, 9],  stats: { hp: 79, atk: 83, def: 100, spa: 85, spd: 105, spe: 78, bst: 530 }, abilities: ['Torrent', 'Rain Dish'] },
+      4:   { id: 4,   name: 'Charmander', type: 'fire',     types: ['fire'],            nextId: 5,    baseId: 4,   chain: [4, 5, 6],  stats: { hp: 39, atk: 52, def: 43, spa: 60, spd: 50, spe: 65, bst: 309 }, abilities: ['Blaze', 'Solar Power'] },
+      5:   { id: 5,   name: 'Charmeleon', type: 'fire',     types: ['fire'],            nextId: 6,    baseId: 4,   chain: [4, 5, 6],  stats: { hp: 58, atk: 64, def: 58, spa: 80, spd: 65, spe: 80, bst: 405 }, abilities: ['Blaze', 'Solar Power'] },
+      6:   { id: 6,   name: 'Charizard',  type: 'fire',     types: ['fire', 'flying'],  nextId: null, baseId: 4,   chain: [4, 5, 6],  stats: { hp: 78, atk: 84, def: 78, spa: 109, spd: 85, spe: 100, bst: 534 }, abilities: ['Blaze', 'Solar Power'] },
+      1:   { id: 1,   name: 'Bulbasaur',  type: 'grass',    types: ['grass', 'poison'], nextId: 2,    baseId: 1,   chain: [1, 2, 3],  stats: { hp: 45, atk: 49, def: 49, spa: 65, spd: 65, spe: 45, bst: 318 }, abilities: ['Overgrow', 'Chlorophyll'] },
+      2:   { id: 2,   name: 'Ivysaur',    type: 'grass',    types: ['grass', 'poison'], nextId: 3,    baseId: 1,   chain: [1, 2, 3],  stats: { hp: 60, atk: 62, def: 63, spa: 80, spd: 80, spe: 60, bst: 405 }, abilities: ['Overgrow', 'Chlorophyll'] },
+      3:   { id: 3,   name: 'Venusaur',   type: 'grass',    types: ['grass', 'poison'], nextId: null, baseId: 1,   chain: [1, 2, 3],  stats: { hp: 80, atk: 82, def: 83, spa: 100, spd: 100, spe: 80, bst: 525 }, abilities: ['Overgrow', 'Chlorophyll'] },
+      506: { id: 506, name: 'Lillipup',   type: 'normal',   types: ['normal'],          nextId: 507,  baseId: 506, chain: [506, 507, 508], stats: { hp: 45, atk: 60, def: 45, spa: 25, spd: 45, spe: 55, bst: 275 }, abilities: ['Vital Spirit', 'Pickup'] },
+      507: { id: 507, name: 'Herdier',    type: 'normal',   types: ['normal'],          nextId: 508,  baseId: 506, chain: [506, 507, 508], stats: { hp: 65, atk: 80, def: 65, spa: 35, spd: 65, spe: 60, bst: 370 }, abilities: ['Intimidate', 'Sand Rush'] },
+      508: { id: 508, name: 'Stoutland',  type: 'normal',   types: ['normal'],          nextId: null, baseId: 506, chain: [506, 507, 508], stats: { hp: 85, atk: 110, def: 90, spa: 45, spd: 90, spe: 80, bst: 500 }, abilities: ['Intimidate', 'Sand Rush'] },
+      133: { id: 133, name: 'Eevee',      type: 'normal',   types: ['normal'],          nextId: 134,  baseId: 133, chain: [133, 134, 135, 136, 196, 197, 470, 471, 700], stats: { hp: 55, atk: 55, def: 50, spa: 45, spd: 65, spe: 55, bst: 325 }, abilities: ['Adaptability', 'Anticipation'] },
+      134: { id: 134, name: 'Vaporeon',   type: 'water',    types: ['water'],           nextId: 135,  baseId: 133, chain: [133, 134, 135, 136, 196, 197, 470, 471, 700], stats: { hp: 130, atk: 65, def: 60, spa: 110, spd: 95, spe: 65, bst: 525 }, abilities: ['Water Absorb', 'Hydration'] },
+      135: { id: 135, name: 'Jolteon',    type: 'electric', types: ['electric'],        nextId: 136,  baseId: 133, chain: [133, 134, 135, 136, 196, 197, 470, 471, 700], stats: { hp: 65, atk: 65, def: 60, spa: 110, spd: 95, spe: 130, bst: 525 }, abilities: ['Volt Absorb', 'Quick Feet'] },
+      136: { id: 136, name: 'Flareon',    type: 'fire',     types: ['fire'],            nextId: 196,  baseId: 133, chain: [133, 134, 135, 136, 196, 197, 470, 471, 700], stats: { hp: 65, atk: 130, def: 60, spa: 95, spd: 110, spe: 65, bst: 525 }, abilities: ['Flash Fire', 'Guts'] },
+      196: { id: 196, name: 'Espeon',     type: 'psychic',  types: ['psychic'],         nextId: 197,  baseId: 133, chain: [133, 134, 135, 136, 196, 197, 470, 471, 700], stats: { hp: 65, atk: 65, def: 60, spa: 130, spd: 95, spe: 110, bst: 525 }, abilities: ['Synchronize', 'Magic Bounce'] },
+      197: { id: 197, name: 'Umbreon',    type: 'dark',     types: ['dark'],            nextId: 470,  baseId: 133, chain: [133, 134, 135, 136, 196, 197, 470, 471, 700], stats: { hp: 95, atk: 65, def: 110, spa: 60, spd: 130, spe: 65, bst: 525 }, abilities: ['Synchronize', 'Inner Focus'] },
+      470: { id: 470, name: 'Leafeon',    type: 'grass',    types: ['grass'],           nextId: 471,  baseId: 133, chain: [133, 134, 135, 136, 196, 197, 470, 471, 700], stats: { hp: 65, atk: 110, def: 130, spa: 60, spd: 65, spe: 95, bst: 525 }, abilities: ['Leaf Guard', 'Chlorophyll'] },
+      471: { id: 471, name: 'Glaceon',    type: 'ice',      types: ['ice'],             nextId: 700,  baseId: 133, chain: [133, 134, 135, 136, 196, 197, 470, 471, 700], stats: { hp: 65, atk: 60, def: 110, spa: 130, spd: 95, spe: 65, bst: 525 }, abilities: ['Snow Cloak', 'Ice Body'] },
+      700: { id: 700, name: 'Sylveon',    type: 'fairy',    types: ['fairy'],           nextId: null, baseId: 133, chain: [133, 134, 135, 136, 196, 197, 470, 471, 700], stats: { hp: 95, atk: 65, def: 65, spa: 110, spd: 130, spe: 60, bst: 525 }, abilities: ['Cute Charm', 'Pixilate'] },
+      349: { id: 349, name: 'Feebas',     type: 'water',    types: ['water'],           nextId: 350,  baseId: 349, chain: [349, 350], stats: { hp: 20, atk: 15, def: 20, spa: 10, spd: 55, spe: 80, bst: 200 }, abilities: ['Swift Swim', 'Oblivious'] },
+      350: { id: 350, name: 'Milotic',    type: 'water',    types: ['water'],           nextId: null, baseId: 349, chain: [349, 350], stats: { hp: 95, atk: 60, def: 79, spa: 100, spd: 125, spe: 81, bst: 540 }, abilities: ['Marvel Scale', 'Competitive'] },
+      179: { id: 179, name: 'Mareep',     type: 'electric', types: ['electric'],        nextId: 180,  baseId: 179, chain: [179, 180, 181], stats: { hp: 55, atk: 40, def: 40, spa: 65, spd: 45, spe: 35, bst: 280 }, abilities: ['Static', 'Plus'] },
+      180: { id: 180, name: 'Flaaffy',    type: 'electric', types: ['electric'],        nextId: 181,  baseId: 179, chain: [179, 180, 181], stats: { hp: 70, atk: 55, def: 55, spa: 80, spd: 60, spe: 45, bst: 365 }, abilities: ['Static', 'Plus'] },
+      181: { id: 181, name: 'Ampharos',   type: 'electric', types: ['electric'],        nextId: null, baseId: 179, chain: [179, 180, 181], stats: { hp: 90, atk: 75, def: 85, spa: 115, spd: 90, spe: 55, bst: 510 }, abilities: ['Static', 'Plus'] },
+      88:  { id: 88,  name: 'Grimer',     type: 'poison',   types: ['poison'],          nextId: 89,   baseId: 88,  chain: [88, 89],   stats: { hp: 80, atk: 80, def: 50, spa: 40, spd: 50, spe: 25, bst: 325 }, abilities: ['Stench', 'Sticky Hold'] },
+      89:  { id: 89,  name: 'Alolan Muk', type: 'poison',   types: ['poison', 'dark'],  nextId: null, baseId: 88,  chain: [88, 89],   stats: { hp: 105, atk: 105, def: 75, spa: 65, spd: 100, spe: 50, bst: 500 }, abilities: ['Poison Touch', 'Gluttony'] },
+      16:  { id: 16,  name: 'Pidgey',     type: 'normal',   types: ['normal', 'flying'], nextId: 17,  baseId: 16,  chain: [16, 17, 18], stats: { hp: 40, atk: 45, def: 40, spa: 35, spd: 35, spe: 56, bst: 251 }, abilities: ['Keen Eye', 'Tangled Feet'] },
+      17:  { id: 17,  name: 'Pidgeotto',  type: 'normal',   types: ['normal', 'flying'], nextId: 18,  baseId: 16,  chain: [16, 17, 18], stats: { hp: 63, atk: 60, def: 55, spa: 50, spd: 50, spe: 71, bst: 349 }, abilities: ['Keen Eye', 'Tangled Feet'] },
+      18:  { id: 18,  name: 'Pidgeot',    type: 'normal',   types: ['normal', 'flying'], nextId: null, baseId: 16, chain: [16, 17, 18], stats: { hp: 83, atk: 80, def: 75, spa: 70, spd: 70, spe: 101, bst: 479 }, abilities: ['Keen Eye', 'Big Pecks'] },
+      147: { id: 147, name: 'Dratini',    type: 'dragon',   types: ['dragon'],          nextId: 148,  baseId: 147, chain: [147, 148, 149], stats: { hp: 41, atk: 64, def: 45, spa: 50, spd: 50, spe: 50, bst: 300 }, abilities: ['Shed Skin', 'Marvel Scale'] },
+      148: { id: 148, name: 'Dragonair',  type: 'dragon',   types: ['dragon'],          nextId: 149,  baseId: 147, chain: [147, 148, 149], stats: { hp: 61, atk: 84, def: 65, spa: 70, spd: 70, spe: 70, bst: 420 }, abilities: ['Shed Skin', 'Marvel Scale'] },
+      149: { id: 149, name: 'Dragonite',  type: 'dragon',   types: ['dragon', 'flying'], nextId: null, baseId: 147, chain: [147, 148, 149], stats: { hp: 91, atk: 134, def: 95, spa: 100, spd: 100, spe: 80, bst: 600 }, abilities: ['Inner Focus', 'Multiscale'] },
+      172: { id: 172, name: 'Pichu',      type: 'electric', types: ['electric'],        nextId: 25,   baseId: 172, chain: [172, 25, 26], stats: { hp: 20, atk: 40, def: 15, spa: 35, spd: 35, spe: 60, bst: 205 }, abilities: ['Static', 'Lightning Rod'] },
+      25:  { id: 25,  name: 'Pikachu',    type: 'electric', types: ['electric'],        nextId: 26,   baseId: 172, chain: [172, 25, 26], stats: { hp: 35, atk: 55, def: 40, spa: 50, spd: 50, spe: 90, bst: 320 }, abilities: ['Static', 'Lightning Rod'] },
+      26:  { id: 26,  name: 'Raichu',     type: 'electric', types: ['electric'],        nextId: null, baseId: 172, chain: [172, 25, 26], stats: { hp: 60, atk: 90, def: 55, spa: 90, spd: 80, spe: 110, bst: 485 }, abilities: ['Static', 'Lightning Rod'] },
+      63:  { id: 63,  name: 'Abra',       type: 'psychic',  types: ['psychic'],         nextId: 64,   baseId: 63,  chain: [63, 64, 65], stats: { hp: 25, atk: 20, def: 15, spa: 105, spd: 55, spe: 90, bst: 310 }, abilities: ['Synchronize', 'Magic Guard'] },
+      64:  { id: 64,  name: 'Kadabra',    type: 'psychic',  types: ['psychic'],         nextId: 65,   baseId: 63,  chain: [63, 64, 65], stats: { hp: 40, atk: 35, def: 30, spa: 120, spd: 70, spe: 105, bst: 400 }, abilities: ['Synchronize', 'Magic Guard'] },
+      65:  { id: 65,  name: 'Alakazam',   type: 'psychic',  types: ['psychic'],         nextId: null, baseId: 63,  chain: [63, 64, 65], stats: { hp: 55, atk: 50, def: 45, spa: 135, spd: 95, spe: 120, bst: 500 }, abilities: ['Synchronize', 'Magic Guard'] },
+      359: { id: 359, name: 'Absol',      type: 'dark',     types: ['dark'],            nextId: null, baseId: 359, chain: [359], stats: { hp: 65, atk: 130, def: 60, spa: 75, spd: 60, spe: 75, bst: 465 }, abilities: ['Pressure', 'Super Luck'] },
+      143: { id: 143, name: 'Snorlax',    type: 'normal',   types: ['normal'],          nextId: null, baseId: 143, chain: [143], stats: { hp: 160, atk: 110, def: 65, spa: 65, spd: 110, spe: 30, bst: 540 }, abilities: ['Immunity', 'Thick Fat'] },
+      150: { id: 150, name: 'Mewtwo',     type: 'psychic',  types: ['psychic'],         nextId: null, baseId: 150, chain: [150], stats: { hp: 106, atk: 110, def: 90, spa: 154, spd: 90, spe: 130, bst: 680 }, abilities: ['Pressure', 'Unnerve'] }
     };
 
     const HOF_ROSTER_BUTTONS = [
@@ -1571,12 +1656,14 @@
 
     let activeRosterTargetSlot = 1;
     let evoChainCache = {};
+    let activeDealFeedFilter = 'ALL';
     let partnerState = {
       slot1: { id: 130, name: 'Gyarados', type: 'water', types: ['water', 'flying'], shiny: false, nextId: null, baseId: 129, chain: [129, 130] },
       slot2: { id: 59,  name: 'Arcanine', type: 'fire',  types: ['fire'],            shiny: false, nextId: null, baseId: 58,  chain: [58, 59] },
       cryAudio: true,
       autoLaunch: false,
-      cutInFx: true
+      cutInFx: true,
+      stageMode: 'OPEN'
     };
 
     function loadEvoChainCacheFromStorage() {
@@ -1613,6 +1700,10 @@
       } else if (!Array.isArray(slotObj.types) || slotObj.types.length === 0) {
         slotObj.types = [slotObj.type || 'normal'];
       }
+      if (dex && dex.stats) {
+        slotObj.stats = dex.stats;
+        slotObj.abilities = dex.abilities || ['Battle Ready'];
+      }
       if (cached && Array.isArray(cached.chain)) {
         slotObj.chain = cached.chain;
         slotObj.nextId = cached.nextId;
@@ -1636,6 +1727,7 @@
               ...partnerState,
               ...parsed,
               cutInFx: parsed.cutInFx !== false,
+              stageMode: parsed.stageMode === 'MINI' ? 'MINI' : 'OPEN',
               slot1: hydrateSlotFromDex({ ...partnerState.slot1, ...parsed.slot1 }),
               slot2: hydrateSlotFromDex({ ...partnerState.slot2, ...parsed.slot2 })
             };
@@ -1660,10 +1752,9 @@
         .join(' ');
     }
 
-    // Ensure metadata (id, name, primary type, full types array) is loaded in HALL_OF_FAME_DEX for any of the 1,025 Pokémon
     async function ensurePokemonMetadata(idOrName) {
       const numId = Number(idOrName);
-      if (numId && HALL_OF_FAME_DEX[numId] && HALL_OF_FAME_DEX[numId].name && HALL_OF_FAME_DEX[numId].type && Array.isArray(HALL_OF_FAME_DEX[numId].types)) {
+      if (numId && HALL_OF_FAME_DEX[numId] && HALL_OF_FAME_DEX[numId].name && HALL_OF_FAME_DEX[numId].stats) {
         return HALL_OF_FAME_DEX[numId];
       }
       const res = await fetch('https://pokeapi.co/api/v2/pokemon/' + encodeURIComponent(String(idOrName).toLowerCase()));
@@ -1676,18 +1767,39 @@
         : ['normal'];
       const primaryType = allTypes[0] || 'normal';
       const mappedType = ELEMENTAL_SPECTRUM[primaryType] ? primaryType : 'normal';
+
+      const statMap = { hp: 70, atk: 75, def: 70, spa: 75, spd: 70, spe: 75 };
+      if (Array.isArray(data.stats)) {
+        data.stats.forEach(s => {
+          const sn = s.stat?.name;
+          const v = Number(s.base_stat || 60);
+          if (sn === 'hp') statMap.hp = v;
+          else if (sn === 'attack') statMap.atk = v;
+          else if (sn === 'defense') statMap.def = v;
+          else if (sn === 'special-attack') statMap.spa = v;
+          else if (sn === 'special-defense') statMap.spd = v;
+          else if (sn === 'speed') statMap.spe = v;
+        });
+      }
+      statMap.bst = statMap.hp + statMap.atk + statMap.def + statMap.spa + statMap.spd + statMap.spe;
+
+      const abilities = Array.isArray(data.abilities) && data.abilities.length > 0
+        ? data.abilities.slice(0, 2).map(a => formatPokeDisplayName(a.ability?.name || 'Battle Ready'))
+        : ['Battle Ready'];
+
       const existing = HALL_OF_FAME_DEX[pokeId] || {};
       HALL_OF_FAME_DEX[pokeId] = {
         ...existing,
         id: pokeId,
         name: existing.name || pokeName,
         type: existing.type || mappedType,
-        types: allTypes
+        types: allTypes,
+        stats: statMap,
+        abilities
       };
       return HALL_OF_FAME_DEX[pokeId];
     }
 
-    // Universal 1,025-Pokémon Recursive Evolution Chain Resolver
     async function resolveFullEvolutionChain(pokemonIdOrName) {
       try {
         const meta = await ensurePokemonMetadata(pokemonIdOrName);
@@ -1747,6 +1859,8 @@
             s.nextId = evoChainCache[s.id].nextId;
             s.baseId = evoChainCache[s.id].baseId;
             if (HALL_OF_FAME_DEX[s.id]?.types) s.types = HALL_OF_FAME_DEX[s.id].types;
+            if (HALL_OF_FAME_DEX[s.id]?.stats) s.stats = HALL_OF_FAME_DEX[s.id].stats;
+            if (HALL_OF_FAME_DEX[s.id]?.abilities) s.abilities = HALL_OF_FAME_DEX[s.id].abilities;
           }
         });
 
@@ -1819,13 +1933,66 @@
       document.body.classList.add('aura-clash-pulse');
     }
 
-    // =========================================================================
-    // 2.4-SECOND TYPE-MATCHUP CARTOON WIPE CUT-IN ENGINE
-    // Timeline:
-    //   0.00s - 0.50s : Cartoon Shutter Wipe-In across 100vw x 100vh
-    //   0.50s - 1.70s : 1.2s Dramatic Hold (420px renders drift scale 1.0 -> 1.06)
-    //   1.70s - 2.40s : Cartoon Iris / Diagonal Wipe-Out into 0.18 Watermarks
-    // =========================================================================
+    function renderPokedexStatCardHtml(slotObj, spec, offMult, defMult) {
+      const dex = HALL_OF_FAME_DEX[slotObj.id] || {};
+      const st = slotObj.stats || dex.stats || { hp: 80, atk: 85, def: 75, spa: 80, spd: 75, spe: 80, bst: 475 };
+      const abil = (slotObj.abilities || dex.abilities || ['Battle Ready']).join(' • ');
+      const typesStr = (slotObj.types || [slotObj.type || 'normal']).map(t => String(t).toUpperCase()).join(' / ');
+      const barRow = (lbl, val, color) => {
+        const pct = Math.min(100, Math.round((Number(val || 50) / 160) * 100));
+        return (
+          '<div class="grid grid-cols-[46px_32px_1fr] items-center gap-2 text-[11px] font-mono-num">' +
+            '<span class="text-slate-400 font-bold">' + lbl + '</span>' +
+            '<span class="text-white font-black text-right">' + val + '</span>' +
+            '<div class="stat-bar-track"><div class="stat-bar-fill" style="width:' + pct + '%;background:' + color + ';"></div></div>' +
+          '</div>'
+        );
+      };
+      const effText = offMult > 1 ? (offMult + 'x SUPER EFFECTIVE') : (offMult < 1 ? (offMult + 'x RESISTED') : '1x NEUTRAL DAMAGE');
+      const effColor = offMult > 1 ? 'text-emerald-300 border-emerald-400/50 bg-emerald-500/20' : 'text-cyan-200 border-white/15 bg-white/10';
+      return (
+        '<div class="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-white/10">' +
+          '<div class="flex items-center gap-2">' +
+            '<span class="text-[10px] font-mono-num font-black px-2 py-0.5 rounded bg-white/10 text-white border border-white/15">#' + slotObj.id + ' ' + typesStr + '</span>' +
+            '<span class="text-[10px] font-mono-num font-black px-2 py-0.5 rounded border ' + effColor + '">' + effText + '</span>' +
+          '</div>' +
+          '<span class="text-xs font-mono-num font-black text-amber-300">BST ' + st.bst + '</span>' +
+        '</div>' +
+        '<div class="space-y-1.5">' +
+          barRow('HP', st.hp, '#10B981') +
+          barRow('ATK', st.atk, spec.hex) +
+          barRow('DEF', st.def, '#38BDF8') +
+          barRow('SPA', st.spa, '#C084FC') +
+          barRow('SPD', st.spd, '#FBBF24') +
+          barRow('SPE', st.spe, '#F43F5E') +
+        '</div>' +
+        '<div class="mt-2.5 pt-2 border-t border-white/10 flex items-center justify-between gap-2 text-[10px] font-mono-num text-slate-300">' +
+          '<span class="truncate">Abilities: <strong class="text-white">' + abil + '</strong></span>' +
+          '<span class="text-slate-400 shrink-0">Def Takes: ' + defMult + 'x</span>' +
+        '</div>'
+      );
+    }
+
+    function dismissClashCutIn(ev) {
+      if (ev) ev.stopPropagation();
+      const overlay = document.getElementById('clash-cutin-overlay');
+      if (!overlay || !overlay.classList.contains('active')) return;
+      clearTimeout(window.__cutinHoldTimer);
+      clearTimeout(window.__cutinWipeoutTimer);
+      clearTimeout(window.__cutinHideTimer);
+      overlay.classList.remove('phase-wipein', 'phase-hold');
+      overlay.classList.add('phase-wipeout');
+      const shell = document.getElementById('mainDashboardShell');
+      if (shell) {
+        shell.classList.remove('dashboard-focus-rise');
+        void shell.offsetWidth;
+        shell.classList.add('dashboard-focus-rise');
+      }
+      window.__cutinHideTimer = setTimeout(() => {
+        overlay.classList.remove('active', 'phase-wipein', 'phase-hold', 'phase-wipeout');
+      }, 650);
+    }
+
     function triggerClashCutIn(opts = {}) {
       if (partnerState.cutInFx === false && !opts.force) return;
       const overlay = document.getElementById('clash-cutin-overlay');
@@ -1833,7 +2000,19 @@
 
       const s1 = hydrateSlotFromDex(partnerState.slot1);
       const s2 = hydrateSlotFromDex(partnerState.slot2);
+      const spec1 = getEffectiveSlotSpectrum(s1);
+      const spec2 = getEffectiveSlotSpectrum(s2);
       const matchup = getTypeMatchup(s1.types || [s1.type], s2.types || [s2.type]);
+
+      document.documentElement.style.setProperty('--seam-x1', matchup.seamX1);
+      document.documentElement.style.setProperty('--seam-x2', matchup.seamX2);
+      ['cutinSeamGlowLine', 'cutinSeamCoreLine'].forEach(lineId => {
+        const ln = document.getElementById(lineId);
+        if (ln) {
+          ln.setAttribute('x1', matchup.seamX1);
+          ln.setAttribute('x2', matchup.seamX2);
+        }
+      });
 
       const art1 = document.getElementById('cutinArtSlot1');
       const art2 = document.getElementById('cutinArtSlot2');
@@ -1843,6 +2022,9 @@
       const rightSub = document.getElementById('cutinRightSub');
       const headline = document.getElementById('cutinBannerHeadline');
       const matchupBadge = document.getElementById('cutinMatchupBadge');
+      const statCard1 = document.getElementById('cutinStatCardSlot1');
+      const statCard2 = document.getElementById('cutinStatCardSlot2');
+      const progBar = document.getElementById('cutinProgressBar');
 
       if (art1) {
         art1.onerror = function() { this.onerror = null; this.src = getArtworkFallbackUrl(s1.id, false); };
@@ -1855,19 +2037,13 @@
 
       if (leftTitle) leftTitle.innerText = (s1.shiny ? 'SHINY ' : '') + s1.name.toUpperCase();
       if (rightTitle) rightTitle.innerText = (s2.shiny ? 'SHINY ' : '') + s2.name.toUpperCase();
+      if (leftSub) leftSub.innerText = opts.slotNum === 1 && opts.subText ? opts.subText : matchup.leftSub;
+      if (rightSub) rightSub.innerText = opts.slotNum === 2 && opts.subText ? opts.subText : matchup.rightSub;
+      if (headline) headline.innerText = opts.headline || (s1.name.toUpperCase() + ' VS ' + s2.name.toUpperCase());
+      if (matchupBadge) matchupBadge.innerText = matchup.bannerText;
 
-      if (leftSub) {
-        leftSub.innerText = opts.slotNum === 1 && opts.subText ? opts.subText : matchup.leftSub;
-      }
-      if (rightSub) {
-        rightSub.innerText = opts.slotNum === 2 && opts.subText ? opts.subText : matchup.rightSub;
-      }
-      if (headline) {
-        headline.innerText = opts.headline || (s1.name.toUpperCase() + ' VS ' + s2.name.toUpperCase());
-      }
-      if (matchupBadge) {
-        matchupBadge.innerText = matchup.bannerText;
-      }
+      if (statCard1) statCard1.innerHTML = renderPokedexStatCardHtml(s1, spec1, matchup.slot1Mult, matchup.slot2Mult);
+      if (statCard2) statCard2.innerHTML = renderPokedexStatCardHtml(s2, spec2, matchup.slot2Mult, matchup.slot1Mult);
 
       clearTimeout(window.__cutinHoldTimer);
       clearTimeout(window.__cutinWipeoutTimer);
@@ -1883,32 +2059,27 @@
         'matchup-neutral'
       );
       overlay.classList.add(matchup.overlayClass);
+      if (progBar) {
+        progBar.style.transition = 'none';
+        progBar.style.width = '100%';
+      }
       void overlay.offsetWidth;
 
-      // 0.00s - 0.50s: Cartoon Shutter Wipe-In
       overlay.classList.add('active', 'phase-wipein');
+      if (progBar) {
+        progBar.style.transition = 'width 7000ms linear';
+        progBar.style.width = '0%';
+      }
 
-      // 0.50s - 1.70s: 1.2s Dramatic Hold (Slow Drift scale(1.0) -> scale(1.06))
       window.__cutinHoldTimer = setTimeout(() => {
         overlay.classList.remove('phase-wipein');
         overlay.classList.add('phase-hold');
       }, 500);
 
-      // 1.70s - 2.40s: Cartoon Iris / Diagonal Wipe-Out into Background Watermarks
+      // Auto-dismiss after 7.0 seconds if user hasn't clicked/pressed Space/Esc
       window.__cutinWipeoutTimer = setTimeout(() => {
-        overlay.classList.remove('phase-hold');
-        overlay.classList.add('phase-wipeout');
-        const shell = document.getElementById('mainDashboardShell');
-        if (shell) {
-          shell.classList.remove('dashboard-focus-rise');
-          void shell.offsetWidth;
-          shell.classList.add('dashboard-focus-rise');
-        }
-      }, 1700);
-
-      window.__cutinHideTimer = setTimeout(() => {
-        overlay.classList.remove('active', 'phase-wipein', 'phase-hold', 'phase-wipeout');
-      }, 2400);
+        dismissClashCutIn();
+      }, 7000);
     }
 
     function replayTagTeamClash() {
@@ -1926,10 +2097,67 @@
       applyPartnerThemeAndHeader();
       if (partnerState.cutInFx) {
         replayTagTeamClash();
-        showCommanderToast('2.4s Type-Matchup Cut-In FX: ON');
+        showCommanderToast('Battle FX Stat Showcase: ON');
       } else {
-        showCommanderToast('2.4s Type-Matchup Cut-In FX: OFF');
+        showCommanderToast('Battle FX Stat Showcase: OFF');
       }
+    }
+
+    function toggleHeroStageMode() {
+      partnerState.stageMode = partnerState.stageMode === 'MINI' ? 'OPEN' : 'MINI';
+      applyPartnerThemeAndHeader();
+      showCommanderToast(partnerState.stageMode === 'MINI' ? 'Hero Stage minimized to Ribbon' : 'Premier Battle Stage expanded');
+    }
+
+    function togglePeekArtMode(ev) {
+      if (ev) ev.stopPropagation();
+      const active = document.body.classList.toggle('peek-art-active');
+      const dot = document.getElementById('peekArtDot');
+      if (dot) {
+        dot.className = active
+          ? 'w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#00F0FF]'
+          : 'w-1.5 h-1.5 rounded-full bg-purple-400';
+      }
+    }
+
+    function disablePeekArtMode(ev) {
+      if (ev) ev.stopPropagation();
+      document.body.classList.remove('peek-art-active');
+      const dot = document.getElementById('peekArtDot');
+      if (dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-purple-400';
+    }
+
+    async function onResetBaseClick(slotNum) {
+      const key = slotNum === 1 ? 'slot1' : 'slot2';
+      const current = partnerState[key];
+      const resolved = await resolveFullEvolutionChain(current.id);
+      const chainArr = (resolved && Array.isArray(resolved.chain) && resolved.chain.length > 0) ? resolved.chain : [current.id];
+      const baseId = chainArr[0] || current.id;
+      if (baseId === current.id) {
+        showCommanderToast(current.name + ' is already at Base Stage 1');
+        return;
+      }
+      const baseDex = await ensurePokemonMetadata(baseId);
+      partnerState[key] = {
+        id: baseDex.id,
+        name: baseDex.name,
+        type: baseDex.type,
+        types: baseDex.types || [baseDex.type],
+        stats: baseDex.stats,
+        abilities: baseDex.abilities,
+        shiny: Boolean(current.shiny),
+        nextId: chainArr[1] || null,
+        baseId,
+        chain: chainArr
+      };
+      applyPartnerThemeAndHeader();
+      playPokemonCry(baseDex.id);
+      triggerClashCutIn({
+        slotNum,
+        subText: 'BASE STAGE 1 RESTORED • READY TO EVOLVE',
+        headline: baseDex.name.toUpperCase() + ' READY FOR EVOLUTION'
+      });
+      showCommanderToast('Reset Slot ' + slotNum + ' to Stage 1: ' + baseDex.name);
     }
 
     function applyPartnerThemeAndHeader() {
@@ -1949,24 +2177,58 @@
       document.documentElement.style.setProperty('--accent-secondary', spec2.hex);
       document.documentElement.style.setProperty('--accent-secondary-rgb', spec2.rgb);
 
-      // Drive ambient background diagonal angle & high-ground stops from 18-Type Matchup
+      // Flush Polygon Diagonal Seam Coordinates (X1% at top y=0, X2% at bottom y=100%)
       document.documentElement.style.setProperty('--clash-angle', matchup.clashAngle);
-      document.documentElement.style.setProperty('--slot1-stop', matchup.slot1Stop);
-      document.documentElement.style.setProperty('--clash-mid-stop', matchup.midStop);
-      document.documentElement.style.setProperty('--slot2-stop', matchup.slot2Stop);
+      document.documentElement.style.setProperty('--seam-x1', matchup.seamX1);
+      document.documentElement.style.setProperty('--seam-x2', matchup.seamX2);
+
+      ['ambientSeamGlow', 'ambientSeamCore', 'cutinSeamGlowLine', 'cutinSeamCoreLine'].forEach(lineId => {
+        const ln = document.getElementById(lineId);
+        if (ln) {
+          ln.setAttribute('x1', matchup.seamX1);
+          ln.setAttribute('x2', matchup.seamX2);
+        }
+      });
 
       const wm1 = document.getElementById('bgWatermarkSlot1');
       if (wm1) wm1.src = getArtworkFallbackUrl(s1.id, s1.shiny);
       const wm2 = document.getElementById('bgWatermarkSlot2');
       if (wm2) wm2.src = getArtworkFallbackUrl(s2.id, s2.shiny);
 
+      // Stage Open / Mini Toggle
+      const isMini = partnerState.stageMode === 'MINI';
+      const expEl = document.getElementById('heroStageExpanded');
+      const miniEl = document.getElementById('heroStageMini');
+      if (expEl && miniEl) {
+        if (isMini) {
+          expEl.classList.add('hidden');
+          miniEl.classList.remove('hidden');
+          miniEl.classList.add('flex');
+        } else {
+          expEl.classList.remove('hidden');
+          miniEl.classList.add('hidden');
+          miniEl.classList.remove('flex');
+        }
+      }
+      const stModeLbl = document.getElementById('stageModeLabel');
+      const stModeDot = document.getElementById('stageModeDot');
+      if (stModeLbl) stModeLbl.innerText = isMini ? 'Mini' : 'Open';
+      if (stModeDot) {
+        stModeDot.className = isMini
+          ? 'w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_6px_#FACC15]'
+          : 'w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#00F0FF]';
+      }
+
       const updateSlotDOM = (slotNum, slotObj, spec) => {
         const hiResImg = document.getElementById('slot' + slotNum + 'HiResArt');
         const img = document.getElementById('slot' + slotNum + 'Sprite');
+        const miniImg = document.getElementById('miniSlot' + slotNum + 'Sprite');
         const nameEl = document.getElementById('slot' + slotNum + 'Name');
         const badgeEl = document.getElementById('slot' + slotNum + 'TypeBadge');
         const shinyEl = document.getElementById('slot' + slotNum + 'ShinyBadge');
+        const inlineStatsEl = document.getElementById('slot' + slotNum + 'InlineStats');
         const evoBtn = document.getElementById('slot' + slotNum + 'EvolveBtn');
+        const resetBtn = document.getElementById('slot' + slotNum + 'ResetBaseBtn');
         const shinyBtn = document.getElementById('slot' + slotNum + 'ShinyBtn');
 
         if (hiResImg) {
@@ -1983,14 +2245,27 @@
           };
           img.src = getSpriteUrl(slotObj.id, slotObj.shiny);
         }
+        if (miniImg) {
+          miniImg.onerror = function() {
+            this.onerror = null;
+            this.src = getArtworkFallbackUrl(slotObj.id, slotObj.shiny);
+          };
+          miniImg.src = getSpriteUrl(slotObj.id, slotObj.shiny);
+        }
         if (nameEl) nameEl.innerText = slotObj.name;
         if (badgeEl) {
           badgeEl.innerText = spec.label;
-          badgeEl.className = 'text-[8px] font-mono-num uppercase px-1.5 py-0.2 rounded border font-extrabold whitespace-nowrap ' + spec.badgeCls;
+          badgeEl.className = 'text-[10px] font-mono-num uppercase px-2 py-0.5 rounded-md border font-extrabold whitespace-nowrap ' + spec.badgeCls;
         }
         if (shinyEl) {
           if (slotObj.shiny) shinyEl.classList.remove('hidden');
           else shinyEl.classList.add('hidden');
+        }
+
+        const dex = HALL_OF_FAME_DEX[slotObj.id] || {};
+        const st = slotObj.stats || dex.stats || { hp: 85, atk: 90, def: 80, spa: 85, spd: 80, spe: 85, bst: 505 };
+        if (inlineStatsEl) {
+          inlineStatsEl.innerText = 'BST: ' + st.bst + ' • HP ' + st.hp + ' / ATK ' + st.atk + ' / SPD ' + st.spe;
         }
 
         const chainInfo = evoChainCache[slotObj.id] || HALL_OF_FAME_DEX[slotObj.id] || {};
@@ -1998,31 +2273,50 @@
           ? slotObj.chain
           : (Array.isArray(chainInfo.chain) ? chainInfo.chain : [slotObj.id]);
         const nextId = slotObj.nextId !== undefined ? slotObj.nextId : (chainInfo.nextId || null);
+        const baseId = slotObj.baseId || chainInfo.baseId || chainArr[0] || slotObj.id;
         const isMultiStage = chainArr.length > 1;
 
         if (evoBtn) {
           if (nextId) {
             evoBtn.innerText = 'Evolve';
-            evoBtn.className = 'px-1.5 py-0.2 rounded bg-emerald-500/25 hover:bg-emerald-500/40 text-emerald-200 border border-emerald-400/50 text-[9px] font-extrabold transition whitespace-nowrap shadow-[0_0_10px_rgba(16,185,129,0.25)]';
+            evoBtn.className = 'px-2.5 py-1 rounded-lg bg-emerald-500/25 hover:bg-emerald-500/40 text-emerald-200 border border-emerald-400/50 text-[11px] font-extrabold transition whitespace-nowrap shadow-[0_0_10px_rgba(16,185,129,0.25)]';
           } else if (isMultiStage) {
             evoBtn.innerText = 'Reset Base';
-            evoBtn.className = 'px-1.5 py-0.2 rounded bg-cyan-500/20 hover:bg-cyan-500/35 text-cyan-200 border border-cyan-400/40 text-[9px] font-extrabold transition whitespace-nowrap';
+            evoBtn.className = 'px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/35 text-cyan-200 border border-cyan-400/40 text-[11px] font-extrabold transition whitespace-nowrap';
           } else {
             evoBtn.innerText = 'MAX FORM';
-            evoBtn.className = 'px-1.5 py-0.2 rounded bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 border border-purple-400/35 text-[9px] font-mono-num font-extrabold transition whitespace-nowrap';
+            evoBtn.className = 'px-2.5 py-1 rounded-lg bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 border border-purple-400/35 text-[11px] font-mono-num font-extrabold transition whitespace-nowrap';
+          }
+        }
+
+        if (resetBtn) {
+          if (isMultiStage && slotObj.id !== baseId) {
+            resetBtn.classList.remove('hidden');
+          } else {
+            resetBtn.classList.add('hidden');
           }
         }
 
         if (shinyBtn) {
-          shinyBtn.innerText = slotObj.shiny ? 'Shiny ON' : 'Shiny';
+          shinyBtn.innerText = slotObj.shiny ? 'Shiny: ON' : 'Shiny: OFF';
           shinyBtn.className = slotObj.shiny
-            ? 'px-1.5 py-0.2 rounded bg-amber-400/25 hover:bg-amber-400/35 text-amber-200 border border-amber-400/60 text-[9px] font-extrabold transition whitespace-nowrap shadow-[0_0_10px_rgba(250,204,21,0.3)]'
-            : 'px-1.5 py-0.2 rounded bg-white/10 hover:bg-amber-500/25 text-slate-200 hover:text-amber-200 border border-white/15 text-[9px] font-bold transition whitespace-nowrap';
+            ? 'px-2.5 py-1 rounded-lg bg-amber-400/25 hover:bg-amber-400/35 text-amber-200 border border-amber-400/60 text-[11px] font-extrabold transition whitespace-nowrap shadow-[0_0_10px_rgba(250,204,21,0.3)]'
+            : 'px-2.5 py-1 rounded-lg bg-white/10 hover:bg-amber-500/25 text-slate-200 hover:text-amber-200 border border-white/15 text-[11px] font-bold transition whitespace-nowrap';
         }
       };
 
       updateSlotDOM(1, s1, spec1);
       updateSlotDOM(2, s2, spec2);
+
+      const centerBadge = document.getElementById('stageCenterVerdictBadge');
+      if (centerBadge) {
+        centerBadge.innerText = matchup.verdictShort;
+      }
+
+      const miniVerdict = document.getElementById('miniStageVerdictText');
+      if (miniVerdict) {
+        miniVerdict.innerText = s1.name + (s1.shiny ? ' (Shiny)' : '') + ' vs. ' + s2.name + (s2.shiny ? ' (Shiny)' : '') + ' • ' + matchup.callsignSuffix;
+      }
 
       const callsign = document.getElementById('activeTeamCallsign');
       if (callsign) {
@@ -2042,10 +2336,9 @@
         }
       }
 
-      const cryBtn = document.getElementById('cryAudioBtn');
       const cryState = document.getElementById('cryAudioState');
       const cryDot = document.getElementById('cryAudioDot');
-      if (cryBtn && cryState) {
+      if (cryState) {
         cryState.innerText = partnerState.cryAudio ? 'ON' : 'OFF';
         cryState.className = partnerState.cryAudio ? 'font-mono-num text-cyan-300 font-extrabold' : 'font-mono-num text-slate-400 font-extrabold';
         if (cryDot) {
@@ -2053,25 +2346,18 @@
             ? 'w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#00F0FF]'
             : 'w-1.5 h-1.5 rounded-full bg-slate-500';
         }
-        cryBtn.className = partnerState.cryAudio
-          ? 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold border transition flex items-center gap-1.5 bg-cyan-500/15 text-cyan-200 border-cyan-500/35 hover:bg-cyan-500/25 whitespace-nowrap'
-          : 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold border transition flex items-center gap-1.5 bg-[#161329]/80 text-slate-400 border-white/10 whitespace-nowrap';
       }
 
-      const launchBtn = document.getElementById('autoLaunchBtn');
       const launchState = document.getElementById('autoLaunchState');
       const launchDot = document.getElementById('autoLaunchDot');
-      if (launchBtn && launchState) {
-        launchState.innerText = partnerState.autoLaunch ? 'ARMED' : 'OFF';
+      if (launchState) {
+        launchState.innerText = partnerState.autoLaunch ? 'ON' : 'OFF';
         launchState.className = partnerState.autoLaunch ? 'font-mono-num text-emerald-400 font-extrabold' : 'font-mono-num text-slate-400 font-extrabold';
         if (launchDot) {
           launchDot.className = partnerState.autoLaunch
             ? 'w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#10B981]'
             : 'w-1.5 h-1.5 rounded-full bg-slate-500';
         }
-        launchBtn.className = partnerState.autoLaunch
-          ? 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold border transition flex items-center gap-1.5 bg-emerald-500/15 text-emerald-300 border-emerald-500/40 shadow-lg whitespace-nowrap'
-          : 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold border transition flex items-center gap-1.5 bg-[#161329]/80 text-slate-200 border-white/15 hover:border-cyan-400/50 whitespace-nowrap';
       }
 
       savePartnerStateToStorage();
@@ -2589,10 +2875,14 @@
         const rows = [];
         inStockPolicies.slice(0, 3).forEach(p => {
           const ls = liveStock[p.id];
-          const pr = ls?.price || telemetry[p.id]?.lowestPrice || p.maxMarketBuyPrice;
+          const pr = Number(ls?.price || telemetry[p.id]?.lowestPrice || p.maxMarketBuyPrice || 0);
+          const mkt = Number((telemetry[p.id]?.rollingAverage > 0 ? telemetry[p.id].rollingAverage : p.estimatedMarketValue) || pr || 60);
+          const disc = mkt > pr ? Math.round(((mkt - pr) / mkt) * 100) : 0;
           rows.push({
+            skuId: p.id,
             name: p.name,
-            price: Number(pr || 0),
+            price: pr,
+            disc,
             live: true
           });
         });
@@ -2600,11 +2890,17 @@
         if (rows.length < 3) {
           (recentDrops || []).forEach(d => {
             if (rows.length >= 3) return;
-            const title = d.title || d.ruleId;
+            const pol = policies.find(x => x.id === d.ruleId);
+            const title = pol ? pol.name : (d.title || d.ruleId);
             if (rows.some(r => r.name === title)) return;
+            const pr = Number(d.landedPrice || d.price || 0);
+            const mkt = Number(d.marketValue || (pol ? pol.estimatedMarketValue : pr) || 60);
+            const disc = mkt > pr ? Math.round(((mkt - pr) / mkt) * 100) : Number(d.discountPct || 0);
             rows.push({
+              skuId: d.ruleId || (pol ? pol.id : 'me-chaos-rising-etb'),
               name: title,
-              price: Number(d.landedPrice || d.price || 0),
+              price: pr,
+              disc,
               live: !d.soldOut
             });
           });
@@ -2614,9 +2910,14 @@
           policies.slice(0, 5).forEach(p => {
             if (rows.length >= 3) return;
             if (rows.some(r => r.name === p.name)) return;
+            const pr = Number(telemetry[p.id]?.lowestPrice || p.maxMarketBuyPrice || p.msrpCeiling || 0);
+            const mkt = Number((telemetry[p.id]?.rollingAverage > 0 ? telemetry[p.id].rollingAverage : p.estimatedMarketValue) || pr || 60);
+            const disc = mkt > pr ? Math.round(((mkt - pr) / mkt) * 100) : 0;
             rows.push({
+              skuId: p.id,
               name: p.name,
-              price: Number(telemetry[p.id]?.lowestPrice || p.maxMarketBuyPrice || p.msrpCeiling || 0),
+              price: pr,
+              disc,
               live: false
             });
           });
@@ -2626,10 +2927,16 @@
           const pillCls = r.live
             ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
             : 'bg-cyan-500/15 text-cyan-200 border-cyan-500/30';
+          const discBadge = r.disc > 0
+            ? '<span class="font-mono-num text-[10px] font-extrabold text-emerald-400 shrink-0">-' + r.disc + '%</span>'
+            : '';
           return (
-            '<div class="flex items-center justify-between gap-3 py-1 px-2.5 rounded-lg bg-black/35 border border-white/10">' +
-              '<span class="text-xs font-bold text-slate-100 truncate">' + r.name + '</span>' +
-              '<span class="font-mono-num text-[11px] font-extrabold px-2 py-0.5 rounded border shrink-0 ' + pillCls + '">$' + r.price.toFixed(2) + '</span>' +
+            '<div onclick="switchMainView(\'BOUNTY_HUNTER\'); quickBountyPick(\'' + (r.skuId || '') + '\');" class="flex items-center justify-between gap-2 py-1 px-2.5 rounded-lg bg-black/40 hover:bg-white/10 border border-white/10 hover:border-cyan-400/40 cursor-pointer transition" title="Click to inspect ' + r.name.replace(/"/g, '') + ' in Bounty Hunter">' +
+              '<span class="text-xs font-bold text-slate-100" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + r.name + '</span>' +
+              '<div class="flex items-center gap-1.5 shrink-0">' +
+                discBadge +
+                '<span class="font-mono-num text-[11px] font-extrabold px-2 py-0.5 rounded border shrink-0 ' + pillCls + '">$' + r.price.toFixed(2) + '</span>' +
+              '</div>' +
             '</div>'
           );
         }).join('');
@@ -2662,6 +2969,20 @@
       return 'ETB';
     }
 
+    function setDealFeedFilter(mode) {
+      activeDealFeedFilter = mode || 'ALL';
+      ['ALL', 'UNDER_TRIGGER', 'CASES', 'ETB_BOX', 'BEST_PACK'].forEach(k => {
+        const b = document.getElementById('dfPill_' + k);
+        if (!b) return;
+        if (k === activeDealFeedFilter) {
+          b.className = 'px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-cyan-500 text-slate-950 transition';
+        } else {
+          b.className = 'px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-slate-300 border border-white/10 hover:text-white transition';
+        }
+      });
+      renderLiveCommandView();
+    }
+
     function renderLiveCommandView() {
       const feedGrid = document.getElementById('liveDealFeedGrid');
       if (!feedGrid) return;
@@ -2675,6 +2996,10 @@
         if (!pol) return;
         const key = ruleId + '__' + ls.retailer;
         seenRuleStores.add(key);
+        const mktVal = Number((telemetry[pol.id]?.rollingAverage > 0) ? telemetry[pol.id].rollingAverage : (pol.estimatedMarketValue || 60));
+        const landedVal = Number(ls.landedPrice || ls.price || 0);
+        const packCnt = Number(ls.packCount || pol.packCount || (pol.formFactor === 'Booster Box' ? 36 : 9));
+        const ppp = Number(ls.pricePerPack || pol.pricePerPack || (packCnt > 0 ? landedVal / packCnt : 0));
         items.push({
           isLiveNow: true,
           skuId: pol.id,
@@ -2682,12 +3007,13 @@
           formFactor: pol.formFactor,
           retailer: ls.retailer || 'Verified Store',
           price: Number(ls.price),
-          landedPrice: Number(ls.landedPrice || ls.price),
-          marketValue: (telemetry[pol.id]?.rollingAverage > 0) ? telemetry[pol.id].rollingAverage : pol.estimatedMarketValue,
-          msrp: pol.msrpCeiling,
-          packCount: ls.packCount || pol.packCount,
-          pricePerPack: ls.pricePerPack || pol.pricePerPack,
-          isRipValueLeader: ls.isRipValueLeader || pol.isRipValueLeader,
+          landedPrice: landedVal,
+          marketValue: mktVal,
+          triggerPrice: Number(pol.maxMarketBuyPrice || pol.msrpCeiling || mktVal),
+          msrp: Number(pol.msrpCeiling || 54.99),
+          packCount: packCnt,
+          pricePerPack: ppp,
+          isRipValueLeader: ls.isRipValueLeader || pol.isRipValueLeader || (ppp > 0 && ppp <= 4.25),
           isPreRelease: ls.isPreRelease || pol.isPreRelease,
           preReleaseStatusTag: ls.preReleaseStatusTag || pol.preReleaseStatusTag,
           url: ls.productUrl || ls.url,
@@ -2695,29 +3021,36 @@
           cart2xUrl: ls.cart2xUrl,
           cart3xUrl: ls.cart3xUrl,
           timeStr: ls.timeStr || 'LIVE NOW',
-          discountPct: Math.max(0, Math.round((((pol.estimatedMarketValue || 60) - Number(ls.price)) / (pol.estimatedMarketValue || 60)) * 100))
+          discountPct: mktVal > 0 ? Math.max(0, Math.round(((mktVal - landedVal) / mktVal) * 100)) : 0
         });
       });
 
-      (recentDrops || []).slice(0, 9).forEach(d => {
+      (recentDrops || []).slice(0, 12).forEach(d => {
         const pol = policies.find(p => p.id === d.ruleId);
         const key = (d.ruleId || d.title) + '__' + d.retailer;
         if (seenRuleStores.has(key)) return;
         seenRuleStores.add(key);
+        const landedVal = Number(d.landedPrice || d.price || 0);
+        const mktVal = Number(d.marketValue || (pol ? ((telemetry[pol.id]?.rollingAverage > 0) ? telemetry[pol.id].rollingAverage : pol.estimatedMarketValue) : 60));
+        const ff = d.formFactor || (pol ? pol.formFactor : 'ETB');
+        const packCnt = Number(d.packCount || (pol ? pol.packCount : (String(ff).includes('Box') ? 36 : 9)));
+        const ppp = Number(d.pricePerPack || (pol ? pol.pricePerPack : (packCnt > 0 ? landedVal / packCnt : 5.67)));
+        const computedDisc = mktVal > 0 ? Math.max(0, Math.round(((mktVal - landedVal) / mktVal) * 100)) : Number(d.discountPct || 0);
         items.push({
           isLiveNow: !d.soldOut,
           soldOut: Boolean(d.soldOut),
           skuId: d.ruleId || (pol ? pol.id : 'me-chaos-rising-etb'),
           title: pol ? pol.name : (d.title || 'Pokemon Sealed Drop'),
-          formFactor: d.formFactor || (pol ? pol.formFactor : 'ETB'),
+          formFactor: ff,
           retailer: d.retailer || 'Verified Store',
           price: Number(d.price || 0),
-          landedPrice: Number(d.landedPrice || d.price || 0),
-          marketValue: Number(d.marketValue || (pol ? pol.estimatedMarketValue : 60)),
+          landedPrice: landedVal,
+          marketValue: mktVal,
+          triggerPrice: Number(pol ? (pol.maxMarketBuyPrice || pol.msrpCeiling) : (d.msrp || 54.99)),
           msrp: Number(d.msrp || (pol ? pol.msrpCeiling : 54.99)),
-          packCount: d.packCount || (pol ? pol.packCount : 9),
-          pricePerPack: d.pricePerPack || (pol ? pol.pricePerPack : 5.67),
-          isRipValueLeader: d.isRipValueLeader,
+          packCount: packCnt,
+          pricePerPack: ppp,
+          isRipValueLeader: d.isRipValueLeader || (ppp > 0 && ppp <= 4.25),
           isPreRelease: pol ? pol.isPreRelease : false,
           preReleaseStatusTag: pol ? pol.preReleaseStatusTag : undefined,
           url: d.productUrl || d.url,
@@ -2725,7 +3058,7 @@
           cart2xUrl: d.cart2xUrl,
           cart3xUrl: d.cart3xUrl,
           timeStr: d.timeStr || 'Recent Hit',
-          discountPct: Number(d.discountPct || 0)
+          discountPct: computedDisc
         });
       });
 
@@ -2739,6 +3072,7 @@
           price: 51.00,
           landedPrice: 51.00,
           marketValue: 60.00,
+          triggerPrice: 54.99,
           msrp: 54.99,
           packCount: 9,
           pricePerPack: 5.67,
@@ -2750,16 +3084,49 @@
         });
       }
 
-      feedGrid.innerHTML = items.slice(0, 6).map((item) => {
+      let filteredItems = items.filter(it => {
+        if (activeDealFeedFilter === 'UNDER_TRIGGER') {
+          return it.landedPrice <= (it.triggerPrice || it.msrp || it.marketValue);
+        }
+        if (activeDealFeedFilter === 'CASES') {
+          const f = String(it.formFactor || '').toLowerCase();
+          return f.includes('case');
+        }
+        if (activeDealFeedFilter === 'ETB_BOX') {
+          const f = String(it.formFactor || '').toLowerCase();
+          return !f.includes('case');
+        }
+        return true;
+      });
+
+      if (activeDealFeedFilter === 'BEST_PACK') {
+        filteredItems = [...filteredItems].sort((a, b) => Number(a.pricePerPack || 99) - Number(b.pricePerPack || 99));
+      }
+
+      if (filteredItems.length === 0) {
+        filteredItems = items;
+      }
+
+      feedGrid.innerHTML = filteredItems.slice(0, 6).map((item) => {
         const imgPath = '/art/' + item.skuId + '.jpg?v=' + cacheBuster;
         const landed = Number(item.landedPrice || item.price || 0);
+        const mktVal = Number(item.marketValue || landed || 60);
         const msrpVal = Number(item.msrp || 54.99);
+        const trigVal = Number(item.triggerPrice || msrpVal);
+        const saveDollars = Math.max(0, mktVal - landed);
+        const discPct = mktVal > landed ? Math.max(1, Math.round(((mktVal - landed) / mktVal) * 100)) : 0;
         const isMsrpDefcon = landed > 0 && landed <= msrpVal;
         const packPill = getPackBadgeHtml(item.pricePerPack, item.packCount, item.isRipValueLeader);
         const formatTag = formatShortTag(item.formFactor);
         const preBleedBadge = item.isPreRelease
           ? '<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-extrabold">PRE-RELEASE BLEED</span>'
           : '';
+
+        const spreadPill = discPct > 0
+          ? '<span class="font-mono-num text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/35">-' + discPct + '% Under Mkt (Save $' + saveDollars.toFixed(0) + ')</span>'
+          : '<span class="font-mono-num text-[10px] font-bold px-2 py-0.5 rounded-md bg-white/10 text-slate-300 border border-white/15">At Mkt ($' + mktVal.toFixed(0) + ')</span>';
+
+        const triggerPill = '<span class="font-mono-num text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-200 border border-purple-400/30">Trigger: $' + trigVal.toFixed(0) + '</span>';
 
         const statusBadge = item.soldOut
           ? '<span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 text-[10px] font-extrabold shrink-0">SOLD OUT</span>'
@@ -2787,33 +3154,34 @@
           formFactor: item.formFactor,
           store: item.retailer,
           landedPrice: landed,
-          marketValueAtCapture: item.marketValue,
-          discountPct: item.discountPct
+          marketValueAtCapture: mktVal,
+          discountPct: discPct
         }));
 
         const priceColorCls = isMsrpDefcon ? 'text-[#00F0FF]' : 'text-[#10B981]';
 
         return (
-          '<div class="deal-card glass-card rounded-2xl p-4" style="display:flex;flex-direction:column;justify-content:space-between;min-height:235px;">' +
+          '<div class="deal-card glass-card rounded-2xl p-4" style="display:flex;flex-direction:column;justify-content:space-between;min-height:242px;">' +
             '<div>' +
               '<div class="flex items-center justify-between gap-2 mb-3">' +
                 '<span class="text-[11px] font-bold text-slate-300 truncate">' + item.retailer + ' • <span class="text-slate-400 font-mono-num">' + item.timeStr + '</span></span>' +
                 statusBadge +
               '</div>' +
-              '<div style="display:grid;grid-template-columns:96px 1fr;gap:16px;align-items:center;">' +
+              '<div style="display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:center;">' +
                 '<div class="art-pedestal rounded-xl p-2 flex flex-col items-center justify-between relative overflow-hidden" style="width:96px;height:96px;">' +
                   '<img src="' + imgPath + '" class="w-[82px] h-[68px] object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)]" alt="Art" />' +
                   '<span class="text-[9px] font-mono-num font-extrabold uppercase tracking-wider px-1.5 py-0.2 rounded bg-black/75 text-slate-200 border border-white/10 leading-tight">' + formatTag + '</span>' +
                 '</div>' +
                 '<div class="min-w-0">' +
-                  '<div class="text-[16px] font-extrabold text-white leading-snug line-clamp-2" style="min-height:42px;">' + item.title + '</div>' +
-                  '<div class="flex items-baseline gap-2.5 mt-1.5 flex-wrap">' +
-                    '<span class="text-[26px] leading-none font-black font-mono-num ' + priceColorCls + '">$' + landed.toFixed(2) + '</span>' +
-                    '<span class="text-xs font-mono-num text-slate-300">Market: <strong class="text-amber-300">$' + Number(item.marketValue || 0).toFixed(2) + '</strong></span>' +
-                    (item.discountPct > 0 ? '<span class="font-mono-num text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">-' + item.discountPct + '% Under Mkt</span>' : '') +
+                  '<div class="text-[15px] font-extrabold text-white leading-snug line-clamp-2" style="min-height:40px;">' + item.title + '</div>' +
+                  '<div class="flex items-baseline gap-2 mt-1.5 flex-wrap">' +
+                    '<span class="text-[24px] leading-none font-black font-mono-num ' + priceColorCls + '">$' + landed.toFixed(2) + '</span>' +
+                    '<span class="text-xs font-mono-num text-slate-300">Mkt: <strong class="text-amber-300">$' + mktVal.toFixed(2) + '</strong></span>' +
                   '</div>' +
-                  '<div class="mt-2 flex items-center gap-1.5 flex-wrap">' +
+                  '<div class="mt-1.5 flex items-center gap-1.5 flex-wrap">' +
+                    spreadPill +
                     packPill +
+                    triggerPill +
                     preBleedBadge +
                   '</div>' +
                 '</div>' +
@@ -3683,8 +4051,8 @@
 
     async function sweepLiveCompsGlobal() {
       const btn = document.getElementById('sweepCompsBtn');
-      if (btn) btn.innerHTML = '<span class="status-dot bg-cyan-400"></span><span>Sweeping...</span>';
-      showCommanderToast('Sweeping live TCGPlayer + eBay comps & refreshing radar...');
+      if (btn) btn.innerHTML = '<span class="status-dot bg-cyan-400"></span><span>Syncing...</span>';
+      showCommanderToast('Syncing live TCGPlayer + eBay comps & refreshing radar...');
       try {
         await Promise.all([
           loadAllState(),
@@ -3692,7 +4060,7 @@
         ]);
         showCommanderToast('Live Comps & Radar Telemetry Synchronized');
       } catch (e) {}
-      if (btn) btn.innerHTML = '<span class="status-dot bg-cyan-400"></span><span>Sweep Comps</span>';
+      if (btn) btn.innerHTML = '<span class="status-dot bg-cyan-400"></span><span>Sync Prices</span>';
     }
 
     // Modals
@@ -3743,11 +4111,24 @@
     }
 
     document.addEventListener('keydown', (e) => {
+      const overlay = document.getElementById('clash-cutin-overlay');
+      if (overlay && overlay.classList.contains('active') && (e.key === 'Escape' || e.key === ' ')) {
+        e.preventDefault();
+        dismissClashCutIn();
+        return;
+      }
       if (e.key === 'Escape') {
+        disablePeekArtMode();
         closeModal();
         closeCompModal();
         closeClaimModal();
         closeRosterPopover();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (document.body.classList.contains('peek-art-active') && !e.target.closest('#peekArtBtn')) {
+        disablePeekArtMode();
       }
     });
 
