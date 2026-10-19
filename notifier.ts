@@ -458,10 +458,86 @@ export async function markAlertSoldOut(itemId: string): Promise<void> {
   } catch (e) {}
 }
 
+const DIGEST_COOLDOWN_MS = 4 * 60 * 60 * 1000; // 14,400,000 ms (4 hours)
+let memLastDigestSentAt = 0;
+let memLastDigestHash = '';
+
+function readDigestStateFromDisk(): { lastDigestSentAt: number; lastDigestHash: string; liveDigestEnabled: boolean } {
+  const alertStatePath = path.resolve(process.cwd(), 'alertState.json');
+  const settingsPath = path.resolve(process.cwd(), 'botSettings.json');
+  let diskLastAt = 0;
+  let diskHash = '';
+  let liveDigestEnabled = false;
+
+  try {
+    if (fs.existsSync(alertStatePath)) {
+      const a = JSON.parse(fs.readFileSync(alertStatePath, 'utf-8'));
+      if (a && typeof a.__lastDigestSentAt === 'number') diskLastAt = Math.max(diskLastAt, a.__lastDigestSentAt);
+      if (a && typeof a.__lastDigestHash === 'string') diskHash = a.__lastDigestHash;
+    }
+  } catch (e) {}
+
+  try {
+    if (fs.existsSync(settingsPath)) {
+      const s = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
+      if (s && typeof s.lastDigestSentAt === 'number') diskLastAt = Math.max(diskLastAt, s.lastDigestSentAt);
+      if (s && typeof s.lastDigestHash === 'string' && !diskHash) diskHash = s.lastDigestHash;
+      if (s && typeof s.liveDigestEnabled === 'boolean') liveDigestEnabled = s.liveDigestEnabled;
+    }
+  } catch (e) {}
+
+  return {
+    lastDigestSentAt: Math.max(memLastDigestSentAt, diskLastAt),
+    lastDigestHash: memLastDigestHash || diskHash,
+    liveDigestEnabled
+  };
+}
+
+function writeDigestStateToDisk(sentAt: number, digestHash: string): void {
+  memLastDigestSentAt = sentAt;
+  memLastDigestHash = digestHash;
+
+  const alertStatePath = path.resolve(process.cwd(), 'alertState.json');
+  const settingsPath = path.resolve(process.cwd(), 'botSettings.json');
+
+  try {
+    let a: Record<string, any> = {};
+    if (fs.existsSync(alertStatePath)) {
+      a = JSON.parse(fs.readFileSync(alertStatePath, 'utf-8')) || {};
+    }
+    a.__lastDigestSentAt = sentAt;
+    a.__lastDigestHash = digestHash;
+    atomicWriteJson(alertStatePath, a);
+  } catch (e) {}
+
+  try {
+    let s: Record<string, any> = { muteVaulted: true, liveDigestEnabled: false };
+    if (fs.existsSync(settingsPath)) {
+      s = { ...s, ...(JSON.parse(fs.readFileSync(settingsPath, 'utf-8')) || {}) };
+    }
+    s.lastDigestSentAt = sentAt;
+    s.lastDigestHash = digestHash;
+    atomicWriteJson(settingsPath, s);
+  } catch (e) {}
+}
+
 export async function sendStockDigestCard(options?: { force?: boolean }): Promise<{ sent: boolean; count: number; reason?: string }> {
   const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
   if (!webhookUrl) {
     return { sent: false, count: 0, reason: 'No DISCORD_WEBHOOK_URL' };
+  }
+
+  const digestState = readDigestStateFromDisk();
+
+  if (!options?.force && !digestState.liveDigestEnabled) {
+    return { sent: false, count: 0, reason: 'Automatic Live Shelf Digest is disabled (liveDigestEnabled=false)' };
+  }
+
+  const nowMs = Date.now();
+  if (!options?.force && digestState.lastDigestSentAt > 0 && (nowMs - digestState.lastDigestSentAt) < DIGEST_COOLDOWN_MS) {
+    const minsRemaining = Math.ceil((DIGEST_COOLDOWN_MS - (nowMs - digestState.lastDigestSentAt)) / 60000);
+    console.log(`[DIGEST] Cooldown active (${minsRemaining}m remaining) — skipping automatic digest.`);
+    return { sent: false, count: 0, reason: `Cooldown active (${minsRemaining}m remaining)` };
   }
 
   const nowDate = new Date();
@@ -591,6 +667,15 @@ export async function sendStockDigestCard(options?: { force?: boolean }): Promis
     });
   }
 
+  const digestHash = topDeals
+    .map(d => `${d.ruleId}:${d.store}:${d.price.toFixed(2)}`)
+    .join('|');
+
+  if (!options?.force && digestState.lastDigestHash && digestHash === digestState.lastDigestHash) {
+    console.log('[DIGEST] Shelf state hash unchanged since last digest — skipping duplicate digest.');
+    return { sent: false, count: 0, reason: 'Digest content hash unchanged' };
+  }
+
   const embed = {
     title: `📋 4-HOUR LIVE SHELF DIGEST (${validDeals.length} Active Deal${validDeals.length === 1 ? '' : 's'})`,
     description: `Real-time snapshot of verified in-stock targets at or below your buy triggers.${validDeals.length > 12 ? ` *(Showing top 12 of ${validDeals.length} by % spread)*` : ''}`,
@@ -603,6 +688,8 @@ export async function sendStockDigestCard(options?: { force?: boolean }): Promis
   };
 
   try {
+    // Persist lastDigestSentAt and lastDigestHash to disk BEFORE awaiting webhook so any timeout/restart cannot re-fire
+    writeDigestStateToDisk(Date.now(), digestHash);
     await enqueueDiscordWebhook(webhookUrl, { embeds: [embed] }, 'POST');
     console.log(`[DIGEST SENT] Pushed 4-Hour Live Shelf Digest (${topDeals.length} items) to Discord.`);
     return { sent: true, count: topDeals.length };
@@ -613,13 +700,9 @@ export async function sendStockDigestCard(options?: { force?: boolean }): Promis
 }
 
 export function startStockDigestScheduler(): void {
-  // Fire initial digest 60 seconds after startup so live shelf state is verified immediately
-  setTimeout(() => {
-    sendStockDigestCard().catch(() => {});
-  }, 60 * 1000);
-
-  // Schedule every 4 hours
+  // NEVER fire a Live Shelf Digest on process startup/boot!
+  // Only evaluate on the 4-hour interval (which also enforces liveDigestEnabled=false by default + 4h disk cooldown).
   setInterval(() => {
     sendStockDigestCard().catch(() => {});
-  }, 4 * 60 * 60 * 1000);
+  }, DIGEST_COOLDOWN_MS);
 }

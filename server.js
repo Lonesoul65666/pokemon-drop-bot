@@ -956,8 +956,13 @@ app.get('/api/settings', (req, res) => {
 
 app.post('/api/settings', (req, res) => {
   try {
-    atomicWriteJson(SETTINGS_PATH, req.body || { muteVaulted: false });
-    res.json({ ok: true });
+    let existing = { muteVaulted: true, liveDigestEnabled: false };
+    if (fs.existsSync(SETTINGS_PATH)) {
+      try { existing = { ...existing, ...(JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf-8')) || {}) }; } catch (e) {}
+    }
+    const merged = { ...existing, ...(req.body || {}) };
+    atomicWriteJson(SETTINGS_PATH, merged);
+    res.json({ ok: true, settings: merged });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
@@ -965,7 +970,15 @@ app.post('/api/settings', (req, res) => {
 
 app.post('/api/reset-dedup', (req, res) => {
   try {
-    atomicWriteJson(ALERT_STATE_PATH, {});
+    let preserved = {};
+    if (fs.existsSync(ALERT_STATE_PATH)) {
+      try {
+        const prev = JSON.parse(fs.readFileSync(ALERT_STATE_PATH, 'utf-8')) || {};
+        if (prev.__lastDigestSentAt) preserved.__lastDigestSentAt = prev.__lastDigestSentAt;
+        if (prev.__lastDigestHash) preserved.__lastDigestHash = prev.__lastDigestHash;
+      } catch (e) {}
+    }
+    atomicWriteJson(ALERT_STATE_PATH, preserved);
     res.json({ ok: true, status: 'Deduplication lock cleared.' });
   } catch (e) {
     res.status(500).json({ error: e.message });

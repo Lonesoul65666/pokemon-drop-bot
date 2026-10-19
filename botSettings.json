@@ -1,3 +1,6 @@
 {
-  "muteVaulted": true
+  "muteVaulted": true,
+  "liveDigestEnabled": false,
+  "lastDigestSentAt": 1792452942000,
+  "lastDigestHash": ""
 }

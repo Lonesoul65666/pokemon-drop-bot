@@ -392,10 +392,83 @@ async function markAlertSoldOut(itemId) {
     }
     catch (e) { }
 }
+const DIGEST_COOLDOWN_MS = 4 * 60 * 60 * 1000; // 14,400,000 ms (4 hours)
+let memLastDigestSentAt = 0;
+let memLastDigestHash = '';
+function readDigestStateFromDisk() {
+    const alertStatePath = path_1.default.resolve(process.cwd(), 'alertState.json');
+    const settingsPath = path_1.default.resolve(process.cwd(), 'botSettings.json');
+    let diskLastAt = 0;
+    let diskHash = '';
+    let liveDigestEnabled = false;
+    try {
+        if (fs_1.default.existsSync(alertStatePath)) {
+            const a = JSON.parse(fs_1.default.readFileSync(alertStatePath, 'utf-8'));
+            if (a && typeof a.__lastDigestSentAt === 'number')
+                diskLastAt = Math.max(diskLastAt, a.__lastDigestSentAt);
+            if (a && typeof a.__lastDigestHash === 'string')
+                diskHash = a.__lastDigestHash;
+        }
+    }
+    catch (e) { }
+    try {
+        if (fs_1.default.existsSync(settingsPath)) {
+            const s = JSON.parse(fs_1.default.readFileSync(settingsPath, 'utf-8'));
+            if (s && typeof s.lastDigestSentAt === 'number')
+                diskLastAt = Math.max(diskLastAt, s.lastDigestSentAt);
+            if (s && typeof s.lastDigestHash === 'string' && !diskHash)
+                diskHash = s.lastDigestHash;
+            if (s && typeof s.liveDigestEnabled === 'boolean')
+                liveDigestEnabled = s.liveDigestEnabled;
+        }
+    }
+    catch (e) { }
+    return {
+        lastDigestSentAt: Math.max(memLastDigestSentAt, diskLastAt),
+        lastDigestHash: memLastDigestHash || diskHash,
+        liveDigestEnabled
+    };
+}
+function writeDigestStateToDisk(sentAt, digestHash) {
+    memLastDigestSentAt = sentAt;
+    memLastDigestHash = digestHash;
+    const alertStatePath = path_1.default.resolve(process.cwd(), 'alertState.json');
+    const settingsPath = path_1.default.resolve(process.cwd(), 'botSettings.json');
+    try {
+        let a = {};
+        if (fs_1.default.existsSync(alertStatePath)) {
+            a = JSON.parse(fs_1.default.readFileSync(alertStatePath, 'utf-8')) || {};
+        }
+        a.__lastDigestSentAt = sentAt;
+        a.__lastDigestHash = digestHash;
+        (0, policies_1.atomicWriteJson)(alertStatePath, a);
+    }
+    catch (e) { }
+    try {
+        let s = { muteVaulted: true, liveDigestEnabled: false };
+        if (fs_1.default.existsSync(settingsPath)) {
+            s = { ...s, ...(JSON.parse(fs_1.default.readFileSync(settingsPath, 'utf-8')) || {}) };
+        }
+        s.lastDigestSentAt = sentAt;
+        s.lastDigestHash = digestHash;
+        (0, policies_1.atomicWriteJson)(settingsPath, s);
+    }
+    catch (e) { }
+}
 async function sendStockDigestCard(options) {
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
     if (!webhookUrl) {
         return { sent: false, count: 0, reason: 'No DISCORD_WEBHOOK_URL' };
+    }
+    const digestState = readDigestStateFromDisk();
+    if (!options?.force && !digestState.liveDigestEnabled) {
+        return { sent: false, count: 0, reason: 'Automatic Live Shelf Digest is disabled (liveDigestEnabled=false)' };
+    }
+    const nowMs = Date.now();
+    if (!options?.force && digestState.lastDigestSentAt > 0 && (nowMs - digestState.lastDigestSentAt) < DIGEST_COOLDOWN_MS) {
+        const minsRemaining = Math.ceil((DIGEST_COOLDOWN_MS - (nowMs - digestState.lastDigestSentAt)) / 60000);
+        console.log(`[DIGEST] Cooldown active (${minsRemaining}m remaining) — skipping automatic digest.`);
+        return { sent: false, count: 0, reason: `Cooldown active (${minsRemaining}m remaining)` };
     }
     const nowDate = new Date();
     const hour = nowDate.getHours();
@@ -504,6 +577,13 @@ async function sendStockDigestCard(options) {
             inline: false
         });
     }
+    const digestHash = topDeals
+        .map(d => `${d.ruleId}:${d.store}:${d.price.toFixed(2)}`)
+        .join('|');
+    if (!options?.force && digestState.lastDigestHash && digestHash === digestState.lastDigestHash) {
+        console.log('[DIGEST] Shelf state hash unchanged since last digest — skipping duplicate digest.');
+        return { sent: false, count: 0, reason: 'Digest content hash unchanged' };
+    }
     const embed = {
         title: `📋 4-HOUR LIVE SHELF DIGEST (${validDeals.length} Active Deal${validDeals.length === 1 ? '' : 's'})`,
         description: `Real-time snapshot of verified in-stock targets at or below your buy triggers.${validDeals.length > 12 ? ` *(Showing top 12 of ${validDeals.length} by % spread)*` : ''}`,
@@ -515,6 +595,8 @@ async function sendStockDigestCard(options) {
         timestamp: nowDate.toISOString()
     };
     try {
+        // Persist lastDigestSentAt and lastDigestHash to disk BEFORE awaiting webhook so any timeout/restart cannot re-fire
+        writeDigestStateToDisk(Date.now(), digestHash);
         await enqueueDiscordWebhook(webhookUrl, { embeds: [embed] }, 'POST');
         console.log(`[DIGEST SENT] Pushed 4-Hour Live Shelf Digest (${topDeals.length} items) to Discord.`);
         return { sent: true, count: topDeals.length };
@@ -525,12 +607,9 @@ async function sendStockDigestCard(options) {
     }
 }
 function startStockDigestScheduler() {
-    // Fire initial digest 60 seconds after startup so live shelf state is verified immediately
-    setTimeout(() => {
-        sendStockDigestCard().catch(() => { });
-    }, 60 * 1000);
-    // Schedule every 4 hours
+    // NEVER fire a Live Shelf Digest on process startup/boot!
+    // Only evaluate on the 4-hour interval (which also enforces liveDigestEnabled=false by default + 4h disk cooldown).
     setInterval(() => {
         sendStockDigestCard().catch(() => { });
-    }, 4 * 60 * 60 * 1000);
+    }, DIGEST_COOLDOWN_MS);
 }
