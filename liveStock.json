@@ -4,49 +4,49 @@
       "ruleName": "Prismatic Evolutions ETB Sealed Case (10 ETBs)",
       "retailer": "TCGPlayer Verified Seller",
       "price": 1315.01,
-      "oosAt": 1792373452988
+      "oosAt": 1792386617679
     },
     {
       "ruleName": "30th Celebration ETB Sealed Case (10 ETBs)",
       "retailer": "TCGPlayer Verified Seller",
-      "price": 1409.85,
-      "oosAt": 1792373430010
-    },
-    {
-      "ruleName": "Prismatic Evolutions ETB",
-      "retailer": "TCGPlayer Verified Seller",
-      "price": 109,
-      "oosAt": 1792373074356
+      "price": 1399.99,
+      "oosAt": 1792386596296
     },
     {
       "ruleName": "30th Celebration ETB Sealed Case (10 ETBs)",
       "retailer": "TCGPlayer Verified Seller",
-      "price": 1409.85,
-      "oosAt": 1792372906579
-    },
-    {
-      "ruleName": "Prismatic Evolutions ETB",
-      "retailer": "TCGPlayer Verified Seller",
-      "price": 109,
-      "oosAt": 1792372000649
-    },
-    {
-      "ruleName": "30th Celebration ETB Sealed Case (10 ETBs)",
-      "retailer": "TCGPlayer Verified Seller",
-      "price": 1409.85,
-      "oosAt": 1792371812649
+      "price": 1399.99,
+      "oosAt": 1792385556388
     },
     {
       "ruleName": "Prismatic Evolutions ETB Sealed Case (10 ETBs)",
       "retailer": "TCGPlayer Verified Seller",
       "price": 1315.01,
-      "oosAt": 1792371304690
+      "oosAt": 1792385070538
     },
     {
       "ruleName": "30th Celebration ETB Sealed Case (10 ETBs)",
       "retailer": "TCGPlayer Verified Seller",
-      "price": 1409.85,
-      "oosAt": 1792370759639
+      "price": 1399.99,
+      "oosAt": 1792384517956
+    },
+    {
+      "ruleName": "Prismatic Evolutions ETB Sealed Case (10 ETBs)",
+      "retailer": "TCGPlayer Verified Seller",
+      "price": 1315.01,
+      "oosAt": 1792384006897
+    },
+    {
+      "ruleName": "30th Celebration ETB Sealed Case (10 ETBs)",
+      "retailer": "TCGPlayer Verified Seller",
+      "price": 1399.99,
+      "oosAt": 1792383469906
+    },
+    {
+      "ruleName": "Prismatic Evolutions ETB Sealed Case (10 ETBs)",
+      "retailer": "TCGPlayer Verified Seller",
+      "price": 1315.01,
+      "oosAt": 1792382974639
     }
   ],
   "swsh-lost-origin-etb": {
@@ -66,8 +66,8 @@
     "url": "https://www.tcgplayer.com/product/277335?Language=English",
     "itemId": "tcg_277335",
     "inStock": true,
-    "updatedAt": 1792373497560,
-    "timeStr": "08:31 PM"
+    "updatedAt": 1792386152178,
+    "timeStr": "12:02 AM"
   },
   "me-ascended-heroes-etb-case": {
     "ruleId": "me-ascended-heroes-etb-case",
@@ -86,8 +86,8 @@
     "url": "https://www.tcgplayer.com/product/679558?Language=English",
     "itemId": "tcg_679558",
     "inStock": true,
-    "updatedAt": 1792373105163,
-    "timeStr": "08:25 PM"
+    "updatedAt": 1792386929564,
+    "timeStr": "12:15 AM"
   },
   "sv-prismatic-evolutions-bundle": {
     "ruleId": "sv-prismatic-evolutions-bundle",
@@ -115,10 +115,10 @@
     "formFactor": "Booster Bundle",
     "title": "Shrouded Fable Booster Bundle SV: Shrouded Fable",
     "retailer": "TCGPlayer Verified Seller",
-    "price": 52.99,
-    "landedPrice": 52.99,
+    "price": 51,
+    "landedPrice": 51,
     "packCount": 6,
-    "pricePerPack": 8.83,
+    "pricePerPack": 8.5,
     "isRipValueLeader": false,
     "isPreOrder": false,
     "isPreRelease": false,
@@ -126,8 +126,8 @@
     "url": "https://www.tcgplayer.com/product/553031?Language=English",
     "itemId": "tcg_553031",
     "inStock": true,
-    "updatedAt": 1792373288534,
-    "timeStr": "08:28 PM"
+    "updatedAt": 1792385957093,
+    "timeStr": "11:59 PM"
   },
   "sv-journey-together-booster-box": {
     "ruleId": "sv-journey-together-booster-box",
@@ -149,8 +149,8 @@
     "cart2xUrl": "https://pkmncolosseum.com/cart/45074537971766:2",
     "itemId": "45074537971766",
     "inStock": true,
-    "updatedAt": 1792373757524,
-    "timeStr": "08:35 PM"
+    "updatedAt": 1792386836485,
+    "timeStr": "12:13 AM"
   },
   "me-30th-celebration-etb-case": {
     "ruleId": "me-30th-celebration-etb-case",
@@ -169,7 +169,7 @@
     "url": "https://www.tcgplayer.com/product/709036?Language=English",
     "itemId": "tcg_709036",
     "inStock": true,
-    "updatedAt": 1792373654313,
-    "timeStr": "08:34 PM"
+    "updatedAt": 1792386938683,
+    "timeStr": "12:15 AM"
   }
 }

@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MONITORED_STORES = exports.LGS_STORES = void 0;
 exports.getNextProxy = getNextProxy;
 exports.pollShopifyStores = pollShopifyStores;
 const axios_1 = __importDefault(require("axios"));
@@ -39,7 +40,7 @@ try {
 }
 catch (e) { }
 function flushStoreHealthToDisk() {
-    const activeNames = new Set(MONITORED_STORES.map(s => s.name));
+    const activeNames = new Set(exports.MONITORED_STORES.map(s => s.name));
     const out = {};
     for (const [k, v] of storeHealthMap.entries()) {
         if (activeNames.has(k)) {
@@ -48,41 +49,48 @@ function flushStoreHealthToDisk() {
     }
     (0, policies_1.atomicWriteJson)(STORE_HEALTH_PATH, out);
 }
-const MONITORED_STORES = [
-    // Existing Verified USD Shopify Stores (14)
-    { name: 'Smoke & Mirrors', baseUrl: 'https://smokeandmirrorshobby.com' },
-    { name: 'Safari Zone', baseUrl: 'https://safari-zone.com' },
-    { name: 'Zulus Games', baseUrl: 'https://zulusgames.com' },
-    { name: 'Gamers Guild AZ', baseUrl: 'https://gamersguildaz.com' },
-    { name: 'MinMaxGames', baseUrl: 'https://minmaxgames.com' },
-    { name: 'Card Shop Live', baseUrl: 'https://cardshoplive.com' },
-    { name: 'Joshs Cards', baseUrl: 'https://joshscards.com' },
-    { name: 'Flipside Gaming', baseUrl: 'https://www.flipsidegaming.com' },
-    { name: 'Over The Brick', baseUrl: 'https://overthebrick.com' },
-    { name: 'Knight & Day Games', baseUrl: 'https://knightanddaygames.com' },
-    { name: 'TCG Stadium', baseUrl: 'https://tcg-stadium.com' },
-    { name: 'Rip N Ship Arena', baseUrl: 'https://www.ripnshiparena.com' },
-    { name: 'Collector Store', baseUrl: 'https://collectorstore.com' },
-    { name: 'Prodigy Games', baseUrl: 'https://prodigygames.com' },
-    // Wave 1 Newly Onboarded Verified USD Shopify Stores (17)
-    { name: 'Double Infinity Gaming', baseUrl: 'https://doubleinfinitygaming.com' },
-    { name: 'Paladin Cards', baseUrl: 'https://paladincards20.com' },
-    { name: 'PKMN Colosseum', baseUrl: 'https://pkmncolosseum.com' },
-    { name: 'Mystic TCG', baseUrl: 'https://mystictcg.com' },
-    { name: 'Top Cut Central', baseUrl: 'https://topcutcentral.com' },
-    { name: 'Poke-Collect', baseUrl: 'https://poke-collect.com' },
-    { name: 'AllPokeTCG', baseUrl: 'https://allpoketcg.com' },
-    { name: 'The Pokecave', baseUrl: 'https://thepokecave.com' },
-    { name: 'Game Grid Lehi', baseUrl: 'https://store.gglehi.com' },
-    { name: 'Card Cavern', baseUrl: 'https://cardcaverntradingcards.com' },
-    { name: 'Galactic Toys', baseUrl: 'https://galactictoys.com' },
-    { name: '1st Edition Collectibles', baseUrl: 'https://1steditioncollectibles.com' },
-    { name: 'Trading Card Market', baseUrl: 'https://tradingcardmarket.com' },
-    { name: 'The Gaming Goat', baseUrl: 'https://tgg-games.com' },
-    { name: 'Stomping Grounds', baseUrl: 'https://www.stompinggroundstcg.com' },
-    { name: 'Red Raccoon Games', baseUrl: 'https://redraccoongames.com' },
-    { name: 'Tabletop Village', baseUrl: 'https://tabletopvillage.com' }
+exports.LGS_STORES = [
+    // Existing Core Verified USD Shopify Stores (14)
+    { name: 'Smoke & Mirrors', baseUrl: 'https://smokeandmirrorshobby.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Safari Zone', baseUrl: 'https://safari-zone.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Zulus Games', baseUrl: 'https://zulusgames.com', freeShipThreshold: 100, flatShipping: 5.99, currency: 'USD' },
+    { name: 'Gamers Guild AZ', baseUrl: 'https://gamersguildaz.com', freeShipThreshold: 99, flatShipping: 6.99, currency: 'USD' },
+    { name: 'MinMaxGames', baseUrl: 'https://minmaxgames.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Card Shop Live', baseUrl: 'https://cardshoplive.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Joshs Cards', baseUrl: 'https://joshscards.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Flipside Gaming', baseUrl: 'https://www.flipsidegaming.com', freeShipThreshold: 100, flatShipping: 5.99, currency: 'USD' },
+    { name: 'Over The Brick', baseUrl: 'https://overthebrick.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Knight & Day Games', baseUrl: 'https://knightanddaygames.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'TCG Stadium', baseUrl: 'https://tcg-stadium.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Rip N Ship Arena', baseUrl: 'https://www.ripnshiparena.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Collector Store', baseUrl: 'https://collectorstore.com', freeShipThreshold: 100, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Prodigy Games', baseUrl: 'https://prodigygames.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    // Wave 1 Verified USD Shopify Stores (17)
+    { name: 'Double Infinity Gaming', baseUrl: 'https://doubleinfinitygaming.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Paladin Cards', baseUrl: 'https://paladincards20.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'PKMN Colosseum', baseUrl: 'https://pkmncolosseum.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Mystic TCG', baseUrl: 'https://mystictcg.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Top Cut Central', baseUrl: 'https://topcutcentral.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Poke-Collect', baseUrl: 'https://poke-collect.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'AllPokeTCG', baseUrl: 'https://allpoketcg.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'The Pokecave', baseUrl: 'https://thepokecave.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Game Grid Lehi', baseUrl: 'https://store.gglehi.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Card Cavern', baseUrl: 'https://cardcaverntradingcards.com', freeShipThreshold: 100, flatShipping: 5.99, currency: 'USD' },
+    { name: 'Galactic Toys', baseUrl: 'https://galactictoys.com', freeShipThreshold: 125, flatShipping: 6.99, currency: 'USD' },
+    { name: '1st Edition Collectibles', baseUrl: 'https://1steditioncollectibles.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Trading Card Market', baseUrl: 'https://tradingcardmarket.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'The Gaming Goat', baseUrl: 'https://tgg-games.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Stomping Grounds', baseUrl: 'https://www.stompinggroundstcg.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Red Raccoon Games', baseUrl: 'https://redraccoongames.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Tabletop Village', baseUrl: 'https://tabletopvillage.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    // Wave 2 Phase A Newly Onboarded Verified Shopify Stores (5)
+    { name: 'Card N All Gaming', baseUrl: 'https://cardnallgaming.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'The Poke Court', baseUrl: 'https://thepokecourt.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Awesome CCG', baseUrl: 'https://awesomeccg.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Tanuki Games', baseUrl: 'https://tanukigamesatx.com', freeShipThreshold: 100, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Hobbiesville', baseUrl: 'https://hobbiesville.com', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' }
 ];
+exports.MONITORED_STORES = exports.LGS_STORES;
 const variantStateMap = new Map();
 function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -125,14 +133,15 @@ async function resolveBestPokemonFeed(store) {
     // Check store's /collections.json first to see their exact Pokemon collection handle
     const { data: colData } = await smartGetJson(`${store.baseUrl}/collections.json?limit=250`);
     if (colData?.collections && Array.isArray(colData.collections)) {
-        const pkmnCols = colData.collections.filter((c) => /pokemon|pkmn/i.test(c.handle || '') || /pokemon/i.test(c.title || ''));
-        // Prefer "sealed" or main "pokemon" collection
+        const pkmnCols = colData.collections.filter((c) => (/pokemon|pkmn/i.test(c.handle || '') || /pokemon/i.test(c.title || '')) &&
+            !/single|graded|slab|japanese|chinese|korean|event|local/i.test(c.handle || ''));
+        // Prefer "sealed", "booster-boxes", "pokemon-tcg", or main "pokemon" collection
         pkmnCols.sort((a, b) => {
-            const aSealed = /sealed|booster|box/i.test(a.handle) ? 1 : 0;
-            const bSealed = /sealed|booster|box/i.test(b.handle) ? 1 : 0;
+            const aSealed = /sealed|booster|box|tcg|in-stock|^pokemon$/i.test(a.handle) ? 1 : 0;
+            const bSealed = /sealed|booster|box|tcg|in-stock|^pokemon$/i.test(b.handle) ? 1 : 0;
             return bSealed - aSealed;
         });
-        for (const col of pkmnCols.slice(0, 3)) {
+        for (const col of pkmnCols.slice(0, 4)) {
             const testPath = `/collections/${col.handle}/products.json?limit=250`;
             const { data: prodData } = await smartGetJson(`${store.baseUrl}${testPath}`);
             if (prodData?.products && prodData.products.length >= 5) {
@@ -195,9 +204,11 @@ async function pollSingleStore(store) {
         health.lastProductsCount = products.length;
         storeHealthMap.set(store.name, health);
         const checkNow = Date.now();
+        const fxMultiplier = store.currency === 'CAD' ? 0.73 : 1.0;
         for (const prod of products) {
             for (const variant of prod.variants || []) {
-                const priceNum = parseFloat(variant.price);
+                const rawPrice = parseFloat(variant.price);
+                const priceNum = fxMultiplier !== 1.0 ? Math.round(rawPrice * fxMultiplier * 100) / 100 : rawPrice;
                 if (!priceNum || priceNum < 18)
                     continue;
                 if (variant.available) {
@@ -276,7 +287,7 @@ async function pollShopifyStores() {
     let totalProductsScanned = 0;
     let circuitOpenCount = 0;
     try {
-        const queue = [...MONITORED_STORES];
+        const queue = [...exports.MONITORED_STORES];
         const workerCount = Math.min(MAX_CONCURRENT_STORES, queue.length);
         const workers = Array.from({ length: workerCount }, async () => {
             while (queue.length > 0) {
@@ -294,7 +305,7 @@ async function pollShopifyStores() {
         });
         await Promise.all(workers);
         flushStoreHealthToDisk();
-        console.log(`[${new Date().toLocaleTimeString()}] LGS Sweep Complete (Pool=${MAX_CONCURRENT_STORES}): ${activeStoresHit}/${MONITORED_STORES.length} stores responded (${totalProductsScanned} Pokemon listings checked${circuitOpenCount > 0 ? `, ${circuitOpenCount} in circuit cooldown` : ''}).`);
+        console.log(`[${new Date().toLocaleTimeString()}] LGS Sweep Complete (Pool=${MAX_CONCURRENT_STORES}): ${activeStoresHit}/${exports.MONITORED_STORES.length} stores responded (${totalProductsScanned} Pokemon listings checked${circuitOpenCount > 0 ? `, ${circuitOpenCount} in circuit cooldown` : ''}).`);
     }
     finally {
         isPolling = false;

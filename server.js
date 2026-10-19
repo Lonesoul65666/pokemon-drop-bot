@@ -674,14 +674,48 @@ app.get('/api/trophies', (req, res) => {
   }
 });
 
+function getDynamicStoreTelemetry() {
+  let lgsStores = [];
+  let bigBoxStores = [];
+  try {
+    const lgsMod = require('./lgsPoller');
+    lgsStores = lgsMod.LGS_STORES || lgsMod.MONITORED_STORES || [];
+  } catch (e) {}
+  try {
+    const vpMod = require('./vampirePoller');
+    bigBoxStores = vpMod.BIG_BOX_STORES || [];
+  } catch (e) {}
+
+  let storeHealth = {};
+  if (fs.existsSync(STORE_HEALTH_PATH)) {
+    try { storeHealth = JSON.parse(fs.readFileSync(STORE_HEALTH_PATH, 'utf-8')); } catch (e) {}
+  }
+
+  const lgsCount = lgsStores.length || Object.keys(storeHealth).length || 36;
+  const bigBoxCount = bigBoxStores.length || 9;
+  const circuitOpenCount = Object.values(storeHealth).filter(s => s && s.status === 'CIRCUIT_OPEN').length;
+  const healthyLgsCount = Math.max(0, lgsCount - circuitOpenCount);
+  const marketplaceCount = 3; // TCGPlayer, eBay, r/PKMNTCGDeals
+  const totalMonitoredSources = lgsCount + bigBoxCount + marketplaceCount;
+
+  return {
+    lgsCount,
+    healthyLgsCount,
+    circuitOpenCount,
+    bigBoxCount,
+    marketplaceCount,
+    totalMonitoredSources,
+    lgsStores,
+    bigBoxStores,
+    storeHealth
+  };
+}
+
 app.get('/api/status', (req, res) => {
   try {
     const trophies = loadMsrpTrophies();
     const conqueredVault = loadConqueredVault();
-    let storeHealth = {};
-    if (fs.existsSync(STORE_HEALTH_PATH)) {
-      try { storeHealth = JSON.parse(fs.readFileSync(STORE_HEALTH_PATH, 'utf-8')); } catch (e) {}
-    }
+    const storeTel = getDynamicStoreTelemetry();
     res.json({
       ok: true,
       timestamp: Date.now(),
@@ -689,7 +723,19 @@ app.get('/api/status', (req, res) => {
       msrpTrophies: trophies,
       totalConquered: conqueredVault.totalConquered,
       collectorRank: conqueredVault.collectorRank,
-      storeHealth
+      lgsStoreCount: storeTel.lgsCount,
+      healthyLgsCount: storeTel.healthyLgsCount,
+      bigBoxStoreCount: storeTel.bigBoxCount,
+      totalMonitoredSources: storeTel.totalMonitoredSources,
+      storeTelemetry: {
+        lgsCount: storeTel.lgsCount,
+        healthyLgsCount: storeTel.healthyLgsCount,
+        circuitOpenCount: storeTel.circuitOpenCount,
+        bigBoxCount: storeTel.bigBoxCount,
+        marketplaceCount: storeTel.marketplaceCount,
+        totalMonitoredSources: storeTel.totalMonitoredSources
+      },
+      storeHealth: storeTel.storeHealth
     });
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });
@@ -701,10 +747,17 @@ app.get('/api/trends', (req, res) => {
     const { computeFullMarketTape } = require('./marketTape');
     const tape = computeFullMarketTape();
     const trophies = loadMsrpTrophies();
+    const storeTel = getDynamicStoreTelemetry();
     res.json({
       ...tape,
       totalMsrpHits: trophies.totalMsrpHits,
-      msrpTrophies: trophies
+      msrpTrophies: trophies,
+      storeTelemetry: {
+        lgsCount: storeTel.lgsCount,
+        healthyLgsCount: storeTel.healthyLgsCount,
+        bigBoxCount: storeTel.bigBoxCount,
+        totalMonitoredSources: storeTel.totalMonitoredSources
+      }
     });
   } catch (e) {
     res.status(500).json({ error: e.message, msrpTrophies: loadMsrpTrophies() });
@@ -751,10 +804,17 @@ app.get('/api/market-tape', (req, res) => {
     const { computeFullMarketTape } = require('./marketTape');
     const tape = computeFullMarketTape();
     const trophies = loadMsrpTrophies();
+    const storeTel = getDynamicStoreTelemetry();
     res.json({
       ...tape,
       totalMsrpHits: trophies.totalMsrpHits,
-      msrpTrophies: trophies
+      msrpTrophies: trophies,
+      storeTelemetry: {
+        lgsCount: storeTel.lgsCount,
+        healthyLgsCount: storeTel.healthyLgsCount,
+        bigBoxCount: storeTel.bigBoxCount,
+        totalMonitoredSources: storeTel.totalMonitoredSources
+      }
     });
   } catch (e) {
     res.status(500).json({ error: e.message, targets: {}, honeyHoleStores: [], recentSalesTape: [], weeklyCheckpoints: {}, msrpTrophies: loadMsrpTrophies() });

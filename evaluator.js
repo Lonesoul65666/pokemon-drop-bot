@@ -114,7 +114,13 @@ exports.STORE_SHIPPING_RULES = {
     'the gaming goat': { freeShipThreshold: 150, flatShipping: 6.99 },
     'stomping grounds': { freeShipThreshold: 150, flatShipping: 6.99 },
     'red raccoon games': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'tabletop village': { freeShipThreshold: 150, flatShipping: 6.99 }
+    'tabletop village': { freeShipThreshold: 150, flatShipping: 6.99 },
+    // Wave 2 Phase A Newly Onboarded Verified Shopify LGS Stores (5)
+    'card n all gaming': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'the poke court': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'awesome ccg': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'tanuki games': { freeShipThreshold: 100, flatShipping: 6.99 },
+    'hobbiesville': { freeShipThreshold: 175, flatShipping: 9.99 }
 };
 function getStoreShippingProfile(retailer) {
     const key = (retailer || '').trim().toLowerCase();

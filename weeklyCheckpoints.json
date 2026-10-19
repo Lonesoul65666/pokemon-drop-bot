@@ -22,7 +22,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 215,
       "avgClearPrice": 194,
       "lowestDrop": 215,
@@ -54,7 +54,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1290,
       "avgClearPrice": 1161,
       "lowestDrop": 1290,
@@ -86,7 +86,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 95,
       "avgClearPrice": 86,
       "lowestDrop": 95,
@@ -118,7 +118,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 950,
       "avgClearPrice": 855,
       "lowestDrop": 950,
@@ -150,7 +150,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 185,
       "avgClearPrice": 167,
       "lowestDrop": 175,
@@ -182,7 +182,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1050,
       "avgClearPrice": 945,
       "lowestDrop": 1050,
@@ -214,7 +214,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 74.06,
       "avgClearPrice": 63.71,
       "lowestDrop": 63,
@@ -246,13 +246,13 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
-      "marketPrice": 752,
+      "timestamp": 1792384507816,
+      "marketPrice": 753.5,
       "avgClearPrice": 677,
       "lowestDrop": 750,
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
-      "wowDeltaPct": 0.3
+      "wowDeltaPct": 0.5
     }
   ],
   "me-phantasmal-flames-booster-box": [
@@ -278,7 +278,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 245,
       "avgClearPrice": 221,
       "lowestDrop": 245,
@@ -310,7 +310,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1470,
       "avgClearPrice": 1323,
       "lowestDrop": 1470,
@@ -342,7 +342,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 105,
       "avgClearPrice": 95,
       "lowestDrop": 105,
@@ -374,7 +374,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1050,
       "avgClearPrice": 945,
       "lowestDrop": 1050,
@@ -406,7 +406,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 168,
       "avgClearPrice": 151,
       "lowestDrop": 168,
@@ -438,7 +438,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 990,
       "avgClearPrice": 891,
       "lowestDrop": 990,
@@ -470,7 +470,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 69.97,
       "avgClearPrice": 62.3,
       "lowestDrop": 62,
@@ -502,7 +502,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 620,
       "avgClearPrice": 558,
       "lowestDrop": 620,
@@ -534,7 +534,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 178.99,
       "avgClearPrice": 161,
       "lowestDrop": 172,
@@ -566,7 +566,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1020,
       "avgClearPrice": 918,
       "lowestDrop": 1020,
@@ -598,7 +598,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 74.26,
       "avgClearPrice": 63.32,
       "lowestDrop": 51,
@@ -630,7 +630,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 738.91,
       "avgClearPrice": 640,
       "lowestDrop": 640,
@@ -662,7 +662,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 247.47,
       "avgClearPrice": 222,
       "lowestDrop": 225,
@@ -694,7 +694,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1498.95,
       "avgClearPrice": 1349,
       "lowestDrop": 1350,
@@ -726,7 +726,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 103.24,
       "avgClearPrice": 93,
       "lowestDrop": 95,
@@ -758,7 +758,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 950,
       "avgClearPrice": 855,
       "lowestDrop": 950,
@@ -790,7 +790,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 68,
       "avgClearPrice": 61,
       "lowestDrop": 68,
@@ -822,7 +822,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 2114.28,
       "avgClearPrice": 680,
       "lowestDrop": 680,
@@ -854,7 +854,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 44,
       "avgClearPrice": 40,
       "lowestDrop": 44,
@@ -886,7 +886,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 85,
       "avgClearPrice": 77,
       "lowestDrop": 85,
@@ -918,13 +918,13 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
-      "marketPrice": 1412.68,
-      "avgClearPrice": 1412.05,
+      "timestamp": 1792384507816,
+      "marketPrice": 1409.58,
+      "avgClearPrice": 1411.22,
       "lowestDrop": 850,
-      "clearedCount": 135,
+      "clearedCount": 145,
       "topStore": "TCGPlayer / LGS Baseline",
-      "wowDeltaPct": 66.2
+      "wowDeltaPct": 65.8
     }
   ],
   "me-30th-celebration-bundle": [
@@ -950,7 +950,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 76.22,
       "avgClearPrice": 48,
       "lowestDrop": 48,
@@ -982,7 +982,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 145,
       "avgClearPrice": 131,
       "lowestDrop": 145,
@@ -1014,7 +1014,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 870,
       "avgClearPrice": 783,
       "lowestDrop": 870,
@@ -1046,7 +1046,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 52,
       "avgClearPrice": 47,
       "lowestDrop": 52,
@@ -1078,7 +1078,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 520,
       "avgClearPrice": 468,
       "lowestDrop": 520,
@@ -1110,7 +1110,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 52,
       "avgClearPrice": 47,
       "lowestDrop": 52,
@@ -1142,7 +1142,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 520,
       "avgClearPrice": 468,
       "lowestDrop": 520,
@@ -1174,7 +1174,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 210,
       "avgClearPrice": 189,
       "lowestDrop": 210,
@@ -1206,7 +1206,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1260,
       "avgClearPrice": 1134,
       "lowestDrop": 1260,
@@ -1238,7 +1238,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 68,
       "avgClearPrice": 61,
       "lowestDrop": 68,
@@ -1270,7 +1270,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 680,
       "avgClearPrice": 612,
       "lowestDrop": 680,
@@ -1302,7 +1302,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 175,
       "avgClearPrice": 158,
       "lowestDrop": 175,
@@ -1334,7 +1334,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1050,
       "avgClearPrice": 945,
       "lowestDrop": 1050,
@@ -1366,7 +1366,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 65,
       "avgClearPrice": 59,
       "lowestDrop": 65,
@@ -1398,7 +1398,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 650,
       "avgClearPrice": 585,
       "lowestDrop": 650,
@@ -1430,7 +1430,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 175,
       "avgClearPrice": 158,
       "lowestDrop": 175,
@@ -1462,7 +1462,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1750,
       "avgClearPrice": 1575,
       "lowestDrop": 1750,
@@ -1494,7 +1494,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 62,
       "avgClearPrice": 56,
       "lowestDrop": 62,
@@ -1526,7 +1526,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 145,
       "avgClearPrice": 131,
       "lowestDrop": 145,
@@ -1558,7 +1558,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 870,
       "avgClearPrice": 783,
       "lowestDrop": 870,
@@ -1590,7 +1590,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 75,
       "avgClearPrice": 68,
       "lowestDrop": 75,
@@ -1622,7 +1622,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1333,
       "avgClearPrice": 1200,
       "lowestDrop": 1333,
@@ -1654,7 +1654,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 75,
       "avgClearPrice": 68,
       "lowestDrop": 75,
@@ -1686,7 +1686,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1358,
       "avgClearPrice": 1222,
       "lowestDrop": 1358,
@@ -1718,7 +1718,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 115,
       "avgClearPrice": 104,
       "lowestDrop": 115,
@@ -1750,7 +1750,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1150,
       "avgClearPrice": 1035,
       "lowestDrop": 1150,
@@ -1782,7 +1782,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 48,
       "avgClearPrice": 43,
       "lowestDrop": 48,
@@ -1814,7 +1814,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 160,
       "avgClearPrice": 144,
       "lowestDrop": 160,
@@ -1846,7 +1846,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 960,
       "avgClearPrice": 864,
       "lowestDrop": 960,
@@ -1878,7 +1878,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 75,
       "avgClearPrice": 68,
       "lowestDrop": 75,
@@ -1910,7 +1910,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1446,
       "avgClearPrice": 1301,
       "lowestDrop": 1446,
@@ -1942,7 +1942,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 75,
       "avgClearPrice": 68,
       "lowestDrop": 75,
@@ -1974,7 +1974,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1268,
       "avgClearPrice": 1141,
       "lowestDrop": 1268,
@@ -2006,7 +2006,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 215,
       "avgClearPrice": 194,
       "lowestDrop": 215,
@@ -2038,7 +2038,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1290,
       "avgClearPrice": 1161,
       "lowestDrop": 1290,
@@ -2070,13 +2070,13 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
-      "marketPrice": 102.81,
+      "timestamp": 1792384507816,
+      "marketPrice": 103.12,
       "avgClearPrice": 92.57,
       "lowestDrop": 62,
       "clearedCount": 6,
       "topStore": "TCGPlayer / LGS Baseline",
-      "wowDeltaPct": 65.8
+      "wowDeltaPct": 66.3
     }
   ],
   "sv-twilight-masquerade-etb-case": [
@@ -2102,7 +2102,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 620,
       "avgClearPrice": 558,
       "lowestDrop": 620,
@@ -2134,7 +2134,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 48,
       "avgClearPrice": 43,
       "lowestDrop": 48,
@@ -2166,7 +2166,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 480,
       "avgClearPrice": 432,
       "lowestDrop": 480,
@@ -2198,7 +2198,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 60.18,
       "avgClearPrice": 46.99,
       "lowestDrop": 28,
@@ -2230,7 +2230,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 155,
       "avgClearPrice": 140,
       "lowestDrop": 155,
@@ -2262,7 +2262,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 930,
       "avgClearPrice": 837,
       "lowestDrop": 930,
@@ -2294,7 +2294,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 54,
       "avgClearPrice": 49,
       "lowestDrop": 54,
@@ -2326,7 +2326,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 540,
       "avgClearPrice": 486,
       "lowestDrop": 540,
@@ -2358,7 +2358,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 235,
       "avgClearPrice": 212,
       "lowestDrop": 235,
@@ -2390,7 +2390,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1410,
       "avgClearPrice": 1269,
       "lowestDrop": 1410,
@@ -2422,7 +2422,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 59.49,
       "avgClearPrice": 59.49,
       "lowestDrop": 59.49,
@@ -2454,7 +2454,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 820,
       "avgClearPrice": 738,
       "lowestDrop": 820,
@@ -2486,13 +2486,13 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
-      "marketPrice": 132.9,
-      "avgClearPrice": 113.99,
+      "timestamp": 1792384507816,
+      "marketPrice": 132.99,
+      "avgClearPrice": 112.99,
       "lowestDrop": 109,
-      "clearedCount": 4,
+      "clearedCount": 5,
       "topStore": "TCGPlayer / LGS Baseline",
-      "wowDeltaPct": -1.6
+      "wowDeltaPct": -1.5
     }
   ],
   "sv-prismatic-evolutions-etb-case": [
@@ -2518,13 +2518,13 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
-      "marketPrice": 1935.77,
-      "avgClearPrice": 1316.45,
+      "timestamp": 1792384507816,
+      "marketPrice": 1914.37,
+      "avgClearPrice": 1316.35,
       "lowestDrop": 1297.96,
-      "clearedCount": 52,
+      "clearedCount": 56,
       "topStore": "TCGPlayer / LGS Baseline",
-      "wowDeltaPct": 43.4
+      "wowDeltaPct": 41.8
     }
   ],
   "sv-prismatic-evolutions-bundle": [
@@ -2550,12 +2550,12 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 79.99,
-      "avgClearPrice": 45.28,
+      "avgClearPrice": 72,
       "lowestDrop": 45.28,
       "clearedCount": 0,
-      "topStore": "TCGPlayer / LGS Baseline",
+      "topStore": "PKMN Colosseum",
       "wowDeltaPct": 37.9
     }
   ],
@@ -2582,13 +2582,13 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
-      "marketPrice": 215.18,
+      "timestamp": 1792384507816,
+      "marketPrice": 214.96,
       "avgClearPrice": 186.07,
       "lowestDrop": 179.4,
       "clearedCount": 3,
       "topStore": "PKMN Colosseum",
-      "wowDeltaPct": 10.3
+      "wowDeltaPct": 10.2
     }
   ],
   "sv-journey-together-booster-case": [
@@ -2614,7 +2614,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1170,
       "avgClearPrice": 1053,
       "lowestDrop": 1170,
@@ -2646,7 +2646,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 72,
       "avgClearPrice": 65,
       "lowestDrop": 72,
@@ -2678,7 +2678,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 720,
       "avgClearPrice": 648,
       "lowestDrop": 720,
@@ -2710,7 +2710,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 245,
       "avgClearPrice": 221,
       "lowestDrop": 245,
@@ -2742,7 +2742,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1470,
       "avgClearPrice": 1323,
       "lowestDrop": 1470,
@@ -2774,7 +2774,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 115,
       "avgClearPrice": 104,
       "lowestDrop": 95,
@@ -2806,7 +2806,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1299.99,
       "avgClearPrice": 950,
       "lowestDrop": 950,
@@ -2838,7 +2838,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 165,
       "avgClearPrice": 149,
       "lowestDrop": 165,
@@ -2870,7 +2870,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1199.99,
       "avgClearPrice": 1080,
       "lowestDrop": 1199.99,
@@ -2902,7 +2902,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 131.42,
       "avgClearPrice": 118,
       "lowestDrop": 131.42,
@@ -2934,7 +2934,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1314,
       "avgClearPrice": 1183,
       "lowestDrop": 1314,
@@ -2966,7 +2966,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 133.94,
       "avgClearPrice": 121,
       "lowestDrop": 133.94,
@@ -2998,7 +2998,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1339,
       "avgClearPrice": 1205,
       "lowestDrop": 1339,
@@ -3030,7 +3030,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 459.99,
       "avgClearPrice": 295,
       "lowestDrop": 295,
@@ -3062,7 +3062,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1150,
       "avgClearPrice": 1035,
       "lowestDrop": 1150,
@@ -3094,7 +3094,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 146.99,
       "avgClearPrice": 132,
       "lowestDrop": 146.99,
@@ -3126,7 +3126,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1518,
       "avgClearPrice": 1366,
       "lowestDrop": 1518,
@@ -3158,7 +3158,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 139.99,
       "avgClearPrice": 126,
       "lowestDrop": 139.99,
@@ -3190,7 +3190,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1414,
       "avgClearPrice": 1273,
       "lowestDrop": 1414,
@@ -3222,7 +3222,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1250,
       "avgClearPrice": 1125,
       "lowestDrop": 1250,
@@ -3254,7 +3254,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1150,
       "avgClearPrice": 1035,
       "lowestDrop": 1150,
@@ -3286,7 +3286,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 235,
       "avgClearPrice": 212,
       "lowestDrop": 235,
@@ -3318,7 +3318,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 750,
       "avgClearPrice": 675,
       "lowestDrop": 750,
@@ -3350,13 +3350,13 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
-      "marketPrice": 349.37,
+      "timestamp": 1792384507816,
+      "marketPrice": 350.03,
       "avgClearPrice": 280,
       "lowestDrop": 115,
       "clearedCount": 1,
       "topStore": "TCGPlayer / LGS Baseline",
-      "wowDeltaPct": 203.8
+      "wowDeltaPct": 204.4
     }
   ],
   "swsh-celebrations-etb-case": [
@@ -3382,7 +3382,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1150,
       "avgClearPrice": 1035,
       "lowestDrop": 1150,
@@ -3414,7 +3414,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 965.99,
       "avgClearPrice": 420,
       "lowestDrop": 420,
@@ -3446,7 +3446,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1150,
       "avgClearPrice": 1035,
       "lowestDrop": 1150,
@@ -3478,7 +3478,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 359.99,
       "avgClearPrice": 320,
       "lowestDrop": 98,
@@ -3510,7 +3510,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1100,
       "avgClearPrice": 990,
       "lowestDrop": 1100,
@@ -3542,7 +3542,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 563.99,
       "avgClearPrice": 285,
       "lowestDrop": 285,
@@ -3574,7 +3574,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1150,
       "avgClearPrice": 1035,
       "lowestDrop": 1150,
@@ -3606,7 +3606,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 68,
       "avgClearPrice": 61,
       "lowestDrop": 68,
@@ -3638,7 +3638,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 650,
       "avgClearPrice": 585,
       "lowestDrop": 650,
@@ -3670,7 +3670,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 235,
       "avgClearPrice": 212,
       "lowestDrop": 235,
@@ -3702,7 +3702,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 2509.86,
       "avgClearPrice": 2259,
       "lowestDrop": 2509.86,
@@ -3734,7 +3734,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 132.99,
       "avgClearPrice": 58,
       "lowestDrop": 58,
@@ -3766,7 +3766,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 600,
       "avgClearPrice": 540,
       "lowestDrop": 600,
@@ -3798,7 +3798,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 159.99,
       "avgClearPrice": 58,
       "lowestDrop": 58,
@@ -3830,7 +3830,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 650,
       "avgClearPrice": 585,
       "lowestDrop": 650,
@@ -3862,7 +3862,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 725.99,
       "avgClearPrice": 340,
       "lowestDrop": 340,
@@ -3894,7 +3894,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1150,
       "avgClearPrice": 1035,
       "lowestDrop": 1150,
@@ -3926,7 +3926,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 218.56,
       "avgClearPrice": 72,
       "lowestDrop": 72,
@@ -3958,7 +3958,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 700,
       "avgClearPrice": 630,
       "lowestDrop": 700,
@@ -3990,7 +3990,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 514.99,
       "avgClearPrice": 245,
       "lowestDrop": 245,
@@ -4022,7 +4022,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 1150,
       "avgClearPrice": 1035,
       "lowestDrop": 1150,
@@ -4054,7 +4054,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 159.99,
       "avgClearPrice": 58,
       "lowestDrop": 58,
@@ -4086,7 +4086,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 600,
       "avgClearPrice": 540,
       "lowestDrop": 600,
@@ -4118,7 +4118,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 115,
       "avgClearPrice": 104,
       "lowestDrop": 115,
@@ -4150,7 +4150,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 750,
       "avgClearPrice": 675,
       "lowestDrop": 750,
@@ -4182,7 +4182,7 @@
     },
     {
       "weekEnding": "2026-10-18",
-      "timestamp": 1792373707666,
+      "timestamp": 1792384507816,
       "marketPrice": 54,
       "avgClearPrice": 49,
       "lowestDrop": 54,

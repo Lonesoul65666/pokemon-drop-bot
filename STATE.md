@@ -8,8 +8,8 @@
 
 - **Repository Root:** `C:\pokemon-drop-bot` (Node.js, TypeScript compiled to CommonJS `.js`, Express, PM2, Windows native).
 - **PM2 Processes:**
-  1. `pokemon-drop-bot` (`index.js` / `index.ts`): Autonomous background market sniper, 31-store Shopify LGS poller, Big-Box TrackaLacker aggregator poller, Reddit `r/PKMNTCGDeals` poller, TCGPlayer verified-seller undercut poller, 6-hour TCGPlayer MarketSync baseline worker, 14-day Market Tape NRT engine, and 4-hour Discord Live Shelf Digest scheduler.
-  2. `drop-bot-dashboard` (`server.js` on `http://localhost:3000`): Express REST API & Command Dashboard server serving `dashboard.html`, live stock, policies, market tape, MSRP trophies, conquered vault plaques, and on-demand Bounty Hunter recon.
+  1. `pokemon-drop-bot` (`index.js` / `index.ts`): Autonomous background market sniper, **36-store verified Shopify LGS poller** (`LGS_STORES`), **9-store Big-Box TrackaLacker aggregator poller** (`BIG_BOX_STORES`), Reddit `r/PKMNTCGDeals` poller, TCGPlayer verified-seller undercut poller, 6-hour TCGPlayer MarketSync baseline worker, 14-day Market Tape NRT engine, and 4-hour Discord Live Shelf Digest scheduler.
+  2. `drop-bot-dashboard` (`server.js` on `http://localhost:3000`): Express REST API & Command Dashboard server serving `dashboard.html`, live stock, policies, market tape, MSRP trophies, conquered vault plaques, on-demand Bounty Hunter recon, and dynamic `storeTelemetry`.
 - **Gateway & Proxy Routing:**
   - Uses direct-first HTTP requests with automatic fallback to `WEBSHARE_PROXY_URL` (`146.103.1.23:5556` via `HttpsProxyAgent` in `.env` — **NEVER expose raw proxy credentials or Discord webhook tokens in git**).
   - Bounded concurrency pool (`MAX_CONCURRENT_STORES = 8`, `8000ms` timeout) with a per-store circuit breaker (`storeHealth.json`: 3 consecutive failures trigger a 15-minute cooldown).
@@ -37,9 +37,9 @@
 - **`marketTape.ts` / `marketTape.js`:**
   - 14-day rolling NRT sales velocity tracker (`⚡ FLASH`, `🔥 FAST`, `🐢 SLOW`), absorption ratio, distributor wave detector (`>= 3` stores in 48h), honey-hole store rankings, Sunday-to-Sunday weekly checkpoints, and `$/Pack` metrics.
 - **`lgsPoller.ts`, `vampirePoller.ts`, `src/marketSync.ts`:**
-  - Continuous polling engines for 31 US Shopify LGS storefronts, TrackaLacker Big-Box offers, Reddit deals, TCGPlayer undercuts, and 6-hour baseline synchronization.
+  - Continuous polling engines for **36 verified Shopify LGS storefronts** (`LGS_STORES`), **9 Big-Box retailers** via TrackaLacker (`BIG_BOX_STORES`), Reddit deals, TCGPlayer undercuts, and 6-hour baseline synchronization.
 - **`server.js`:**
-  - Express HTTP server (`PORT = 3000`) exposing all REST endpoints for the dashboard.
+  - Express HTTP server (`PORT = 3000`) exposing all REST endpoints and dynamic `getDynamicStoreTelemetry()` for the dashboard.
 
 ---
 
@@ -47,7 +47,7 @@
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| `GET` | `/api/status` | System health, `totalMsrpHits`, `msrpTrophies`, `totalConquered`, `collectorRank`, and `storeHealth`. |
+| `GET` | `/api/status` | System health, `totalMsrpHits`, `msrpTrophies`, `totalConquered`, `collectorRank`, dynamic `storeTelemetry` (`36 LGS + 9 Big-Box`), and `storeHealth`. |
 | `GET` | `/api/policies` | All target policies enriched with `packCount`, `pricePerPack`, `isRipValueLeader`, `isPreRelease`, and `preReleaseStatusTag`. |
 | `POST` | `/api/policies` | Atomically saves updated target policies (`policies.json`) and triggers hot-reload. |
 | `GET` | `/api/live-stock` | Currently in-stock items under buy threshold (`< 6h` old) with landed cost, cart links, and `$/Pack` math. |
@@ -57,8 +57,8 @@
 | `POST` | `/api/conquered-vault/claim` | One-click endpoint to snapshot a live deal or alert into `conqueredVault.json` and mark the SKU `owned: true`. |
 | `PATCH` | `/api/conquered-vault/:id` | Updates `ruleOf3Status` pips (`ripped`, `onWall`, `subsidized`, `sealedCase`), `deliveryWindow`, `orderRef`, or `memoryNote`. |
 | `GET/POST` | `/api/bounty-recon` | On-Demand Bounty Hunter recon (`?skuId=` or `?query=`). Ranks `top5LowestLanded` with `$/Pack` math and returns `bestSealedHold` (`#1 Best Sealed Hold`) and `cheapestPackRip` (`#1 Cheapest Pack Rip`). |
-| `GET` | `/api/market-tape` | Full 14-day Market Tape analytics, target verdicts, honey-hole stores, sales history, and `msrpTrophies`. |
-| `GET` | `/api/trends` | Alias/enriched Market Tape + MSRP Trophies payload. |
+| `GET` | `/api/market-tape` | Full 14-day Market Tape analytics, target verdicts, honey-hole stores, sales history, `msrpTrophies`, and `storeTelemetry`. |
+| `GET` | `/api/trends` | Alias/enriched Market Tape + MSRP Trophies + `storeTelemetry` payload. |
 | `POST` | `/api/market-tape/checkpoint` | Forces an immediate weekly checkpoint snapshot. |
 | `GET` | `/api/telemetry` | Raw rolling average and lowest observed price cache (`marketCache.json`). |
 | `GET` | `/api/store-health` | Per-store polling health and circuit breaker state (`storeHealth.json`). |
@@ -81,14 +81,14 @@ All persistent JSON files are written via `atomicWriteJson()` (`.tmp` write + `f
 - `dropsHistory.json`: Last 25 Discord alert payloads.
 - `botSettings.json`: User dashboard preferences (`muteVaulted`).
 - `alertState.json`: 4-hour per-rule/per-store deduplication memory.
-- `storeHealth.json`: 31-store Shopify polling health & circuit breaker status.
+- `storeHealth.json`: **36-store** Shopify polling health & circuit breaker status.
 
 ---
 
-## 5. Current Phase & Executive UI Architecture (V4 Step 2B — 100% Complete & Live on `http://localhost:3000`)
+## 5. Current Phase & Executive UI Architecture (V4 Step 2B + Phase A Store Expansion — Live on `http://localhost:3000`)
 
-- **Current Phase:** **V4 Step 2B — 100% COMPLETE & VERIFIED LIVE (`http://localhost:3000`)**
-  - Includes the **Executive Sidebar UI Overhaul**, **Collapsible Hero Battle Stage (`Arena: Open / Mini`)**, **1080p/2K/4K Responsive Layout**, **Diagonal Cartoon Scene-Wipe Transitions (`0.75s` `#sidebar-wipe-overlay`)**, and **Logan's Playable Pokédex Battle Stadium** (`#clash-cutin-overlay` in `Hold-Open` mode by default with Live Arcade HP Bars, 4 Clickable Attack Moves + Ultimate Signature Attacks, Web Audio API Synth SFX + `.ogg` Cries, Elemental Projectiles, Real 18-Type Damage/Crit Math, `Sim Full Battle`, `Random Battle`, `Full Heal`, inside-stadium `Evolve (+30% HP)` & `Shiny: ON/OFF`, and the Bottom 22-Pokémon All-Star Roster Dock + `#1–1025` Live Search).
+- **Current Phase:** **V4 Step 2B + Phase A Store Pool Expansion — 100% COMPLETE & VERIFIED LIVE (`http://localhost:3000`)**
+  - Includes the **Executive Sidebar UI Overhaul**, **Collapsible Hero Battle Stage (`Arena: Open / Mini`)**, **1080p/2K/4K Responsive Layout**, **Diagonal Cartoon Scene-Wipe Transitions (`0.75s` `#sidebar-wipe-overlay`)**, **Logan's Playable Pokédex Battle Stadium**, and the **Phase A 36-Store Verified Shopify LGS Pool + Dynamic Store Count Telemetry (`36 LGS + 9 Big-Box + TCGP/eBay/Reddit = 48 Sources`)**.
 - **Collapsible 4-Tab Sidebar Navigation (`COMMAND VIEWS` — Zero Emoji/Icon Clutter):**
   1. `Live Command`: Real-time radar, 3 Hero KPI cards (Vault & Portfolio Value, Active Sniper Radar, `Unicorn MSRP Trophy Counter`), Live Deal Feed with quick filters (`All Hits`, `Under Trigger`, `Sealed Cases`, `ETBs & Boxes`, `Best $/Pack`), Rule of 3 instant-cart buttons (`1x`, `2x`, `3x`), and 1-Click `Claim`, plus 3-column Market Intelligence Bento and collapsible 14-Day Market Ledger.
   2. `Bounty Hunter`: On-demand live recon interface powered by `/api/bounty-recon`, comparing Top 5 lowest landed options, `$/Pack` rip math (`RIP VALUE LEADER <= $4.25/pk`), `#1 Best Sealed Hold`, and `#1 Cheapest Pack Rip`.
@@ -101,6 +101,17 @@ All persistent JSON files are written via `atomicWriteJson()` (`.tmp` write + `f
 ---
 
 ## 6. Last Touch Log
+
+- **2026-10-19 | Agent: Gemini 4 Argon (via `agy`)**
+  - **Completed Phase A (Verified Shopify LGS Store Pool Expansion & Dynamic Store Count Telemetry):**
+    - Live-probed all 31 existing Shopify LGS stores (`100% 200 OK`) plus 19 candidate domains against `/products.json?limit=10`.
+    - Confirmed 11 candidate domains were already active in `lgsPoller.ts` (`Knight & Day Games`, `AllPokeTCG`, `Prodigy Games`, `Poke-Collect`, `Double Infinity Gaming`, `Over The Brick`, `Top Cut Central`, `Paladin Cards`, `1st Edition Collectibles`, `Collector Store`, `Game Grid Lehi`), rejected 5 non-Shopify/dead domains (`pokene.com` on Wix, `deckoutgaming.com`, `untappedgames.com`, `nerdzonia.com`, `steelcitycollectibles.com`), and onboarded **5 new verified Shopify LGS stores** into `LGS_STORES` (`lgsPoller.ts`) and `STORE_SHIPPING_RULES` (`evaluator.ts`), expanding the pool from **31 to 36 stores (`36/36 responding, 4,910 listings checked per sweep`)**:
+      1. `Card N All Gaming` (`https://cardnallgaming.com`)
+      2. `The Poke Court` (`https://thepokecourt.com`)
+      3. `Awesome CCG` (`https://awesomeccg.com`)
+      4. `Tanuki Games` (`https://tanukigamesatx.com`)
+      5. `Hobbiesville` (`https://hobbiesville.com`, with automatic `CAD -> USD` `0.73` conversion in `lgsPoller.ts`)
+    - Exported `LGS_STORES` from `lgsPoller.ts` and `BIG_BOX_STORES` (`9` retailers) from `vampirePoller.ts`, added `getDynamicStoreTelemetry()` in `server.js` (`/api/status`, `/api/market-tape`, `/api/trends`), and wired `public/index.html` (`dashboard.html`) to render dynamic store counts everywhere (`36 LGS + 9 BIG-BOX ARMED`, `36/36 Stores Online`, `36 Shopify + 9 Big-Box + TCGP`, `36/36 LGS + 9 Big-Box`).
 
 - **2026-10-18 | Agent: Gemini 4 Argon (via `agy`)**
   - **V4 Step 2B Final Checkpoint & GitHub Backup (`100% Complete & Verified Live on http://localhost:3000`):**

@@ -50,11 +50,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373779185,
+      "timestamp": 1792385986221,
       "marketPrice": 185,
       "lowestDrop": 185,
       "lowestStore": "Trading Card Market",
-      "observations": 388
+      "observations": 452
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386837949,
+      "marketPrice": 185,
+      "lowestDrop": 185,
+      "lowestStore": "Trading Card Market",
+      "observations": 5
     }
   ],
   "me-pitch-black-booster-case": [
@@ -78,11 +86,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373779186,
-      "marketPrice": 74.52,
+      "timestamp": 1792385986222,
+      "marketPrice": 74.06,
       "lowestDrop": 63,
       "lowestStore": "TCGPlayer Verified Seller",
-      "observations": 1614
+      "observations": 1871
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386905267,
+      "marketPrice": 73.84,
+      "lowestDrop": 65,
+      "lowestStore": "Trading Card Market",
+      "observations": 25
     }
   ],
   "me-pitch-black-etb-case": [
@@ -96,11 +112,11 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792372119913,
-      "marketPrice": 752,
+      "timestamp": 1792380651976,
+      "marketPrice": 753,
       "lowestDrop": 752,
       "lowestStore": "TCGPlayer Verified Seller",
-      "observations": 22
+      "observations": 27
     }
   ],
   "me-phantasmal-flames-booster-box": [
@@ -154,11 +170,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373779189,
+      "timestamp": 1792385986228,
       "marketPrice": 168,
       "lowestDrop": 168,
       "lowestStore": "Trading Card Market",
-      "observations": 388
+      "observations": 452
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386837956,
+      "marketPrice": 168,
+      "lowestDrop": 168,
+      "lowestStore": "Trading Card Market",
+      "observations": 5
     }
   ],
   "me-perfect-order-booster-case": [
@@ -182,11 +206,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373779190,
+      "timestamp": 1792385986231,
       "marketPrice": 69.97,
       "lowestDrop": 62.3,
       "lowestStore": "TCGPlayer Verified Seller",
-      "observations": 1577
+      "observations": 1832
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386840242,
+      "marketPrice": 69.97,
+      "lowestDrop": 67.95,
+      "lowestStore": "Over The Brick",
+      "observations": 23
     }
   ],
   "me-perfect-order-etb-case": [
@@ -210,11 +242,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373779188,
-      "marketPrice": 179.06,
+      "timestamp": 1792385986225,
+      "marketPrice": 178.99,
       "lowestDrop": 178,
       "lowestStore": "Trading Card Market",
-      "observations": 777
+      "observations": 905
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386837954,
+      "marketPrice": 178.99,
+      "lowestDrop": 178,
+      "lowestStore": "Trading Card Market",
+      "observations": 10
     }
   ],
   "me-chaos-rising-booster-case": [
@@ -238,11 +278,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373779188,
+      "timestamp": 1792385986225,
       "marketPrice": 74.26,
       "lowestDrop": 62,
       "lowestStore": "TCGPlayer Verified Seller",
-      "observations": 2007
+      "observations": 2335
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386840241,
+      "marketPrice": 73.87,
+      "lowestDrop": 69.99,
+      "lowestStore": "Double Infinity Gaming",
+      "observations": 29
     }
   ],
   "me-chaos-rising-etb-case": [
@@ -256,11 +304,11 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373734925,
+      "timestamp": 1792385868753,
       "marketPrice": 738.91,
       "lowestDrop": 738.91,
       "lowestStore": "TCGPlayer Verified Seller",
-      "observations": 45
+      "observations": 50
     }
   ],
   "me-delta-reign-booster-box": [
@@ -274,11 +322,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373779177,
+      "timestamp": 1792385986211,
       "marketPrice": 247.47,
       "lowestDrop": 229.99,
       "lowestStore": "Double Infinity Gaming",
-      "observations": 1940
+      "observations": 2259
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386837942,
+      "marketPrice": 247.16,
+      "lowestDrop": 229.99,
+      "lowestStore": "Double Infinity Gaming",
+      "observations": 26
     }
   ],
   "me-delta-reign-booster-case": [
@@ -292,11 +348,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373756835,
+      "timestamp": 1792385891813,
       "marketPrice": 1498.95,
       "lowestDrop": 1498.95,
       "lowestStore": "Flipside Gaming",
-      "observations": 387
+      "observations": 450
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386834726,
+      "marketPrice": 1498.95,
+      "lowestDrop": 1498.95,
+      "lowestStore": "Flipside Gaming",
+      "observations": 5
     }
   ],
   "me-delta-reign-etb": [
@@ -310,11 +374,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373757593,
+      "timestamp": 1792385985592,
       "marketPrice": 103.24,
       "lowestDrop": 98.99,
       "lowestStore": "TCG Stadium",
-      "observations": 1552
+      "observations": 1807
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386836051,
+      "marketPrice": 103.27,
+      "lowestDrop": 98.99,
+      "lowestStore": "TCG Stadium",
+      "observations": 20
     }
   ],
   "me-delta-reign-etb-case": [
@@ -348,11 +420,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373756698,
-      "marketPrice": 2114.28,
+      "timestamp": 1792385891673,
+      "marketPrice": 2096.47,
       "lowestDrop": 1580,
       "lowestStore": "TCGPlayer Verified Seller",
-      "observations": 527
+      "observations": 614
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386929565,
+      "marketPrice": 2096.47,
+      "lowestDrop": 1580,
+      "lowestStore": "TCGPlayer Verified Seller",
+      "observations": 9
     }
   ],
   "me-ascended-heroes-bundle": [
@@ -386,11 +466,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373654315,
-      "marketPrice": 1412.77,
+      "timestamp": 1792385250506,
+      "marketPrice": 1409.58,
       "lowestDrop": 1387.89,
       "lowestStore": "TCGPlayer Verified Seller",
-      "observations": 174
+      "observations": 196
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386938683,
+      "marketPrice": 1408.77,
+      "lowestDrop": 1399.99,
+      "lowestStore": "TCGPlayer Verified Seller",
+      "observations": 4
     }
   ],
   "me-30th-celebration-bundle": [
@@ -404,11 +492,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373757965,
-      "marketPrice": 75.99,
+      "timestamp": 1792385985794,
+      "marketPrice": 76.22,
       "lowestDrop": 72.49,
       "lowestStore": "Gamers Guild AZ",
-      "observations": 776
+      "observations": 904
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386837264,
+      "marketPrice": 76.22,
+      "lowestDrop": 72.49,
+      "lowestStore": "Gamers Guild AZ",
+      "observations": 10
     }
   ],
   "sv-base-booster-box": [
@@ -762,11 +858,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373757581,
+      "timestamp": 1792385985584,
       "marketPrice": 102.81,
       "lowestDrop": 92.57,
       "lowestStore": "TCGPlayer Verified Seller",
-      "observations": 1213
+      "observations": 1404
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386839355,
+      "marketPrice": 103.12,
+      "lowestDrop": 99.99,
+      "lowestStore": "PKMN Colosseum",
+      "observations": 15
     }
   ],
   "sv-twilight-masquerade-etb-case": [
@@ -810,11 +914,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373757532,
-      "marketPrice": 60.34,
+      "timestamp": 1792385985484,
+      "marketPrice": 60.18,
       "lowestDrop": 51,
       "lowestStore": "TCGPlayer Verified Seller",
-      "observations": 828
+      "observations": 979
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386839351,
+      "marketPrice": 60.18,
+      "lowestDrop": 57.99,
+      "lowestStore": "PKMN Colosseum",
+      "observations": 10
     }
   ],
   "sv-stellar-crown-booster-box": [
@@ -893,6 +1005,14 @@
       "lowestDrop": 59.49,
       "lowestStore": "TCGPlayer Verified Seller",
       "observations": 4
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386836612,
+      "marketPrice": 59.49,
+      "lowestDrop": 110,
+      "lowestStore": "MinMaxGames",
+      "observations": 1
     }
   ],
   "sv-surging-sparks-etb-case": [
@@ -916,11 +1036,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373758193,
-      "marketPrice": 132.99,
+      "timestamp": 1792385985940,
+      "marketPrice": 133.46,
       "lowestDrop": 109,
       "lowestStore": "TCGPlayer Verified Seller",
-      "observations": 2341
+      "observations": 2725
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386839333,
+      "marketPrice": 133.02,
+      "lowestDrop": 124.99,
+      "lowestStore": "AllPokeTCG",
+      "observations": 31
     }
   ],
   "sv-prismatic-evolutions-etb-case": [
@@ -934,11 +1062,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373756680,
-      "marketPrice": 1935.77,
+      "timestamp": 1792385995364,
+      "marketPrice": 1914.37,
       "lowestDrop": 1315.01,
       "lowestStore": "TCGPlayer Verified Seller",
-      "observations": 557
+      "observations": 652
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386834557,
+      "marketPrice": 1892.96,
+      "lowestDrop": 1999.99,
+      "lowestStore": "Flipside Gaming",
+      "observations": 5
     }
   ],
   "sv-prismatic-evolutions-bundle": [
@@ -952,11 +1088,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373757523,
+      "timestamp": 1792385985476,
       "marketPrice": 79.99,
       "lowestDrop": 45.28,
       "lowestStore": "TCGPlayer Verified Seller",
-      "observations": 400
+      "observations": 464
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386836483,
+      "marketPrice": 79.99,
+      "lowestDrop": 79.99,
+      "lowestStore": "PKMN Colosseum",
+      "observations": 5
     }
   ],
   "sv-journey-together-booster-box": [
@@ -970,11 +1114,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373779203,
+      "timestamp": 1792385986250,
       "marketPrice": 215.59,
       "lowestDrop": 179.4,
       "lowestStore": "TCGPlayer Verified Seller",
-      "observations": 2732
+      "observations": 3180
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386839003,
+      "marketPrice": 213.4,
+      "lowestDrop": 185.99,
+      "lowestStore": "PKMN Colosseum",
+      "observations": 37
     }
   ],
   "sv-journey-together-booster-case": [
@@ -1038,11 +1190,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373757086,
+      "timestamp": 1792385985271,
       "marketPrice": 115,
       "lowestDrop": 114.49,
       "lowestStore": "TCGPlayer Verified Seller",
-      "observations": 389
+      "observations": 453
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386838388,
+      "marketPrice": 115,
+      "lowestDrop": 110,
+      "lowestStore": "Top Cut Central",
+      "observations": 7
     }
   ],
   "sv-destined-rivals-etb-case": [
@@ -1056,11 +1216,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373756810,
+      "timestamp": 1792385891789,
       "marketPrice": 1299.99,
       "lowestDrop": 1299.99,
       "lowestStore": "Flipside Gaming",
-      "observations": 387
+      "observations": 450
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386834699,
+      "marketPrice": 1299.99,
+      "lowestDrop": 1299.99,
+      "lowestStore": "Flipside Gaming",
+      "observations": 5
     }
   ],
   "swsh-battle-styles-booster-box": [
@@ -1134,11 +1302,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373757593,
+      "timestamp": 1792385985593,
       "marketPrice": 459.99,
       "lowestDrop": 459.99,
       "lowestStore": "Double Infinity Gaming",
-      "observations": 389
+      "observations": 453
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386836027,
+      "marketPrice": 459.99,
+      "lowestDrop": 459.99,
+      "lowestStore": "Double Infinity Gaming",
+      "observations": 5
     }
   ],
   "swsh-chilling-reign-booster-case": [
@@ -1162,11 +1338,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373757520,
+      "timestamp": 1792385985474,
       "marketPrice": 146.99,
       "lowestDrop": 146.99,
       "lowestStore": "PKMN Colosseum",
-      "observations": 388
+      "observations": 452
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386836480,
+      "marketPrice": 146.99,
+      "lowestDrop": 146.99,
+      "lowestStore": "PKMN Colosseum",
+      "observations": 5
     }
   ],
   "swsh-chilling-reign-shadow-etb-case": [
@@ -1190,11 +1374,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373757520,
+      "timestamp": 1792385985474,
       "marketPrice": 139.99,
       "lowestDrop": 139.99,
       "lowestStore": "PKMN Colosseum",
-      "observations": 388
+      "observations": 452
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386836481,
+      "marketPrice": 139.99,
+      "lowestDrop": 139.99,
+      "lowestStore": "PKMN Colosseum",
+      "observations": 5
     }
   ],
   "swsh-chilling-reign-ice-etb-case": [
@@ -1258,11 +1450,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373758897,
-      "marketPrice": 349.68,
+      "timestamp": 1792385985591,
+      "marketPrice": 349.37,
       "lowestDrop": 338.99,
       "lowestStore": "PKMN Colosseum",
-      "observations": 1165
+      "observations": 1357
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386840195,
+      "marketPrice": 349.37,
+      "lowestDrop": 338.99,
+      "lowestStore": "PKMN Colosseum",
+      "observations": 16
     }
   ],
   "swsh-celebrations-etb-case": [
@@ -1286,11 +1486,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373757517,
+      "timestamp": 1792385985471,
       "marketPrice": 965.99,
       "lowestDrop": 965.99,
       "lowestStore": "PKMN Colosseum",
-      "observations": 388
+      "observations": 452
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386836475,
+      "marketPrice": 965.99,
+      "lowestDrop": 965.99,
+      "lowestStore": "PKMN Colosseum",
+      "observations": 5
     }
   ],
   "swsh-fusion-strike-booster-case": [
@@ -1314,11 +1522,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373779251,
+      "timestamp": 1792385986333,
       "marketPrice": 359.99,
       "lowestDrop": 359.99,
       "lowestStore": "PKMN Colosseum",
-      "observations": 776
+      "observations": 904
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386838073,
+      "marketPrice": 359.99,
+      "lowestDrop": 359.99,
+      "lowestStore": "PKMN Colosseum",
+      "observations": 10
     }
   ],
   "swsh-fusion-strike-etb-case": [
@@ -1342,11 +1558,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373757592,
+      "timestamp": 1792385985592,
+      "marketPrice": 563.3,
+      "lowestDrop": 552.99,
+      "lowestStore": "PKMN Colosseum",
+      "observations": 905
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386840169,
       "marketPrice": 563.99,
       "lowestDrop": 552.99,
       "lowestStore": "PKMN Colosseum",
-      "observations": 777
+      "observations": 11
     }
   ],
   "swsh-brilliant-stars-booster-case": [
@@ -1410,11 +1634,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373757518,
+      "timestamp": 1792385985472,
       "marketPrice": 132.99,
       "lowestDrop": 132.99,
       "lowestStore": "PKMN Colosseum",
-      "observations": 388
+      "observations": 452
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386836477,
+      "marketPrice": 132.99,
+      "lowestDrop": 132.99,
+      "lowestStore": "PKMN Colosseum",
+      "observations": 5
     }
   ],
   "swsh-astral-radiance-etb-case": [
@@ -1438,11 +1670,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373757519,
+      "timestamp": 1792385985473,
       "marketPrice": 159.99,
       "lowestDrop": 159.99,
       "lowestStore": "PKMN Colosseum",
-      "observations": 388
+      "observations": 452
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386836478,
+      "marketPrice": 159.99,
+      "lowestDrop": 159.99,
+      "lowestStore": "PKMN Colosseum",
+      "observations": 5
     }
   ],
   "swsh-pokemon-go-etb-case": [
@@ -1466,11 +1706,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373757517,
+      "timestamp": 1792385985471,
       "marketPrice": 725.99,
       "lowestDrop": 725.99,
       "lowestStore": "PKMN Colosseum",
-      "observations": 601
+      "observations": 665
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386840168,
+      "marketPrice": 725.99,
+      "lowestDrop": 725.99,
+      "lowestStore": "PKMN Colosseum",
+      "observations": 6
     }
   ],
   "swsh-lost-origin-booster-case": [
@@ -1494,11 +1742,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373758915,
+      "timestamp": 1792385964850,
       "marketPrice": 218.56,
       "lowestDrop": 196.99,
       "lowestStore": "TCGPlayer Verified Seller",
-      "observations": 528
+      "observations": 614
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386839008,
+      "marketPrice": 218.56,
+      "lowestDrop": 197,
+      "lowestStore": "TCGPlayer Verified Seller",
+      "observations": 7
     }
   ],
   "swsh-lost-origin-etb-case": [
@@ -1522,11 +1778,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373757518,
+      "timestamp": 1792385985472,
       "marketPrice": 514.99,
       "lowestDrop": 514.99,
       "lowestStore": "PKMN Colosseum",
-      "observations": 388
+      "observations": 452
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386836477,
+      "marketPrice": 514.99,
+      "lowestDrop": 514.99,
+      "lowestStore": "PKMN Colosseum",
+      "observations": 5
     }
   ],
   "swsh-silver-tempest-booster-case": [
@@ -1550,11 +1814,19 @@
     },
     {
       "date": "2026-10-18",
-      "timestamp": 1792373757522,
+      "timestamp": 1792385985475,
       "marketPrice": 159.99,
       "lowestDrop": 159.99,
       "lowestStore": "PKMN Colosseum",
-      "observations": 388
+      "observations": 452
+    },
+    {
+      "date": "2026-10-19",
+      "timestamp": 1792386836482,
+      "marketPrice": 159.99,
+      "lowestDrop": 159.99,
+      "lowestStore": "PKMN Colosseum",
+      "observations": 5
     }
   ],
   "swsh-silver-tempest-etb-case": [

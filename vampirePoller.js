@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.BIG_BOX_STORES = void 0;
 exports.pollBigBoxAggregators = pollBigBoxAggregators;
 exports.pollRedditDeals = pollRedditDeals;
 exports.pollTcgPlayerUndercuts = pollTcgPlayerUndercuts;
@@ -47,6 +48,17 @@ const TRACKALACKER_PAGES = [
     { slug: 'pokemon-twilight-masquerade-booster-box', title: 'Pokemon Twilight Masquerade Booster Box', formFactor: 'Booster Box' },
     { slug: 'pokemon-paldea-evolved-booster-box', title: 'Pokemon Paldea Evolved Booster Box', formFactor: 'Booster Box' },
     { slug: 'pokemon-crown-zenith-elite-trainer-box', title: 'Pokemon Crown Zenith Elite Trainer Box', formFactor: 'ETB' }
+];
+exports.BIG_BOX_STORES = [
+    'Target',
+    'Best Buy',
+    'Pokémon Center',
+    'Walmart',
+    'Amazon',
+    'GameStop',
+    'Costco',
+    "Sam's Club",
+    'Barnes & Noble'
 ];
 const SUPPORTED_BIG_BOX_REGEX = /target|best\s*buy|pokemon\s*center|pokémon\s*center|pokemoncenter|walmart|amazon|gamestop|costco|sam'?s\s*club|samsclub|barnes\s*(&|and)\s*noble|\bb&n\b/i;
 function normalizeBigBoxRetailerLabel(rawSeller, rawUrl, sourceSuffix = 'Big-Box Restock') {

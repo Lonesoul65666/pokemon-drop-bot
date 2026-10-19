@@ -49,6 +49,18 @@ const TRACKALACKER_PAGES = [
   { slug: 'pokemon-crown-zenith-elite-trainer-box', title: 'Pokemon Crown Zenith Elite Trainer Box', formFactor: 'ETB' }
 ];
 
+export const BIG_BOX_STORES = [
+  'Target',
+  'Best Buy',
+  'Pokémon Center',
+  'Walmart',
+  'Amazon',
+  'GameStop',
+  'Costco',
+  "Sam's Club",
+  'Barnes & Noble'
+];
+
 const SUPPORTED_BIG_BOX_REGEX = /target|best\s*buy|pokemon\s*center|pokémon\s*center|pokemoncenter|walmart|amazon|gamestop|costco|sam'?s\s*club|samsclub|barnes\s*(&|and)\s*noble|\bb&n\b/i;
 
 function normalizeBigBoxRetailerLabel(rawSeller: string, rawUrl?: string, sourceSuffix = 'Big-Box Restock'): string {

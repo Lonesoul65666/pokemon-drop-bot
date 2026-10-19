@@ -1061,7 +1061,7 @@
         <span class="text-base font-extrabold text-white whitespace-nowrap" style="letter-spacing: -0.03em;">DROPBOT</span>
         <span class="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/35 text-[11px] font-mono-num font-bold text-emerald-300 inline-flex items-center gap-1.5 whitespace-nowrap">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_#10B981]"></span>
-          <span id="headerArmedStoresText">31 STORES ARMED</span>
+          <span id="headerArmedStoresText">36 LGS + 9 BIG-BOX ARMED</span>
         </span>
       </div>
     </div>
@@ -1147,7 +1147,7 @@
       <!-- Eye-Level Sniper Telemetry Pod (Directly Under Navigation Tabs) -->
       <div class="pt-3 border-t border-white/10">
         <!-- Collapsed Mode Compact Status Dot -->
-        <div class="telemetry-collapsed-icon" title="Sniper Telemetry: 31/31 Stores Nominal • Proxy Pool Armed">
+        <div id="telemetryCollapsedIcon" class="telemetry-collapsed-icon" title="Sniper Telemetry: 36/36 Stores Nominal • Proxy Pool Armed">
           <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_#10B981]"></span>
         </div>
 
@@ -1157,11 +1157,11 @@
             <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-300 whitespace-nowrap">Sniper Telemetry</div>
             <div class="inline-flex items-center gap-1.5 text-[11px] font-mono-num font-bold text-emerald-400 whitespace-nowrap">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_#10B981]"></span>
-              <span>31/31 Stores Online</span>
+              <span id="sidebarStoresOnlineText">36/36 Stores Online</span>
             </div>
           </div>
           <div class="text-[11px] text-slate-200 font-mono-num whitespace-nowrap" id="sidebarStreamStatus">
-            31 Shopify + 9 Big-Box + TCGP
+            36 Shopify + 9 Big-Box + TCGP
           </div>
           <div class="grid grid-cols-2 gap-1.5 pt-1 text-[10px] font-mono-num">
             <div class="p-1.5 rounded bg-black/40 border border-white/5">
@@ -1413,7 +1413,7 @@
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981]"></span>
                     <span>Active Sniper Radar</span>
                   </span>
-                  <span id="kpiStoreSweepHealth" class="font-mono-num text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-200 border border-cyan-400/40 whitespace-nowrap shrink-0">31/31 LGS + Big-Box</span>
+                  <span id="kpiStoreSweepHealth" class="font-mono-num text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-200 border border-cyan-400/40 whitespace-nowrap shrink-0">36/36 LGS + 9 Big-Box</span>
                 </div>
                 <div class="flex items-baseline gap-2.5 mb-2">
                   <div id="kpiInStockCount" class="hero-kpi-value font-black font-mono-num text-emerald-400">0</div>
@@ -3809,9 +3809,17 @@
     // =========================================================================
     // 3. DATA LOADING & POLLING
     // =========================================================================
+    let liveStoreTelemetry = {
+      lgsCount: 36,
+      healthyLgsCount: 36,
+      bigBoxCount: 9,
+      marketplaceCount: 3,
+      totalMonitoredSources: 48
+    };
+
     async function loadAllState() {
       try {
-        const [polRes, telRes, lsRes, drRes, trRes, cvRes, mtRes, stRes] = await Promise.all([
+        const [polRes, telRes, lsRes, drRes, trRes, cvRes, mtRes, stRes, statRes] = await Promise.all([
           fetch('/api/policies'),
           fetch('/api/telemetry'),
           fetch('/api/live-stock'),
@@ -3819,7 +3827,8 @@
           fetch('/api/trophies'),
           fetch('/api/conquered-vault'),
           fetch('/api/market-tape'),
-          fetch('/api/settings')
+          fetch('/api/settings'),
+          fetch('/api/status')
         ]);
 
         if (polRes.ok) policies = await polRes.json();
@@ -3828,8 +3837,19 @@
         if (drRes.ok) recentDrops = await drRes.json();
         if (trRes.ok) msrpTrophies = await trRes.json();
         if (cvRes.ok) conqueredVault = await cvRes.json();
-        if (mtRes.ok) marketTape = await mtRes.json();
+        if (mtRes.ok) {
+          marketTape = await mtRes.json();
+          if (marketTape && marketTape.storeTelemetry) {
+            liveStoreTelemetry = { ...liveStoreTelemetry, ...marketTape.storeTelemetry };
+          }
+        }
         if (stRes.ok) botSettings = await stRes.json();
+        if (statRes && statRes.ok) {
+          const statData = await statRes.json();
+          if (statData && statData.storeTelemetry) {
+            liveStoreTelemetry = { ...liveStoreTelemetry, ...statData.storeTelemetry };
+          }
+        }
 
         populateSelectDropdowns();
         updateMuteVaultUI();
@@ -3896,6 +3916,26 @@
       if (pollTimeEl) {
         pollTimeEl.innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
       }
+
+      // Dynamic Store Count Telemetry (Never Hardcoded)
+      const lgsCnt = Number(liveStoreTelemetry.lgsCount || 36);
+      const healthyLgs = Number(liveStoreTelemetry.healthyLgsCount || lgsCnt);
+      const bigBoxCnt = Number(liveStoreTelemetry.bigBoxCount || 9);
+
+      const headerArmedEl = document.getElementById('headerArmedStoresText');
+      if (headerArmedEl) headerArmedEl.innerText = lgsCnt + ' LGS + ' + bigBoxCnt + ' BIG-BOX ARMED';
+
+      const sbStoresOnlineEl = document.getElementById('sidebarStoresOnlineText');
+      if (sbStoresOnlineEl) sbStoresOnlineEl.innerText = healthyLgs + '/' + lgsCnt + ' Stores Online';
+
+      const sbStreamStatusEl = document.getElementById('sidebarStreamStatus');
+      if (sbStreamStatusEl) sbStreamStatusEl.innerText = lgsCnt + ' Shopify + ' + bigBoxCnt + ' Big-Box + TCGP';
+
+      const collapsedTelIcon = document.getElementById('telemetryCollapsedIcon');
+      if (collapsedTelIcon) collapsedTelIcon.title = 'Sniper Telemetry: ' + healthyLgs + '/' + lgsCnt + ' Stores Nominal • Proxy Pool Armed';
+
+      const kpiSweepHealthEl = document.getElementById('kpiStoreSweepHealth');
+      if (kpiSweepHealthEl) kpiSweepHealthEl.innerText = healthyLgs + '/' + lgsCnt + ' LGS + ' + bigBoxCnt + ' Big-Box';
 
       const etbs = policies.filter(p => p.formFactor === 'ETB');
       const ownedEtbs = etbs.filter(p => p.owned === true);
@@ -4308,7 +4348,7 @@
                 '<span class="px-2 py-0.5 rounded bg-purple-500/30 text-purple-200 text-[9px] font-mono-num font-bold shrink-0">WAIT UNDERCUT</span>' +
               '</div>'
             ).join('')
-          : '<div class="p-3 rounded-xl bg-black/30 border border-white/5 text-xs text-slate-400">No 3+ store distributor allocation waves in the last 48h. Monitoring 31 Shopify LGS + 9 Big-Box retailers.</div>';
+          : '<div class="p-3 rounded-xl bg-black/30 border border-white/5 text-xs text-slate-400">No 3+ store distributor allocation waves in the last 48h. Monitoring ' + (liveStoreTelemetry.lgsCount || 36) + ' Shopify LGS + ' + (liveStoreTelemetry.bigBoxCount || 9) + ' Big-Box retailers.</div>';
       }
 
       const dnaEl = document.getElementById('bentoStoreDna');
