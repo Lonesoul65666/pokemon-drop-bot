@@ -353,7 +353,8 @@
       z-index: 99999;
       opacity: 0;
       visibility: hidden;
-      cursor: pointer;
+      cursor: default;
+      user-select: none;
       transition: opacity 0.2s ease, visibility 0.2s ease;
     }
 
@@ -361,6 +362,62 @@
       pointer-events: auto;
       opacity: 1;
       visibility: visible;
+    }
+
+    /* 0.75s Cartoon Shutter Wipe Overlay for Sidebar Tab Transitions */
+    #sidebar-wipe-overlay {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      z-index: 99985;
+      visibility: hidden;
+    }
+
+    #sidebar-wipe-overlay.active {
+      visibility: visible;
+    }
+
+    #sidebar-wipe-overlay .wipe-left-shutter {
+      position: absolute;
+      inset: 0;
+      clip-path: polygon(0 0, var(--seam-x1) 0, var(--seam-x2) 100%, 0 100%);
+      background:
+        radial-gradient(circle at 28% 40%, rgba(var(--slot1-primary-rgb), 0.85) 0%, rgba(10, 9, 20, 0.98) 85%),
+        linear-gradient(125deg, rgba(var(--slot1-primary-rgb), 0.65) 0%, #090812 100%);
+      transform: translate3d(-105%, -5%, 0);
+      transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #sidebar-wipe-overlay .wipe-right-shutter {
+      position: absolute;
+      inset: 0;
+      clip-path: polygon(var(--seam-x1) 0, 100% 0, 100% 100%, var(--seam-x2) 100%);
+      background:
+        radial-gradient(circle at 72% 60%, rgba(var(--slot2-primary-rgb), 0.85) 0%, rgba(10, 9, 20, 0.98) 85%),
+        linear-gradient(125deg, #090812 0%, rgba(var(--slot2-primary-rgb), 0.65) 100%);
+      transform: translate3d(105%, 5%, 0);
+      transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #sidebar-wipe-overlay .wipe-center-ball {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0) rotate(-180deg);
+      transition: transform 0.30s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 5;
+    }
+
+    #sidebar-wipe-overlay.wipe-closed .wipe-left-shutter,
+    #sidebar-wipe-overlay.wipe-closed .wipe-right-shutter {
+      transform: translate3d(0, 0, 0);
+    }
+
+    #sidebar-wipe-overlay.wipe-closed .wipe-center-ball {
+      transform: translate(-50%, -50%) scale(1) rotate(0deg);
     }
 
     .cutin-cartoon-iris {
@@ -441,50 +498,60 @@
       opacity: 1;
     }
 
-    /* Top Centered Matchup Header Banner (top: 48px) */
+    /* Top Centered Matchup Header Banner (top: 16px) */
     .cutin-top-header {
       position: absolute;
-      top: 48px;
+      top: 14px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 6;
+      z-index: 10;
       display: flex;
       flex-direction: column;
       align-items: center;
       pointer-events: none;
     }
 
-    /* Bottom Centered Dismiss Prompt + Progress Bar (bottom: 32px) */
-    .cutin-bottom-dismiss {
+    /* Top-Right Stadium Exit & Auto-Close Controls */
+    .cutin-top-right-controls {
       position: absolute;
-      bottom: 32px;
+      top: 16px;
+      right: 22px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: auto;
+    }
+
+    /* Bottom All-Star Roster Dock (bottom: 12px) */
+    .cutin-bottom-dock {
+      position: absolute;
+      bottom: 12px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 6;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      pointer-events: none;
+      z-index: 15;
+      width: min(96vw, 1540px);
+      pointer-events: auto;
     }
 
     /* Non-Overlapping Battle Showcase Stage */
     .cutin-combatant-stage {
       position: absolute;
       inset: 0;
-      z-index: 4;
+      z-index: 6;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: clamp(14px, 1.8vw, 28px);
-      padding: 118px 2.5vw 96px;
-      pointer-events: none;
+      gap: clamp(12px, 1.5vw, 24px);
+      padding: 76px 2vw 112px;
+      pointer-events: auto;
     }
 
     /* True Non-Overlapping 3-Column Stat Showcase Grid */
     .cutin-stat-grid-3col {
       display: grid;
-      grid-template-columns: minmax(300px, 360px) 220px minmax(300px, 360px);
-      gap: 24px;
+      grid-template-columns: minmax(290px, 350px) 224px minmax(290px, 350px);
+      gap: 18px;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
@@ -521,18 +588,75 @@
     }
 
     .cutin-art-380 {
-      width: clamp(180px, 17vw, 340px);
-      height: clamp(180px, 17vw, 340px);
+      width: clamp(160px, 15vw, 290px);
+      height: clamp(160px, 15vw, 290px);
       object-fit: contain;
-      transition: transform 3.5s ease-out;
+      transition: transform 0.35s ease, filter 0.35s ease, opacity 0.35s ease;
     }
 
-    #clash-cutin-overlay.phase-hold .cutin-art-380 {
-      transform: scale(1.05);
+    .cutin-art-380.fainted-pokemon {
+      filter: grayscale(0.95) brightness(0.45) drop-shadow(0 0 12px #EF4444) !important;
+      transform: translateY(18px) scale(0.88) !important;
+      opacity: 0.65;
+    }
+
+    /* Battle Lunge, Recoil, Shake & Projectile Animations */
+    @keyframes lungeAttackLeftToRight {
+      0% { transform: translate3d(0, 0, 0) scale(1); }
+      40% { transform: translate3d(65px, -12px, 0) scale(1.18); filter: brightness(1.4) drop-shadow(0 0 36px #FFFFFF); }
+      100% { transform: translate3d(0, 0, 0) scale(1); }
+    }
+
+    @keyframes lungeAttackRightToLeft {
+      0% { transform: translate3d(0, 0, 0) scale(1); }
+      40% { transform: translate3d(-65px, -12px, 0) scale(1.18); filter: brightness(1.4) drop-shadow(0 0 36px #FFFFFF); }
+      100% { transform: translate3d(0, 0, 0) scale(1); }
+    }
+
+    @keyframes hitRecoilFlash {
+      0% { transform: translate3d(0, 0, 0); filter: brightness(1); }
+      20% { transform: translate3d(18px, -8px, 0) scale(0.92); filter: brightness(5) saturate(0) drop-shadow(0 0 40px #EF4444); }
+      45% { transform: translate3d(-14px, 6px, 0) scale(0.95); filter: brightness(2.5) drop-shadow(0 0 32px #EF4444); }
+      70% { transform: translate3d(10px, -4px, 0); filter: brightness(1.8); }
+      100% { transform: translate3d(0, 0, 0); filter: brightness(1); }
+    }
+
+    @keyframes battleShake {
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      15% { transform: translate3d(-10px, 6px, 0); }
+      35% { transform: translate3d(10px, -6px, 0); }
+      55% { transform: translate3d(-7px, -4px, 0); }
+      75% { transform: translate3d(7px, 4px, 0); }
+    }
+
+    .anim-lunge-right { animation: lungeAttackLeftToRight 0.46s cubic-bezier(0.22, 1, 0.36, 1); }
+    .anim-lunge-left  { animation: lungeAttackRightToLeft 0.46s cubic-bezier(0.22, 1, 0.36, 1); }
+    .anim-hit-recoil  { animation: hitRecoilFlash 0.52s ease-out; }
+    .anim-arena-shake { animation: battleShake 0.42s ease-in-out; }
+
+    @keyframes dmgPopupFloat {
+      0% { opacity: 0; transform: translate(-50%, 10px) scale(0.7); }
+      20% { opacity: 1; transform: translate(-50%, -8px) scale(1.15); }
+      80% { opacity: 1; transform: translate(-50%, -26px) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -40px) scale(0.9); }
+    }
+
+    .dmg-float-badge {
+      position: absolute;
+      top: 18%;
+      left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+      z-index: 30;
+      opacity: 0;
+    }
+
+    .dmg-float-badge.show-dmg {
+      animation: dmgPopupFloat 1.05s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
 
     .pokedex-stat-card {
-      background: rgba(9, 8, 18, 0.88);
+      background: rgba(9, 8, 18, 0.90);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-top: 1px solid rgba(255, 255, 255, 0.24);
@@ -540,14 +664,14 @@
       border-left: 1px solid rgba(255, 255, 255, 0.14);
       border-right: 1px solid rgba(255, 255, 255, 0.14);
       border-radius: 16px;
-      padding: 16px 18px;
+      padding: 13px 15px;
       width: 100%;
       box-shadow: 0 20px 44px rgba(0, 0, 0, 0.85);
     }
 
-    /* Dedicated 220px Center Lane (Zero Overlap over Stat Cards) */
+    /* Dedicated 224px Center Lane (Zero Overlap over Stat Cards) */
     .cutin-center-lane {
-      width: 220px;
+      width: 224px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -619,10 +743,28 @@
     <span>PEEK ART MODE ACTIVE — Click Anywhere to Restore Command Cards</span>
   </div>
 
+  <!-- 0.75s SIDEBAR CARTOON SHUTTER WIPE OVERLAY -->
+  <div id="sidebar-wipe-overlay" aria-hidden="true">
+    <div class="wipe-left-shutter"></div>
+    <div class="wipe-right-shutter"></div>
+    <div class="wipe-center-ball flex flex-col items-center gap-2">
+      <div class="w-20 h-20 rounded-full bg-[#090812] border-4 border-white shadow-[0_0_50px_#00F0FF,0_0_90px_#A855F7] flex items-center justify-center">
+        <svg class="w-16 h-16" viewBox="0 0 100 100">
+          <path d="M 6 50 A 44 44 0 0 1 94 50 Z" fill="url(#pkBallTop)" />
+          <path d="M 6 50 A 44 44 0 0 0 94 50 Z" fill="#181528" />
+          <circle cx="50" cy="50" r="44" fill="none" stroke="#FFFFFF" stroke-width="6" />
+          <line x1="6" y1="50" x2="94" y2="50" stroke="#090812" stroke-width="8" />
+          <circle cx="50" cy="50" r="16" fill="#090812" stroke="#FFFFFF" stroke-width="5" />
+        </svg>
+      </div>
+      <div id="wipeSceneLabel" class="px-4 py-1 rounded-full bg-[#090812]/95 border border-white/40 text-xs font-black tracking-[0.22em] text-white uppercase shadow-xl">LIVE COMMAND</div>
+    </div>
+  </div>
+
   <!-- ===================================================================== -->
-  <!-- CLICK-TO-DISMISS FULL-SCREEN STAT BATTLE SHOWCASE OVERLAY             -->
+  <!-- LOGAN'S INTERACTIVE POKÉDEX BATTLE STADIUM (HOLD-OPEN BY DEFAULT)     -->
   <!-- ===================================================================== -->
-  <div id="clash-cutin-overlay" onclick="dismissClashCutIn()" aria-hidden="true">
+  <div id="clash-cutin-overlay" aria-hidden="true">
     <div class="cutin-cartoon-iris"></div>
 
     <!-- Left Polygon Shutter (Slot 1) -->
@@ -637,44 +779,81 @@
       <line id="cutinSeamCoreLine" x1="68%" y1="0%" x2="46%" y2="100%" stroke="#FFFFFF" stroke-width="4" />
     </svg>
 
-    <!-- TOP CENTERED HEADER BANNER (top: 48px — Above Stat Cards, Zero Overlap) -->
+    <!-- Projectile FX Layer for Elemental Beams & Blasts -->
+    <div id="stadiumProjectileLayer" class="pointer-events-none fixed inset-0 z-20 overflow-hidden"></div>
+
+    <!-- TOP-RIGHT STADIUM EXIT & AUTO-CLOSE CONTROLS -->
+    <div class="cutin-top-right-controls">
+      <button onclick="toggleBattleAutoClose(event)" id="battleAutoCloseBtn" title="Toggle whether the Battle Stadium stays locked open (Hold Open) or auto-closes after 6s"
+              class="px-3 py-1.5 rounded-xl bg-[#120F24]/90 hover:bg-[#1E1938] border border-white/20 text-[11px] font-mono-num font-bold text-slate-200 transition">
+        Auto-Close: <span id="battleAutoCloseState" class="text-amber-300 font-extrabold">OFF</span>
+      </button>
+      <button onclick="dismissClashCutIn(event)" title="Exit Battle Stadium (or press Esc)"
+              class="px-3.5 py-1.5 rounded-xl bg-rose-500/25 hover:bg-rose-500/45 border border-rose-400/60 text-xs font-extrabold text-white shadow-[0_0_20px_rgba(244,63,94,0.45)] transition">
+        ✕ Exit Stadium (Esc)
+      </button>
+    </div>
+
+    <!-- TOP CENTERED HEADER BANNER (Above Stat Cards, Zero Overlap) -->
     <div class="cutin-top-header">
-      <div id="cutinBannerHeadline" class="px-6 py-1.5 rounded-full bg-[#090812]/95 border-2 border-white/85 text-white font-black italic uppercase tracking-wider text-base sm:text-lg shadow-[0_0_40px_rgba(0,240,255,0.8)] whitespace-nowrap">
+      <div id="cutinBannerHeadline" class="px-6 py-1 rounded-full bg-[#090812]/95 border-2 border-white/85 text-white font-black italic uppercase tracking-wider text-base sm:text-lg shadow-[0_0_40px_rgba(0,240,255,0.8)] whitespace-nowrap">
         GYARADOS VS ARCANINE
       </div>
-      <div id="cutinMatchupBadge" class="mt-2 px-4 py-0.5 rounded-full bg-purple-950/95 border border-cyan-400/60 text-cyan-200 font-mono-num text-[11px] font-extrabold uppercase tracking-widest whitespace-nowrap">
-        HIGH GROUND ADVANTAGE • 2x SUPER EFFECTIVE
+      <div id="cutinMatchupBadge" class="mt-1.5 px-4 py-0.5 rounded-full bg-purple-950/95 border border-cyan-400/60 text-cyan-200 font-mono-num text-[11px] font-extrabold uppercase tracking-widest whitespace-nowrap">
+        LOGAN'S BATTLE STADIUM • CLICK ANY ATTACK MOVE BELOW TO BATTLE
       </div>
     </div>
 
-    <!-- NON-OVERLAPPING COMBATANT & 3-COLUMN STAT SHOWCASE -->
-    <div class="cutin-combatant-stage">
-      <!-- Outer Left: Slot 1 Artwork + Name -->
-      <div class="cutin-wing-left flex flex-col items-center shrink-0">
+    <!-- NON-OVERLAPPING COMBATANT & 3-COLUMN INTERACTIVE BATTLE STADIUM -->
+    <div id="stadiumCombatStage" class="cutin-combatant-stage">
+      <!-- Outer Left: Slot 1 Artwork + Live Evolve/Shiny Pills -->
+      <div class="cutin-wing-left flex flex-col items-center shrink-0 relative">
+        <div id="dmgFloatSlot1" class="dmg-float-badge px-3 py-1 rounded-full bg-rose-600/95 border-2 border-white text-white font-mono-num font-black text-sm shadow-[0_0_24px_#EF4444] whitespace-nowrap">-120 HP</div>
         <img id="cutinArtSlot1"
+             onclick="executeStadiumMove(1, 0)"
+             title="Click Artwork to Attack!"
              src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/130.png"
-             class="cutin-art-380"
+             class="cutin-art-380 cursor-pointer hover:scale-105"
              style="filter: drop-shadow(0 0 46px var(--slot1-primary)) drop-shadow(0 16px 32px rgba(0,0,0,0.92));"
              alt="" />
-        <div id="cutinLeftTitle" class="text-xl sm:text-3xl font-black italic uppercase tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)] whitespace-nowrap">
+        <div id="cutinLeftTitle" class="text-xl sm:text-2xl font-black italic uppercase tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)] whitespace-nowrap">
           GYARADOS
+        </div>
+        <div class="mt-1.5 flex items-center gap-1.5">
+          <button onclick="stadiumEvolvePokemon(1)" id="stadiumEvoBtnSlot1" class="px-2.5 py-1 rounded-lg bg-emerald-500/25 hover:bg-emerald-500/40 text-emerald-200 border border-emerald-400/50 text-[10px] font-extrabold whitespace-nowrap transition">Evolve (+30% HP)</button>
+          <button onclick="stadiumToggleShiny(1)" id="stadiumShinyBtnSlot1" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-amber-500/30 text-amber-200 border border-white/20 text-[10px] font-bold whitespace-nowrap transition">Shiny: OFF</button>
         </div>
       </div>
 
-      <!-- True Non-Overlapping 3-Column Stat Showcase: [Slot 1 Stat Card] [220px Center VS Lane] [Slot 2 Stat Card] -->
+      <!-- True Non-Overlapping 3-Column Stat & Move Showcase: [Slot 1 Card + 4 Moves] [224px Center VS + Sim + Log] [Slot 2 Card + 4 Moves] -->
       <div class="cutin-stat-grid-3col">
-        <!-- Column 1: Slot 1 Official Pokédex 6-Stat Card -->
-        <div class="cutin-wing-left">
+        <!-- Column 1: Slot 1 Live HP + Official Pokédex 6-Stat Card + 4 Attack Move Buttons -->
+        <div class="cutin-wing-left space-y-2">
+          <!-- Slot 1 Live Arcade HP Bar -->
+          <div class="p-2.5 rounded-xl bg-[#090812]/92 border border-white/20 shadow-lg">
+            <div class="flex items-center justify-between text-xs font-mono-num font-extrabold mb-1">
+              <span id="stadiumHpLabelSlot1" class="text-emerald-300">HP: 348 / 348</span>
+              <span id="stadiumStatusBadgeSlot1" class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/40">READY</span>
+            </div>
+            <div class="w-full h-3 bg-slate-900 rounded-full overflow-hidden border border-white/15">
+              <div id="stadiumHpBarSlot1" class="h-full bg-emerald-400 rounded-full transition-all duration-300" style="width: 100%;"></div>
+            </div>
+          </div>
+
           <div id="cutinStatCardSlot1" class="pokedex-stat-card" style="border-top: 2px solid var(--slot1-primary);"></div>
+
+          <!-- 4 Clickable Attack Buttons for Slot 1 -->
+          <div id="stadiumMovesSlot1" class="grid grid-cols-2 gap-1.5"></div>
         </div>
 
-        <!-- Column 2: Dedicated 220px Center VS Poké Ball + Matchup Pill Lane -->
-        <div class="cutin-center-lane">
-          <div id="cutinLeftSub" class="mb-2.5 px-2.5 py-0.5 rounded-full bg-black/85 border border-cyan-400/50 text-[9px] font-mono-num font-black uppercase tracking-wider text-cyan-200 text-center max-w-[210px] truncate">
+        <!-- Column 2: Dedicated 224px Center VS Poké Ball + Sim Controls + Live Announcer Log -->
+        <div class="cutin-center-lane space-y-2">
+          <div id="cutinLeftSub" class="px-2.5 py-0.5 rounded-full bg-black/85 border border-cyan-400/50 text-[9px] font-mono-num font-black uppercase tracking-wider text-cyan-200 text-center max-w-[216px] truncate">
             SLOT 1 • 2x EFFECTIVE
           </div>
-          <div class="w-24 h-24 rounded-full bg-[#090812] border-4 border-white shadow-[0_0_65px_#FFFFFF,0_0_110px_#A855F7] flex items-center justify-center shrink-0">
-            <svg class="w-20 h-20" viewBox="0 0 100 100">
+          <div onclick="toggleAutoSimBattle()" title="Click VS Emblem to Start/Stop Auto-Sim Battle"
+               class="w-20 h-20 rounded-full bg-[#090812] border-4 border-white shadow-[0_0_55px_#FFFFFF,0_0_95px_#A855F7] flex items-center justify-center shrink-0 cursor-pointer hover:scale-110 active:scale-95 transition-transform">
+            <svg class="w-16 h-16" viewBox="0 0 100 100">
               <path d="M 6 50 A 44 44 0 0 1 94 50 Z" fill="url(#pkBallTop)" />
               <path d="M 6 50 A 44 44 0 0 0 94 50 Z" fill="#181528" />
               <circle cx="50" cy="50" r="44" fill="none" stroke="#FFFFFF" stroke-width="6" />
@@ -683,38 +862,91 @@
               <text x="50" y="55" text-anchor="middle" fill="#FACC15" font-family="Plus Jakarta Sans, sans-serif" font-weight="900" font-size="14">VS</text>
             </svg>
           </div>
-          <div id="cutinRightSub" class="mt-2.5 px-2.5 py-0.5 rounded-full bg-black/85 border border-amber-400/50 text-[9px] font-mono-num font-black uppercase tracking-wider text-amber-200 text-center max-w-[210px] truncate">
+          <div id="cutinRightSub" class="px-2.5 py-0.5 rounded-full bg-black/85 border border-amber-400/50 text-[9px] font-mono-num font-black uppercase tracking-wider text-amber-200 text-center max-w-[216px] truncate">
             SLOT 2 • 0.5x RESISTED
+          </div>
+
+          <!-- Center Stadium Action Controls -->
+          <div class="w-full space-y-1.5 pt-1">
+            <button onclick="toggleAutoSimBattle()" id="simBattleBtn" class="w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-slate-950 font-black text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,240,255,0.45)] transition">
+              Sim Full Battle
+            </button>
+            <div class="grid grid-cols-2 gap-1.5">
+              <button onclick="triggerRandomStadiumBattle()" class="py-1.5 px-2 rounded-lg bg-purple-500/25 hover:bg-purple-500/40 border border-purple-400/50 text-purple-100 font-extrabold text-[11px] whitespace-nowrap transition">
+                Random Battle
+              </button>
+              <button onclick="resetBattleStadiumMatch()" class="py-1.5 px-2 rounded-lg bg-emerald-500/25 hover:bg-emerald-500/40 border border-emerald-400/50 text-emerald-200 font-extrabold text-[11px] whitespace-nowrap transition">
+                Full Heal
+              </button>
+            </div>
+          </div>
+
+          <!-- Live Battle Announcer Log Box -->
+          <div id="stadiumBattleLogBox" class="w-full p-2.5 rounded-xl bg-[#090812]/95 border border-white/20 text-center min-h-[64px] flex flex-col justify-center">
+            <div id="stadiumBattleLogTitle" class="text-[10px] font-mono-num font-black uppercase tracking-wider text-cyan-300">STADIUM ANNOUNCER</div>
+            <div id="stadiumBattleLogText" class="text-[11px] font-bold text-white leading-snug mt-0.5">Select any move below or click Sim Full Battle!</div>
           </div>
         </div>
 
-        <!-- Column 3: Slot 2 Official Pokédex 6-Stat Card -->
-        <div class="cutin-wing-right">
+        <!-- Column 3: Slot 2 Live HP + Official Pokédex 6-Stat Card + 4 Attack Move Buttons -->
+        <div class="cutin-wing-right space-y-2">
+          <!-- Slot 2 Live Arcade HP Bar -->
+          <div class="p-2.5 rounded-xl bg-[#090812]/92 border border-white/20 shadow-lg">
+            <div class="flex items-center justify-between text-xs font-mono-num font-extrabold mb-1">
+              <span id="stadiumHpLabelSlot2" class="text-emerald-300">HP: 335 / 335</span>
+              <span id="stadiumStatusBadgeSlot2" class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/40">READY</span>
+            </div>
+            <div class="w-full h-3 bg-slate-900 rounded-full overflow-hidden border border-white/15">
+              <div id="stadiumHpBarSlot2" class="h-full bg-emerald-400 rounded-full transition-all duration-300" style="width: 100%;"></div>
+            </div>
+          </div>
+
           <div id="cutinStatCardSlot2" class="pokedex-stat-card" style="border-top: 2px solid var(--slot2-primary);"></div>
+
+          <!-- 4 Clickable Attack Buttons for Slot 2 -->
+          <div id="stadiumMovesSlot2" class="grid grid-cols-2 gap-1.5"></div>
         </div>
       </div>
 
-      <!-- Outer Right: Slot 2 Artwork + Name -->
-      <div class="cutin-wing-right flex flex-col items-center shrink-0">
+      <!-- Outer Right: Slot 2 Artwork + Live Evolve/Shiny Pills -->
+      <div class="cutin-wing-right flex flex-col items-center shrink-0 relative">
+        <div id="dmgFloatSlot2" class="dmg-float-badge px-3 py-1 rounded-full bg-rose-600/95 border-2 border-white text-white font-mono-num font-black text-sm shadow-[0_0_24px_#EF4444] whitespace-nowrap">-120 HP</div>
         <img id="cutinArtSlot2"
+             onclick="executeStadiumMove(2, 0)"
+             title="Click Artwork to Attack!"
              src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/59.png"
-             class="cutin-art-380"
+             class="cutin-art-380 cursor-pointer hover:scale-105"
              style="filter: drop-shadow(0 0 46px var(--slot2-primary)) drop-shadow(0 16px 32px rgba(0,0,0,0.92));"
              alt="" />
-        <div id="cutinRightTitle" class="text-xl sm:text-3xl font-black italic uppercase tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)] whitespace-nowrap">
+        <div id="cutinRightTitle" class="text-xl sm:text-2xl font-black italic uppercase tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)] whitespace-nowrap">
           ARCANINE
+        </div>
+        <div class="mt-1.5 flex items-center gap-1.5">
+          <button onclick="stadiumEvolvePokemon(2)" id="stadiumEvoBtnSlot2" class="px-2.5 py-1 rounded-lg bg-orange-500/25 hover:bg-orange-500/40 text-orange-200 border border-orange-400/50 text-[10px] font-extrabold whitespace-nowrap transition">Evolve (+30% HP)</button>
+          <button onclick="stadiumToggleShiny(2)" id="stadiumShinyBtnSlot2" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-amber-500/30 text-amber-200 border border-white/20 text-[10px] font-bold whitespace-nowrap transition">Shiny: OFF</button>
         </div>
       </div>
     </div>
 
-    <!-- BOTTOM CENTERED DISMISS BAR (bottom: 32px — Zero Overlap with Stat Cards) -->
-    <div class="cutin-bottom-dismiss">
-      <div class="w-72 bg-[#090812]/90 border border-white/25 rounded-full px-4 py-2 shadow-2xl">
-        <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
-          <div id="cutinProgressBar" class="h-full bg-gradient-to-r from-cyan-400 via-purple-400 to-amber-400 rounded-full" style="width: 100%; transition: width 7s linear;"></div>
+    <!-- BOTTOM ALL-STAR ROSTER DOCK (Instant Tag-In + Live 1,025 Search) -->
+    <div class="cutin-bottom-dock">
+      <div class="bg-[#090812]/95 border border-white/25 rounded-2xl px-3.5 py-2 shadow-[0_16px_48px_rgba(0,0,0,0.95)] flex flex-wrap xl:flex-nowrap items-center justify-between gap-2.5">
+        <!-- Left: Tag-In Target Selector -->
+        <div class="flex items-center gap-1.5 shrink-0">
+          <span class="text-[10px] font-mono-num font-extrabold uppercase tracking-wider text-slate-300">Tag Into:</span>
+          <button onclick="setStadiumDockTarget(1)" id="stadiumDockSlot1Btn" class="px-2.5 py-1 rounded-lg text-[10px] font-extrabold bg-cyan-500 text-slate-950 whitespace-nowrap transition">Left: Slot 1</button>
+          <button onclick="setStadiumDockTarget(2)" id="stadiumDockSlot2Btn" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-[#161329] text-slate-300 border border-white/15 whitespace-nowrap transition">Right: Slot 2</button>
         </div>
-        <div class="text-center text-[10px] font-mono-num font-bold text-slate-200 mt-1 whitespace-nowrap">
-          Click Anywhere or Press Space / Esc to Dismiss
+
+        <!-- Center: Scrollable 22 Hall of Fame Mini-Portraits -->
+        <div id="stadiumDockRosterRow" class="flex items-center gap-1.5 overflow-x-auto py-0.5 flex-1 min-w-0"></div>
+
+        <!-- Right: Live #1-1025 Stadium Search -->
+        <div class="flex items-center gap-1.5 shrink-0">
+          <input id="stadiumDockSearchInput" type="text" placeholder="Search #1–1025 (e.g. rayquaza, lucario)..."
+                 onkeydown="if(event.key==='Enter'){ event.stopPropagation(); searchStadiumDockPokemon(); }"
+                 class="w-48 sm:w-56 bg-[#141126] border border-cyan-400/40 rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none focus:border-cyan-400" />
+          <button onclick="searchStadiumDockPokemon()" class="px-2.5 py-1 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-extrabold text-[11px] whitespace-nowrap transition">Tag In</button>
         </div>
       </div>
     </div>
@@ -1663,28 +1895,142 @@
 
     const HOF_ROSTER_BUTTONS = [
       { id: 130, label: 'Gyarados' },
-      { id: 129, label: 'Magikarp ➔' },
+      { id: 129, label: 'Magikarp' },
       { id: 59,  label: 'Arcanine' },
-      { id: 58,  label: 'Growlithe ➔' },
-      { id: 7,   label: 'Squirtle ➔' },
-      { id: 9,   label: 'Blastoise' },
-      { id: 4,   label: 'Charmander ➔' },
+      { id: 58,  label: 'Growlithe' },
+      { id: 150, label: 'Mewtwo' },
       { id: 6,   label: 'Charizard' },
-      { id: 1,   label: 'Bulbasaur ➔' },
-      { id: 506, label: 'Lillipup ➔' },
+      { id: 4,   label: 'Charmander' },
+      { id: 9,   label: 'Blastoise' },
+      { id: 7,   label: 'Squirtle' },
+      { id: 3,   label: 'Venusaur' },
+      { id: 1,   label: 'Bulbasaur' },
       { id: 359, label: 'Absol' },
-      { id: 133, label: 'Eevee (Cycle)' },
-      { id: 349, label: 'Feebas ➔ Milotic' },
+      { id: 133, label: 'Eevee' },
+      { id: 350, label: 'Milotic' },
       { id: 181, label: 'Ampharos' },
-      { id: 88,  label: 'Grimer ➔ Muk' },
-      { id: 16,  label: 'Pidgey ➔ Pidgeot' },
+      { id: 89,  label: 'Alolan Muk' },
+      { id: 18,  label: 'Pidgeot' },
       { id: 149, label: 'Dragonite' },
-      { id: 25,  label: 'Pikachu ➔' },
+      { id: 25,  label: 'Pikachu' },
       { id: 65,  label: 'Alakazam' },
-      { id: 143, label: 'Snorlax' }
+      { id: 143, label: 'Snorlax' },
+      { id: 506, label: 'Lillipup' }
     ];
 
+    const TYPE_MOVE_POOL = {
+      water:    [
+        { name: 'Aqua Tail',   type: 'water',    power: 90,  cat: 'phys' },
+        { name: 'Hydro Pump',  type: 'water',    power: 110, cat: 'spec' },
+        { name: 'Surf',        type: 'water',    power: 95,  cat: 'spec' },
+        { name: 'Hyper Geyser', type: 'water',   power: 130, cat: 'spec', ultimate: true }
+      ],
+      fire:     [
+        { name: 'Flamethrower', type: 'fire',    power: 90,  cat: 'spec' },
+        { name: 'Fire Blast',   type: 'fire',    power: 110, cat: 'spec' },
+        { name: 'Flare Blitz',  type: 'fire',    power: 120, cat: 'phys' },
+        { name: 'Inferno Overdrive', type: 'fire', power: 135, cat: 'spec', ultimate: true }
+      ],
+      psychic:  [
+        { name: 'Psychic',     type: 'psychic',  power: 90,  cat: 'spec' },
+        { name: 'Psystrike',   type: 'psychic',  power: 100, cat: 'spec' },
+        { name: 'Shadow Ball', type: 'ghost',    power: 85,  cat: 'spec' },
+        { name: 'Astral Nova', type: 'psychic',  power: 135, cat: 'spec', ultimate: true }
+      ],
+      electric: [
+        { name: 'Thunderbolt', type: 'electric', power: 90,  cat: 'spec' },
+        { name: 'Volt Tackle', type: 'electric', power: 120, cat: 'phys' },
+        { name: 'Thunder',     type: 'electric', power: 110, cat: 'spec' },
+        { name: 'Giga Volt',   type: 'electric', power: 135, cat: 'spec', ultimate: true }
+      ],
+      dark:     [
+        { name: 'Night Slash',   type: 'dark',   power: 85,  cat: 'phys' },
+        { name: 'Dark Pulse',    type: 'dark',   power: 90,  cat: 'spec' },
+        { name: 'Sucker Punch',  type: 'dark',   power: 95,  cat: 'phys' },
+        { name: 'Disaster Cleave', type: 'dark', power: 130, cat: 'phys', ultimate: true }
+      ],
+      grass:    [
+        { name: 'Energy Ball',  type: 'grass',   power: 90,  cat: 'spec' },
+        { name: 'Leaf Blade',   type: 'grass',   power: 90,  cat: 'phys' },
+        { name: 'Sludge Bomb',  type: 'poison',  power: 90,  cat: 'spec' },
+        { name: 'Solar Beam',   type: 'grass',   power: 130, cat: 'spec', ultimate: true }
+      ],
+      dragon:   [
+        { name: 'Dragon Claw',  type: 'dragon',  power: 85,  cat: 'phys' },
+        { name: 'Outrage',      type: 'dragon',  power: 120, cat: 'phys' },
+        { name: 'Hurricane',    type: 'flying',  power: 110, cat: 'spec' },
+        { name: 'Draco Meteor', type: 'dragon',  power: 135, cat: 'spec', ultimate: true }
+      ],
+      ice:      [
+        { name: 'Ice Beam',     type: 'ice',     power: 90,  cat: 'spec' },
+        { name: 'Blizzard',     type: 'ice',     power: 110, cat: 'spec' },
+        { name: 'Freeze-Dry',   type: 'ice',     power: 85,  cat: 'spec' },
+        { name: 'Subzero Nova', type: 'ice',     power: 130, cat: 'spec', ultimate: true }
+      ],
+      fairy:    [
+        { name: 'Moonblast',    type: 'fairy',   power: 95,  cat: 'spec' },
+        { name: 'Dazzling Gleam', type: 'fairy', power: 85,  cat: 'spec' },
+        { name: 'Play Rough',   type: 'fairy',   power: 90,  cat: 'phys' },
+        { name: 'Starlight Nova', type: 'fairy', power: 130, cat: 'spec', ultimate: true }
+      ],
+      poison:   [
+        { name: 'Sludge Wave',  type: 'poison',  power: 95,  cat: 'spec' },
+        { name: 'Gunk Shot',    type: 'poison',  power: 120, cat: 'phys' },
+        { name: 'Crunch',       type: 'dark',    power: 85,  cat: 'phys' },
+        { name: 'Venom Overdrive', type: 'poison', power: 130, cat: 'phys', ultimate: true }
+      ],
+      flying:   [
+        { name: 'Brave Bird',   type: 'flying',  power: 120, cat: 'phys' },
+        { name: 'Air Slash',    type: 'flying',  power: 85,  cat: 'spec' },
+        { name: 'Hurricane',    type: 'flying',  power: 110, cat: 'spec' },
+        { name: 'Sky Strike',   type: 'flying',  power: 130, cat: 'phys', ultimate: true }
+      ],
+      fighting: [
+        { name: 'Close Combat', type: 'fighting', power: 120, cat: 'phys' },
+        { name: 'Aura Sphere',  type: 'fighting', power: 90,  cat: 'spec' },
+        { name: 'Drain Punch',  type: 'fighting', power: 85,  cat: 'phys' },
+        { name: 'Meteor Assault', type: 'fighting', power: 135, cat: 'phys', ultimate: true }
+      ],
+      ground:   [
+        { name: 'Earthquake',   type: 'ground',  power: 100, cat: 'phys' },
+        { name: 'Earth Power',  type: 'ground',  power: 90,  cat: 'spec' },
+        { name: 'Stone Edge',   type: 'rock',    power: 100, cat: 'phys' },
+        { name: 'Tectonic Rage', type: 'ground', power: 135, cat: 'phys', ultimate: true }
+      ],
+      rock:     [
+        { name: 'Stone Edge',   type: 'rock',    power: 100, cat: 'phys' },
+        { name: 'Rock Slide',   type: 'rock',    power: 85,  cat: 'phys' },
+        { name: 'Earthquake',   type: 'ground',  power: 100, cat: 'phys' },
+        { name: 'Continental Crush', type: 'rock', power: 135, cat: 'phys', ultimate: true }
+      ],
+      ghost:    [
+        { name: 'Shadow Ball',  type: 'ghost',   power: 90,  cat: 'spec' },
+        { name: 'Phantom Force', type: 'ghost',  power: 95,  cat: 'phys' },
+        { name: 'Dark Pulse',   type: 'dark',    power: 85,  cat: 'spec' },
+        { name: 'Phantom Nova', type: 'ghost',   power: 135, cat: 'spec', ultimate: true }
+      ],
+      steel:    [
+        { name: 'Meteor Mash',  type: 'steel',   power: 95,  cat: 'phys' },
+        { name: 'Flash Cannon', type: 'steel',   power: 85,  cat: 'spec' },
+        { name: 'Iron Head',    type: 'steel',   power: 85,  cat: 'phys' },
+        { name: 'Corkscrew Crash', type: 'steel', power: 135, cat: 'phys', ultimate: true }
+      ],
+      bug:      [
+        { name: 'Bug Buzz',     type: 'bug',     power: 90,  cat: 'spec' },
+        { name: 'X-Scissor',    type: 'bug',     power: 85,  cat: 'phys' },
+        { name: 'Megahorn',     type: 'bug',     power: 120, cat: 'phys' },
+        { name: 'Savage Spin-Out', type: 'bug',  power: 130, cat: 'phys', ultimate: true }
+      ],
+      normal:   [
+        { name: 'Body Slam',    type: 'normal',  power: 85,  cat: 'phys' },
+        { name: 'Hyper Voice',  type: 'normal',  power: 90,  cat: 'spec' },
+        { name: 'Crunch',       type: 'dark',    power: 85,  cat: 'phys' },
+        { name: 'Giga Impact',  type: 'normal',  power: 135, cat: 'phys', ultimate: true }
+      ]
+    };
+
     let activeRosterTargetSlot = 1;
+    let stadiumDockTargetSlot = 1;
     let evoChainCache = {};
     let activeDealFeedFilter = 'ALL';
     let partnerState = {
@@ -1693,7 +2039,20 @@
       cryAudio: true,
       autoLaunch: false,
       cutInFx: true,
+      battleAutoClose: false,
       stageMode: 'OPEN'
+    };
+
+    let stadiumBattleState = {
+      slot1Hp: 348,
+      slot1MaxHp: 348,
+      slot2Hp: 335,
+      slot2MaxHp: 335,
+      faintedSlot: 0,
+      simRunning: false,
+      simTurnSlot: 1,
+      simTimer: null,
+      attackLock: false
     };
 
     function loadEvoChainCacheFromStorage() {
@@ -1734,6 +2093,9 @@
         slotObj.stats = dex.stats;
         slotObj.abilities = dex.abilities || ['Battle Ready'];
       }
+      if (dex && Array.isArray(dex.moves) && dex.moves.length > 0) {
+        slotObj.moves = dex.moves;
+      }
       if (cached && Array.isArray(cached.chain)) {
         slotObj.chain = cached.chain;
         slotObj.nextId = cached.nextId;
@@ -1757,6 +2119,7 @@
               ...partnerState,
               ...parsed,
               cutInFx: parsed.cutInFx !== false,
+              battleAutoClose: Boolean(parsed.battleAutoClose),
               stageMode: parsed.stageMode === 'MINI' ? 'MINI' : 'OPEN',
               slot1: hydrateSlotFromDex({ ...partnerState.slot1, ...parsed.slot1 }),
               slot2: hydrateSlotFromDex({ ...partnerState.slot2, ...parsed.slot2 })
@@ -1817,6 +2180,16 @@
         ? data.abilities.slice(0, 2).map(a => formatPokeDisplayName(a.ability?.name || 'Battle Ready'))
         : ['Battle Ready'];
 
+      const apiMoves = [];
+      if (Array.isArray(data.moves)) {
+        for (let i = 0; i < data.moves.length && apiMoves.length < 3; i++) {
+          const mvName = data.moves[i]?.move?.name;
+          if (mvName && !mvName.includes('protect') && !mvName.includes('rest') && !mvName.includes('snore') && !mvName.includes('substitute')) {
+            apiMoves.push(formatPokeDisplayName(mvName));
+          }
+        }
+      }
+
       const existing = HALL_OF_FAME_DEX[pokeId] || {};
       HALL_OF_FAME_DEX[pokeId] = {
         ...existing,
@@ -1825,7 +2198,8 @@
         type: existing.type || mappedType,
         types: allTypes,
         stats: statMap,
-        abilities
+        abilities,
+        moves: apiMoves
       };
       return HALL_OF_FAME_DEX[pokeId];
     }
@@ -1925,6 +2299,58 @@
       } catch (e) {}
     }
 
+    // Web Audio API Arcade Battle Synth SFX (Whoosh + Impact + Victory Fanfare)
+    let __battleAudioCtx = null;
+    function playBattleSynthSfx(kind) {
+      if (!partnerState.cryAudio) return;
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        if (!__battleAudioCtx) __battleAudioCtx = new AudioCtx();
+        if (__battleAudioCtx.state === 'suspended') __battleAudioCtx.resume();
+        const now = __battleAudioCtx.currentTime;
+
+        if (kind === 'whoosh') {
+          const osc = __battleAudioCtx.createOscillator();
+          const gain = __battleAudioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(520, now);
+          osc.frequency.exponentialRampToValueAtTime(140, now + 0.22);
+          gain.gain.setValueAtTime(0.16, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+          osc.connect(gain);
+          gain.connect(__battleAudioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.23);
+        } else if (kind === 'impact') {
+          const osc = __battleAudioCtx.createOscillator();
+          const gain = __battleAudioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(160, now);
+          osc.frequency.exponentialRampToValueAtTime(38, now + 0.28);
+          gain.gain.setValueAtTime(0.28, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+          osc.connect(gain);
+          gain.connect(__battleAudioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.29);
+        } else if (kind === 'victory') {
+          [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+            const osc = __battleAudioCtx.createOscillator();
+            const gain = __battleAudioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now + i * 0.09);
+            gain.gain.setValueAtTime(0.18, now + i * 0.09);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.09 + 0.28);
+            osc.connect(gain);
+            gain.connect(__battleAudioCtx.destination);
+            osc.start(now + i * 0.09);
+            osc.stop(now + i * 0.09 + 0.29);
+          });
+        }
+      } catch (e) {}
+    }
+
     function showCommanderToast(msg) {
       const el = document.getElementById('evoToast');
       const txt = document.getElementById('evoToastText');
@@ -1963,6 +2389,531 @@
       document.body.classList.add('aura-clash-pulse');
     }
 
+    function getFourMovesForPokemon(slotObj) {
+      const primaryType = String((slotObj.types && slotObj.types[0]) || slotObj.type || 'normal').toLowerCase();
+      const secondaryType = String((slotObj.types && slotObj.types[1]) || primaryType).toLowerCase();
+      const basePool = TYPE_MOVE_POOL[primaryType] || TYPE_MOVE_POOL.normal;
+      const secPool = TYPE_MOVE_POOL[secondaryType] || basePool;
+
+      const moves = [
+        { ...basePool[0] },
+        { ...basePool[1] },
+        secondaryType !== primaryType ? { ...secPool[0] } : { ...basePool[2] },
+        { ...basePool[3], ultimate: true }
+      ];
+
+      if (Array.isArray(slotObj.moves) && slotObj.moves.length > 0) {
+        for (let i = 0; i < Math.min(2, slotObj.moves.length); i++) {
+          if (slotObj.moves[i]) {
+            moves[i].name = slotObj.moves[i];
+          }
+        }
+      }
+      return moves;
+    }
+
+    function computeMoveEffectiveness(moveType, defTypes) {
+      const atkT = String(moveType || 'normal').toLowerCase();
+      const chart = TYPE_CHART_18[atkT] || {};
+      const dList = Array.isArray(defTypes) && defTypes.length > 0 ? defTypes : ['normal'];
+      let mult = 1;
+      dList.forEach(dt => {
+        const dKey = String(dt || 'normal').toLowerCase();
+        if (chart[dKey] !== undefined) mult *= chart[dKey];
+      });
+      return Number(mult.toFixed(2));
+    }
+
+    function calcMaxHpForSlot(slotObj) {
+      const dex = HALL_OF_FAME_DEX[slotObj.id] || {};
+      const baseHp = Number((slotObj.stats && slotObj.stats.hp) || (dex.stats && dex.stats.hp) || 80);
+      return Math.round((baseHp * 2.5) + 110);
+    }
+
+    function stopAutoSimBattle() {
+      stadiumBattleState.simRunning = false;
+      clearTimeout(stadiumBattleState.simTimer);
+      const btn = document.getElementById('simBattleBtn');
+      if (btn) {
+        btn.innerText = 'Sim Full Battle';
+        btn.className = 'w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-slate-950 font-black text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,240,255,0.45)] transition';
+      }
+    }
+
+    function initStadiumCombatants(preserveLog) {
+      stopAutoSimBattle();
+      const s1 = hydrateSlotFromDex(partnerState.slot1);
+      const s2 = hydrateSlotFromDex(partnerState.slot2);
+      stadiumBattleState.slot1MaxHp = calcMaxHpForSlot(s1);
+      stadiumBattleState.slot1Hp = stadiumBattleState.slot1MaxHp;
+      stadiumBattleState.slot2MaxHp = calcMaxHpForSlot(s2);
+      stadiumBattleState.slot2Hp = stadiumBattleState.slot2MaxHp;
+      stadiumBattleState.faintedSlot = 0;
+      stadiumBattleState.attackLock = false;
+
+      const art1 = document.getElementById('cutinArtSlot1');
+      const art2 = document.getElementById('cutinArtSlot2');
+      if (art1) art1.classList.remove('fainted-pokemon');
+      if (art2) art2.classList.remove('fainted-pokemon');
+
+      renderStadiumCombatUI();
+      renderStadiumRosterDock();
+
+      if (!preserveLog) {
+        const logTitle = document.getElementById('stadiumBattleLogTitle');
+        const logText = document.getElementById('stadiumBattleLogText');
+        if (logTitle) logTitle.innerText = 'LOGAN\'S BATTLE STADIUM READY';
+        if (logText) logText.innerText = s1.name.toUpperCase() + ' vs. ' + s2.name.toUpperCase() + ' — Click any attack move or Sim Full Battle!';
+      }
+    }
+
+    function renderStadiumCombatUI() {
+      const s1 = hydrateSlotFromDex(partnerState.slot1);
+      const s2 = hydrateSlotFromDex(partnerState.slot2);
+      const spec1 = getEffectiveSlotSpectrum(s1);
+      const spec2 = getEffectiveSlotSpectrum(s2);
+
+      const updateHpBar = (slotNum, curHp, maxHp) => {
+        const pct = Math.max(0, Math.min(100, Math.round((curHp / Math.max(1, maxHp)) * 100)));
+        const lbl = document.getElementById('stadiumHpLabelSlot' + slotNum);
+        const bar = document.getElementById('stadiumHpBarSlot' + slotNum);
+        const badge = document.getElementById('stadiumStatusBadgeSlot' + slotNum);
+        const art = document.getElementById('cutinArtSlot' + slotNum);
+
+        let barColor = 'bg-emerald-400';
+        let txtColor = 'text-emerald-300';
+        if (pct === 0) {
+          barColor = 'bg-rose-600';
+          txtColor = 'text-rose-400';
+        } else if (pct < 20) {
+          barColor = 'bg-rose-500 shadow-[0_0_12px_#EF4444]';
+          txtColor = 'text-rose-400';
+        } else if (pct < 50) {
+          barColor = 'bg-amber-400 shadow-[0_0_10px_#FACC15]';
+          txtColor = 'text-amber-300';
+        } else {
+          barColor = 'bg-emerald-400 shadow-[0_0_10px_#10B981]';
+        }
+
+        if (lbl) {
+          lbl.innerText = 'HP: ' + curHp + ' / ' + maxHp + ' (' + pct + '%)';
+          lbl.className = txtColor + ' font-mono-num font-extrabold';
+        }
+        if (bar) {
+          bar.className = 'h-full rounded-full transition-all duration-300 ' + barColor;
+          bar.style.width = pct + '%';
+        }
+        if (badge) {
+          if (curHp <= 0) {
+            badge.innerText = 'FAINTED!';
+            badge.className = 'text-[10px] px-2 py-0.5 rounded bg-rose-500/30 text-rose-200 border border-rose-400/60 font-black';
+            if (art) art.classList.add('fainted-pokemon');
+          } else {
+            badge.innerText = pct < 25 ? 'CRITICAL' : 'BATTLE READY';
+            badge.className = pct < 25
+              ? 'text-[10px] px-2 py-0.5 rounded bg-amber-500/25 text-amber-200 border border-amber-400/50 font-bold'
+              : 'text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 font-bold';
+            if (art) art.classList.remove('fainted-pokemon');
+          }
+        }
+      };
+
+      updateHpBar(1, stadiumBattleState.slot1Hp, stadiumBattleState.slot1MaxHp);
+      updateHpBar(2, stadiumBattleState.slot2Hp, stadiumBattleState.slot2MaxHp);
+
+      const renderMovesGrid = (slotNum, attackerObj, defenderObj, spec) => {
+        const container = document.getElementById('stadiumMovesSlot' + slotNum);
+        if (!container) return;
+        const moves = getFourMovesForPokemon(attackerObj);
+        container.innerHTML = moves.map((m, idx) => {
+          const eff = computeMoveEffectiveness(m.type, defenderObj.types || [defenderObj.type]);
+          const effTag = eff > 1 ? (eff + 'x SUPER') : (eff < 1 ? (eff + 'x RES') : '1x');
+          const effCls = eff > 1 ? 'text-emerald-300' : (eff < 1 ? 'text-amber-300' : 'text-slate-300');
+          const borderCls = m.ultimate
+            ? 'border-amber-400/70 bg-gradient-to-r from-amber-500/25 to-purple-600/30 hover:from-amber-500/40 hover:to-purple-500/45 shadow-[0_0_14px_rgba(250,204,21,0.25)]'
+            : 'border-white/20 bg-[#120F24]/90 hover:bg-[#1E193A] hover:border-cyan-400/60';
+          return (
+            '<button onclick="executeStadiumMove(' + slotNum + ', ' + idx + ')" ' +
+                    'class="p-2 rounded-xl border ' + borderCls + ' text-left transition active:scale-95 flex flex-col justify-between">' +
+              '<div class="flex items-center justify-between gap-1">' +
+                '<span class="text-[11px] font-extrabold text-white truncate">' + (m.ultimate ? 'ULT: ' : '') + m.name + '</span>' +
+                '<span class="text-[9px] font-mono-num font-black ' + effCls + ' shrink-0">' + effTag + '</span>' +
+              '</div>' +
+              '<div class="flex items-center justify-between text-[9px] font-mono-num text-slate-300 mt-1">' +
+                '<span class="uppercase">' + m.type + '</span>' +
+                '<span class="font-bold text-cyan-200">PWR ' + m.power + '</span>' +
+              '</div>' +
+            '</button>'
+          );
+        }).join('');
+      };
+
+      renderMovesGrid(1, s1, s2, spec1);
+      renderMovesGrid(2, s2, s1, spec2);
+
+      // Update Stadium Evolve & Shiny Buttons
+      [1, 2].forEach(slotNum => {
+        const slotObj = slotNum === 1 ? s1 : s2;
+        const evoBtn = document.getElementById('stadiumEvoBtnSlot' + slotNum);
+        const shinyBtn = document.getElementById('stadiumShinyBtnSlot' + slotNum);
+        const chainInfo = evoChainCache[slotObj.id] || HALL_OF_FAME_DEX[slotObj.id] || {};
+        const chainArr = Array.isArray(slotObj.chain) && slotObj.chain.length > 0 ? slotObj.chain : (chainInfo.chain || [slotObj.id]);
+        const nextId = slotObj.nextId !== undefined ? slotObj.nextId : (chainInfo.nextId || null);
+        if (evoBtn) {
+          if (nextId) {
+            evoBtn.innerText = 'Evolve (+30% HP)';
+          } else if (chainArr.length > 1) {
+            evoBtn.innerText = 'Reset Stage 1';
+          } else {
+            evoBtn.innerText = 'MAX FORM';
+          }
+        }
+        if (shinyBtn) {
+          shinyBtn.innerText = slotObj.shiny ? 'Shiny: ON' : 'Shiny: OFF';
+        }
+      });
+
+      const autoState = document.getElementById('battleAutoCloseState');
+      if (autoState) {
+        autoState.innerText = partnerState.battleAutoClose ? '6s' : 'OFF';
+        autoState.className = partnerState.battleAutoClose ? 'text-cyan-300 font-extrabold' : 'text-amber-300 font-extrabold';
+      }
+    }
+
+    function spawnElementalProjectile(attackerSlot, colorHex, isUltimate) {
+      const layer = document.getElementById('stadiumProjectileLayer');
+      if (!layer) return;
+      const orb = document.createElement('div');
+      const size = isUltimate ? 58 : 38;
+      const startX = attackerSlot === 1 ? '16vw' : '84vw';
+      const endX = attackerSlot === 1 ? '82vw' : '18vw';
+      orb.style.position = 'fixed';
+      orb.style.top = '44vh';
+      orb.style.left = startX;
+      orb.style.width = size + 'px';
+      orb.style.height = size + 'px';
+      orb.style.borderRadius = '9999px';
+      orb.style.background = 'radial-gradient(circle, #FFFFFF 0%, ' + colorHex + ' 55%, transparent 100%)';
+      orb.style.boxShadow = '0 0 36px ' + colorHex + ', 0 0 72px ' + colorHex;
+      orb.style.transform = 'translate(-50%, -50%) scale(0.6)';
+      orb.style.transition = 'left 0.24s cubic-bezier(0.22, 1, 0.36, 1), transform 0.24s ease, opacity 0.24s ease';
+      layer.appendChild(orb);
+
+      requestAnimationFrame(() => {
+        orb.style.left = endX;
+        orb.style.transform = 'translate(-50%, -50%) scale(' + (isUltimate ? '1.65' : '1.25') + ')';
+      });
+
+      setTimeout(() => {
+        orb.style.opacity = '0';
+        setTimeout(() => orb.remove(), 120);
+      }, 240);
+    }
+
+    function executeStadiumMove(attackerSlot, moveIdx) {
+      if (stadiumBattleState.attackLock) return;
+      if (stadiumBattleState.faintedSlot !== 0) {
+        resetBattleStadiumMatch();
+        return;
+      }
+
+      const defenderSlot = attackerSlot === 1 ? 2 : 1;
+      const attacker = hydrateSlotFromDex(attackerSlot === 1 ? partnerState.slot1 : partnerState.slot2);
+      const defender = hydrateSlotFromDex(defenderSlot === 1 ? partnerState.slot1 : partnerState.slot2);
+      const specAtk = getEffectiveSlotSpectrum(attacker);
+      const moves = getFourMovesForPokemon(attacker);
+      const move = moves[moveIdx] || moves[0];
+
+      stadiumBattleState.attackLock = true;
+      const atkArt = document.getElementById('cutinArtSlot' + attackerSlot);
+      const defArt = document.getElementById('cutinArtSlot' + defenderSlot);
+      const stageEl = document.getElementById('stadiumCombatStage');
+
+      if (atkArt) {
+        atkArt.classList.remove('anim-lunge-right', 'anim-lunge-left');
+        void atkArt.offsetWidth;
+        atkArt.classList.add(attackerSlot === 1 ? 'anim-lunge-right' : 'anim-lunge-left');
+      }
+
+      playBattleSynthSfx('whoosh');
+      playPokemonCry(attacker.id);
+      spawnElementalProjectile(attackerSlot, (ELEMENTAL_SPECTRUM[move.type] || specAtk).hex, Boolean(move.ultimate));
+
+      const dexA = HALL_OF_FAME_DEX[attacker.id] || {};
+      const dexD = HALL_OF_FAME_DEX[defender.id] || {};
+      const stA = attacker.stats || dexA.stats || { atk: 90, spa: 85 };
+      const stD = defender.stats || dexD.stats || { def: 80, spd: 80 };
+
+      const offStat = move.cat === 'phys' ? Number(stA.atk || 85) : Number(stA.spa || 85);
+      const defStat = move.cat === 'phys' ? Number(stD.def || 80) : Number(stD.spd || 80);
+      const typeMult = computeMoveEffectiveness(move.type, defender.types || [defender.type]);
+      const isCrit = Math.random() < 0.15;
+      const critMult = isCrit ? 1.5 : 1.0;
+      const randVar = 0.90 + Math.random() * 0.16;
+
+      const rawDmg = ((22 * Number(move.power || 90) * (offStat / Math.max(25, defStat))) / 32 + 12) * typeMult * critMult * randVar;
+      const dmg = Math.max(14, Math.round(rawDmg));
+
+      setTimeout(() => {
+        playBattleSynthSfx('impact');
+        if (defArt) {
+          defArt.classList.remove('anim-hit-recoil');
+          void defArt.offsetWidth;
+          defArt.classList.add('anim-hit-recoil');
+        }
+        if (stageEl) {
+          stageEl.classList.remove('anim-arena-shake');
+          void stageEl.offsetWidth;
+          stageEl.classList.add('anim-arena-shake');
+        }
+
+        const floatEl = document.getElementById('dmgFloatSlot' + defenderSlot);
+        if (floatEl) {
+          floatEl.innerText = '-' + dmg + ' HP' + (isCrit ? ' CRIT!' : '') + (typeMult > 1 ? ' (' + typeMult + 'x!)' : '');
+          floatEl.classList.remove('show-dmg');
+          void floatEl.offsetWidth;
+          floatEl.classList.add('show-dmg');
+        }
+
+        if (defenderSlot === 1) {
+          stadiumBattleState.slot1Hp = Math.max(0, stadiumBattleState.slot1Hp - dmg);
+        } else {
+          stadiumBattleState.slot2Hp = Math.max(0, stadiumBattleState.slot2Hp - dmg);
+        }
+
+        renderStadiumCombatUI();
+
+        const effNote = typeMult > 1 ? " It's SUPER EFFECTIVE!" : (typeMult < 1 ? " It's not very effective..." : '');
+        const critNote = isCrit ? ' CRITICAL HIT!' : '';
+        const logTitle = document.getElementById('stadiumBattleLogTitle');
+        const logText = document.getElementById('stadiumBattleLogText');
+        const remHp = defenderSlot === 1 ? stadiumBattleState.slot1Hp : stadiumBattleState.slot2Hp;
+
+        if (remHp <= 0) {
+          stadiumBattleState.faintedSlot = defenderSlot;
+          stopAutoSimBattle();
+          playBattleSynthSfx('victory');
+          const headline = document.getElementById('cutinBannerHeadline');
+          if (headline) headline.innerText = 'WINNER: ' + attacker.name.toUpperCase() + '!';
+          if (logTitle) logTitle.innerText = 'K.O. VICTORY!';
+          if (logText) logText.innerText = attacker.name.toUpperCase() + ' used ' + move.name.toUpperCase() + ' (-' + dmg + ' HP) and scored a K.O. over ' + defender.name.toUpperCase() + '!';
+        } else {
+          if (logTitle) logTitle.innerText = attacker.name.toUpperCase() + ' ATTACKED!';
+          if (logText) logText.innerText = attacker.name.toUpperCase() + ' used ' + move.name.toUpperCase() + '!' + critNote + effNote + ' (-' + dmg + ' HP)';
+        }
+
+        setTimeout(() => {
+          stadiumBattleState.attackLock = false;
+        }, 220);
+      }, 240);
+    }
+
+    function toggleAutoSimBattle() {
+      if (stadiumBattleState.simRunning) {
+        stopAutoSimBattle();
+        return;
+      }
+      if (stadiumBattleState.faintedSlot !== 0) {
+        resetBattleStadiumMatch();
+      }
+      stadiumBattleState.simRunning = true;
+      const btn = document.getElementById('simBattleBtn');
+      if (btn) {
+        btn.innerText = 'Stop Auto-Sim';
+        btn.className = 'w-full py-1.5 px-3 rounded-xl bg-rose-500 hover:bg-rose-400 text-white font-black text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(244,63,94,0.6)] transition';
+      }
+
+      const s1 = hydrateSlotFromDex(partnerState.slot1);
+      const s2 = hydrateSlotFromDex(partnerState.slot2);
+      const spe1 = Number(s1.stats?.spe || HALL_OF_FAME_DEX[s1.id]?.stats?.spe || 80);
+      const spe2 = Number(s2.stats?.spe || HALL_OF_FAME_DEX[s2.id]?.stats?.spe || 80);
+      stadiumBattleState.simTurnSlot = spe1 >= spe2 ? 1 : 2;
+
+      const stepSim = () => {
+        if (!stadiumBattleState.simRunning || stadiumBattleState.faintedSlot !== 0) {
+          stopAutoSimBattle();
+          return;
+        }
+        const atkSlot = stadiumBattleState.simTurnSlot;
+        const moveIdx = Math.floor(Math.random() * 4);
+        executeStadiumMove(atkSlot, moveIdx);
+        stadiumBattleState.simTurnSlot = atkSlot === 1 ? 2 : 1;
+        stadiumBattleState.simTimer = setTimeout(stepSim, 1100);
+      };
+
+      stepSim();
+    }
+
+    function resetBattleStadiumMatch() {
+      const s1 = hydrateSlotFromDex(partnerState.slot1);
+      const s2 = hydrateSlotFromDex(partnerState.slot2);
+      const headline = document.getElementById('cutinBannerHeadline');
+      if (headline) headline.innerText = s1.name.toUpperCase() + ' VS ' + s2.name.toUpperCase();
+      initStadiumCombatants(false);
+    }
+
+    async function triggerRandomStadiumBattle() {
+      stopAutoSimBattle();
+      const logTitle = document.getElementById('stadiumBattleLogTitle');
+      const logText = document.getElementById('stadiumBattleLogText');
+      if (logTitle) logTitle.innerText = 'RANDOMIZING POKÉDEX MATCHUP...';
+      if (logText) logText.innerText = 'Pulling 2 wild challengers from the 1,025 Pokédex...';
+
+      const id1 = Math.floor(Math.random() * 1025) + 1;
+      let id2 = Math.floor(Math.random() * 1025) + 1;
+      if (id2 === id1) id2 = (id1 % 1025) + 1;
+
+      try {
+        const [m1, m2] = await Promise.all([ensurePokemonMetadata(id1), ensurePokemonMetadata(id2)]);
+        const [c1, c2] = await Promise.all([resolveFullEvolutionChain(m1.id), resolveFullEvolutionChain(m2.id)]);
+        partnerState.slot1 = {
+          id: m1.id,
+          name: m1.name,
+          type: m1.type,
+          types: m1.types || [m1.type],
+          stats: m1.stats,
+          abilities: m1.abilities,
+          moves: m1.moves,
+          shiny: Math.random() < 0.20,
+          nextId: c1.nextId,
+          baseId: c1.baseId,
+          chain: c1.chain
+        };
+        partnerState.slot2 = {
+          id: m2.id,
+          name: m2.name,
+          type: m2.type,
+          types: m2.types || [m2.type],
+          stats: m2.stats,
+          abilities: m2.abilities,
+          moves: m2.moves,
+          shiny: Math.random() < 0.20,
+          nextId: c2.nextId,
+          baseId: c2.baseId,
+          chain: c2.chain
+        };
+        applyPartnerThemeAndHeader();
+        playPokemonCry(m1.id);
+        setTimeout(() => playPokemonCry(m2.id), 250);
+        triggerClashCutIn({
+          force: true,
+          headline: partnerState.slot1.name.toUpperCase() + ' VS ' + partnerState.slot2.name.toUpperCase()
+        });
+      } catch (e) {}
+    }
+
+    async function stadiumEvolvePokemon(slotNum) {
+      await onEvolveClick(slotNum);
+      const key = slotNum === 1 ? 'slot1' : 'slot2';
+      const evolved = hydrateSlotFromDex(partnerState[key]);
+      const newMax = calcMaxHpForSlot(evolved);
+      if (slotNum === 1) {
+        stadiumBattleState.slot1MaxHp = newMax;
+        stadiumBattleState.slot1Hp = Math.min(newMax, Math.round(stadiumBattleState.slot1Hp + newMax * 0.30));
+      } else {
+        stadiumBattleState.slot2MaxHp = newMax;
+        stadiumBattleState.slot2Hp = Math.min(newMax, Math.round(stadiumBattleState.slot2Hp + newMax * 0.30));
+      }
+      stadiumBattleState.faintedSlot = 0;
+      renderStadiumCombatUI();
+    }
+
+    function stadiumToggleShiny(slotNum) {
+      onShinyToggleClick(slotNum);
+      const s1 = hydrateSlotFromDex(partnerState.slot1);
+      const s2 = hydrateSlotFromDex(partnerState.slot2);
+      const art = document.getElementById('cutinArtSlot' + slotNum);
+      const slotObj = slotNum === 1 ? s1 : s2;
+      if (art) art.src = getArtworkFallbackUrl(slotObj.id, slotObj.shiny);
+      const titleEl = document.getElementById(slotNum === 1 ? 'cutinLeftTitle' : 'cutinRightTitle');
+      if (titleEl) titleEl.innerText = (slotObj.shiny ? 'SHINY ' : '') + slotObj.name.toUpperCase();
+      renderStadiumCombatUI();
+    }
+
+    function setStadiumDockTarget(slotNum) {
+      stadiumDockTargetSlot = slotNum === 2 ? 2 : 1;
+      const b1 = document.getElementById('stadiumDockSlot1Btn');
+      const b2 = document.getElementById('stadiumDockSlot2Btn');
+      if (b1 && b2) {
+        b1.className = stadiumDockTargetSlot === 1
+          ? 'px-2.5 py-1 rounded-lg text-[10px] font-extrabold bg-cyan-500 text-slate-950 whitespace-nowrap transition'
+          : 'px-2.5 py-1 rounded-lg text-[10px] font-bold bg-[#161329] text-slate-300 border border-white/15 whitespace-nowrap transition';
+        b2.className = stadiumDockTargetSlot === 2
+          ? 'px-2.5 py-1 rounded-lg text-[10px] font-extrabold bg-orange-500 text-slate-950 whitespace-nowrap transition'
+          : 'px-2.5 py-1 rounded-lg text-[10px] font-bold bg-[#161329] text-slate-300 border border-white/15 whitespace-nowrap transition';
+      }
+    }
+
+    function renderStadiumRosterDock() {
+      const row = document.getElementById('stadiumDockRosterRow');
+      if (!row) return;
+      row.innerHTML = HOF_ROSTER_BUTTONS.map(item => {
+        const isActive = partnerState.slot1.id === item.id || partnerState.slot2.id === item.id;
+        const borderCls = isActive ? 'border-cyan-400 bg-cyan-500/20' : 'border-white/15 bg-[#151226]/90 hover:border-cyan-400/50 hover:bg-[#211C3A]';
+        return (
+          '<button onclick="tagInStadiumPokemon(' + item.id + ')" title="Tag in ' + item.label + ' to Slot ' + stadiumDockTargetSlot + '" ' +
+                  'class="shrink-0 px-2 py-1 rounded-xl border ' + borderCls + ' flex items-center gap-1.5 transition active:scale-95">' +
+            '<img src="' + getArtworkFallbackUrl(item.id, false) + '" class="w-7 h-7 object-contain" />' +
+            '<span class="text-[10px] font-extrabold text-white whitespace-nowrap">' + item.label + '</span>' +
+          '</button>'
+        );
+      }).join('');
+    }
+
+    async function tagInStadiumPokemon(idOrName) {
+      try {
+        stopAutoSimBattle();
+        const slotNum = stadiumDockTargetSlot || 1;
+        const key = slotNum === 1 ? 'slot1' : 'slot2';
+        const meta = await ensurePokemonMetadata(idOrName);
+        const chainData = await resolveFullEvolutionChain(meta.id);
+        partnerState[key] = {
+          id: meta.id,
+          name: meta.name,
+          type: meta.type,
+          types: meta.types || [meta.type],
+          stats: meta.stats,
+          abilities: meta.abilities,
+          moves: meta.moves,
+          shiny: false,
+          nextId: chainData.nextId,
+          baseId: chainData.baseId,
+          chain: chainData.chain
+        };
+        applyPartnerThemeAndHeader();
+        playPokemonCry(meta.id);
+        triggerClashCutIn({
+          force: true,
+          slotNum,
+          headline: partnerState.slot1.name.toUpperCase() + ' VS ' + partnerState.slot2.name.toUpperCase()
+        });
+      } catch (e) {
+        const logText = document.getElementById('stadiumBattleLogText');
+        if (logText) logText.innerText = 'Could not find "' + idOrName + '". Try any Pokémon name or #1–1025.';
+      }
+    }
+
+    function searchStadiumDockPokemon() {
+      const inp = document.getElementById('stadiumDockSearchInput');
+      const q = (inp?.value || '').trim().toLowerCase();
+      if (!q) return;
+      tagInStadiumPokemon(q);
+    }
+
+    function toggleBattleAutoClose(ev) {
+      if (ev) ev.stopPropagation();
+      partnerState.battleAutoClose = !partnerState.battleAutoClose;
+      savePartnerStateToStorage();
+      renderStadiumCombatUI();
+      clearTimeout(window.__cutinWipeoutTimer);
+      if (partnerState.battleAutoClose) {
+        window.__cutinWipeoutTimer = setTimeout(() => dismissClashCutIn(), 6000);
+        showCommanderToast('Stadium Auto-Close: 6s Timer Enabled');
+      } else {
+        showCommanderToast('Stadium Hold-Open Mode: LOCKED OPEN');
+      }
+    }
+
     function renderPokedexStatCardHtml(slotObj, spec, offMult, defMult) {
       const dex = HALL_OF_FAME_DEX[slotObj.id] || {};
       const st = slotObj.stats || dex.stats || { hp: 80, atk: 85, def: 75, spa: 80, spd: 75, spe: 80, bst: 475 };
@@ -1971,7 +2922,7 @@
       const barRow = (lbl, val, color) => {
         const pct = Math.min(100, Math.round((Number(val || 50) / 160) * 100));
         return (
-          '<div class="grid grid-cols-[46px_32px_1fr] items-center gap-2 text-[11px] font-mono-num">' +
+          '<div class="grid grid-cols-[42px_30px_1fr] items-center gap-2 text-[10px] font-mono-num">' +
             '<span class="text-slate-400 font-bold">' + lbl + '</span>' +
             '<span class="text-white font-black text-right">' + val + '</span>' +
             '<div class="stat-bar-track"><div class="stat-bar-fill" style="width:' + pct + '%;background:' + color + ';"></div></div>' +
@@ -1981,14 +2932,14 @@
       const effText = offMult > 1 ? (offMult + 'x SUPER EFFECTIVE') : (offMult < 1 ? (offMult + 'x RESISTED') : '1x NEUTRAL DAMAGE');
       const effColor = offMult > 1 ? 'text-emerald-300 border-emerald-400/50 bg-emerald-500/20' : 'text-cyan-200 border-white/15 bg-white/10';
       return (
-        '<div class="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-white/10">' +
-          '<div class="flex items-center gap-2">' +
+        '<div class="flex items-center justify-between gap-2 pb-1.5 mb-1.5 border-b border-white/10">' +
+          '<div class="flex items-center gap-1.5">' +
             '<span class="text-[10px] font-mono-num font-black px-2 py-0.5 rounded bg-white/10 text-white border border-white/15">#' + slotObj.id + ' ' + typesStr + '</span>' +
             '<span class="text-[10px] font-mono-num font-black px-2 py-0.5 rounded border ' + effColor + '">' + effText + '</span>' +
           '</div>' +
           '<span class="text-xs font-mono-num font-black text-amber-300">BST ' + st.bst + '</span>' +
         '</div>' +
-        '<div class="space-y-1.5">' +
+        '<div class="space-y-1">' +
           barRow('HP', st.hp, '#10B981') +
           barRow('ATK', st.atk, spec.hex) +
           barRow('DEF', st.def, '#38BDF8') +
@@ -1996,7 +2947,7 @@
           barRow('SPD', st.spd, '#FBBF24') +
           barRow('SPE', st.spe, '#F43F5E') +
         '</div>' +
-        '<div class="mt-2.5 pt-2 border-t border-white/10 flex items-center justify-between gap-2 text-[10px] font-mono-num text-slate-300">' +
+        '<div class="mt-2 pt-1.5 border-t border-white/10 flex items-center justify-between gap-2 text-[10px] font-mono-num text-slate-300">' +
           '<span class="truncate">Abilities: <strong class="text-white">' + abil + '</strong></span>' +
           '<span class="text-slate-400 shrink-0">Def Takes: ' + defMult + 'x</span>' +
         '</div>'
@@ -2005,6 +2956,7 @@
 
     function dismissClashCutIn(ev) {
       if (ev) ev.stopPropagation();
+      stopAutoSimBattle();
       const overlay = document.getElementById('clash-cutin-overlay');
       if (!overlay || !overlay.classList.contains('active')) return;
       clearTimeout(window.__cutinHoldTimer);
@@ -2054,7 +3006,6 @@
       const matchupBadge = document.getElementById('cutinMatchupBadge');
       const statCard1 = document.getElementById('cutinStatCardSlot1');
       const statCard2 = document.getElementById('cutinStatCardSlot2');
-      const progBar = document.getElementById('cutinProgressBar');
 
       if (art1) {
         art1.onerror = function() { this.onerror = null; this.src = getArtworkFallbackUrl(s1.id, false); };
@@ -2075,41 +3026,41 @@
       if (statCard1) statCard1.innerHTML = renderPokedexStatCardHtml(s1, spec1, matchup.slot1Mult, matchup.slot2Mult);
       if (statCard2) statCard2.innerHTML = renderPokedexStatCardHtml(s2, spec2, matchup.slot2Mult, matchup.slot1Mult);
 
+      initStadiumCombatants(false);
+
       clearTimeout(window.__cutinHoldTimer);
       clearTimeout(window.__cutinWipeoutTimer);
       clearTimeout(window.__cutinHideTimer);
 
-      overlay.classList.remove(
-        'active',
-        'phase-wipein',
-        'phase-hold',
-        'phase-wipeout',
-        'matchup-slot1-high',
-        'matchup-slot2-high',
-        'matchup-neutral'
-      );
-      overlay.classList.add(matchup.overlayClass);
-      if (progBar) {
-        progBar.style.transition = 'none';
-        progBar.style.width = '100%';
+      const alreadyOpen = overlay.classList.contains('active') && overlay.classList.contains('phase-hold');
+      if (!alreadyOpen) {
+        overlay.classList.remove(
+          'active',
+          'phase-wipein',
+          'phase-hold',
+          'phase-wipeout',
+          'matchup-slot1-high',
+          'matchup-slot2-high',
+          'matchup-neutral'
+        );
+        overlay.classList.add(matchup.overlayClass);
+        void overlay.offsetWidth;
+        overlay.classList.add('active', 'phase-wipein');
+        window.__cutinHoldTimer = setTimeout(() => {
+          overlay.classList.remove('phase-wipein');
+          overlay.classList.add('phase-hold');
+        }, 500);
+      } else {
+        overlay.classList.remove('matchup-slot1-high', 'matchup-slot2-high', 'matchup-neutral');
+        overlay.classList.add(matchup.overlayClass);
       }
-      void overlay.offsetWidth;
 
-      overlay.classList.add('active', 'phase-wipein');
-      if (progBar) {
-        progBar.style.transition = 'width 7000ms linear';
-        progBar.style.width = '0%';
+      // Only auto-dismiss if user explicitly toggled Auto-Close: 6s ON
+      if (partnerState.battleAutoClose === true) {
+        window.__cutinWipeoutTimer = setTimeout(() => {
+          dismissClashCutIn();
+        }, 6000);
       }
-
-      window.__cutinHoldTimer = setTimeout(() => {
-        overlay.classList.remove('phase-wipein');
-        overlay.classList.add('phase-hold');
-      }, 500);
-
-      // Auto-dismiss after 7.0 seconds if user hasn't clicked/pressed Space/Esc
-      window.__cutinWipeoutTimer = setTimeout(() => {
-        dismissClashCutIn();
-      }, 7000);
     }
 
     function replayTagTeamClash() {
@@ -2127,9 +3078,9 @@
       applyPartnerThemeAndHeader();
       if (partnerState.cutInFx) {
         replayTagTeamClash();
-        showCommanderToast('Battle FX Stat Showcase: ON');
+        showCommanderToast('Battle FX Stadium: ON');
       } else {
-        showCommanderToast('Battle FX Stat Showcase: OFF');
+        showCommanderToast('Battle FX Stadium: OFF');
       }
     }
 
@@ -2769,7 +3720,11 @@
       }
     }
 
-    function switchMainView(viewName) {
+    let sidebarWipeTimerA = null;
+    let sidebarWipeTimerB = null;
+    let sidebarWipeTimerC = null;
+
+    function applyMainViewDomSwap(viewName) {
       activeMainView = viewName;
       ['LIVE_COMMAND', 'BOUNTY_HUNTER', 'CONQUERED_VAULT', 'TARGET_MATRIX'].forEach(v => {
         const sec = document.getElementById('view_' + v);
@@ -2793,6 +3748,48 @@
       } else {
         renderLiveCommandView();
       }
+    }
+
+    function switchMainView(viewName) {
+      const viewTitleMap = {
+        LIVE_COMMAND: 'LIVE COMMAND',
+        BOUNTY_HUNTER: 'BOUNTY HUNTER',
+        CONQUERED_VAULT: 'CONQUERED VAULT',
+        TARGET_MATRIX: 'TARGET MATRIX'
+      };
+      const wipeEl = document.getElementById('sidebar-wipe-overlay');
+      const isSameView = activeMainView === viewName;
+
+      if (partnerState.cutInFx === false || !wipeEl || isSameView) {
+        applyMainViewDomSwap(viewName);
+        return;
+      }
+
+      if (sidebarWipeTimerA) clearTimeout(sidebarWipeTimerA);
+      if (sidebarWipeTimerB) clearTimeout(sidebarWipeTimerB);
+      if (sidebarWipeTimerC) clearTimeout(sidebarWipeTimerC);
+
+      const titleEl = document.getElementById('wipeSceneLabel');
+      if (titleEl) titleEl.innerText = viewTitleMap[viewName] || viewName;
+
+      wipeEl.classList.remove('wipe-closed');
+      wipeEl.classList.add('active');
+      // Force reflow so shutter animation plays crisply
+      void wipeEl.offsetWidth;
+      wipeEl.classList.add('wipe-closed');
+      playBattleSynthSfx('whoosh');
+
+      sidebarWipeTimerA = setTimeout(() => {
+        applyMainViewDomSwap(viewName);
+      }, 340);
+
+      sidebarWipeTimerB = setTimeout(() => {
+        wipeEl.classList.remove('wipe-closed');
+      }, 380);
+
+      sidebarWipeTimerC = setTimeout(() => {
+        wipeEl.classList.remove('active', 'wipe-closed');
+      }, 750);
     }
 
     function toggleLedgerTable() {
@@ -4206,7 +5203,7 @@
 
     document.addEventListener('keydown', (e) => {
       const overlay = document.getElementById('clash-cutin-overlay');
-      if (overlay && overlay.classList.contains('active') && (e.key === 'Escape' || e.key === ' ')) {
+      if (overlay && overlay.classList.contains('active') && e.key === 'Escape') {
         e.preventDefault();
         dismissClashCutIn();
         return;
