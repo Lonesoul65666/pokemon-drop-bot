@@ -6,7 +6,7 @@
   <title>DropBot Commander — Executive Command Center</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
@@ -36,6 +36,79 @@
       color: #F8FAFC;
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       overflow-x: hidden;
+    }
+
+    /* Modern Pokédex Tactical Hardware Display Typography (Chakra Petch) */
+    .font-pokedex,
+    .brand-wordmark,
+    .hero-kpi-value,
+    .set-title-pokedex,
+    .pokedex-badge,
+    #slot1Name,
+    #slot2Name,
+    #clashSlot1Name,
+    #clashSlot2Name,
+    #clashTitleBanner,
+    h1, h2, h3 {
+      font-family: 'Chakra Petch', 'Plus Jakarta Sans', sans-serif;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    /* Cohesive Conquered Vault Cards (Identical 14px Radius, 0.42 Smoked Glass, Specular Top Border & 100x100 Wells) */
+    .vault-unified-card {
+      border-radius: 14px !important;
+      background: rgba(11, 10, 19, 0.42) !important;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-top: 1px solid rgba(255, 255, 255, 0.22);
+      border-right: 1px solid rgba(255, 255, 255, 0.09);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+      border-left: 1px solid rgba(255, 255, 255, 0.09);
+      box-shadow: 0 14px 34px -8px rgba(0, 0, 0, 0.62), inset 0 1px 0 0 rgba(255, 255, 255, 0.10);
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    .vault-unified-card:hover {
+      background: rgba(16, 14, 28, 0.50) !important;
+      border-top-color: rgba(var(--accent-primary-rgb), 0.65) !important;
+      box-shadow: 0 18px 38px -8px rgba(0, 0, 0, 0.74), 0 0 24px -6px rgba(var(--accent-primary-rgb), 0.22);
+    }
+
+    .vault-unified-card.vault-owned-wall {
+      border-top: 2px solid #10B981 !important;
+      border-color: rgba(16, 185, 129, 0.35);
+      box-shadow: 0 14px 34px -8px rgba(0, 0, 0, 0.62), 0 0 22px -6px rgba(16, 185, 129, 0.22);
+    }
+
+    .vault-unified-card.vault-trophy-accent {
+      border-top: 2px solid var(--accent-secondary) !important;
+    }
+
+    .vault-unified-card.vault-unicorn-accent {
+      border-top: 2px solid #00F0FF !important;
+      box-shadow: 0 14px 36px -8px rgba(0, 240, 255, 0.22), inset 0 0 24px rgba(0, 240, 255, 0.06);
+    }
+
+    .vault-art-well {
+      width: 100px;
+      height: 100px;
+      min-width: 100px;
+      min-height: 100px;
+      border-radius: 14px;
+      background: radial-gradient(circle at 50% 50%, rgba(var(--accent-primary-rgb), 0.24) 0%, rgba(10, 8, 19, 0.68) 76%);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: inset 0 0 18px rgba(var(--accent-primary-rgb), 0.12);
+    }
+
+    @keyframes dealFeedPulseGlow {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.0); border-color: rgba(255, 255, 255, 0.18); }
+      35% { box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.38), 0 0 32px rgba(0, 240, 255, 0.45); border-color: #10B981; }
+      100% { box-shadow: 0 14px 34px -8px rgba(0, 0, 0, 0.58); border-color: rgba(255, 255, 255, 0.18); }
+    }
+
+    .deal-feed-pulse {
+      animation: dealFeedPulseGlow 1.15s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     /* ===================================================================== */
@@ -1177,10 +1250,10 @@
             <circle cx="12" cy="12" r="3" fill="#FACC15" stroke="none"/>
           </svg>
         </div>
-        <span class="text-base font-extrabold text-white whitespace-nowrap" style="letter-spacing: -0.03em;">DROPBOT</span>
+        <span class="brand-wordmark text-base font-extrabold text-white whitespace-nowrap">DROPBOT</span>
         <span class="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/35 text-[11px] font-mono-num font-bold text-emerald-300 inline-flex items-center gap-1.5 whitespace-nowrap">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_#10B981]"></span>
-          <span id="headerArmedStoresText">36 LGS + 9 BIG-BOX ARMED</span>
+          <span id="headerArmedStoresText">40 LGS + 9 BIG-BOX ARMED</span>
         </span>
       </div>
     </div>
@@ -1240,22 +1313,22 @@
         <div class="sidebar-section-title px-3 py-1.5 text-[10px] font-mono-num font-bold uppercase tracking-widest text-slate-300">Command Views</div>
 
         <button onclick="switchMainView('LIVE_COMMAND')" id="nav_LIVE_COMMAND" title="Live Command" class="nav-item active w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 transition">
-          <span class="nav-label-text">Live Command</span>
+          <span class="nav-label-text font-pokedex">Live Command</span>
           <span id="navLiveBadge" class="nav-badge font-mono-num text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">0</span>
         </button>
 
         <button onclick="switchMainView('BOUNTY_HUNTER')" id="nav_BOUNTY_HUNTER" title="Bounty Hunter" class="nav-item w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 transition">
-          <span class="nav-label-text">Bounty Hunter</span>
+          <span class="nav-label-text font-pokedex">Bounty Hunter</span>
           <span class="nav-badge font-mono-num text-[10px] px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-300">RECON</span>
         </button>
 
         <button onclick="switchMainView('CONQUERED_VAULT')" id="nav_CONQUERED_VAULT" title="Conquered Vault" class="nav-item w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 transition">
-          <span class="nav-label-text">Conquered Vault</span>
+          <span class="nav-label-text font-pokedex">Conquered Vault</span>
           <span id="navVaultBadge" class="nav-badge font-mono-num text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">8/38</span>
         </button>
 
         <button onclick="switchMainView('TARGET_MATRIX')" id="nav_TARGET_MATRIX" title="Target Matrix" class="nav-item w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 transition">
-          <span class="nav-label-text">Target Matrix</span>
+          <span class="nav-label-text font-pokedex">Target Matrix</span>
           <span id="navMatrixBadge" class="nav-badge font-mono-num text-[10px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300">131</span>
         </button>
       </div>
@@ -1263,21 +1336,21 @@
       <!-- Eye-Level Sniper Telemetry Pod (Directly Under Navigation Tabs) -->
       <div class="pt-3 border-t border-white/10">
         <!-- Collapsed Mode Compact Status Dot -->
-        <div id="telemetryCollapsedIcon" class="telemetry-collapsed-icon" title="Sniper Telemetry: 36/36 Stores Nominal • Proxy Pool Armed">
+        <div id="telemetryCollapsedIcon" class="telemetry-collapsed-icon" title="Sniper Telemetry: 40/40 Stores Nominal • Proxy Pool Armed">
           <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_#10B981]"></span>
         </div>
 
         <!-- Expanded Mode Full Eye-Level Telemetry Card -->
         <div class="telemetry-expanded-content glass-card rounded-xl p-3.5 space-y-2">
           <div class="space-y-1">
-            <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-300 whitespace-nowrap">Sniper Telemetry</div>
+            <div class="text-[10px] font-pokedex font-extrabold uppercase tracking-wider text-slate-300 whitespace-nowrap">Sniper Telemetry</div>
             <div class="inline-flex items-center gap-1.5 text-[11px] font-mono-num font-bold text-emerald-400 whitespace-nowrap">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_#10B981]"></span>
-              <span id="sidebarStoresOnlineText">36/36 Stores Online</span>
+              <span id="sidebarStoresOnlineText">40/40 Stores Online</span>
             </div>
           </div>
           <div class="text-[11px] text-slate-200 font-mono-num whitespace-nowrap" id="sidebarStreamStatus">
-            36 Shopify + 9 Big-Box + TCGP
+            40 Shopify + 9 Big-Box + TCGP
           </div>
           <div class="grid grid-cols-2 gap-1.5 pt-1 text-[10px] font-mono-num">
             <div class="p-1.5 rounded bg-black/40 border border-white/5">
@@ -1291,7 +1364,7 @@
           </div>
           <div class="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-300">
             <span>Collector Rank</span>
-            <span id="sidebarRankBadge" class="font-extrabold text-amber-300">Case Commander</span>
+            <span id="sidebarRankBadge" class="font-pokedex font-extrabold text-amber-300">Case Commander</span>
           </div>
         </div>
       </div>
@@ -1326,7 +1399,7 @@
               <div class="min-w-0 flex-1 space-y-1.5">
                 <div class="flex items-center gap-2 flex-wrap">
                   <span id="slot1Name" onclick="onEvolveClick(1)" class="text-[20px] font-black text-white hover:text-cyan-300 cursor-pointer whitespace-nowrap leading-none">Gyarados</span>
-                  <span id="slot1TypeBadge" class="text-[10px] font-mono-num uppercase px-2 py-0.5 rounded bg-cyan-500/25 text-cyan-200 border border-cyan-400/40 font-extrabold whitespace-nowrap">WATER / FLYING</span>
+                  <span id="slot1TypeBadge" class="pokedex-badge text-[10px] font-mono-num uppercase px-2 py-0.5 rounded bg-cyan-500/25 text-cyan-200 border border-cyan-400/40 font-extrabold whitespace-nowrap">WATER / FLYING</span>
                 </div>
                 <div id="slot1InlineStats" class="text-[11px] font-mono-num text-slate-200 whitespace-nowrap">
                   BST: <strong class="text-cyan-300">540</strong> • HP 95 / ATK 125 / DEF 79 / SPD 81
@@ -1359,11 +1432,11 @@
                     <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="5" />
                     <line x1="8" y1="50" x2="92" y2="50" stroke="#090812" stroke-width="7" />
                     <circle cx="50" cy="50" r="16" fill="#090812" stroke="#F8FAFC" stroke-width="4" />
-                    <text x="50" y="54" text-anchor="middle" fill="#FACC15" font-family="Plus Jakarta Sans, sans-serif" font-weight="900" font-size="13">VS</text>
+                    <text x="50" y="54" text-anchor="middle" fill="#FACC15" font-family="Chakra Petch, sans-serif" font-weight="900" font-size="13">VS</text>
                   </svg>
                 </button>
               </div>
-              <div id="stageCenterVerdictBadge" class="mt-1.5 px-3 py-0.5 rounded-full bg-black/55 border border-cyan-400/45 text-[10px] font-mono-num font-extrabold uppercase tracking-wider text-cyan-200 whitespace-nowrap">
+              <div id="stageCenterVerdictBadge" class="pokedex-badge mt-1.5 px-3 py-0.5 rounded-full bg-black/55 border border-cyan-400/45 text-[10px] font-mono-num font-extrabold uppercase tracking-wider text-cyan-200 whitespace-nowrap">
                 2x HIGH GROUND ADVANTAGE
               </div>
               <div class="mt-1.5 flex items-center gap-1.5">
@@ -1380,7 +1453,7 @@
             <div class="flex items-center justify-end gap-4 min-w-0">
               <div class="min-w-0 flex-1 space-y-1.5 text-right">
                 <div class="flex items-center justify-end gap-2 flex-wrap">
-                  <span id="slot2TypeBadge" class="text-[10px] font-mono-num uppercase px-2 py-0.5 rounded bg-orange-500/25 text-orange-200 border border-orange-400/40 font-extrabold whitespace-nowrap">FIRE</span>
+                  <span id="slot2TypeBadge" class="pokedex-badge text-[10px] font-mono-num uppercase px-2 py-0.5 rounded bg-orange-500/25 text-orange-200 border border-orange-400/40 font-extrabold whitespace-nowrap">FIRE</span>
                   <span id="slot2Name" onclick="onEvolveClick(2)" class="text-[20px] font-black text-white hover:text-orange-300 cursor-pointer whitespace-nowrap leading-none">Arcanine</span>
                 </div>
                 <div id="slot2InlineStats" class="text-[11px] font-mono-num text-slate-200 whitespace-nowrap">
@@ -1415,7 +1488,7 @@
           <div id="heroStageMini" class="hidden h-[44px] px-4 flex items-center justify-between gap-3">
             <div class="flex items-center gap-3 min-w-0">
               <img id="miniSlot1Sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/130.png" class="w-7 h-7 object-contain" alt="" />
-              <span id="activeTeamCallsign" class="text-xs font-extrabold text-white truncate">Gyarados vs. Arcanine • 2x High Ground Advantage</span>
+              <span id="activeTeamCallsign" class="font-pokedex text-xs font-extrabold text-white truncate">Gyarados vs. Arcanine • 2x High Ground Advantage</span>
               <img id="miniSlot2Sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/59.png" class="w-7 h-7 object-contain" alt="" />
             </div>
             <div class="flex items-center gap-2 shrink-0">
@@ -1432,7 +1505,7 @@
         <div id="rosterPopover" onclick="event.stopPropagation()" class="hidden w-[380px] sm:w-[460px] rounded-2xl p-4 shadow-[0_24px_64px_rgba(0,0,0,0.92)] border border-cyan-400/40" style="position: fixed; top: 165px; left: 260px; z-index: 99995; background: rgba(11, 10, 20, 0.96); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);">
           <div class="flex items-center justify-between pb-2.5 mb-3 border-b border-white/10">
             <div>
-              <div class="text-xs font-extrabold text-white uppercase tracking-wider">Scott &amp; Logan Hall of Fame Roster</div>
+              <div class="font-pokedex text-xs font-extrabold text-white uppercase tracking-wider">Scott &amp; Logan Hall of Fame Roster</div>
               <div id="rosterSlotIndicator" class="text-[10px] text-cyan-300 font-semibold">Selecting Partner for Slot 1 (Upper-Left Aura)</div>
             </div>
             <div class="flex items-center gap-1">
@@ -1490,50 +1563,65 @@
         <section id="view_LIVE_COMMAND" class="space-y-6" style="position: relative; z-index: 10;">
           <!-- Top Bento Row (3 Hero KPI Cards — 1080p/2K/4K Responsive, Zero Broken Wrapping) -->
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-4" style="position: relative; z-index: 10;">
-            <!-- Card 1 — Total Vault & Trophy Value + 38-Set ETB Wall Progress -->
+            <!-- Card 1 — ETB WALL & SNIPE VICTORY TALLY (Zero Portfolio Dollar Values — Valuation Tracked in Collectr) -->
             <div class="kpi-card machined-card kpi-card-slot1 rounded-2xl p-5 flex flex-col justify-between">
               <div>
                 <div class="flex items-center justify-between gap-2 mb-2">
-                  <span class="text-xs font-extrabold uppercase tracking-wider text-slate-200 flex items-center gap-2 whitespace-nowrap">
+                  <span class="font-pokedex text-xs font-extrabold uppercase tracking-wider text-slate-200 flex items-center gap-2 whitespace-nowrap">
                     <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#00F0FF]"></span>
-                    <span>Total Vault &amp; Trophy Value</span>
+                    <span>ETB WALL &amp; SNIPE VICTORY TALLY</span>
                   </span>
-                  <span id="kpiPortfolioGainBadge" class="font-mono-num text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 whitespace-nowrap shrink-0">+$129.55 Trophy Alpha</span>
+                  <button onclick="switchMainView('CONQUERED_VAULT')" id="kpiConqueredCountPill" class="pokedex-badge font-mono-num text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/45 hover:bg-amber-500/35 whitespace-nowrap shrink-0 transition">2 TROPHIES LOCKED</button>
                 </div>
-                <!-- Hero Value on Own Clean Line + Trophy Basis Directly Underneath -->
-                <div id="kpiTotalPortfolioValue" class="hero-kpi-value font-black font-mono-num text-[#F8FAFC] mt-1">$0.00</div>
-                <div id="kpiCostBasisSub" class="text-xs font-mono-num text-slate-300 mt-1 whitespace-nowrap">Trophy Basis: $1,580.45</div>
+
+                <!-- Clickable Hero Stat: Switches directly to Conquered Vault tab -->
+                <div onclick="switchMainView('CONQUERED_VAULT')" title="Click to open the 38-Set ETB Master Wall Checklist" class="cursor-pointer group mt-1">
+                  <div id="kpiWallEtbHeroStat" class="hero-kpi-value font-pokedex font-extrabold text-[#F8FAFC] group-hover:text-cyan-300 transition">8 / 38 ETB SETS</div>
+                  <div id="kpiWallEtbSubText" class="text-xs font-mono-num text-cyan-300 font-bold mt-1 whitespace-nowrap">21% Wall Complete • 30 Still Needed</div>
+                </div>
+
+                <!-- Dual-Tone Elemental Progress Bar across Mega Evolution, Scarlet & Violet, and Sword & Shield -->
+                <div onclick="switchMainView('CONQUERED_VAULT')" class="cursor-pointer mt-2.5">
+                  <div class="w-full h-2.5 bg-slate-900/85 rounded-full overflow-hidden border border-white/10">
+                    <div id="kpiWallEtbBar" class="h-full bg-gradient-to-r from-cyan-400 via-purple-400 to-amber-400 rounded-full transition-all duration-300" style="width: 21%"></div>
+                  </div>
+                  <div id="kpiWallEraBreakdownText" class="text-[10px] font-mono-num text-slate-300 mt-1 flex items-center justify-between">
+                    <span>Mega Evolution • Scarlet &amp; Violet • Sword &amp; Shield</span>
+                    <span class="text-cyan-300 font-bold">Open Wall &rarr;</span>
+                  </div>
+                </div>
               </div>
-              <div class="space-y-2.5 pt-3 mt-3 border-t border-white/10">
-                <div class="cursor-pointer group" onclick="switchMainView('CONQUERED_VAULT')" title="Open 38-Set ETB Wall Display Checklist">
-                  <div class="flex justify-between items-center text-xs font-semibold mb-1.5 gap-2">
-                    <span class="text-slate-200 group-hover:text-cyan-300 transition whitespace-nowrap">ETB Wall</span>
-                    <span id="kpiWallEtbProgressText" class="font-mono-num text-cyan-300 font-bold whitespace-nowrap">8 / 38 ETB Sets Conquered (21%)</span>
-                  </div>
-                  <div class="w-full h-2 bg-slate-900/80 rounded-full overflow-hidden border border-white/5">
-                    <div id="kpiWallEtbBar" class="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full transition-all duration-300" style="width: 21%"></div>
-                  </div>
+
+              <!-- 3 Victory Summary Pills Underneath -->
+              <div class="space-y-1.5 pt-2.5 mt-2.5 border-t border-white/10 text-[11px]">
+                <div onclick="switchMainView('CONQUERED_VAULT')" class="cursor-pointer flex items-center justify-between gap-2 py-1 px-2.5 rounded-lg bg-black/40 hover:bg-white/10 border border-white/10 transition">
+                  <span id="kpiVictoryPill1Left" class="font-bold text-amber-300 whitespace-nowrap">2 Confirmed Bot Trophies</span>
+                  <span id="kpiVictoryPill1Right" class="font-mono-num text-[10px] text-slate-200 truncate">1 Sealed 10-ETB Case • 1 MSRP Override ETB</span>
                 </div>
-                <div class="flex items-center justify-between gap-2 text-xs pt-1">
-                  <span class="text-slate-300 whitespace-nowrap">Snipe Trophy &amp; Sealed Hold Log</span>
-                  <button onclick="switchMainView('CONQUERED_VAULT')" id="kpiConqueredCountPill" class="font-mono-num font-extrabold text-amber-300 hover:underline whitespace-nowrap shrink-0">2 Plaques Locked</button>
+                <div class="grid grid-cols-2 gap-1.5">
+                  <div class="py-1 px-2.5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-between gap-1">
+                    <span class="text-[10px] font-bold text-emerald-300 truncate" id="kpiVictoryPill2Text">Best Snipe Spread: 29% Under Market</span>
+                  </div>
+                  <div class="py-1 px-2.5 rounded-lg bg-purple-500/15 border border-purple-400/30 flex items-center justify-between gap-1">
+                    <span class="text-[10px] font-bold text-purple-200 truncate" id="kpiVictoryPill3Text">Vault Valuation: Tracked in Collectr</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Card 2 — Active Sniper Radar (Clickable Rows with Discount % + Single-Line Footer) -->
+            <!-- Card 2 — Active Sniper Radar (Synced with Under Trigger Pill & Interactive Hero Number) -->
             <div class="kpi-card machined-card kpi-card-clash rounded-2xl p-5 flex flex-col justify-between">
               <div>
                 <div class="flex items-center justify-between gap-2 mb-2">
-                  <span class="text-xs font-extrabold uppercase tracking-wider text-slate-200 flex items-center gap-2 whitespace-nowrap">
+                  <span class="font-pokedex text-xs font-extrabold uppercase tracking-wider text-slate-200 flex items-center gap-2 whitespace-nowrap">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981]"></span>
                     <span>Active Sniper Radar</span>
                   </span>
-                  <span id="kpiStoreSweepHealth" class="font-mono-num text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-200 border border-cyan-400/40 whitespace-nowrap shrink-0">36/36 LGS + 9 Big-Box</span>
+                  <span id="kpiStoreSweepHealth" class="font-mono-num text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-200 border border-cyan-400/40 whitespace-nowrap shrink-0">40/40 LGS + 9 Big-Box</span>
                 </div>
-                <div class="flex items-baseline gap-2.5 mb-2">
-                  <div id="kpiInStockCount" class="hero-kpi-value font-black font-mono-num text-emerald-400">0</div>
-                  <div class="text-xs text-slate-200 font-bold whitespace-nowrap">Targets Under Buy Trigger</div>
+                <div onclick="jumpToUnderTriggerDeals()" title="Click to filter Live Deal Feed to Targets Under Buy Trigger and scroll down" class="flex items-baseline gap-2.5 mb-2 cursor-pointer group">
+                  <div id="kpiInStockCount" class="hero-kpi-value font-pokedex font-black text-emerald-400 group-hover:text-cyan-300 transition">0</div>
+                  <div class="text-xs text-slate-200 group-hover:text-cyan-200 font-bold whitespace-nowrap transition underline-offset-4 group-hover:underline">Targets Under Buy Trigger &darr;</div>
                 </div>
                 <!-- Scannable Compact Telemetry Mini-Table (3 Clickable Rows with Discount %) -->
                 <div id="kpiActiveRadarPills" class="space-y-1.5 mt-1"></div>
@@ -1548,19 +1636,19 @@
             <div class="kpi-card unicorn-holo-card rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden">
               <div>
                 <div class="flex items-center justify-between gap-2 mb-2">
-                  <span class="text-xs font-extrabold uppercase tracking-wider text-cyan-200 flex items-center gap-2 whitespace-nowrap">
+                  <span class="font-pokedex text-xs font-extrabold uppercase tracking-wider text-cyan-200 flex items-center gap-2 whitespace-nowrap">
                     <span class="w-1.5 h-1.5 rounded-full bg-cyan-300 shadow-[0_0_8px_#00F0FF]"></span>
                     <span>Unicorn MSRP Trophy Counter</span>
                   </span>
-                  <span class="font-mono-num text-[10px] font-black px-2 py-0.5 rounded bg-cyan-400/25 text-cyan-100 border border-cyan-300/50 whitespace-nowrap shrink-0">DEFCON-1 OVERRIDE</span>
+                  <span class="pokedex-badge font-mono-num text-[10px] font-black px-2 py-0.5 rounded bg-cyan-400/25 text-cyan-100 border border-cyan-300/50 whitespace-nowrap shrink-0">DEFCON-1 OVERRIDE</span>
                 </div>
                 <div class="flex items-baseline gap-3 my-1">
-                  <div id="kpiMsrpHitCount" class="hero-kpi-value font-black font-mono-num text-cyan-300">1</div>
+                  <div id="kpiMsrpHitCount" class="hero-kpi-value font-pokedex font-black text-cyan-300">1</div>
                   <div class="text-xs font-bold text-white whitespace-nowrap">True Retail MSRP Catches</div>
                 </div>
                 <div id="kpiLatestMsrpCatchBox" class="mt-2 p-2.5 rounded-xl bg-black/45 border border-cyan-400/35 text-xs">
                   <div class="flex items-center justify-between gap-2">
-                    <span class="font-extrabold text-white truncate">Mega Evolution: Chaos Rising ETB</span>
+                    <span class="set-title-pokedex font-extrabold text-white truncate">Mega Evolution: Chaos Rising ETB</span>
                     <span class="font-mono-num font-black text-emerald-400 shrink-0">$51.00</span>
                   </div>
                   <div class="text-[11px] text-cyan-100 mt-1 flex items-center justify-between gap-2">
@@ -1577,19 +1665,19 @@
           </div>
 
           <!-- Live In-Stock Deal Feed (Single-Row Header + Collector-Focused Quick Filter Pills) -->
-          <div class="glass-card machined-card rounded-2xl p-5 space-y-4" style="position: relative; z-index: 10;">
+          <div id="liveDealFeedCard" class="glass-card machined-card rounded-2xl p-5 space-y-4" style="position: relative; z-index: 10;">
             <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-white/10">
               <div>
                 <h2 class="text-sm font-extrabold uppercase tracking-wider text-white flex items-center gap-2 whitespace-nowrap">
                   <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981]"></span>
                   <span>Live In-Stock Deal Feed</span>
                 </h2>
-                <p class="text-[11px] text-slate-300 mt-0.5">Real-time in-stock hits across 36 Shopify LGS stores &amp; 9 Big-Box retailers</p>
+                <p id="liveDealFeedSubtitle" class="text-[11px] text-slate-300 mt-0.5">Real-time in-stock hits across 40 Shopify LGS stores &amp; 9 Big-Box retailers</p>
               </div>
               <div class="flex items-center gap-1.5 flex-wrap">
                 <button onclick="setDealFeedFilter('ALL')" id="dfPill_ALL" class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-cyan-500 text-slate-950 whitespace-nowrap transition">All In-Stock</button>
                 <button onclick="setDealFeedFilter('UNDER_TRIGGER')" id="dfPill_UNDER_TRIGGER" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-slate-200 border border-white/10 hover:text-white whitespace-nowrap transition">Under Trigger</button>
-                <button onclick="setDealFeedFilter('NEEDED_WALL_ETBS')" id="dfPill_NEEDED_WALL_ETBS" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-amber-300 border border-amber-500/35 hover:bg-amber-500/20 whitespace-nowrap transition">Needed ETBs for Wall</button>
+                <button onclick="setDealFeedFilter('NEEDED_WALL_ETBS')" id="dfPill_NEEDED_WALL_ETBS" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-amber-300 border border-amber-500/35 hover:bg-amber-500/20 whitespace-nowrap transition">Needed Wall ETBs</button>
                 <button onclick="setDealFeedFilter('CASES')" id="dfPill_CASES" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-slate-200 border border-white/10 hover:text-white whitespace-nowrap transition">Sealed Cases</button>
                 <button onclick="setDealFeedFilter('BEST_PACK')" id="dfPill_BEST_PACK" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20 whitespace-nowrap transition">Best $/Pack to Rip</button>
                 <button onclick="openClaimModal()" class="ml-1 px-3 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-extrabold whitespace-nowrap transition">
@@ -1603,38 +1691,51 @@
         </section>
 
       <!-- =================================================================== -->
-      <!-- VIEW 2: BOUNTY HUNTER (LIVE ON-DEMAND STORE & COMP RECON + INTEL)   -->
+      <!-- VIEW 2: BOUNTY HUNTER (TRUE CROSS-STORE PRICE COMPARISON + INTEL)   -->
       <!-- =================================================================== -->
       <section id="view_BOUNTY_HUNTER" class="hidden space-y-6">
         <div class="bounty-card glass-card machined-card rounded-2xl p-5 space-y-3.5">
           <!-- Title Header -->
-          <div class="flex items-center justify-between gap-2 pb-2.5 border-b border-white/10">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-white/10">
             <div>
               <h2 class="text-sm font-black uppercase tracking-wider text-white flex items-center gap-2">
                 <span class="w-1.5 h-1.5 rounded-full bg-orange-400 shadow-[0_0_8px_#F97316]"></span>
-                <span>Bounty Hunter — Live Store &amp; Comp Recon</span>
+                <span>Bounty Hunter — Cross-Store Price Comparison &amp; Live Recon</span>
               </h2>
-              <p class="text-[11px] text-slate-300 mt-0.5">Instant cross-store ranking of Top 5 Lowest Landed Options with <span class="font-mono-num text-emerald-400 font-semibold">$/Pack</span> Rip Math</p>
+              <p class="text-[11px] text-slate-300 mt-0.5">Head-to-head store offer comparison ranked lowest-to-highest with <span class="font-mono-num text-emerald-400 font-semibold">$/Pack</span> Rip Math across 40 LGS + 9 Big-Box + TCGPlayer/eBay</p>
             </div>
+            <button onclick="resetBountyToWallHunt()" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/15 border border-white/10 text-[11px] font-bold text-cyan-300 transition">
+              Reset Filter
+            </button>
           </div>
 
-          <!-- Single Sleek Horizontal Toolbar: Target Selector + Search Input + Recon + Deep Live Probe -->
+          <!-- Clean Format Filter Tabs (ETBs Only Wall Hunt = Default when viewing all targets!) -->
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <span class="text-[10px] font-pokedex font-bold uppercase tracking-wider text-slate-400 mr-1">Format Filter:</span>
+            <button onclick="setBountyFormatTab('ETB')" id="bfTab_ETB" class="px-3 py-1.5 rounded-xl text-xs font-extrabold bg-cyan-500 text-slate-950 shadow-[0_0_12px_rgba(0,240,255,0.3)] transition">ETBs Only (Wall Hunt)</button>
+            <button onclick="setBountyFormatTab('BOOSTER_BOX')" id="bfTab_BOOSTER_BOX" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-slate-200 border border-white/15 hover:text-white transition">36-Pack Booster Boxes</button>
+            <button onclick="setBountyFormatTab('CASES')" id="bfTab_CASES" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-slate-200 border border-white/15 hover:text-white transition">Sealed Cases</button>
+            <button onclick="setBountyFormatTab('BUNDLE')" id="bfTab_BUNDLE" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-slate-200 border border-white/15 hover:text-white transition">6-Pack Bundles</button>
+            <button onclick="setBountyFormatTab('ALL')" id="bfTab_ALL" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-slate-200 border border-white/15 hover:text-white transition">All Formats</button>
+          </div>
+
+          <!-- Single Sleek Horizontal Toolbar: Target Selector + Search Input + Instant Search + ↻ Live Store Sweep -->
           <div class="flex flex-col lg:flex-row items-stretch lg:items-center gap-2.5">
-            <select id="bountySkuSelect" onchange="runBountyRecon(this.value, false)" class="lg:w-72 bg-[#0B0914]/90 border border-white/15 rounded-xl px-3 py-2 text-xs text-white font-semibold focus:outline-none focus:border-cyan-400"></select>
+            <select id="bountySkuSelect" onchange="runBountyRecon(this.value, false)" class="lg:w-80 bg-[#0B0914]/90 border border-white/15 rounded-xl px-3 py-2 text-xs text-white font-semibold focus:outline-none focus:border-cyan-400"></select>
             <div class="flex-1 flex items-center bg-[#0B0914]/90 border border-white/15 rounded-xl overflow-hidden focus-within:border-cyan-400">
-              <input id="bountyQueryInput" type="text" placeholder="Search set or format (e.g. Chaos Rising, Prismatic, 30th)..."
+              <input id="bountyQueryInput" type="text" placeholder="Compare any set across all stores (e.g. Chaos Rising, Prismatic, 151, Evolving Skies)..."
                      onkeydown="if(event.key==='Enter') runBountyRecon('', false)"
                      class="bg-transparent px-3 py-2 text-xs text-white w-full focus:outline-none" />
-              <button onclick="runBountyRecon('', false)" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-extrabold shrink-0">Recon</button>
+              <button onclick="runBountyRecon('', false)" title="Instant search across cached store &amp; market prices" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-extrabold shrink-0 transition">Instant Search</button>
             </div>
-            <button onclick="runBountyRecon('', true)" id="bountyLiveProbeBtn" class="px-4 py-2 rounded-xl bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 border border-orange-500/40 text-xs font-extrabold whitespace-nowrap shrink-0">
-              Deep Live Probe
+            <button onclick="runBountyRecon('', true)" id="bountyLiveProbeBtn" title="Runs a fresh real-time network scrape across stores right now" class="px-4 py-2 rounded-xl bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 border border-orange-500/40 text-xs font-extrabold whitespace-nowrap shrink-0 transition">
+              ↻ Live Store Sweep
             </button>
           </div>
 
           <!-- Clean Understated Quick-Filter Pills -->
           <div class="flex items-center gap-1.5 flex-wrap pt-0.5">
-            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mr-1">Quick Recon:</span>
+            <span class="text-[10px] font-pokedex font-bold uppercase tracking-wider text-slate-400 mr-1">Compare Item Head-to-Head:</span>
             <button onclick="quickBountyPick('me-chaos-rising-etb')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-[11px] font-semibold text-slate-200 hover:text-cyan-300 border border-white/10 transition">Chaos Rising ETB</button>
             <button onclick="quickBountyPick('me-30th-celebration-etb-case')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-[11px] font-semibold text-slate-200 hover:text-amber-300 border border-white/10 transition">30th Celebration 10-ETB Case</button>
             <button onclick="quickBountyPick('sv-prismatic-evolutions-etb')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-[11px] font-semibold text-slate-200 hover:text-purple-300 border border-white/10 transition">Prismatic Evolutions ETB</button>
@@ -1643,15 +1744,24 @@
           </div>
         </div>
 
+        <!-- Bold Target Store Comparison Banner (Visible when a specific SKU or Search Query is active) -->
+        <div id="bountyComparisonBanner" class="hidden p-4 rounded-2xl bg-gradient-to-r from-cyan-500/20 via-purple-500/20 to-amber-500/20 border border-cyan-400/50 flex flex-wrap items-center justify-between gap-3 shadow-lg">
+          <div class="flex items-center gap-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_#00F0FF]"></span>
+            <span id="bountyComparisonBannerText" class="font-pokedex text-sm sm:text-base font-extrabold text-white tracking-wider">ALL STORE OFFERS FOR: CHAOS RISING ETB — RANKED LOWEST TO HIGHEST</span>
+          </div>
+          <button onclick="resetBountyToWallHunt()" class="px-3 py-1 rounded-xl bg-black/50 hover:bg-black/75 border border-white/15 text-xs font-bold text-cyan-200 transition">Show All Wall ETBs &times;</button>
+        </div>
+
         <!-- Top 2 Equal-Height 3-Column Spotlight Cards: #1 Best Sealed Hold & #1 Cheapest Pack Rip -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch" id="bountyCalloutsRow"></div>
 
-        <!-- Top 5 Lowest Landed Options Table -->
+        <!-- Ranked Store Offers Table -->
         <div class="bounty-card glass-card machined-card rounded-2xl p-5 space-y-3">
           <div class="flex items-center justify-between border-b border-white/10 pb-3">
             <h3 class="text-sm font-extrabold uppercase tracking-wider text-white flex items-center gap-2">
               <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-              <span>Top 5 Lowest Landed Options Right Now</span>
+              <span id="bountyTableHeaderTitle">Lowest Landed Store Offers Right Now (ETBs Only — Wall Hunt)</span>
             </h3>
             <span id="bountyMetaCount" class="text-xs font-mono-num text-slate-300">Evaluating sources...</span>
           </div>
@@ -1665,13 +1775,13 @@
               <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
               <span>Cross-Store Market Intelligence &amp; 14-Day Historical Recon</span>
             </h3>
-            <span class="text-[11px] font-mono-num text-slate-400">36 Shopify LGS + 9 Big-Box + TCGPlayer/eBay NRT</span>
+            <span id="bountyIntelStoreCountLabel" class="text-[11px] font-mono-num text-slate-400">40 Shopify LGS + 9 Big-Box + TCGPlayer/eBay NRT</span>
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <!-- Col 1: 48h Distributor Wave Radar -->
             <div class="glass-card machined-card rounded-2xl p-4 space-y-2.5">
-              <div class="text-xs font-extrabold uppercase tracking-wider text-purple-300 flex items-center justify-between">
+              <div class="font-pokedex text-xs font-extrabold uppercase tracking-wider text-purple-300 flex items-center justify-between">
                 <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>48h Distributor Wave Radar</span>
                 <span class="text-[10px] font-mono-num text-slate-400">3+ Stores</span>
               </div>
@@ -1680,7 +1790,7 @@
 
             <!-- Col 2: Top Store DNA (14d Leaders) -->
             <div class="glass-card machined-card rounded-2xl p-4 space-y-2.5">
-              <div class="text-xs font-extrabold uppercase tracking-wider text-emerald-400 flex items-center justify-between">
+              <div class="font-pokedex text-xs font-extrabold uppercase tracking-wider text-emerald-400 flex items-center justify-between">
                 <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Top Store DNA (14d Leaders)</span>
                 <span class="text-[10px] font-mono-num text-slate-400">Floor Frequency</span>
               </div>
@@ -1689,7 +1799,7 @@
 
             <!-- Col 3: Fast Sell-Out Velocity Tape -->
             <div class="glass-card machined-card rounded-2xl p-4 space-y-2.5">
-              <div class="text-xs font-extrabold uppercase tracking-wider text-cyan-300 flex items-center justify-between">
+              <div class="font-pokedex text-xs font-extrabold uppercase tracking-wider text-cyan-300 flex items-center justify-between">
                 <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>Fast Sell-Out Velocity Tape</span>
                 <span class="text-[10px] font-mono-num text-slate-400">14d NRT</span>
               </div>
@@ -1702,7 +1812,7 @@
             <div class="flex flex-wrap items-center justify-between gap-2">
               <button onclick="toggleLedgerTable()" class="flex items-center gap-2 text-left">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-                <span class="text-sm font-black uppercase tracking-wider text-white">14-Day Market Ledger &amp; Sunday-to-Sunday Weekly Checkpoints</span>
+                <span class="font-pokedex text-sm font-black uppercase tracking-wider text-white">14-Day Market Ledger &amp; Sunday-to-Sunday Weekly Checkpoints</span>
                 <span id="ledgerToggleLabel" class="text-[11px] font-mono-num px-2 py-0.5 rounded bg-white/10 text-cyan-300">Expand Table ▼</span>
               </button>
               <button onclick="triggerSundaySnapshot()" id="sundaySnapBtn" class="px-3 py-1.5 rounded-lg bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-500/25 text-xs font-bold">
@@ -1741,7 +1851,7 @@
               <div class="flex items-center gap-2.5 flex-wrap">
                 <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_10px_#00F0FF]"></span>
                 <h2 class="text-lg font-black uppercase tracking-wider text-white">38-Set ETB Master Wall Display Checklist</h2>
-                <span id="vaultWallProgressBadge" class="px-3 py-0.5 rounded-full text-xs font-mono-num font-black bg-cyan-500/20 text-cyan-200 border border-cyan-400/45">8 / 38 ETB Sets Conquered (21%)</span>
+                <span id="vaultWallProgressBadge" class="pokedex-badge px-3 py-0.5 rounded-full text-xs font-mono-num font-black bg-cyan-500/20 text-cyan-200 border border-cyan-400/45">8 / 38 ETB Sets Conquered (21%)</span>
               </div>
               <p class="text-xs text-slate-300">
                 Primary Collector Goal: <strong class="text-white">1 of every Elite Trainer Box set (38 sets across Mega Evolution, Scarlet &amp; Violet, and Sword &amp; Shield)</strong> on the physical display wall. Missing sets show live lowest landed store offers for 1-click sniping.
@@ -1751,7 +1861,7 @@
             <!-- Visual Progress Bar Box -->
             <div class="xl:w-80 bg-[#0B0914]/90 border border-white/10 rounded-xl p-3 space-y-1.5 shrink-0">
               <div class="flex items-center justify-between text-[11px] font-mono-num">
-                <span class="text-slate-300 font-semibold">Physical ETB Wall Completion</span>
+                <span class="font-pokedex text-slate-300 font-semibold">Physical ETB Wall Completion</span>
                 <span id="vaultWallFractionText" class="text-cyan-300 font-extrabold">8 Owned • 30 Still Needed</span>
               </div>
               <div class="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-white/10">
@@ -1762,12 +1872,12 @@
 
           <!-- Instant Filter Pills for the 38-Set ETB Wall -->
           <div class="flex items-center gap-2 flex-wrap">
-            <button onclick="setVaultChecklistFilter('ALL')" id="vchk_ALL" class="px-3 py-1.5 rounded-xl text-xs font-extrabold bg-cyan-500 text-slate-950 transition">All 38 ETB Sets</button>
-            <button onclick="setVaultChecklistFilter('NEEDED')" id="vchk_NEEDED" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-amber-300 border border-amber-500/35 hover:bg-amber-500/20 transition">Still Needed (30)</button>
-            <button onclick="setVaultChecklistFilter('OWNED')" id="vchk_OWNED" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-emerald-300 border border-emerald-500/35 hover:bg-emerald-500/20 transition">On The Wall (8)</button>
-            <button onclick="setVaultChecklistFilter('MEGA')" id="vchk_MEGA" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-purple-300 border border-purple-500/35 hover:bg-purple-500/20 transition">Mega Evolution</button>
-            <button onclick="setVaultChecklistFilter('SV')" id="vchk_SV" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-cyan-300 border border-cyan-500/35 hover:bg-cyan-500/20 transition">Scarlet &amp; Violet</button>
-            <button onclick="setVaultChecklistFilter('SWSH')" id="vchk_SWSH" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-orange-300 border border-orange-500/35 hover:bg-orange-500/20 transition">Sword &amp; Shield</button>
+            <button onclick="setVaultChecklistFilter('ALL')" id="vchk_ALL" class="pokedex-badge px-3 py-1.5 rounded-xl text-xs font-extrabold bg-cyan-500 text-slate-950 transition">All 38 ETB Sets</button>
+            <button onclick="setVaultChecklistFilter('NEEDED')" id="vchk_NEEDED" class="pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-amber-300 border border-amber-500/35 hover:bg-amber-500/20 transition">Still Needed (30)</button>
+            <button onclick="setVaultChecklistFilter('OWNED')" id="vchk_OWNED" class="pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-emerald-300 border border-emerald-500/35 hover:bg-emerald-500/20 transition">On The Wall (8)</button>
+            <button onclick="setVaultChecklistFilter('MEGA')" id="vchk_MEGA" class="pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-purple-300 border border-purple-500/35 hover:bg-purple-500/20 transition">Mega Evolution</button>
+            <button onclick="setVaultChecklistFilter('SV')" id="vchk_SV" class="pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-cyan-300 border border-cyan-500/35 hover:bg-cyan-500/20 transition">Scarlet &amp; Violet</button>
+            <button onclick="setVaultChecklistFilter('SWSH')" id="vchk_SWSH" class="pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-orange-300 border border-orange-500/35 hover:bg-orange-500/20 transition">Sword &amp; Shield</button>
           </div>
 
           <!-- Era-Grouped 38-Set ETB Collector Cards Container -->
@@ -1781,11 +1891,11 @@
               <div class="flex items-center gap-2.5">
                 <span class="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_#FACC15]"></span>
                 <h2 class="text-lg font-black uppercase tracking-wider text-white">Snipe Trophy &amp; Sealed Hold Log</h2>
-                <span id="vaultRankHeaderBadge" class="px-3 py-0.5 rounded-full text-xs font-mono-num font-extrabold bg-amber-500/20 text-amber-300 border border-amber-500/40">Case Commander</span>
+                <span id="vaultRankHeaderBadge" class="pokedex-badge px-3 py-0.5 rounded-full text-xs font-mono-num font-extrabold bg-amber-500/20 text-amber-300 border border-amber-500/40">Case Commander</span>
               </div>
               <p class="text-xs text-slate-300 mt-0.5">Verified floor snipes, sealed 10-ETB cases, and Defcon-1 MSRP catches with collector fate tags (<strong class="text-cyan-300">On ETB Wall</strong>, <strong class="text-purple-300">Rip with Logan</strong>, <strong class="text-amber-300">Sealed Hold</strong>)</p>
             </div>
-            <button onclick="openClaimModal()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 text-xs font-extrabold shadow-lg">
+            <button onclick="openClaimModal()" class="pokedex-badge px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 text-xs font-extrabold shadow-lg">
               + Log Manual Trophy
             </button>
           </div>
@@ -4018,12 +4128,13 @@
     // 3. DATA LOADING & POLLING
     // =========================================================================
     let liveStoreTelemetry = {
-      lgsCount: 36,
-      healthyLgsCount: 36,
+      lgsCount: 40,
+      healthyLgsCount: 40,
       bigBoxCount: 9,
       marketplaceCount: 3,
-      totalMonitoredSources: 48
+      totalMonitoredSources: 52
     };
+    let activeBountyFormatTab = 'ETB';
 
     async function loadAllState() {
       try {
@@ -4076,9 +4187,28 @@
       }
 
       const bountySel = document.getElementById('bountySkuSelect');
-      if (bountySel && bountySel.options.length === 0) {
-        bountySel.innerHTML = '<option value="">All Tracked Targets (Top Lowest)</option>' +
-          policies.map(p => '<option value="' + p.id + '">' + p.name + ' (' + p.formFactor + ')</option>').join('');
+      if (bountySel) {
+        const prevVal = bountySel.value;
+        const fmtFilteredPolicies = policies.filter(p => {
+          const ff = String(p.formFactor || '').toLowerCase();
+          if (activeBountyFormatTab === 'ETB') return ff === 'etb';
+          if (activeBountyFormatTab === 'BOOSTER_BOX') return ff === 'booster box';
+          if (activeBountyFormatTab === 'CASES') return ff.includes('case');
+          if (activeBountyFormatTab === 'BUNDLE') return ff.includes('bundle');
+          return true;
+        });
+        const labelMap = {
+          ETB: 'All 38 Wall ETB Targets (Lowest Ranked)',
+          BOOSTER_BOX: 'All 36-Pack Booster Boxes (Lowest Ranked)',
+          CASES: 'All Sealed Cases (Lowest Ranked)',
+          BUNDLE: 'All 6-Pack Booster Bundles (Lowest Ranked)',
+          ALL: 'All 131 Tracked Targets (Lowest Ranked)'
+        };
+        bountySel.innerHTML = '<option value="">' + (labelMap[activeBountyFormatTab] || labelMap.ALL) + '</option>' +
+          fmtFilteredPolicies.map(p => '<option value="' + p.id + '">' + p.name + ' (' + p.formFactor + ')</option>').join('');
+        if (prevVal && fmtFilteredPolicies.some(p => p.id === prevVal)) {
+          bountySel.value = prevVal;
+        }
       }
 
       const claimSel = document.getElementById('claimSkuSelect');
@@ -4158,240 +4288,8 @@
       };
     }
 
-    // =========================================================================
-    // 4. VIEW 1: LIVE COMMAND RENDERING
-    // =========================================================================
-    function updateGlobalBadgesAndKPIs() {
-      const pollTimeEl = document.getElementById('sidebarLastPollTime');
-      if (pollTimeEl) {
-        pollTimeEl.innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      }
-
-      // Dynamic Store Count Telemetry (Never Hardcoded)
-      const lgsCnt = Number(liveStoreTelemetry.lgsCount || 36);
-      const healthyLgs = Number(liveStoreTelemetry.healthyLgsCount || lgsCnt);
-      const bigBoxCnt = Number(liveStoreTelemetry.bigBoxCount || 9);
-
-      const headerArmedEl = document.getElementById('headerArmedStoresText');
-      if (headerArmedEl) headerArmedEl.innerText = lgsCnt + ' LGS + ' + bigBoxCnt + ' BIG-BOX ARMED';
-
-      const sbStoresOnlineEl = document.getElementById('sidebarStoresOnlineText');
-      if (sbStoresOnlineEl) sbStoresOnlineEl.innerText = healthyLgs + '/' + lgsCnt + ' Stores Online';
-
-      const sbStreamStatusEl = document.getElementById('sidebarStreamStatus');
-      if (sbStreamStatusEl) sbStreamStatusEl.innerText = lgsCnt + ' Shopify + ' + bigBoxCnt + ' Big-Box + TCGP';
-
-      const collapsedTelIcon = document.getElementById('telemetryCollapsedIcon');
-      if (collapsedTelIcon) collapsedTelIcon.title = 'Sniper Telemetry: ' + healthyLgs + '/' + lgsCnt + ' Stores Nominal • Proxy Pool Armed';
-
-      const kpiSweepHealthEl = document.getElementById('kpiStoreSweepHealth');
-      if (kpiSweepHealthEl) kpiSweepHealthEl.innerText = healthyLgs + '/' + lgsCnt + ' LGS + ' + bigBoxCnt + ' Big-Box';
-
-      // Strictly filter to the 38 ETBs (formFactor === 'etb') for all Wall Display counters
-      const etbs = policies.filter(p => isEtbPolicy(p));
-      const totalEtbCount = etbs.length || 38;
-      const ownedEtbs = etbs.filter(p => p.owned === true);
-      const neededEtbs = etbs.filter(p => !p.owned);
-      const etbWallPct = Math.min(100, Math.round((ownedEtbs.length / Math.max(1, totalEtbCount)) * 100));
-      const trophies = conqueredVault.trophies || [];
-
-      const ownedEtbMarketSum = ownedEtbs.reduce((sum, p) => {
-        const tel = telemetry[p.id];
-        const m = (tel && tel.rollingAverage > 0) ? tel.rollingAverage : (p.estimatedMarketValue || 0);
-        return sum + m;
-      }, 0);
-
-      const nonEtbTrophyMarketSum = trophies
-        .filter(t => String(t.formFactor || '').toLowerCase() !== 'etb')
-        .reduce((sum, t) => sum + Number(t.marketValueAtCapture || t.landedPrice || 0), 0);
-
-      const totalPortfolioValue = ownedEtbMarketSum + nonEtbTrophyMarketSum;
-      const trophyCostBasis = trophies.reduce((sum, t) => sum + Number(t.landedPrice || 0), 0);
-      const trophyMarketVal = trophies.reduce((sum, t) => sum + Number(t.marketValueAtCapture || t.landedPrice || 0), 0);
-      const trophyGain = trophyMarketVal - trophyCostBasis;
-
-      const kpiVal = document.getElementById('kpiTotalPortfolioValue');
-      if (kpiVal) kpiVal.innerText = '$' + totalPortfolioValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-      const kpiBasis = document.getElementById('kpiCostBasisSub');
-      if (kpiBasis) kpiBasis.innerText = 'Trophy Basis: $' + trophyCostBasis.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-      const kpiGain = document.getElementById('kpiPortfolioGainBadge');
-      if (kpiGain) {
-        const sign = trophyGain >= 0 ? '+' : '';
-        kpiGain.innerText = sign + '$' + trophyGain.toFixed(2) + ' Trophy Alpha';
-      }
-
-      // Everywhere reads "8 / 38 ETB Sets Conquered (21%)" — NEVER "8 / 131 Tracked"
-      const wallProgressLabel = ownedEtbs.length + ' / ' + totalEtbCount + ' ETB Sets Conquered (' + etbWallPct + '%)';
-      const wallText = document.getElementById('kpiWallEtbProgressText');
-      if (wallText) wallText.innerText = wallProgressLabel;
-
-      const wallBar = document.getElementById('kpiWallEtbBar');
-      if (wallBar) wallBar.style.width = etbWallPct + '%';
-
-      const vaultBadgeEl = document.getElementById('vaultWallProgressBadge');
-      if (vaultBadgeEl) vaultBadgeEl.innerText = wallProgressLabel;
-
-      const vaultFracEl = document.getElementById('vaultWallFractionText');
-      if (vaultFracEl) vaultFracEl.innerText = ownedEtbs.length + ' Owned • ' + neededEtbs.length + ' Still Needed';
-
-      const vaultBarEl = document.getElementById('vaultWallProgressBar');
-      if (vaultBarEl) vaultBarEl.style.width = etbWallPct + '%';
-
-      const vchkAllBtn = document.getElementById('vchk_ALL');
-      if (vchkAllBtn) vchkAllBtn.innerText = 'All ' + totalEtbCount + ' ETB Sets';
-      const vchkNeededBtn = document.getElementById('vchk_NEEDED');
-      if (vchkNeededBtn) vchkNeededBtn.innerText = 'Still Needed (' + neededEtbs.length + ')';
-      const vchkOwnedBtn = document.getElementById('vchk_OWNED');
-      if (vchkOwnedBtn) vchkOwnedBtn.innerText = 'On The Wall (' + ownedEtbs.length + ')';
-
-      const conqPill = document.getElementById('kpiConqueredCountPill');
-      if (conqPill) conqPill.innerText = trophies.length + ' Plaques Locked';
-
-      const navVault = document.getElementById('navVaultBadge');
-      if (navVault) navVault.innerText = ownedEtbs.length + '/' + totalEtbCount;
-
-      const navMatrix = document.getElementById('navMatrixBadge');
-      if (navMatrix) navMatrix.innerText = String(policies.length || 131);
-
-      const rankTitle = stripEmojiClutter(conqueredVault.collectorRank?.title || 'Case Commander');
-      const sbRank = document.getElementById('sidebarRankBadge');
-      if (sbRank) sbRank.innerText = rankTitle;
-      const vhRank = document.getElementById('vaultRankHeaderBadge');
-      if (vhRank) vhRank.innerText = rankTitle + ' • Score ' + (conqueredVault.collectorRank?.score || 200);
-
-      // Card 2: Active Sniper Radar — Compact 3-Row Executive Telemetry Mini-Table
-      const inStockPolicies = policies.filter(p => isPolicyInStockNow(p));
-      const inStockCount = inStockPolicies.length;
-      const kpiInStock = document.getElementById('kpiInStockCount');
-      if (kpiInStock) kpiInStock.innerText = String(inStockCount);
-      const navLive = document.getElementById('navLiveBadge');
-      if (navLive) navLive.innerText = String(inStockCount);
-      const matrixPill = document.getElementById('inStockPillBtn');
-      if (matrixPill) matrixPill.innerText = 'In-Stock Now (' + inStockCount + ')';
-
-      const radarPills = document.getElementById('kpiActiveRadarPills');
-      if (radarPills) {
-        const rows = [];
-        inStockPolicies.slice(0, 3).forEach(p => {
-          const ls = liveStock[p.id];
-          const pr = Number(ls?.price || telemetry[p.id]?.lowestPrice || p.maxMarketBuyPrice || 0);
-          const mkt = Number((telemetry[p.id]?.rollingAverage > 0 ? telemetry[p.id].rollingAverage : p.estimatedMarketValue) || pr || 60);
-          const disc = mkt > pr ? Math.round(((mkt - pr) / mkt) * 100) : 0;
-          rows.push({
-            skuId: p.id,
-            name: p.name,
-            price: pr,
-            disc,
-            live: true
-          });
-        });
-
-        if (rows.length < 3) {
-          (recentDrops || []).forEach(d => {
-            if (rows.length >= 3) return;
-            const pol = policies.find(x => x.id === d.ruleId);
-            const title = pol ? pol.name : (d.title || d.ruleId);
-            if (rows.some(r => r.name === title)) return;
-            const pr = Number(d.landedPrice || d.price || 0);
-            const mkt = Number(d.marketValue || (pol ? pol.estimatedMarketValue : pr) || 60);
-            const disc = mkt > pr ? Math.round(((mkt - pr) / mkt) * 100) : Number(d.discountPct || 0);
-            rows.push({
-              skuId: d.ruleId || (pol ? pol.id : 'me-chaos-rising-etb'),
-              name: title,
-              price: pr,
-              disc,
-              live: !d.soldOut
-            });
-          });
-        }
-
-        if (rows.length < 3) {
-          policies.slice(0, 5).forEach(p => {
-            if (rows.length >= 3) return;
-            if (rows.some(r => r.name === p.name)) return;
-            const pr = Number(telemetry[p.id]?.lowestPrice || p.maxMarketBuyPrice || p.msrpCeiling || 0);
-            const mkt = Number((telemetry[p.id]?.rollingAverage > 0 ? telemetry[p.id].rollingAverage : p.estimatedMarketValue) || pr || 60);
-            const disc = mkt > pr ? Math.round(((mkt - pr) / mkt) * 100) : 0;
-            rows.push({
-              skuId: p.id,
-              name: p.name,
-              price: pr,
-              disc,
-              live: false
-            });
-          });
-        }
-
-        radarPills.innerHTML = rows.slice(0, 3).map(r => {
-          const pillCls = r.live
-            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-            : 'bg-cyan-500/15 text-cyan-200 border-cyan-500/30';
-          const discBadge = r.disc > 0
-            ? '<span class="font-mono-num text-[10px] font-extrabold text-emerald-400 shrink-0">-' + r.disc + '%</span>'
-            : '';
-          return (
-            '<div onclick="switchMainView(\'BOUNTY_HUNTER\'); quickBountyPick(\'' + (r.skuId || '') + '\');" class="flex items-center justify-between gap-2 py-1 px-2.5 rounded-lg bg-black/40 hover:bg-white/10 border border-white/10 hover:border-cyan-400/40 cursor-pointer transition" title="Click to inspect ' + r.name.replace(/"/g, '') + ' in Bounty Hunter">' +
-              '<span class="text-xs font-bold text-slate-100" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + r.name + '</span>' +
-              '<div class="flex items-center gap-1.5 shrink-0">' +
-                discBadge +
-                '<span class="font-mono-num text-[11px] font-extrabold px-2 py-0.5 rounded border shrink-0 ' + pillCls + '">$' + r.price.toFixed(2) + '</span>' +
-              '</div>' +
-            '</div>'
-          );
-        }).join('');
-      }
-
-      // Card 3: Unicorn MSRP Trophy Counter
-      const msrpCountEl = document.getElementById('kpiMsrpHitCount');
-      if (msrpCountEl) msrpCountEl.innerText = String(msrpTrophies?.totalMsrpHits ?? 1);
-      const latestCatch = (msrpTrophies?.catches && msrpTrophies.catches[0]) || null;
-      const catchBox = document.getElementById('kpiLatestMsrpCatchBox');
-      if (catchBox && latestCatch) {
-        catchBox.innerHTML =
-          '<div class="flex items-center justify-between gap-2">' +
-            '<span class="font-extrabold text-white truncate">' + latestCatch.productName + '</span>' +
-            '<span class="font-mono-num font-black text-emerald-400 shrink-0">$' + Number(latestCatch.price || 51).toFixed(2) + '</span>' +
-          '</div>' +
-          '<div class="text-[11px] text-cyan-200 mt-1 flex items-center justify-between">' +
-            '<span class="truncate">' + (latestCatch.store || 'Cooperstown Cards') + ' • Below $' + Number(latestCatch.msrp || 54.99).toFixed(2) + ' MSRP</span>' +
-            '<button onclick="switchMainView(\'CONQUERED_VAULT\')" class="text-amber-300 font-bold hover:underline shrink-0 ml-2">Trophy #2</button>' +
-          '</div>';
-      }
-    }
-
-    function formatShortTag(formFactor) {
-      const f = String(formFactor || 'ETB').toUpperCase();
-      if (f.includes('MASTER')) return '6-BOX CASE';
-      if (f.includes('ETB CASE')) return '10-ETB CASE';
-      if (f.includes('BOOSTER BOX')) return '36-PK BOX';
-      if (f.includes('BUNDLE')) return '6-PK BUNDLE';
-      return 'ETB';
-    }
-
-    function setDealFeedFilter(mode) {
-      activeDealFeedFilter = mode || 'ALL';
-      ['ALL', 'UNDER_TRIGGER', 'NEEDED_WALL_ETBS', 'CASES', 'BEST_PACK'].forEach(k => {
-        const b = document.getElementById('dfPill_' + k);
-        if (!b) return;
-        if (k === activeDealFeedFilter) {
-          b.className = 'px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-cyan-500 text-slate-950 whitespace-nowrap transition';
-        } else if (k === 'NEEDED_WALL_ETBS') {
-          b.className = 'px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-amber-300 border border-amber-500/35 hover:bg-amber-500/20 whitespace-nowrap transition';
-        } else if (k === 'BEST_PACK') {
-          b.className = 'px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20 whitespace-nowrap transition';
-        } else {
-          b.className = 'px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-slate-200 border border-white/10 hover:text-white whitespace-nowrap transition';
-        }
-      });
-      renderLiveCommandView();
-    }
-
-    function renderLiveCommandView() {
-      const feedGrid = document.getElementById('liveDealFeedGrid');
-      if (!feedGrid) return;
-
+    // Shared Canonical Deal Feed Builder (Used by BOTH KPI Card #2 and Live Deal Feed so counts NEVER diverge!)
+    function buildUnifiedDealFeedItems() {
       const items = [];
       const seenRuleStores = new Set();
 
@@ -4407,6 +4305,7 @@
         const ppp = Number(ls.pricePerPack || pol.pricePerPack || (packCnt > 0 ? landedVal / packCnt : 0));
         items.push({
           isLiveNow: true,
+          soldOut: false,
           skuId: pol.id,
           title: pol.name,
           formFactor: pol.formFactor,
@@ -4469,9 +4368,42 @@
         });
       });
 
+      // Also include any policy that is in-stock via telemetry under trigger if not already in items
+      policies.filter(p => isPolicyInStockNow(p)).forEach(pol => {
+        if (items.some(x => x.skuId === pol.id)) return;
+        const offer = getBestLiveOfferForPolicy(pol);
+        const mktVal = Number((telemetry[pol.id]?.rollingAverage > 0) ? telemetry[pol.id].rollingAverage : (pol.estimatedMarketValue || 60));
+        const landedVal = Number(offer.price || pol.maxMarketBuyPrice || 54.99);
+        const packCnt = Number(pol.packCount || (pol.formFactor === 'Booster Box' ? 36 : 9));
+        const ppp = Number(pol.pricePerPack || (packCnt > 0 ? landedVal / packCnt : 0));
+        items.push({
+          isLiveNow: true,
+          soldOut: false,
+          skuId: pol.id,
+          title: pol.name,
+          formFactor: pol.formFactor,
+          owned: Boolean(pol.owned),
+          retailer: offer.store || 'Verified LGS',
+          price: landedVal,
+          landedPrice: landedVal,
+          marketValue: mktVal,
+          triggerPrice: Number(pol.maxMarketBuyPrice || pol.msrpCeiling || mktVal),
+          msrp: Number(pol.msrpCeiling || 54.99),
+          packCount: packCnt,
+          pricePerPack: ppp,
+          isRipValueLeader: pol.isRipValueLeader || (ppp > 0 && ppp <= 4.25),
+          isPreRelease: Boolean(pol.isPreRelease),
+          preReleaseStatusTag: pol.preReleaseStatusTag,
+          url: offer.url,
+          timeStr: 'IN STOCK NOW',
+          discountPct: mktVal > landedVal ? Math.max(0, Math.round(((mktVal - landedVal) / mktVal) * 100)) : 0
+        });
+      });
+
       if (items.length === 0) {
         items.push({
           isLiveNow: false,
+          soldOut: false,
           skuId: 'me-chaos-rising-etb',
           title: 'Mega Evolution: Chaos Rising Elite Trainer Box',
           formFactor: 'ETB',
@@ -4492,6 +4424,233 @@
         });
       }
 
+      return items;
+    }
+
+    function jumpToUnderTriggerDeals() {
+      if (activeMainView !== 'LIVE_COMMAND') {
+        switchMainView('LIVE_COMMAND');
+      }
+      setDealFeedFilter('UNDER_TRIGGER');
+      const card = document.getElementById('liveDealFeedCard');
+      if (card) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        card.classList.remove('deal-feed-pulse');
+        void card.offsetWidth;
+        card.classList.add('deal-feed-pulse');
+      }
+    }
+
+    // =========================================================================
+    // 4. VIEW 1: LIVE COMMAND RENDERING
+    // =========================================================================
+    function updateGlobalBadgesAndKPIs() {
+      const pollTimeEl = document.getElementById('sidebarLastPollTime');
+      if (pollTimeEl) {
+        pollTimeEl.innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      }
+
+      // Dynamic Store Count Telemetry (Never Hardcoded)
+      const lgsCnt = Number(liveStoreTelemetry.lgsCount || 40);
+      const healthyLgs = Number(liveStoreTelemetry.healthyLgsCount || lgsCnt);
+      const bigBoxCnt = Number(liveStoreTelemetry.bigBoxCount || 9);
+
+      const headerArmedEl = document.getElementById('headerArmedStoresText');
+      if (headerArmedEl) headerArmedEl.innerText = lgsCnt + ' LGS + ' + bigBoxCnt + ' BIG-BOX ARMED';
+
+      const sbStoresOnlineEl = document.getElementById('sidebarStoresOnlineText');
+      if (sbStoresOnlineEl) sbStoresOnlineEl.innerText = healthyLgs + '/' + lgsCnt + ' Stores Online';
+
+      const sbStreamStatusEl = document.getElementById('sidebarStreamStatus');
+      if (sbStreamStatusEl) sbStreamStatusEl.innerText = lgsCnt + ' Shopify + ' + bigBoxCnt + ' Big-Box + TCGP';
+
+      const collapsedTelIcon = document.getElementById('telemetryCollapsedIcon');
+      if (collapsedTelIcon) collapsedTelIcon.title = 'Sniper Telemetry: ' + healthyLgs + '/' + lgsCnt + ' Stores Nominal • Proxy Pool Armed';
+
+      const kpiSweepHealthEl = document.getElementById('kpiStoreSweepHealth');
+      if (kpiSweepHealthEl) kpiSweepHealthEl.innerText = healthyLgs + '/' + lgsCnt + ' LGS + ' + bigBoxCnt + ' Big-Box';
+
+      const dfSubtitle = document.getElementById('liveDealFeedSubtitle');
+      if (dfSubtitle) dfSubtitle.innerText = 'Real-time in-stock hits across ' + lgsCnt + ' Shopify LGS stores & ' + bigBoxCnt + ' Big-Box retailers';
+
+      const bountyIntelCnt = document.getElementById('bountyIntelStoreCountLabel');
+      if (bountyIntelCnt) bountyIntelCnt.innerText = lgsCnt + ' Shopify LGS + ' + bigBoxCnt + ' Big-Box + TCGPlayer/eBay NRT';
+
+      // Strictly filter to the 38 ETBs (formFactor === 'etb') for all Wall Display counters
+      const etbs = policies.filter(p => isEtbPolicy(p));
+      const totalEtbCount = etbs.length || 38;
+      const ownedEtbs = etbs.filter(p => p.owned === true);
+      const neededEtbs = etbs.filter(p => !p.owned);
+      const etbWallPct = Math.min(100, Math.round((ownedEtbs.length / Math.max(1, totalEtbCount)) * 100));
+      const trophies = conqueredVault.trophies || [];
+
+      // Card 1: ETB WALL & SNIPE VICTORY TALLY (Zero Dollar Portfolio Values — Tracked in Collectr)
+      const heroWallStat = document.getElementById('kpiWallEtbHeroStat');
+      if (heroWallStat) heroWallStat.innerText = ownedEtbs.length + ' / ' + totalEtbCount + ' ETB SETS';
+
+      const wallSubText = document.getElementById('kpiWallEtbSubText');
+      if (wallSubText) wallSubText.innerText = etbWallPct + '% Wall Complete • ' + neededEtbs.length + ' Still Needed';
+
+      const wallBar = document.getElementById('kpiWallEtbBar');
+      if (wallBar) wallBar.style.width = etbWallPct + '%';
+
+      const conqPill = document.getElementById('kpiConqueredCountPill');
+      if (conqPill) conqPill.innerText = trophies.length + ' TROPHIES LOCKED';
+
+      const pill1Left = document.getElementById('kpiVictoryPill1Left');
+      if (pill1Left) pill1Left.innerText = trophies.length + ' Confirmed Bot Trophies';
+
+      const bestSpreadPct = trophies.reduce((max, t) => Math.max(max, Number(t.discountPct || 0)), 29);
+      const pill2Text = document.getElementById('kpiVictoryPill2Text');
+      if (pill2Text) pill2Text.innerText = 'Best Snipe Spread: ' + bestSpreadPct + '% Under Market';
+
+      // Everywhere reads "8 / 38 ETB Sets Conquered (21%)" — NEVER "8 / 131 Tracked"
+      const wallProgressLabel = ownedEtbs.length + ' / ' + totalEtbCount + ' ETB Sets Conquered (' + etbWallPct + '%)';
+
+      const vaultBadgeEl = document.getElementById('vaultWallProgressBadge');
+      if (vaultBadgeEl) vaultBadgeEl.innerText = wallProgressLabel;
+
+      const vaultFracEl = document.getElementById('vaultWallFractionText');
+      if (vaultFracEl) vaultFracEl.innerText = ownedEtbs.length + ' Owned • ' + neededEtbs.length + ' Still Needed';
+
+      const vaultBarEl = document.getElementById('vaultWallProgressBar');
+      if (vaultBarEl) vaultBarEl.style.width = etbWallPct + '%';
+
+      const vchkAllBtn = document.getElementById('vchk_ALL');
+      if (vchkAllBtn) vchkAllBtn.innerText = 'All ' + totalEtbCount + ' ETB Sets';
+      const vchkNeededBtn = document.getElementById('vchk_NEEDED');
+      if (vchkNeededBtn) vchkNeededBtn.innerText = 'Still Needed (' + neededEtbs.length + ')';
+      const vchkOwnedBtn = document.getElementById('vchk_OWNED');
+      if (vchkOwnedBtn) vchkOwnedBtn.innerText = 'On The Wall (' + ownedEtbs.length + ')';
+
+      const navVault = document.getElementById('navVaultBadge');
+      if (navVault) navVault.innerText = ownedEtbs.length + '/' + totalEtbCount;
+
+      const navMatrix = document.getElementById('navMatrixBadge');
+      if (navMatrix) navMatrix.innerText = String(policies.length || 131);
+
+      const rankTitle = stripEmojiClutter(conqueredVault.collectorRank?.title || 'Case Commander');
+      const sbRank = document.getElementById('sidebarRankBadge');
+      if (sbRank) sbRank.innerText = rankTitle;
+      const vhRank = document.getElementById('vaultRankHeaderBadge');
+      if (vhRank) vhRank.innerText = rankTitle + ' • Score ' + (conqueredVault.collectorRank?.score || 200);
+
+      // Card 2: Active Sniper Radar — Derived from the EXACT SAME canonical array as Under Trigger (X) pill!
+      const allDealItems = buildUnifiedDealFeedItems();
+      const underTriggerItems = allDealItems.filter(it => it.landedPrice <= (it.triggerPrice || it.msrp || it.marketValue));
+      const underTriggerCount = underTriggerItems.length;
+
+      const kpiInStock = document.getElementById('kpiInStockCount');
+      if (kpiInStock) kpiInStock.innerText = String(underTriggerCount);
+      const navLive = document.getElementById('navLiveBadge');
+      if (navLive) navLive.innerText = String(underTriggerCount);
+      const matrixPill = document.getElementById('inStockPillBtn');
+      if (matrixPill) matrixPill.innerText = 'In-Stock Now (' + underTriggerCount + ')';
+
+      const dfAllBtn = document.getElementById('dfPill_ALL');
+      if (dfAllBtn) dfAllBtn.innerText = 'All In-Stock (' + allDealItems.length + ')';
+      const dfUnderBtn = document.getElementById('dfPill_UNDER_TRIGGER');
+      if (dfUnderBtn) dfUnderBtn.innerText = 'Under Trigger (' + underTriggerCount + ')';
+      const dfNeededWallBtn = document.getElementById('dfPill_NEEDED_WALL_ETBS');
+      if (dfNeededWallBtn) dfNeededWallBtn.innerText = 'Needed Wall ETBs (' + neededEtbs.length + ')';
+
+      const radarPills = document.getElementById('kpiActiveRadarPills');
+      if (radarPills) {
+        const rows = [];
+        underTriggerItems.slice(0, 3).forEach(it => {
+          rows.push({
+            skuId: it.skuId,
+            name: it.title,
+            price: Number(it.landedPrice || it.price || 0),
+            disc: Number(it.discountPct || 0),
+            live: Boolean(it.isLiveNow)
+          });
+        });
+
+        if (rows.length < 3) {
+          allDealItems.forEach(it => {
+            if (rows.length >= 3) return;
+            if (rows.some(r => r.name === it.title)) return;
+            rows.push({
+              skuId: it.skuId,
+              name: it.title,
+              price: Number(it.landedPrice || it.price || 0),
+              disc: Number(it.discountPct || 0),
+              live: Boolean(it.isLiveNow)
+            });
+          });
+        }
+
+        radarPills.innerHTML = rows.slice(0, 3).map(r => {
+          const pillCls = r.live
+            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+            : 'bg-cyan-500/15 text-cyan-200 border-cyan-500/30';
+          const discBadge = r.disc > 0
+            ? '<span class="font-mono-num text-[10px] font-extrabold text-emerald-400 shrink-0">-' + r.disc + '%</span>'
+            : '';
+          return (
+            '<div onclick="switchMainView(\'BOUNTY_HUNTER\'); quickBountyPick(\'' + (r.skuId || '') + '\');" class="flex items-center justify-between gap-2 py-1 px-2.5 rounded-lg bg-black/40 hover:bg-white/10 border border-white/10 hover:border-cyan-400/40 cursor-pointer transition" title="Click to compare all store prices for ' + r.name.replace(/"/g, '') + ' in Bounty Hunter">' +
+              '<span class="text-xs font-bold text-slate-100" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + r.name + '</span>' +
+              '<div class="flex items-center gap-1.5 shrink-0">' +
+                discBadge +
+                '<span class="font-mono-num text-[11px] font-extrabold px-2 py-0.5 rounded border shrink-0 ' + pillCls + '">$' + r.price.toFixed(2) + '</span>' +
+              '</div>' +
+            '</div>'
+          );
+        }).join('');
+      }
+
+      // Card 3: Unicorn MSRP Trophy Counter
+      const msrpCountEl = document.getElementById('kpiMsrpHitCount');
+      if (msrpCountEl) msrpCountEl.innerText = String(msrpTrophies?.totalMsrpHits ?? 1);
+      const latestCatch = (msrpTrophies?.catches && msrpTrophies.catches[0]) || null;
+      const catchBox = document.getElementById('kpiLatestMsrpCatchBox');
+      if (catchBox && latestCatch) {
+        catchBox.innerHTML =
+          '<div class="flex items-center justify-between gap-2">' +
+            '<span class="set-title-pokedex font-extrabold text-white truncate">' + latestCatch.productName + '</span>' +
+            '<span class="font-mono-num font-black text-emerald-400 shrink-0">$' + Number(latestCatch.price || 51).toFixed(2) + '</span>' +
+          '</div>' +
+          '<div class="text-[11px] text-cyan-200 mt-1 flex items-center justify-between">' +
+            '<span class="truncate">' + (latestCatch.store || 'Cooperstown Cards') + ' • Below $' + Number(latestCatch.msrp || 54.99).toFixed(2) + ' MSRP</span>' +
+            '<button onclick="switchMainView(\'CONQUERED_VAULT\')" class="text-amber-300 font-bold hover:underline shrink-0 ml-2">Trophy #2</button>' +
+          '</div>';
+      }
+    }
+
+    function formatShortTag(formFactor) {
+      const f = String(formFactor || 'ETB').toUpperCase();
+      if (f.includes('MASTER')) return '6-BOX CASE';
+      if (f.includes('ETB CASE')) return '10-ETB CASE';
+      if (f.includes('BOOSTER BOX')) return '36-PK BOX';
+      if (f.includes('BUNDLE')) return '6-PK BUNDLE';
+      return 'ETB';
+    }
+
+    function setDealFeedFilter(mode) {
+      activeDealFeedFilter = mode || 'ALL';
+      ['ALL', 'UNDER_TRIGGER', 'NEEDED_WALL_ETBS', 'CASES', 'BEST_PACK'].forEach(k => {
+        const b = document.getElementById('dfPill_' + k);
+        if (!b) return;
+        if (k === activeDealFeedFilter) {
+          b.className = 'px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-cyan-500 text-slate-950 whitespace-nowrap transition';
+        } else if (k === 'NEEDED_WALL_ETBS') {
+          b.className = 'px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-amber-300 border border-amber-500/35 hover:bg-amber-500/20 whitespace-nowrap transition';
+        } else if (k === 'BEST_PACK') {
+          b.className = 'px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20 whitespace-nowrap transition';
+        } else {
+          b.className = 'px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-slate-200 border border-white/10 hover:text-white whitespace-nowrap transition';
+        }
+      });
+      renderLiveCommandView();
+    }
+
+    function renderLiveCommandView() {
+      const feedGrid = document.getElementById('liveDealFeedGrid');
+      if (!feedGrid) return;
+
+      const items = buildUnifiedDealFeedItems();
+
       let filteredItems = items.filter(it => {
         if (activeDealFeedFilter === 'UNDER_TRIGGER') {
           return it.landedPrice <= (it.triggerPrice || it.msrp || it.marketValue);
@@ -4509,8 +4668,8 @@
         return true;
       });
 
-      // If user clicked "Needed ETBs for Wall" and liveStock/recentDrops had fewer than 6 missing ETBs, surface missing Wall ETBs with live best offers
-      if (activeDealFeedFilter === 'NEEDED_WALL_ETBS' && filteredItems.length < 6) {
+      // If user clicked "Needed Wall ETBs", surface all missing Wall ETBs with live best offers
+      if (activeDealFeedFilter === 'NEEDED_WALL_ETBS') {
         const missingWallEtbs = policies.filter(p => isEtbPolicy(p) && !p.owned);
         missingWallEtbs.forEach(pol => {
           if (filteredItems.some(x => x.skuId === pol.id)) return;
@@ -4549,7 +4708,10 @@
         filteredItems = items;
       }
 
-      feedGrid.innerHTML = filteredItems.slice(0, 6).map((item) => {
+      // Never truncate UNDER_TRIGGER or ALL so the rendered card count 100% matches KPI Card #2 and the pill count!
+      const displayItems = activeDealFeedFilter === 'NEEDED_WALL_ETBS' ? filteredItems.slice(0, 12) : filteredItems;
+
+      feedGrid.innerHTML = displayItems.map((item) => {
         const imgPath = '/art/' + item.skuId + '.jpg?v=' + cacheBuster;
         const landed = Number(item.landedPrice || item.price || 0);
         const mktVal = Number(item.marketValue || landed || 60);
@@ -4571,12 +4733,12 @@
         const triggerPill = '<span class="font-mono-num text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-200 border border-purple-400/30">Trigger: $' + trigVal.toFixed(0) + '</span>';
 
         const statusBadge = item.soldOut
-          ? '<span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 text-[10px] font-extrabold shrink-0">SOLD OUT</span>'
+          ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 text-[10px] font-extrabold shrink-0">SOLD OUT</span>'
           : (isMsrpDefcon
-              ? '<span class="px-2 py-0.5 rounded bg-cyan-500/25 text-cyan-200 border border-cyan-400/50 text-[10px] font-extrabold shrink-0">MSRP DEFCON-1</span>'
+              ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-cyan-500/25 text-cyan-200 border border-cyan-400/50 text-[10px] font-extrabold shrink-0">MSRP DEFCON-1</span>'
               : (item.isLiveNow
-                  ? '<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-extrabold shrink-0">IN STOCK</span>'
-                  : '<span class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[10px] font-bold shrink-0">BEST OFFER</span>'));
+                  ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-extrabold shrink-0">IN STOCK</span>'
+                  : '<span class="pokedex-badge px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[10px] font-bold shrink-0">BEST OFFER</span>'));
 
         const c1 = item.cart1xUrl || (item.url && item.url.includes('/cart/') ? item.url : null);
         const c2 = item.cart2xUrl || (c1 ? c1.replace(/:1$/, ':2') : null);
@@ -4612,10 +4774,10 @@
               '<div style="display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:center;">' +
                 '<div class="art-pedestal rounded-xl p-2 flex flex-col items-center justify-between relative overflow-hidden" style="width:96px;height:96px;">' +
                   '<img src="' + imgPath + '" class="w-[82px] h-[68px] object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)]" alt="Art" />' +
-                  '<span class="text-[9px] font-mono-num font-extrabold uppercase tracking-wider px-1.5 py-0.2 rounded bg-black/75 text-slate-200 border border-white/10 leading-tight">' + formatTag + '</span>' +
+                  '<span class="pokedex-badge text-[9px] font-mono-num font-extrabold uppercase tracking-wider px-1.5 py-0.2 rounded bg-black/75 text-slate-200 border border-white/10 leading-tight">' + formatTag + '</span>' +
                 '</div>' +
                 '<div class="min-w-0">' +
-                  '<div class="text-[15px] font-extrabold text-white leading-snug line-clamp-2" style="min-height:40px;">' + item.title + '</div>' +
+                  '<div class="set-title-pokedex text-[15px] font-extrabold text-white leading-snug line-clamp-2" style="min-height:40px;">' + item.title + '</div>' +
                   '<div class="flex items-baseline gap-2 mt-1.5 flex-wrap">' +
                     '<span class="text-[24px] leading-none font-black font-mono-num ' + priceColorCls + '">$' + landed.toFixed(2) + '</span>' +
                     '<span class="text-xs font-mono-num text-slate-300">Mkt: <strong class="text-amber-300">$' + mktVal.toFixed(2) + '</strong></span>' +
@@ -4657,7 +4819,7 @@
                 '<span class="px-2 py-0.5 rounded bg-purple-500/30 text-purple-200 text-[9px] font-mono-num font-bold shrink-0">WAIT UNDERCUT</span>' +
               '</div>'
             ).join('')
-          : '<div class="p-3 rounded-xl bg-black/30 border border-white/5 text-xs text-slate-400">No 3+ store distributor allocation waves in the last 48h. Monitoring ' + (liveStoreTelemetry.lgsCount || 36) + ' Shopify LGS + ' + (liveStoreTelemetry.bigBoxCount || 9) + ' Big-Box retailers.</div>';
+          : '<div class="p-3 rounded-xl bg-black/30 border border-white/5 text-xs text-slate-400">No 3+ store distributor allocation waves in the last 48h. Monitoring ' + (liveStoreTelemetry.lgsCount || 40) + ' Shopify LGS + ' + (liveStoreTelemetry.bigBoxCount || 9) + ' Big-Box retailers.</div>';
       }
 
       const dnaEl = document.getElementById('bentoStoreDna');
@@ -4726,8 +4888,31 @@
     }
 
     // =========================================================================
-    // 5. VIEW 2: BOUNTY HUNTER (LIVE ON-DEMAND RECON + MARKET INTEL)
+    // 5. VIEW 2: BOUNTY HUNTER (LIVE ON-DEMAND RECON + CROSS-STORE COMPARISON)
     // =========================================================================
+    function setBountyFormatTab(fmt) {
+      activeBountyFormatTab = fmt || 'ETB';
+      const tabs = ['ETB', 'BOOSTER_BOX', 'CASES', 'BUNDLE', 'ALL'];
+      tabs.forEach(k => {
+        const btn = document.getElementById('bfmt_' + k);
+        if (!btn) return;
+        if (k === activeBountyFormatTab) {
+          btn.className = 'pokedex-badge px-3 py-1.5 rounded-xl text-xs font-extrabold bg-amber-500 text-slate-950 shadow-[0_0_12px_rgba(250,204,21,0.35)] transition';
+        } else {
+          btn.className = 'pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-slate-300 border border-white/15 hover:text-white transition';
+        }
+      });
+      runBountyRecon('', false);
+    }
+
+    function resetBountyToWallHunt() {
+      const sel = document.getElementById('bountySkuSelect');
+      const inp = document.getElementById('bountyQueryInput');
+      if (sel) sel.value = '';
+      if (inp) inp.value = '';
+      setBountyFormatTab('ETB');
+    }
+
     function quickBountyPick(skuId) {
       const sel = document.getElementById('bountySkuSelect');
       const inp = document.getElementById('bountyQueryInput');
@@ -4744,28 +4929,50 @@
       const top5Container = document.getElementById('bountyTop5Container');
       const metaEl = document.getElementById('bountyMetaCount');
       const probeBtn = document.getElementById('bountyLiveProbeBtn');
+      const bannerEl = document.getElementById('bountyComparisonBanner');
+      const bannerTextEl = document.getElementById('bountyComparisonTitleText');
+      const rankHeadingEl = document.getElementById('bountyRankHeading');
 
-      if (probeBtn && liveProbe) probeBtn.innerText = 'Probing TCGP + eBay...';
+      if (probeBtn && liveProbe) probeBtn.innerText = '↻ Sweeping TCGP + eBay...';
       if (metaEl) metaEl.innerText = 'Scanning live shelves & comp caches...';
 
       try {
         const params = new URLSearchParams();
         if (skuId) params.set('skuId', skuId);
         if (query) params.set('query', query);
+        if (!skuId && !query && activeBountyFormatTab) {
+          params.set('format', activeBountyFormatTab);
+        }
         if (liveProbe) params.set('live', 'true');
 
         const res = await fetch('/api/bounty-recon?' + params.toString());
         const data = await res.json();
 
-        if (probeBtn) probeBtn.innerText = 'Deep Live Probe';
+        if (probeBtn) probeBtn.innerText = '↻ Live Store Sweep';
         if (metaEl) {
           metaEl.innerText = (data.totalCandidatesEvaluated || 0) + ' Offers Evaluated Across ' + (data.matchedTargetsCount || 0) + ' Target(s)';
+        }
+
+        const isSingleTarget = Boolean(data.isSingleTargetComparison || skuId || query);
+        const targetLabel = data.targetProductName || query || skuId || 'SELECTED TARGET';
+        if (bannerEl && bannerTextEl) {
+          if (isSingleTarget) {
+            bannerEl.classList.remove('hidden');
+            bannerTextEl.innerText = 'ALL STORE OFFERS FOR: ' + String(targetLabel).toUpperCase() + ' — RANKED LOWEST TO HIGHEST';
+          } else {
+            bannerEl.classList.add('hidden');
+          }
+        }
+        if (rankHeadingEl) {
+          rankHeadingEl.innerText = isSingleTarget
+            ? ('ALL STORE OFFERS FOR: ' + String(targetLabel).toUpperCase() + ' — RANKED LOWEST TO HIGHEST')
+            : ('Top Lowest Landed Options Right Now (' + (activeBountyFormatTab === 'ETB' ? 'ETBs Only — Wall Hunt' : activeBountyFormatTab.replace('_', ' ')) + ')');
         }
 
         const hold = data.bestSealedHold;
         const rip = data.cheapestPackRip;
 
-        // Equal-height 3-column Spotlight Cards (#1 Best Sealed Hold & #1 Cheapest Pack Rip)
+        // Equal-height Spotlight Cards (#1 Best Sealed Hold & #1 Cheapest Pack Rip)
         if (calloutsRow) {
           const holdImg = hold?.option?.skuId ? ('/art/' + hold.option.skuId + '.jpg?v=' + cacheBuster) : '/art/me-chaos-rising-etb.jpg';
           const holdCard = hold && hold.option
@@ -4777,9 +4984,9 @@
                   '<div class="min-w-0 space-y-1">' +
                     '<div class="flex items-center gap-2">' +
                       '<span class="status-dot bg-amber-400"></span>' +
-                      '<span class="text-[10px] font-black uppercase tracking-wider text-amber-300">#1 Best Sealed Hold</span>' +
+                      '<span class="pokedex-badge text-[10px] font-black uppercase tracking-wider text-amber-300">#1 Best Sealed Hold</span>' +
                     '</div>' +
-                    '<div class="text-sm font-extrabold text-white truncate">' + hold.option.productName + '</div>' +
+                    '<div class="set-title-pokedex text-sm font-extrabold text-white truncate">' + hold.option.productName + '</div>' +
                     '<div class="text-[11px] text-slate-300 line-clamp-1">' + stripEmojiClutter(hold.reason) + '</div>' +
                   '</div>' +
                 '</div>' +
@@ -4802,9 +5009,9 @@
                   '<div class="min-w-0 space-y-1">' +
                     '<div class="flex items-center gap-2">' +
                       '<span class="status-dot bg-cyan-400"></span>' +
-                      '<span class="text-[10px] font-black uppercase tracking-wider text-cyan-300">#1 Cheapest Pack Rip ($/Pack)</span>' +
+                      '<span class="pokedex-badge text-[10px] font-black uppercase tracking-wider text-cyan-300">#1 Cheapest Pack Rip ($/Pack)</span>' +
                     '</div>' +
-                    '<div class="text-sm font-extrabold text-white truncate">' + rip.option.productName + '</div>' +
+                    '<div class="set-title-pokedex text-sm font-extrabold text-white truncate">' + rip.option.productName + '</div>' +
                     '<div class="text-[11px] text-cyan-100/90 line-clamp-1">' + stripEmojiClutter(rip.reason) + '</div>' +
                   '</div>' +
                 '</div>' +
@@ -4820,7 +5027,7 @@
           calloutsRow.innerHTML = holdCard + ripCard;
         }
 
-        // Crisp 7-Column Horizontal Grid Rows for Top 5 Lowest Landed Options (Zero Raw Enums)
+        // Crisp 7-Column Horizontal Grid Rows for Ranked Store Comparison (Zero Raw Enums)
         if (top5Container) {
           const list = data.top5LowestLanded || [];
           if (list.length === 0) {
@@ -4836,8 +5043,8 @@
                     '<img src="' + imgPath + '" class="max-h-full max-w-full object-contain" alt="Art" />' +
                   '</div>' +
                   '<div class="min-w-0">' +
-                    '<div class="text-sm font-extrabold text-white truncate">' + opt.productName + '</div>' +
-                    '<div class="text-xs text-slate-400 truncate mt-0.5">' + cleanStoreSource + '</div>' +
+                    '<div class="set-title-pokedex text-sm font-extrabold text-white truncate">' + opt.productName + '</div>' +
+                    '<div class="text-xs text-cyan-200 font-semibold truncate mt-0.5">' + cleanStoreSource + '</div>' +
                   '</div>' +
                   '<div>' +
                     getPackBadgeHtml(opt.pricePerPack, opt.packCount, opt.isRipValueLeader) +
@@ -4857,19 +5064,19 @@
           }
         }
       } catch (e) {
-        if (probeBtn) probeBtn.innerText = 'Deep Live Probe';
+        if (probeBtn) probeBtn.innerText = '↻ Live Store Sweep';
         if (metaEl) metaEl.innerText = 'Error running recon.';
       }
     }
 
     // =========================================================================
-    // 6. VIEW 3: THE CONQUERED VAULT (38-SET ETB WALL FIRST + TROPHY LOG BELOW)
+    // 6. VIEW 3: THE CONQUERED VAULT (UNIFIED STUDIO SHOWCASE: 38-ETB WALL + TROPHY PLAQUES)
     // =========================================================================
     function renderConqueredVaultView() {
       // Section 1 (Top): 38-Set ETB Master Wall Checklist
       renderWallChecklistGrid();
 
-      // Section 2 (Bottom): Snipe Trophy & Sealed Hold Log
+      // Section 2 (Bottom): Snipe Trophy & Sealed Hold Log (Unified Card Geometry + 100x100 Art Wells)
       const grid = document.getElementById('conqueredPlaquesGrid');
       const trophies = conqueredVault.trophies || [];
 
@@ -4879,7 +5086,7 @@
           const r3 = t.ruleOf3Status || { ripped: false, onWall: true, subsidized: false, sealedCase: false };
           const snap = t.discordAlertSnapshot || {};
           const isUnicorn = (t.id && t.id.includes('msrp')) || (snap.headline && snap.headline.includes('UNICORN'));
-          const cardClass = isUnicorn ? 'unicorn-holo-card' : 'machined-trophy-card';
+          const cardStateCls = isUnicorn ? 'vault-card-trophy-unicorn' : 'vault-card-trophy-gold';
           const priceNoteHtml = t.landedPriceNote
             ? '<div class="text-[11px] font-mono-num text-cyan-200 font-semibold mt-0.5">' + t.landedPriceNote + '</div>'
             : '';
@@ -4890,30 +5097,30 @@
               ? activeStyle
               : 'bg-black/40 text-slate-400 border-white/10 hover:border-white/25';
             const dotCls = active ? 'bg-emerald-400 shadow-[0_0_6px_#10B981]' : 'bg-slate-600';
-            return '<button onclick="toggleTrophyPip(\'' + t.id + '\', \'' + field + '\', ' + (!active) + ')" class="px-3 py-1.5 rounded-xl border text-[11px] font-extrabold transition inline-flex items-center gap-1.5 ' + cls + '"><span class="w-1.5 h-1.5 rounded-full ' + dotCls + '"></span>[ ' + label + ' ]</button>';
+            return '<button onclick="toggleTrophyPip(\'' + t.id + '\', \'' + field + '\', ' + (!active) + ')" class="pokedex-badge px-3 py-1.5 rounded-xl border text-[11px] font-extrabold transition inline-flex items-center gap-1.5 ' + cls + '"><span class="w-1.5 h-1.5 rounded-full ' + dotCls + '"></span>[ ' + label + ' ]</button>';
           };
 
           return (
-            '<div class="' + cardClass + ' rounded-2xl p-5 flex flex-col justify-between gap-4">' +
+            '<div class="vault-unified-card ' + cardStateCls + ' p-5 flex flex-col justify-between gap-4">' +
               '<div class="space-y-3.5">' +
                 '<div class="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-white/10">' +
                   '<div class="flex items-center gap-2">' +
-                    '<span class="px-2.5 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-400/40 font-mono-num text-[10px] font-black uppercase">TROPHY #' + (idx + 1) + '</span>' +
+                    '<span class="pokedex-badge px-2.5 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[10px] font-black uppercase">TROPHY PLAQUE #' + (idx + 1) + '</span>' +
                     '<span class="text-xs font-bold text-slate-300">' + t.store + '</span>' +
                   '</div>' +
-                  '<span class="px-2.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-200 border border-cyan-400/30 font-mono-num text-[10px] font-bold">Delivery: ' + (t.deliveryWindow || 'In Transit') + '</span>' +
+                  '<span class="pokedex-badge px-2.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-200 border border-cyan-400/30 text-[10px] font-bold">Delivery: ' + (t.deliveryWindow || 'In Transit') + '</span>' +
                 '</div>' +
 
                 '<div class="flex items-center gap-4">' +
-                  '<div class="w-24 h-24 art-pedestal rounded-2xl p-2 flex items-center justify-center shrink-0 relative">' +
-                    '<img src="' + imgPath + '" class="max-h-full max-w-full object-contain" alt="Trophy Art" />' +
+                  '<div class="vault-art-well p-2">' +
+                    '<img src="' + imgPath + '" class="max-h-full max-w-full object-contain drop-shadow-[0_6px_12px_rgba(0,0,0,0.85)]" alt="Trophy Art" />' +
                   '</div>' +
                   '<div class="min-w-0 flex-1 space-y-1">' +
-                    '<h3 class="text-base font-black text-white leading-snug">' + t.productName + '</h3>' +
+                    '<h3 class="set-title-pokedex text-base font-black text-white leading-snug">' + t.productName + '</h3>' +
                     '<div class="flex items-baseline gap-2.5 flex-wrap">' +
                       '<span class="text-2xl font-black font-mono-num text-emerald-400">$' + Number(t.landedPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</span>' +
                       '<span class="text-xs font-mono-num text-slate-400">Market Capture: <strong class="text-amber-300">$' + Number(t.marketValueAtCapture).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</strong></span>' +
-                      '<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono-num text-[10px] font-extrabold">' + t.discountPct + '% OFF</span>' +
+                      '<span class="pokedex-badge px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-extrabold">' + t.discountPct + '% OFF</span>' +
                     '</div>' +
                     priceNoteHtml +
                     '<div class="flex items-center gap-2 pt-1 flex-wrap">' +
@@ -4923,17 +5130,17 @@
                   '</div>' +
                 '</div>' +
 
-                '<div class="p-3 rounded-xl bg-[#090812]/90 border-l-4 border-cyan-400 border-t border-r border-b border-white/10 space-y-1">' +
+                '<div class="p-3 rounded-xl bg-[#090812]/80 border-l-4 border-cyan-400 border-t border-r border-b border-white/10 space-y-1">' +
                   '<div class="flex items-center justify-between gap-2">' +
-                    '<span class="text-[10px] font-mono-num uppercase font-bold text-cyan-300">' + stripEmojiClutter(snap.capturedFrom || 'Discord Alert Snapshot') + '</span>' +
-                    '<span class="px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-200 font-mono-num text-[9px] font-black">' + stripEmojiClutter(snap.badgeText || 'VERIFIED SNIPE') + '</span>' +
+                    '<span class="pokedex-badge text-[10px] uppercase font-bold text-cyan-300">' + stripEmojiClutter(snap.capturedFrom || 'Discord Alert Snapshot') + '</span>' +
+                    '<span class="pokedex-badge px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-200 text-[9px] font-black">' + stripEmojiClutter(snap.badgeText || 'VERIFIED SNIPE') + '</span>' +
                   '</div>' +
-                  '<div class="text-xs font-extrabold text-white">' + stripEmojiClutter(snap.headline || t.productName) + '</div>' +
+                  '<div class="set-title-pokedex text-xs font-extrabold text-white">' + stripEmojiClutter(snap.headline || t.productName) + '</div>' +
                   '<div class="text-[11px] text-slate-300">' + stripEmojiClutter(snap.triggerReason || '') + '</div>' +
                 '</div>' +
 
                 '<div>' +
-                  '<div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Collector Fate (Click to Tag)</div>' +
+                  '<div class="pokedex-badge text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Collector Fate (Click to Tag)</div>' +
                   '<div class="flex items-center gap-2 flex-wrap">' +
                     pipBtn('onWall', 'On ETB Wall', Boolean(r3.onWall), 'bg-cyan-500/25 text-cyan-200 border-cyan-400/60 shadow-[0_0_12px_rgba(0,240,255,0.22)]') +
                     pipBtn('ripped', 'Rip with Logan', Boolean(r3.ripped), 'bg-purple-500/25 text-purple-200 border-purple-400/60 shadow-[0_0_12px_rgba(168,85,247,0.22)]') +
@@ -4943,10 +5150,10 @@
               '</div>' +
 
               '<div class="pt-3 border-t border-white/10">' +
-                '<label class="block text-[10px] font-bold uppercase tracking-wider text-amber-300/90 mb-1">Scott &amp; Logan Memory Note</label>' +
+                '<label class="pokedex-badge block text-[10px] font-bold uppercase tracking-wider text-amber-300/90 mb-1">Scott &amp; Logan Memory Note</label>' +
                 '<div class="flex gap-1.5">' +
                   '<input id="memNote_' + t.id + '" type="text" value="' + (t.memoryNote || '').replace(/"/g, '&quot;') + '" class="flex-1 bg-black/45 border border-white/15 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400" />' +
-                  '<button onclick="saveTrophyMemoryNote(\'' + t.id + '\')" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-amber-500 hover:text-slate-950 text-xs font-bold text-slate-200 transition">Save</button>' +
+                  '<button onclick="saveTrophyMemoryNote(\'' + t.id + '\')" class="pokedex-badge px-3 py-1.5 rounded-lg bg-white/10 hover:bg-amber-500 hover:text-slate-950 text-xs font-bold text-slate-200 transition">Save</button>' +
                 '</div>' +
               '</div>' +
             '</div>'
@@ -4992,18 +5199,18 @@
     function setVaultChecklistFilter(mode) {
       vaultChecklistFilter = mode || 'ALL';
       const filterButtons = [
-        { key: 'ALL', idleCls: 'px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-slate-200 border border-white/15 hover:text-white transition' },
-        { key: 'NEEDED', idleCls: 'px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-amber-300 border border-amber-500/35 hover:bg-amber-500/20 transition' },
-        { key: 'OWNED', idleCls: 'px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-emerald-300 border border-emerald-500/35 hover:bg-emerald-500/20 transition' },
-        { key: 'MEGA', idleCls: 'px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-purple-300 border border-purple-500/35 hover:bg-purple-500/20 transition' },
-        { key: 'SV', idleCls: 'px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-cyan-300 border border-cyan-500/35 hover:bg-cyan-500/20 transition' },
-        { key: 'SWSH', idleCls: 'px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-orange-300 border border-orange-500/35 hover:bg-orange-500/20 transition' }
+        { key: 'ALL', idleCls: 'pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-slate-200 border border-white/15 hover:text-white transition' },
+        { key: 'NEEDED', idleCls: 'pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-amber-300 border border-amber-500/35 hover:bg-amber-500/20 transition' },
+        { key: 'OWNED', idleCls: 'pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-emerald-300 border border-emerald-500/35 hover:bg-emerald-500/20 transition' },
+        { key: 'MEGA', idleCls: 'pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-purple-300 border border-purple-500/35 hover:bg-purple-500/20 transition' },
+        { key: 'SV', idleCls: 'pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-cyan-300 border border-cyan-500/35 hover:bg-cyan-500/20 transition' },
+        { key: 'SWSH', idleCls: 'pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-orange-300 border border-orange-500/35 hover:bg-orange-500/20 transition' }
       ];
       filterButtons.forEach(({ key, idleCls }) => {
         const btn = document.getElementById('vchk_' + key);
         if (!btn) return;
         if (key === vaultChecklistFilter) {
-          btn.className = 'px-3 py-1.5 rounded-xl text-xs font-extrabold bg-cyan-500 text-slate-950 shadow-[0_0_14px_rgba(0,240,255,0.35)] transition';
+          btn.className = 'pokedex-badge px-3 py-1.5 rounded-xl text-xs font-extrabold bg-cyan-500 text-slate-950 shadow-[0_0_14px_rgba(0,240,255,0.35)] transition';
         } else {
           btn.className = idleCls;
         }
@@ -5059,13 +5266,11 @@
         const targetBuy = Number(p.maxMarketBuyPrice || p.msrpCeiling || 54.99);
         const bestOffer = getBestLiveOfferForPolicy(p);
 
-        const cardBorderCls = isOwned
-          ? 'border-emerald-400/60 bg-[#0E191B]/80 shadow-[0_0_24px_rgba(16,185,129,0.18)]'
-          : 'border-cyan-500/25 bg-[#0B0915]/75 hover:border-cyan-400/50';
+        const cardStateCls = isOwned ? 'vault-card-owned' : 'vault-card-needed';
 
         const statusBadge = isOwned
-          ? '<button onclick="toggleOwned(' + idx + ', false)" title="Click to mark as Still Needed" class="px-2.5 py-0.5 rounded-full bg-emerald-500/25 hover:bg-emerald-500/35 text-emerald-200 border border-emerald-400/60 font-mono-num text-[10px] font-black uppercase tracking-wider transition">ON THE WALL ✓</button>'
-          : '<button onclick="toggleOwned(' + idx + ', true)" title="Click to lock onto your Physical ETB Wall" class="px-2.5 py-0.5 rounded-full bg-amber-500/20 hover:bg-emerald-500/30 text-amber-300 hover:text-emerald-200 border border-amber-400/45 font-mono-num text-[10px] font-black uppercase tracking-wider transition">NEEDED FOR WALL</button>';
+          ? '<button onclick="toggleOwned(' + idx + ', false)" title="Click to mark as Still Needed" class="pokedex-badge px-2.5 py-0.5 rounded-full bg-emerald-500/25 hover:bg-emerald-500/35 text-emerald-200 border border-emerald-400/60 text-[10px] font-black uppercase tracking-wider transition">ON THE WALL ✓</button>'
+          : '<button onclick="toggleOwned(' + idx + ', true)" title="Click to lock onto your Physical ETB Wall" class="pokedex-badge px-2.5 py-0.5 rounded-full bg-amber-500/20 hover:bg-emerald-500/30 text-amber-300 hover:text-emerald-200 border border-amber-400/45 text-[10px] font-black uppercase tracking-wider transition">NEEDED FOR WALL</button>';
 
         const bodyDetailsHtml = isOwned
           ? '<div class="space-y-1 mt-1.5">' +
@@ -5086,27 +5291,27 @@
 
         const footerHtml = isOwned
           ? '<div class="pt-2.5 mt-2.5 border-t border-white/10 flex items-center justify-between gap-2">' +
-              '<span class="text-[11px] font-bold text-emerald-300 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#10B981]"></span>Conquered Set</span>' +
-              '<button onclick="toggleOwned(' + idx + ', false)" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-rose-500/20 text-slate-300 hover:text-rose-200 border border-white/10 text-[11px] font-semibold transition">Remove</button>' +
+              '<span class="pokedex-badge text-[11px] font-bold text-emerald-300 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#10B981]"></span>Conquered Set</span>' +
+              '<button onclick="toggleOwned(' + idx + ', false)" class="pokedex-badge px-2.5 py-1 rounded-lg bg-white/5 hover:bg-rose-500/20 text-slate-300 hover:text-rose-200 border border-white/10 text-[11px] font-semibold transition">Remove</button>' +
             '</div>'
           : '<div class="pt-2.5 mt-2.5 border-t border-white/10 flex items-center justify-between gap-2">' +
-              '<a href="' + bestOffer.url + '" target="_blank" class="flex-1 text-center py-1.5 px-2.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-200 border border-cyan-400/45 text-[11px] font-extrabold transition whitespace-nowrap">Buy Best Offer ↗</a>' +
-              '<button onclick="toggleOwned(' + idx + ', true)" class="py-1.5 px-2.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/35 text-[11px] font-extrabold transition whitespace-nowrap">+ Wall</button>' +
+              '<a href="' + bestOffer.url + '" target="_blank" class="pokedex-badge flex-1 text-center py-1.5 px-2.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-200 border border-cyan-400/45 text-[11px] font-extrabold transition whitespace-nowrap">Buy Best Offer ↗</a>' +
+              '<button onclick="toggleOwned(' + idx + ', true)" class="pokedex-badge py-1.5 px-2.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/35 text-[11px] font-extrabold transition whitespace-nowrap">+ Wall</button>' +
             '</div>';
 
         return (
-          '<div class="glass-card rounded-2xl p-4 flex flex-col justify-between border transition ' + cardBorderCls + '">' +
+          '<div class="vault-unified-card ' + cardStateCls + ' p-4 flex flex-col justify-between">' +
             '<div>' +
               '<div class="flex items-center justify-between gap-2 mb-2.5">' +
-                '<span class="text-[10px] font-mono-num font-bold uppercase tracking-wider text-slate-400">ETB WALL SET</span>' +
+                '<span class="pokedex-badge text-[10px] font-bold uppercase tracking-wider text-slate-400">ETB WALL SET</span>' +
                 statusBadge +
               '</div>' +
               '<div class="flex items-center gap-3.5">' +
-                '<div onclick="openModalByIndex(' + idx + ')" class="w-[100px] h-[100px] art-pedestal rounded-2xl p-2 flex items-center justify-center shrink-0 relative cursor-zoom-in">' +
+                '<div onclick="openModalByIndex(' + idx + ')" class="vault-art-well p-2 cursor-zoom-in">' +
                   '<img src="' + imgPath + '" class="max-h-full max-w-full object-contain drop-shadow-[0_6px_12px_rgba(0,0,0,0.85)] ' + (isOwned ? '' : 'opacity-85') + '" alt="ETB Box Art" />' +
                 '</div>' +
                 '<div class="min-w-0 flex-1">' +
-                  '<div class="text-sm font-extrabold text-white leading-snug line-clamp-2">' + p.name.replace(' Elite Trainer Box', ' ETB') + '</div>' +
+                  '<div class="set-title-pokedex text-sm font-extrabold text-white leading-snug line-clamp-2">' + p.name.replace(' Elite Trainer Box', ' ETB') + '</div>' +
                   bodyDetailsHtml +
                 '</div>' +
               '</div>' +
@@ -5126,9 +5331,9 @@
             '<div class="flex items-center justify-between gap-2 pb-2 border-b border-white/10">' +
               '<div class="flex items-center gap-2">' +
                 '<span class="w-2 h-2 rounded-full ' + group.accentDot + '"></span>' +
-                '<h3 class="text-sm font-black uppercase tracking-wider text-white">' + group.title + '</h3>' +
+                '<h3 class="section-title-pokedex text-sm font-black uppercase tracking-wider text-white">' + group.title + '</h3>' +
               '</div>' +
-              '<span class="px-2.5 py-0.5 rounded-full border font-mono-num text-[11px] font-extrabold ' + group.badgeCls + '">' +
+              '<span class="pokedex-badge px-2.5 py-0.5 rounded-full border text-[11px] font-extrabold ' + group.badgeCls + '">' +
                 eraOwned.length + ' / ' + eraAll.length + ' ETBs On Wall' +
               '</span>' +
             '</div>' +

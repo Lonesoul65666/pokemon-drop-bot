@@ -402,6 +402,7 @@ async function handleBountyRecon(req, res) {
   try {
     const skuId = (req.query?.skuId || req.body?.skuId || '').trim();
     const rawQuery = (req.query?.query || req.query?.q || req.body?.query || req.body?.q || '').trim();
+    const formatFilter = (req.query?.format || req.body?.format || '').trim().toUpperCase();
     const fetchLive = Boolean(req.query?.live === 'true' || req.body?.live === true);
 
     let policies = [];
@@ -425,14 +426,26 @@ async function handleBountyRecon(req, res) {
       try { salesHistory = JSON.parse(fs.readFileSync(SALES_HISTORY_PATH, 'utf-8')); } catch (e) {}
     }
 
+    const matchesFormatTab = (pol, fmt) => {
+      if (!fmt || fmt === 'ALL') return true;
+      const ff = String(pol.formFactor || '').toLowerCase();
+      if (fmt === 'ETB') return ff === 'etb';
+      if (fmt === 'BOOSTER_BOX') return ff === 'booster box';
+      if (fmt === 'CASES') return ff.includes('case');
+      if (fmt === 'BUNDLE') return ff.includes('bundle');
+      return true;
+    };
+
     let matchedPolicies = policies;
+    let exactPrimaryPolicy = null;
     if (skuId) {
       const exact = policies.find(p => p.id.toLowerCase() === skuId.toLowerCase());
       if (exact) {
-        const baseSlug = exact.id.replace(/-(booster-box|booster-case|etb-case|etb|bundle)$/i, '');
-        matchedPolicies = policies.filter(p => p.id === exact.id || p.id.startsWith(baseSlug));
+        exactPrimaryPolicy = exact;
+        matchedPolicies = [exact];
       } else {
         matchedPolicies = policies.filter(p => p.id.toLowerCase().includes(skuId.toLowerCase()) || p.name.toLowerCase().includes(skuId.toLowerCase()));
+        if (matchedPolicies.length === 1) exactPrimaryPolicy = matchedPolicies[0];
       }
     } else if (rawQuery) {
       const terms = rawQuery.toLowerCase().split(/\s+/).filter(Boolean);
@@ -440,10 +453,18 @@ async function handleBountyRecon(req, res) {
         const hay = `${p.id} ${p.name} ${p.era || ''} ${p.formFactor || ''}`.toLowerCase();
         return terms.every(t => hay.includes(t));
       });
+      if (formatFilter && formatFilter !== 'ALL') {
+        const fmtFiltered = matchedPolicies.filter(p => matchesFormatTab(p, formatFilter));
+        if (fmtFiltered.length > 0) matchedPolicies = fmtFiltered;
+      }
+      if (matchedPolicies.length === 1) exactPrimaryPolicy = matchedPolicies[0];
+    } else if (formatFilter && formatFilter !== 'ALL') {
+      matchedPolicies = policies.filter(p => matchesFormatTab(p, formatFilter));
     }
 
     if (matchedPolicies.length === 0) {
-      matchedPolicies = policies.slice(0, 12);
+      matchedPolicies = policies.filter(p => matchesFormatTab(p, formatFilter)).slice(0, 20);
+      if (matchedPolicies.length === 0) matchedPolicies = policies.slice(0, 12);
     }
 
     const candidates = [];
@@ -451,7 +472,7 @@ async function handleBountyRecon(req, res) {
 
     const pushCandidate = (cand) => {
       if (!cand || !cand.landedPrice || cand.landedPrice <= 0) return;
-      const dedupKey = `${cand.skuId}__${cand.store}__${cand.landedPrice.toFixed(2)}`;
+      const dedupKey = `${cand.skuId}__${String(cand.store || '').toLowerCase()}__${cand.landedPrice.toFixed(2)}`;
       if (seenKeys.has(dedupKey)) return;
       seenKeys.add(dedupKey);
       const rip = computeRipMetrics(cand.landedPrice, cand.skuId, cand.formFactor, cand.productName, cand.packCount);
@@ -493,13 +514,13 @@ async function handleBountyRecon(req, res) {
         });
       }
 
-      // 2. Recent Discord Alert Hits
-      const matchingDrops = drops.filter(d => d.ruleId === pol.id && !d.soldOut);
-      for (const d of matchingDrops.slice(0, 3)) {
+      // 2. Recent Discord Alert Hits (include up to 8 stores when comparing a specific SKU)
+      const matchingDrops = drops.filter(d => d.ruleId === pol.id);
+      for (const d of matchingDrops.slice(0, exactPrimaryPolicy ? 8 : 3)) {
         const p = Number(d.price || 0);
         if (p > 0) {
           pushCandidate({
-            sourceType: 'RECENT_ALERT',
+            sourceType: d.soldOut ? 'RECENT_FLOOR' : 'RECENT_ALERT',
             skuId: pol.id,
             productName: pol.name,
             formFactor: pol.formFactor || d.formFactor || 'Sealed',
@@ -518,11 +539,11 @@ async function handleBountyRecon(req, res) {
         }
       }
 
-      // 3. Active Sales Tape Events
-      const activeEvs = salesHistory.filter(ev => ev.targetId === pol.id && ev.status === 'ACTIVE');
-      for (const ev of activeEvs.slice(0, 3)) {
+      // 3. Sales Tape Events (Active + Recent Store Offers when comparing a specific SKU)
+      const tapeEvs = salesHistory.filter(ev => ev.targetId === pol.id && (ev.status === 'ACTIVE' || exactPrimaryPolicy));
+      for (const ev of tapeEvs.slice(0, exactPrimaryPolicy ? 8 : 3)) {
         pushCandidate({
-          sourceType: 'MARKET_TAPE_ACTIVE',
+          sourceType: ev.status === 'ACTIVE' ? 'MARKET_TAPE_ACTIVE' : 'RECENT_STORE_COMP',
           skuId: pol.id,
           productName: pol.name,
           formFactor: pol.formFactor || 'Sealed',
@@ -531,8 +552,8 @@ async function handleBountyRecon(req, res) {
           landedPrice: Number(ev.landedPrice || ev.price),
           marketValue: marketVal,
           msrp: pol.msrpCeiling,
-          url: ev.url,
-          inStock: true,
+          url: ev.url || `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(pol.name)}`,
+          inStock: ev.status === 'ACTIVE',
           observedAt: ev.lastSeenAt || ev.restockedAt || Date.now()
         });
       }
@@ -553,19 +574,38 @@ async function handleBountyRecon(req, res) {
           inStock: Boolean(tel.inStock),
           observedAt: tel.lastSeen || Date.now()
         });
-      } else if (pol.estimatedMarketValue > 0) {
+      }
+      if (pol.estimatedMarketValue > 0 && (exactPrimaryPolicy || !tel || !tel.lowestPrice)) {
         pushCandidate({
           sourceType: 'POLICY_BASELINE',
           skuId: pol.id,
           productName: pol.name,
           formFactor: pol.formFactor || 'Sealed',
-          store: 'TCGPlayer Market Baseline',
+          store: 'TCGPlayer Market Index',
           price: Number(pol.estimatedMarketValue),
           landedPrice: Number(pol.estimatedMarketValue),
           marketValue: marketVal,
           msrp: pol.msrpCeiling,
           url: `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(pol.name)}`,
-          inStock: false,
+          inStock: true,
+          observedAt: Date.now()
+        });
+      }
+      if (exactPrimaryPolicy) {
+        // Also provide direct eBay Buy-It-Now & Retail MSRP reference lines when comparing a single product head-to-head
+        const ebayEst = Math.round((marketVal * 0.98) * 100) / 100;
+        pushCandidate({
+          sourceType: 'EBAY_MARKET_INDEX',
+          skuId: pol.id,
+          productName: pol.name,
+          formFactor: pol.formFactor || 'Sealed',
+          store: 'eBay Buy-It-Now (Free Ship Index)',
+          price: ebayEst,
+          landedPrice: ebayEst,
+          marketValue: marketVal,
+          msrp: pol.msrpCeiling,
+          url: `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(pol.name + ' sealed')}&LH_BIN=1&_sop=15`,
+          inStock: true,
           observedAt: Date.now()
         });
       }
@@ -574,7 +614,7 @@ async function handleBountyRecon(req, res) {
     // Optional live TCGPlayer + eBay comp probe for the primary target when requested or when <= 2 candidates found
     if ((fetchLive || candidates.length <= 2) && matchedPolicies.length > 0) {
       try {
-        const primary = matchedPolicies[0];
+        const primary = exactPrimaryPolicy || matchedPolicies[0];
         const { getDualMarketComps } = require('./marketComps');
         const comps = await getDualMarketComps(primary.id, primary.name, primary.estimatedMarketValue || 50);
         if (comps?.tcgplayer?.price > 0) {
@@ -612,20 +652,16 @@ async function handleBountyRecon(req, res) {
       } catch (e) {}
     }
 
-    // Sort by lowest landedPrice for same-SKU queries, or lowest pricePerPack / highest discountPct across form factors
-    const uniqueSkus = new Set(candidates.map(c => c.skuId));
-    if (uniqueSkus.size === 1) {
-      candidates.sort((a, b) => a.landedPrice - b.landedPrice);
-    } else {
-      candidates.sort((a, b) => a.landedPrice - b.landedPrice);
-    }
+    // Sort strictly by lowest landedPrice so offers rank lowest-to-highest
+    candidates.sort((a, b) => a.landedPrice - b.landedPrice);
 
-    const top5Options = candidates.slice(0, 5).map((opt, idx) => ({
+    const maxSlice = (exactPrimaryPolicy || skuId || rawQuery) ? 15 : 10;
+    const rankedOptions = candidates.slice(0, maxSlice).map((opt, idx) => ({
       rank: idx + 1,
       ...opt
     }));
 
-    // Calculate #1 Best Sealed Hold (highest discountPct below market, tie-broken by sealed case/box form factor & spreadDollars)
+    // Calculate #1 Best Sealed Hold (highest discountPct below market, tie-broken by spreadDollars)
     const holdSorted = [...candidates].sort((a, b) => {
       if (b.discountPct !== a.discountPct) return b.discountPct - a.discountPct;
       return b.spreadDollars - a.spreadDollars;
@@ -643,17 +679,20 @@ async function handleBountyRecon(req, res) {
     const cheapestPackRip = ripSorted[0]
       ? {
           verdict: '#1 Cheapest Pack Rip',
-          reason: `$${ripSorted[0].pricePerPack.toFixed(2)}/pack across ${ripSorted[0].packCount} booster packs (${ripSorted[0].isRipValueLeader ? '🔥 RIP VALUE LEADER <= $4.25/pk' : 'Lowest $/Pack Available'}) @ ${ripSorted[0].store}`,
+          reason: `$${ripSorted[0].pricePerPack.toFixed(2)}/pack across ${ripSorted[0].packCount} booster packs (${ripSorted[0].isRipValueLeader ? 'RIP VALUE LEADER <= $4.25/pk' : 'Lowest $/Pack Available'}) @ ${ripSorted[0].store}`,
           option: ripSorted[0]
         }
       : null;
 
     res.json({
       ok: true,
-      query: { skuId: skuId || null, query: rawQuery || null },
+      query: { skuId: skuId || null, query: rawQuery || null, format: formatFilter || 'ALL' },
+      isSingleTargetComparison: Boolean(exactPrimaryPolicy || skuId || (rawQuery && matchedPolicies.length <= 2)),
+      targetProductName: exactPrimaryPolicy ? exactPrimaryPolicy.name : (matchedPolicies.length === 1 ? matchedPolicies[0].name : (rawQuery || null)),
       matchedTargetsCount: matchedPolicies.length,
       totalCandidatesEvaluated: candidates.length,
-      top5LowestLanded: top5Options,
+      top5LowestLanded: rankedOptions,
+      allOffers: rankedOptions,
       bestSealedHold,
       cheapestPackRip,
       generatedAt: new Date().toISOString()
@@ -691,7 +730,7 @@ function getDynamicStoreTelemetry() {
     try { storeHealth = JSON.parse(fs.readFileSync(STORE_HEALTH_PATH, 'utf-8')); } catch (e) {}
   }
 
-  const lgsCount = lgsStores.length || Object.keys(storeHealth).length || 36;
+  const lgsCount = lgsStores.length || Object.keys(storeHealth).length || 40;
   const bigBoxCount = bigBoxStores.length || 9;
   const circuitOpenCount = Object.values(storeHealth).filter(s => s && s.status === 'CIRCUIT_OPEN').length;
   const healthyLgsCount = Math.max(0, lgsCount - circuitOpenCount);

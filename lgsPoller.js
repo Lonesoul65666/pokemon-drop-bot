@@ -88,7 +88,12 @@ exports.LGS_STORES = [
     { name: 'The Poke Court', baseUrl: 'https://thepokecourt.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
     { name: 'Awesome CCG', baseUrl: 'https://awesomeccg.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
     { name: 'Tanuki Games', baseUrl: 'https://tanukigamesatx.com', freeShipThreshold: 100, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Hobbiesville', baseUrl: 'https://hobbiesville.com', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' }
+    { name: 'Hobbiesville', baseUrl: 'https://hobbiesville.com', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' },
+    // Wave 2 Overnight Discovery Newly Onboarded Verified Shopify Stores (4)
+    { name: 'PokeBox USA', baseUrl: 'https://pokeboxusa.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: '401 Games', baseUrl: 'https://store.401games.ca', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' },
+    { name: 'Kanzen Games', baseUrl: 'https://kanzengames.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'The Card Vault', baseUrl: 'https://thecardvault.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' }
 ];
 exports.MONITORED_STORES = exports.LGS_STORES;
 const variantStateMap = new Map();
@@ -127,14 +132,20 @@ async function resolveBestPokemonFeed(store) {
         '/collections/pokemon-sealed/products.json?limit=250',
         '/collections/pokemon-sealed-products/products.json?limit=250',
         '/collections/pokemon-sealed-product/products.json?limit=250',
+        '/collections/english-pokemon-tcg/products.json?limit=250',
+        '/collections/pokemon-cards/products.json?limit=250',
+        '/collections/all-pokemon-pre-orders/products.json?limit=250',
         '/collections/pokemon/products.json?limit=250',
         '/collections/pokemon-tcg/products.json?limit=250'
     ];
     // Check store's /collections.json first to see their exact Pokemon collection handle
     const { data: colData } = await smartGetJson(`${store.baseUrl}/collections.json?limit=250`);
     if (colData?.collections && Array.isArray(colData.collections)) {
-        const pkmnCols = colData.collections.filter((c) => (/pokemon|pkmn/i.test(c.handle || '') || /pokemon/i.test(c.title || '')) &&
-            !/single|graded|slab|japanese|chinese|korean|event|local/i.test(c.handle || ''));
+        const pkmnCols = colData.collections.filter((c) => {
+            const hay = `${c.handle || ''} ${c.title || ''}`;
+            return ((/pokemon|pkmn/i.test(c.handle || '') || /pokemon/i.test(c.title || '')) &&
+                !/single|singles|graded|slab|slabs|psa|cgc|bgs|japanese|chinese|korean|event|local|lorcana|digimon|one-piece|magic|mtg/i.test(hay));
+        });
         // Prefer "sealed", "booster-boxes", "pokemon-tcg", or main "pokemon" collection
         pkmnCols.sort((a, b) => {
             const aSealed = /sealed|booster|box|tcg|in-stock|^pokemon$/i.test(a.handle) ? 1 : 0;

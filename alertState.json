@@ -23,9 +23,9 @@
   "sv-journey-together-booster-box__PKMN Colosseum": {
     "lastPrice": 185.99,
     "lowestAlertedPrice": 185.99,
-    "timestamp": 1792375298496,
-    "timeStr": "09:01 PM",
-    "alertCount": 10
+    "timestamp": 1792389758334,
+    "timeStr": "01:02 AM",
+    "alertCount": 11
   },
   "me-ascended-heroes-etb-case__TCGPlayer Verified Seller": {
     "lastPrice": 1580,
@@ -37,16 +37,16 @@
   "me-30th-celebration-etb-case__TCGPlayer Verified Seller": {
     "lastPrice": 1399.99,
     "lowestAlertedPrice": 1387.89,
-    "timestamp": 1792376911521,
-    "timeStr": "09:28 PM",
-    "alertCount": 10
+    "timestamp": 1792392070808,
+    "timeStr": "01:41 AM",
+    "alertCount": 11
   },
   "sv-prismatic-evolutions-etb-case__TCGPlayer Verified Seller": {
     "lastPrice": 1315.01,
     "lowestAlertedPrice": 1315.01,
-    "timestamp": 1792372241899,
-    "timeStr": "08:10 PM",
-    "alertCount": 10
+    "timestamp": 1792387145122,
+    "timeStr": "12:19 AM",
+    "alertCount": 11
   },
   "swsh-fusion-strike-etb__TCGPlayer Verified Seller": {
     "lastPrice": 320,
@@ -130,6 +130,13 @@
     "lowestAlertedPrice": 190,
     "timestamp": 1792386834015,
     "timeStr": "12:13 AM",
+    "alertCount": 1
+  },
+  "sv-destined-rivals-etb-case__TCGPlayer Verified Seller": {
+    "lastPrice": 1170,
+    "lowestAlertedPrice": 1170,
+    "timestamp": 1792388224195,
+    "timeStr": "12:37 AM",
     "alertCount": 1
   }
 }

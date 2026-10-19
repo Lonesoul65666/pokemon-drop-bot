@@ -120,7 +120,12 @@ exports.STORE_SHIPPING_RULES = {
     'the poke court': { freeShipThreshold: 150, flatShipping: 6.99 },
     'awesome ccg': { freeShipThreshold: 150, flatShipping: 6.99 },
     'tanuki games': { freeShipThreshold: 100, flatShipping: 6.99 },
-    'hobbiesville': { freeShipThreshold: 175, flatShipping: 9.99 }
+    'hobbiesville': { freeShipThreshold: 175, flatShipping: 9.99 },
+    // Wave 2 Overnight Discovery Newly Onboarded Verified Shopify LGS Stores (4)
+    'pokebox usa': { freeShipThreshold: 150, flatShipping: 6.99 },
+    '401 games': { freeShipThreshold: 175, flatShipping: 9.99 },
+    'kanzen games': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'the card vault': { freeShipThreshold: 150, flatShipping: 6.99 }
 };
 function getStoreShippingProfile(retailer) {
     const key = (retailer || '').trim().toLowerCase();
