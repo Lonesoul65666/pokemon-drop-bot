@@ -131,14 +131,51 @@ const HEADERS = {
   Accept: 'application/json',
 };
 
+const STORE_POLL_WATCHDOG_MS = 22000;
+const SWEEP_WATCHDOG_MS = 90000;
+let lastSweepStartedAt = 0;
+
+function withWatchdog<T>(promise: Promise<T>, timeoutMs: number, label: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error(`Watchdog timeout (${timeoutMs}ms): ${label}`));
+    }, timeoutMs);
+    promise.then(
+      (val) => {
+        clearTimeout(timer);
+        resolve(val);
+      },
+      (err) => {
+        clearTimeout(timer);
+        reject(err);
+      }
+    );
+  });
+}
+
+async function axiosGetWithAbort(url: string, timeoutMs: number, httpsAgent?: any) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await axios.get(url, {
+      timeout: timeoutMs,
+      signal: controller.signal,
+      httpsAgent,
+      headers: HEADERS
+    });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function smartGetJson(url: string): Promise<{ data: any; error?: string }> {
   try {
-    const res = await axios.get(url, { timeout: REQUEST_TIMEOUT_MS, headers: HEADERS });
+    const res = await axiosGetWithAbort(url, REQUEST_TIMEOUT_MS);
     return { data: res.data };
   } catch (e: any) {
     try {
       const proxy = getNextProxy();
-      const res = await axios.get(url, { timeout: REQUEST_TIMEOUT_MS, httpsAgent: proxy, headers: HEADERS });
+      const res = await axiosGetWithAbort(url, REQUEST_TIMEOUT_MS, proxy);
       return { data: res.data };
     } catch (e2: any) {
       const status = e2?.response?.status || e?.response?.status;
@@ -325,10 +362,16 @@ async function pollSingleStore(store: MonitoredStore): Promise<{ hit: boolean; p
 
 export async function pollShopifyStores(): Promise<void> {
   if (isPolling) {
-    console.warn('[LGS Poller] Previous sweep still active — skipping overlapping cycle.');
-    return;
+    if (Date.now() - lastSweepStartedAt > SWEEP_WATCHDOG_MS + 10000) {
+      console.warn('[LGS Poller] Watchdog detected stale isPolling lock (>100s) — force-resetting lock.');
+      isPolling = false;
+    } else {
+      console.warn('[LGS Poller] Previous sweep still active — skipping overlapping cycle.');
+      return;
+    }
   }
   isPolling = true;
+  lastSweepStartedAt = Date.now();
 
   let activeStoresHit = 0;
   let totalProductsScanned = 0;
@@ -342,20 +385,31 @@ export async function pollShopifyStores(): Promise<void> {
       while (queue.length > 0) {
         const store = queue.shift();
         if (!store) break;
-        const res = await pollSingleStore(store);
-        if (res.hit) activeStoresHit++;
-        totalProductsScanned += res.productsScanned;
-        if (res.skippedByCircuit) circuitOpenCount++;
+        try {
+          const res = await withWatchdog(
+            pollSingleStore(store),
+            STORE_POLL_WATCHDOG_MS,
+            `Store poll for ${store.name}`
+          );
+          if (res.hit) activeStoresHit++;
+          totalProductsScanned += res.productsScanned;
+          if (res.skippedByCircuit) circuitOpenCount++;
+        } catch (storeErr: any) {
+          console.warn(`[LGS Poller] Watchdog aborted hung store ${store.name}: ${storeErr?.message || storeErr}`);
+        }
         await sleep(getRandomJitter(120, 300));
       }
     });
 
-    await Promise.all(workers);
+    await withWatchdog(Promise.all(workers), SWEEP_WATCHDOG_MS, '40-Store LGS Sweep Cycle');
     flushStoreHealthToDisk();
 
     console.log(
       `[${new Date().toLocaleTimeString()}] LGS Sweep Complete (Pool=${MAX_CONCURRENT_STORES}): ${activeStoresHit}/${MONITORED_STORES.length} stores responded (${totalProductsScanned} Pokemon listings checked${circuitOpenCount > 0 ? `, ${circuitOpenCount} in circuit cooldown` : ''}).`
     );
+  } catch (sweepErr: any) {
+    console.error(`[LGS Poller] Sweep error or watchdog timeout recovered: ${sweepErr?.message || sweepErr}`);
+    try { flushStoreHealthToDisk(); } catch (e) {}
   } finally {
     isPolling = false;
     const restTime = getRandomJitter(15000, 22000);

@@ -15,3 +15,4 @@
 2. **Compile Verification:** After making code modifications to any `.ts` file, run `npx tsc --noEmit` (and `npx tsc` to update runtime `.js` files) via the terminal tool to prove zero syntax or type regressions before declaring success.
 3. **Daemon Safety:** This app runs under PM2 (`pokemon-drop-bot` and `drop-bot-dashboard`). Avoid blocking event loops or synchronous I/O in polling intervals.
 4. **Secrets Hygiene:** Never commit, log, or hardcode API keys, Discord webhook URLs, or Webshare proxy credentials (`146.103.1.23:5556` auth). Rely strictly on `.env` variables.
+5. **CRITICAL PROCESS ISOLATION RULE:** **NEVER run `taskkill /F /IM node.exe` or `Stop-Process -Name node`! Both `pokemon-drop-bot` (PM2 / Port 3000) and `Project Iris` (Port 5173 / 3001) run on Node.js on this machine. Only stop processes by specific PM2 name (`pm2 restart ...`) or by specific port PID (`Get-NetTCPConnection -LocalPort <port>`).**

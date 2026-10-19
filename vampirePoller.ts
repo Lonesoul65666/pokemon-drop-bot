@@ -71,27 +71,56 @@ function normalizeBigBoxRetailerLabel(rawSeller: string, rawUrl?: string, source
   return `${rawSeller.trim()} (${sourceSuffix})`;
 }
 
+async function axiosRequestWithAbort(
+  method: 'GET' | 'POST',
+  url: string,
+  headers: Record<string, string>,
+  timeout: number,
+  body?: any,
+  httpsAgent?: any
+) {
+  const safeTimeout = Math.min(timeout, 10000);
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), safeTimeout);
+  try {
+    if (method === 'POST') {
+      return await axios.post(url, body, { timeout: safeTimeout, signal: controller.signal, httpsAgent, headers });
+    }
+    return await axios.get(url, { timeout: safeTimeout, signal: controller.signal, httpsAgent, headers });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function smartGet(url: string, headers: Record<string, string>, timeout = 8000) {
   try {
-    return await axios.get(url, { timeout, headers });
+    return await axiosRequestWithAbort('GET', url, headers, timeout);
   } catch (e) {
-    return await axios.get(url, { timeout, httpsAgent: getNextProxy(), headers });
+    return await axiosRequestWithAbort('GET', url, headers, timeout, undefined, getNextProxy());
   }
 }
 
 async function smartPost(url: string, body: any, headers: Record<string, string>, timeout = 6000) {
   try {
-    return await axios.post(url, body, { timeout, headers });
+    return await axiosRequestWithAbort('POST', url, headers, timeout, body);
   } catch (e) {
-    return await axios.post(url, body, { timeout, httpsAgent: getNextProxy(), headers });
+    return await axiosRequestWithAbort('POST', url, headers, timeout, body, getNextProxy());
   }
 }
 
 let tlCursor = 0;
 let isPollingBigBox = false;
+let lastBigBoxPollAt = 0;
 export async function pollBigBoxAggregators(): Promise<void> {
-  if (isPollingBigBox) return;
+  if (isPollingBigBox) {
+    if (Date.now() - lastBigBoxPollAt > 45000) {
+      isPollingBigBox = false;
+    } else {
+      return;
+    }
+  }
   isPollingBigBox = true;
+  lastBigBoxPollAt = Date.now();
   const target = TRACKALACKER_PAGES[tlCursor % TRACKALACKER_PAGES.length];
   tlCursor = (tlCursor + 1) % TRACKALACKER_PAGES.length;
 
@@ -190,9 +219,17 @@ function extractOutboundRetailerUrl(text: string, fallbackUrl: string): string {
 }
 
 let isPollingReddit = false;
+let lastRedditPollAt = 0;
 export async function pollRedditDeals(): Promise<void> {
-  if (isPollingReddit) return;
+  if (isPollingReddit) {
+    if (Date.now() - lastRedditPollAt > 90000) {
+      isPollingReddit = false;
+    } else {
+      return;
+    }
+  }
   isPollingReddit = true;
+  lastRedditPollAt = Date.now();
   try {
     const feeds = [
       'https://www.reddit.com/r/PKMNTCGDeals/new.json?limit=20',
@@ -349,9 +386,17 @@ async function getBestVerifiedTcgSeller(prodId: number, minFloor: number, maxCei
 
 let tcgCursor = 0;
 let isPollingTcg = false;
+let lastTcgPollAt = 0;
 export async function pollTcgPlayerUndercuts(): Promise<void> {
-  if (isPollingTcg) return;
+  if (isPollingTcg) {
+    if (Date.now() - lastTcgPollAt > 90000) {
+      isPollingTcg = false;
+    } else {
+      return;
+    }
+  }
   isPollingTcg = true;
+  lastTcgPollAt = Date.now();
 
   try {
     const activePolicies = WATCH_POLICIES.filter((p: any) => p.active !== false);

@@ -107,15 +107,47 @@ const HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
     Accept: 'application/json',
 };
+const STORE_POLL_WATCHDOG_MS = 22000;
+const SWEEP_WATCHDOG_MS = 90000;
+let lastSweepStartedAt = 0;
+function withWatchdog(promise, timeoutMs, label) {
+    return new Promise((resolve, reject) => {
+        const timer = setTimeout(() => {
+            reject(new Error(`Watchdog timeout (${timeoutMs}ms): ${label}`));
+        }, timeoutMs);
+        promise.then((val) => {
+            clearTimeout(timer);
+            resolve(val);
+        }, (err) => {
+            clearTimeout(timer);
+            reject(err);
+        });
+    });
+}
+async function axiosGetWithAbort(url, timeoutMs, httpsAgent) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+        return await axios_1.default.get(url, {
+            timeout: timeoutMs,
+            signal: controller.signal,
+            httpsAgent,
+            headers: HEADERS
+        });
+    }
+    finally {
+        clearTimeout(timer);
+    }
+}
 async function smartGetJson(url) {
     try {
-        const res = await axios_1.default.get(url, { timeout: REQUEST_TIMEOUT_MS, headers: HEADERS });
+        const res = await axiosGetWithAbort(url, REQUEST_TIMEOUT_MS);
         return { data: res.data };
     }
     catch (e) {
         try {
             const proxy = getNextProxy();
-            const res = await axios_1.default.get(url, { timeout: REQUEST_TIMEOUT_MS, httpsAgent: proxy, headers: HEADERS });
+            const res = await axiosGetWithAbort(url, REQUEST_TIMEOUT_MS, proxy);
             return { data: res.data };
         }
         catch (e2) {
@@ -290,10 +322,17 @@ async function pollSingleStore(store) {
 }
 async function pollShopifyStores() {
     if (isPolling) {
-        console.warn('[LGS Poller] Previous sweep still active — skipping overlapping cycle.');
-        return;
+        if (Date.now() - lastSweepStartedAt > SWEEP_WATCHDOG_MS + 10000) {
+            console.warn('[LGS Poller] Watchdog detected stale isPolling lock (>100s) — force-resetting lock.');
+            isPolling = false;
+        }
+        else {
+            console.warn('[LGS Poller] Previous sweep still active — skipping overlapping cycle.');
+            return;
+        }
     }
     isPolling = true;
+    lastSweepStartedAt = Date.now();
     let activeStoresHit = 0;
     let totalProductsScanned = 0;
     let circuitOpenCount = 0;
@@ -305,18 +344,30 @@ async function pollShopifyStores() {
                 const store = queue.shift();
                 if (!store)
                     break;
-                const res = await pollSingleStore(store);
-                if (res.hit)
-                    activeStoresHit++;
-                totalProductsScanned += res.productsScanned;
-                if (res.skippedByCircuit)
-                    circuitOpenCount++;
+                try {
+                    const res = await withWatchdog(pollSingleStore(store), STORE_POLL_WATCHDOG_MS, `Store poll for ${store.name}`);
+                    if (res.hit)
+                        activeStoresHit++;
+                    totalProductsScanned += res.productsScanned;
+                    if (res.skippedByCircuit)
+                        circuitOpenCount++;
+                }
+                catch (storeErr) {
+                    console.warn(`[LGS Poller] Watchdog aborted hung store ${store.name}: ${storeErr?.message || storeErr}`);
+                }
                 await sleep(getRandomJitter(120, 300));
             }
         });
-        await Promise.all(workers);
+        await withWatchdog(Promise.all(workers), SWEEP_WATCHDOG_MS, '40-Store LGS Sweep Cycle');
         flushStoreHealthToDisk();
         console.log(`[${new Date().toLocaleTimeString()}] LGS Sweep Complete (Pool=${MAX_CONCURRENT_STORES}): ${activeStoresHit}/${exports.MONITORED_STORES.length} stores responded (${totalProductsScanned} Pokemon listings checked${circuitOpenCount > 0 ? `, ${circuitOpenCount} in circuit cooldown` : ''}).`);
+    }
+    catch (sweepErr) {
+        console.error(`[LGS Poller] Sweep error or watchdog timeout recovered: ${sweepErr?.message || sweepErr}`);
+        try {
+            flushStoreHealthToDisk();
+        }
+        catch (e) { }
     }
     finally {
         isPolling = false;

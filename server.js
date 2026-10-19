@@ -2,6 +2,14 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 
+process.on('uncaughtException', (err) => {
+  console.error(`[${new Date().toISOString()}] [drop-bot-dashboard] UNCAUGHT EXCEPTION (Recovered):`, err && (err.stack || err.message || err));
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error(`[${new Date().toISOString()}] [drop-bot-dashboard] UNHANDLED REJECTION (Recovered):`, reason && (reason.stack || reason.message || reason));
+});
+
 const app = express();
 const PORT = 3000;
 const POLICIES_PATH = path.resolve(__dirname, 'policies.json');
