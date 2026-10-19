@@ -38,9 +38,9 @@
       "conqueredAt": "2026-10-18T03:53:00.000Z",
       "deliveryWindow": "Oct 27 – Oct 30, 2026",
       "orderRef": "B108C090-96CCFE-CA0AF",
-      "landedPrice": 51.00,
+      "landedPrice": 51,
       "landedPriceNote": "$51.00 MSRP Drop ($67.11 after tax/ship)",
-      "marketValueAtCapture": 60.00,
+      "marketValueAtCapture": 60,
       "discountPct": 15,
       "packCount": 9,
       "pricePerPack": 5.67,
@@ -60,5 +60,5 @@
       "memoryNote": "First live V4 Defcon-1 MSRP Override catch! Sniped at 10:53 PM from Cooperstown Cards to rip with Logan!"
     }
   ],
-  "updatedAt": "2026-10-18T03:53:00.000Z"
+  "updatedAt": "2026-10-18T05:47:26.529Z"
 }

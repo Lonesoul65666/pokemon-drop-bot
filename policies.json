@@ -15,7 +15,11 @@
     "estimatedMarketValue": 275,
     "priority": "STANDARD",
     "cooldownMins": 30,
-    "active": true
+    "active": false,
+    "packCount": 36,
+    "pricePerPack": 5.97,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-discovery-booster-case",
@@ -33,7 +37,11 @@
     "estimatedMarketValue": 1290,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 216,
+    "pricePerPack": 5.97,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-discovery-etb",
@@ -53,7 +61,11 @@
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true,
-    "owned": true
+    "owned": true,
+    "packCount": 9,
+    "pricePerPack": 10.56,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-discovery-etb-case",
@@ -75,7 +87,11 @@
     "estimatedMarketValue": 1150,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 10.56,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-pitch-black-booster-box",
@@ -90,10 +106,14 @@
     "minStock": 1,
     "msrpCeiling": 161.64,
     "maxMarketBuyPrice": 167,
-    "estimatedMarketValue": 181.41,
+    "estimatedMarketValue": 181.33,
     "priority": "STANDARD",
     "cooldownMins": 30,
-    "active": true
+    "active": true,
+    "packCount": 36,
+    "pricePerPack": 4.86,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-pitch-black-booster-case",
@@ -111,7 +131,11 @@
     "estimatedMarketValue": 1050,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 216,
+    "pricePerPack": 4.86,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-pitch-black-etb",
@@ -130,7 +154,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": true
+    "owned": true,
+    "packCount": 9,
+    "pricePerPack": 7,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-pitch-black-etb-case",
@@ -150,7 +178,11 @@
     "estimatedMarketValue": 750,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 8.33,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-phantasmal-flames-booster-box",
@@ -168,7 +200,11 @@
     "estimatedMarketValue": 275,
     "priority": "GRAIL",
     "cooldownMins": 30,
-    "active": true
+    "active": true,
+    "packCount": 36,
+    "pricePerPack": 6.81,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-phantasmal-flames-booster-case",
@@ -186,7 +222,11 @@
     "estimatedMarketValue": 1470,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 216,
+    "pricePerPack": 6.81,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-phantasmal-flames-etb",
@@ -205,7 +245,11 @@
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true,
-    "owned": true
+    "owned": true,
+    "packCount": 9,
+    "pricePerPack": 11.67,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-phantasmal-flames-etb-case",
@@ -225,7 +269,11 @@
     "estimatedMarketValue": 1050,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 11.67,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-perfect-order-booster-box",
@@ -240,10 +288,14 @@
     "minStock": 1,
     "msrpCeiling": 161.64,
     "maxMarketBuyPrice": 151,
-    "estimatedMarketValue": 173.62,
+    "estimatedMarketValue": 175.2,
     "priority": "STANDARD",
     "cooldownMins": 30,
-    "active": true
+    "active": true,
+    "packCount": 36,
+    "pricePerPack": 4.67,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-perfect-order-booster-case",
@@ -261,7 +313,11 @@
     "estimatedMarketValue": 990,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 216,
+    "pricePerPack": 4.58,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-perfect-order-etb",
@@ -280,7 +336,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": true
+    "owned": true,
+    "packCount": 9,
+    "pricePerPack": 6.92,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-perfect-order-etb-case",
@@ -300,7 +360,11 @@
     "estimatedMarketValue": 620,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 6.89,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-chaos-rising-booster-box",
@@ -315,10 +379,14 @@
     "minStock": 1,
     "msrpCeiling": 161.64,
     "maxMarketBuyPrice": 161,
-    "estimatedMarketValue": 183.26,
+    "estimatedMarketValue": 180.63,
     "priority": "STANDARD",
     "cooldownMins": 30,
-    "active": true
+    "active": true,
+    "packCount": 36,
+    "pricePerPack": 4.78,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-chaos-rising-booster-case",
@@ -336,7 +404,11 @@
     "estimatedMarketValue": 1020,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 216,
+    "pricePerPack": 4.72,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-chaos-rising-etb",
@@ -355,7 +427,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": true
+    "owned": true,
+    "packCount": 9,
+    "pricePerPack": 5.67,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-chaos-rising-etb-case",
@@ -375,7 +451,11 @@
     "estimatedMarketValue": 640,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 7.11,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-delta-reign-booster-box",
@@ -390,11 +470,16 @@
     "minStock": 1,
     "msrpCeiling": 161.64,
     "maxMarketBuyPrice": 222,
-    "estimatedMarketValue": 241.51,
+    "estimatedMarketValue": 240.81,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "releaseDate": "2026-11-06"
+    "releaseDate": "2026-11-06",
+    "packCount": 36,
+    "pricePerPack": 6.25,
+    "isRipValueLeader": false,
+    "isPreRelease": true,
+    "preReleaseStatusTag": "⏳ PRE-RELEASE BLEED (Wait for Launch Week)"
   },
   {
     "id": "me-delta-reign-booster-case",
@@ -413,7 +498,12 @@
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true,
-    "releaseDate": "2026-11-06"
+    "releaseDate": "2026-11-06",
+    "packCount": 216,
+    "pricePerPack": 6.25,
+    "isRipValueLeader": false,
+    "isPreRelease": true,
+    "preReleaseStatusTag": "⏳ PRE-RELEASE BLEED (Wait for Launch Week)"
   },
   {
     "id": "me-delta-reign-etb",
@@ -433,7 +523,12 @@
     "cooldownMins": 30,
     "active": true,
     "owned": false,
-    "releaseDate": "2026-11-06"
+    "releaseDate": "2026-11-06",
+    "packCount": 9,
+    "pricePerPack": 10.56,
+    "isRipValueLeader": false,
+    "isPreRelease": true,
+    "preReleaseStatusTag": "⏳ PRE-RELEASE BLEED (Wait for Launch Week)"
   },
   {
     "id": "me-delta-reign-etb-case",
@@ -454,7 +549,12 @@
     "cooldownMins": 60,
     "active": true,
     "tcgProductId": 712103,
-    "releaseDate": "2026-11-06"
+    "releaseDate": "2026-11-06",
+    "packCount": 90,
+    "pricePerPack": 10.56,
+    "isRipValueLeader": false,
+    "isPreRelease": true,
+    "preReleaseStatusTag": "⏳ PRE-RELEASE BLEED (Wait for Launch Week)"
   },
   {
     "id": "me-ascended-heroes-etb",
@@ -473,7 +573,11 @@
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true,
-    "owned": true
+    "owned": true,
+    "packCount": 9,
+    "pricePerPack": 7.56,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-ascended-heroes-etb-case",
@@ -493,7 +597,11 @@
     "estimatedMarketValue": 680,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 17.58,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-ascended-heroes-bundle",
@@ -508,10 +616,14 @@
     "minStock": 1,
     "msrpCeiling": 32,
     "maxMarketBuyPrice": 40,
-    "estimatedMarketValue": 77.17,
+    "estimatedMarketValue": 80,
     "priority": "GRAIL",
     "cooldownMins": 45,
-    "active": true
+    "active": true,
+    "packCount": 6,
+    "pricePerPack": 7.33,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-30th-celebration-etb",
@@ -530,7 +642,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": true,
+    "packCount": 9,
+    "pricePerPack": 9.44,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-30th-celebration-etb-case",
@@ -551,7 +667,11 @@
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true,
-    "owned": true
+    "owned": true,
+    "packCount": 90,
+    "pricePerPack": 9.44,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "me-30th-celebration-bundle",
@@ -566,10 +686,14 @@
     "minStock": 1,
     "msrpCeiling": 32,
     "maxMarketBuyPrice": 65,
-    "estimatedMarketValue": 73.09,
+    "estimatedMarketValue": 77.27,
     "priority": "GRAIL",
     "cooldownMins": 45,
-    "active": true
+    "active": true,
+    "packCount": 6,
+    "pricePerPack": 8,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-base-booster-box",
@@ -587,7 +711,11 @@
     "estimatedMarketValue": 275,
     "priority": "STANDARD",
     "cooldownMins": 30,
-    "active": true
+    "active": true,
+    "packCount": 36,
+    "pricePerPack": 4.03,
+    "isRipValueLeader": true,
+    "isPreRelease": false
   },
   {
     "id": "sv-base-booster-case",
@@ -605,7 +733,11 @@
     "estimatedMarketValue": 870,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 216,
+    "pricePerPack": 4.03,
+    "isRipValueLeader": true,
+    "isPreRelease": false
   },
   {
     "id": "sv-base-koraidon-etb",
@@ -624,7 +756,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 5.78,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-base-koraidon-etb-case",
@@ -644,7 +780,11 @@
     "estimatedMarketValue": 1150,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 5.78,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-base-miraidon-etb",
@@ -663,7 +803,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 5.78,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-base-miraidon-etb-case",
@@ -683,7 +827,11 @@
     "estimatedMarketValue": 1150,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 5.78,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-paldea-evolved-booster-box",
@@ -701,7 +849,11 @@
     "estimatedMarketValue": 275,
     "priority": "STANDARD",
     "cooldownMins": 30,
-    "active": true
+    "active": true,
+    "packCount": 36,
+    "pricePerPack": 5.83,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-paldea-evolved-booster-case",
@@ -719,7 +871,11 @@
     "estimatedMarketValue": 1260,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 216,
+    "pricePerPack": 5.83,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-paldea-evolved-etb",
@@ -738,7 +894,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 7.56,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-paldea-evolved-etb-case",
@@ -758,7 +918,11 @@
     "estimatedMarketValue": 680,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 7.56,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-obsidian-flames-booster-box",
@@ -776,7 +940,11 @@
     "estimatedMarketValue": 275,
     "priority": "STANDARD",
     "cooldownMins": 30,
-    "active": true
+    "active": true,
+    "packCount": 36,
+    "pricePerPack": 4.86,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-obsidian-flames-booster-case",
@@ -794,7 +962,11 @@
     "estimatedMarketValue": 1050,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 216,
+    "pricePerPack": 4.86,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-obsidian-flames-etb",
@@ -813,7 +985,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 7.22,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-obsidian-flames-etb-case",
@@ -833,7 +1009,11 @@
     "estimatedMarketValue": 650,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 7.22,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-151-etb",
@@ -852,7 +1032,11 @@
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 19.44,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-151-etb-case",
@@ -872,7 +1056,11 @@
     "estimatedMarketValue": 1750,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 19.44,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-151-bundle",
@@ -890,7 +1078,11 @@
     "estimatedMarketValue": 80,
     "priority": "GRAIL",
     "cooldownMins": 45,
-    "active": true
+    "active": true,
+    "packCount": 6,
+    "pricePerPack": 10.33,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-paradox-rift-booster-box",
@@ -908,7 +1100,11 @@
     "estimatedMarketValue": 275,
     "priority": "STANDARD",
     "cooldownMins": 30,
-    "active": true
+    "active": true,
+    "packCount": 36,
+    "pricePerPack": 4.03,
+    "isRipValueLeader": true,
+    "isPreRelease": false
   },
   {
     "id": "sv-paradox-rift-booster-case",
@@ -926,7 +1122,11 @@
     "estimatedMarketValue": 870,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 216,
+    "pricePerPack": 4.03,
+    "isRipValueLeader": true,
+    "isPreRelease": false
   },
   {
     "id": "sv-paradox-rift-roaring-etb",
@@ -945,7 +1145,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 8.33,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-paradox-rift-roaring-etb-case",
@@ -965,7 +1169,11 @@
     "estimatedMarketValue": 1150,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 14.81,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-paradox-rift-valiant-etb",
@@ -984,7 +1192,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 8.33,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-paradox-rift-valiant-etb-case",
@@ -1004,7 +1216,11 @@
     "estimatedMarketValue": 1150,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 15.09,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-paldean-fates-etb",
@@ -1023,7 +1239,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 12.78,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-paldean-fates-etb-case",
@@ -1043,7 +1263,11 @@
     "estimatedMarketValue": 1150,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 12.78,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-paldean-fates-bundle",
@@ -1061,7 +1285,11 @@
     "estimatedMarketValue": 80,
     "priority": "GRAIL",
     "cooldownMins": 45,
-    "active": true
+    "active": true,
+    "packCount": 6,
+    "pricePerPack": 8,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-temporal-forces-booster-box",
@@ -1079,7 +1307,11 @@
     "estimatedMarketValue": 275,
     "priority": "STANDARD",
     "cooldownMins": 30,
-    "active": true
+    "active": true,
+    "packCount": 36,
+    "pricePerPack": 4.44,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-temporal-forces-booster-case",
@@ -1097,7 +1329,11 @@
     "estimatedMarketValue": 960,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 216,
+    "pricePerPack": 4.44,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-temporal-forces-wake-etb",
@@ -1116,7 +1352,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 8.33,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-temporal-forces-wake-etb-case",
@@ -1136,7 +1376,11 @@
     "estimatedMarketValue": 1150,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 16.07,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-temporal-forces-leaves-etb",
@@ -1155,7 +1399,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 8.33,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-temporal-forces-leaves-etb-case",
@@ -1175,7 +1423,11 @@
     "estimatedMarketValue": 1150,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 14.09,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-twilight-masquerade-booster-box",
@@ -1193,7 +1445,11 @@
     "estimatedMarketValue": 275,
     "priority": "STANDARD",
     "cooldownMins": 30,
-    "active": true
+    "active": true,
+    "packCount": 36,
+    "pricePerPack": 5.97,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-twilight-masquerade-booster-case",
@@ -1211,7 +1467,11 @@
     "estimatedMarketValue": 1290,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 216,
+    "pricePerPack": 5.97,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-twilight-masquerade-etb",
@@ -1230,7 +1490,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 10.29,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-twilight-masquerade-etb-case",
@@ -1250,7 +1514,11 @@
     "estimatedMarketValue": 620,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 6.89,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-shrouded-fable-etb",
@@ -1269,7 +1537,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 5.33,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-shrouded-fable-etb-case",
@@ -1289,7 +1561,11 @@
     "estimatedMarketValue": 480,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 5.33,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-shrouded-fable-bundle",
@@ -1304,10 +1580,14 @@
     "minStock": 1,
     "msrpCeiling": 32,
     "maxMarketBuyPrice": 54,
-    "estimatedMarketValue": 58.52,
+    "estimatedMarketValue": 57.56,
     "priority": "GRAIL",
     "cooldownMins": 45,
-    "active": true
+    "active": true,
+    "packCount": 6,
+    "pricePerPack": 4.67,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-stellar-crown-booster-box",
@@ -1325,7 +1605,11 @@
     "estimatedMarketValue": 275,
     "priority": "STANDARD",
     "cooldownMins": 30,
-    "active": true
+    "active": true,
+    "packCount": 36,
+    "pricePerPack": 4.31,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-stellar-crown-booster-case",
@@ -1343,7 +1627,11 @@
     "estimatedMarketValue": 930,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 216,
+    "pricePerPack": 4.31,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-stellar-crown-etb",
@@ -1362,7 +1650,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 6,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-stellar-crown-etb-case",
@@ -1382,7 +1674,11 @@
     "estimatedMarketValue": 540,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 6,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-surging-sparks-booster-box",
@@ -1400,7 +1696,11 @@
     "estimatedMarketValue": 275,
     "priority": "GRAIL",
     "cooldownMins": 30,
-    "active": true
+    "active": true,
+    "packCount": 36,
+    "pricePerPack": 6.53,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-surging-sparks-booster-case",
@@ -1418,7 +1718,11 @@
     "estimatedMarketValue": 1410,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 216,
+    "pricePerPack": 6.53,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-surging-sparks-etb",
@@ -1437,7 +1741,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 9.11,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-surging-sparks-etb-case",
@@ -1457,7 +1765,11 @@
     "estimatedMarketValue": 820,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 9.11,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-prismatic-evolutions-etb",
@@ -1476,7 +1788,11 @@
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true,
-    "owned": true
+    "owned": true,
+    "packCount": 9,
+    "pricePerPack": 13.33,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-prismatic-evolutions-etb-case",
@@ -1496,7 +1812,11 @@
     "estimatedMarketValue": 1350,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 14.61,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-prismatic-evolutions-bundle",
@@ -1514,7 +1834,11 @@
     "estimatedMarketValue": 80,
     "priority": "GRAIL",
     "cooldownMins": 45,
-    "active": true
+    "active": true,
+    "packCount": 6,
+    "pricePerPack": 9.67,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-journey-together-booster-box",
@@ -1529,10 +1853,14 @@
     "minStock": 1,
     "msrpCeiling": 161.64,
     "maxMarketBuyPrice": 193,
-    "estimatedMarketValue": 193.22,
+    "estimatedMarketValue": 192.46,
     "priority": "STANDARD",
     "cooldownMins": 30,
-    "active": true
+    "active": true,
+    "packCount": 36,
+    "pricePerPack": 5.17,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-journey-together-booster-case",
@@ -1550,7 +1878,11 @@
     "estimatedMarketValue": 1170,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 216,
+    "pricePerPack": 5.42,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-journey-together-etb",
@@ -1569,7 +1901,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 8,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-journey-together-etb-case",
@@ -1589,7 +1925,11 @@
     "estimatedMarketValue": 720,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 8,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-destined-rivals-booster-box",
@@ -1607,7 +1947,11 @@
     "estimatedMarketValue": 275,
     "priority": "GRAIL",
     "cooldownMins": 30,
-    "active": true
+    "active": true,
+    "packCount": 36,
+    "pricePerPack": 6.81,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-destined-rivals-booster-case",
@@ -1625,7 +1969,11 @@
     "estimatedMarketValue": 1470,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 216,
+    "pricePerPack": 6.81,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-destined-rivals-etb",
@@ -1644,7 +1992,11 @@
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 10.56,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "sv-destined-rivals-etb-case",
@@ -1664,7 +2016,11 @@
     "estimatedMarketValue": 950,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 10.56,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-battle-styles-booster-box",
@@ -1682,7 +2038,11 @@
     "estimatedMarketValue": 282.05,
     "priority": "STANDARD",
     "cooldownMins": 30,
-    "active": true
+    "active": true,
+    "packCount": 36,
+    "pricePerPack": 4.58,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-battle-styles-booster-case",
@@ -1700,7 +2060,11 @@
     "estimatedMarketValue": 1199.99,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 216,
+    "pricePerPack": 5.56,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-battle-styles-single-etb",
@@ -1719,7 +2083,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 14.6,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-battle-styles-single-etb-case",
@@ -1739,7 +2107,11 @@
     "estimatedMarketValue": 1314,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 14.6,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-battle-styles-rapid-etb",
@@ -1758,7 +2130,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 14.88,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-battle-styles-rapid-etb-case",
@@ -1778,7 +2154,11 @@
     "estimatedMarketValue": 1339,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 14.88,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-chilling-reign-booster-box",
@@ -1796,7 +2176,11 @@
     "estimatedMarketValue": 454.4,
     "priority": "GRAIL",
     "cooldownMins": 30,
-    "active": true
+    "active": true,
+    "packCount": 36,
+    "pricePerPack": 8.19,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-chilling-reign-booster-case",
@@ -1814,7 +2198,11 @@
     "estimatedMarketValue": 1150,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 216,
+    "pricePerPack": 5.32,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-chilling-reign-shadow-etb",
@@ -1833,7 +2221,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 16.33,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-chilling-reign-shadow-etb-case",
@@ -1853,7 +2245,11 @@
     "estimatedMarketValue": 1518,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 16.87,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-chilling-reign-ice-etb",
@@ -1872,7 +2268,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 15.55,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-chilling-reign-ice-etb-case",
@@ -1892,7 +2292,11 @@
     "estimatedMarketValue": 1414,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 15.71,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-evolving-skies-booster-box",
@@ -1910,7 +2314,11 @@
     "estimatedMarketValue": 1600,
     "priority": "GRAIL",
     "cooldownMins": 30,
-    "active": true
+    "active": true,
+    "packCount": 36,
+    "pricePerPack": 34.72,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-evolving-skies-booster-case",
@@ -1928,7 +2336,11 @@
     "estimatedMarketValue": 1150,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 216,
+    "pricePerPack": 5.32,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-evolving-skies-etb",
@@ -1947,7 +2359,11 @@
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 26.11,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-evolving-skies-etb-case",
@@ -1967,7 +2383,11 @@
     "estimatedMarketValue": 2200,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 8.33,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-celebrations-etb",
@@ -1986,7 +2406,11 @@
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 12.78,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-celebrations-etb-case",
@@ -2006,7 +2430,11 @@
     "estimatedMarketValue": 1150,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 12.78,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-fusion-strike-booster-box",
@@ -2021,10 +2449,14 @@
     "minStock": 1,
     "msrpCeiling": 143.64,
     "maxMarketBuyPrice": 869,
-    "estimatedMarketValue": 976.22,
+    "estimatedMarketValue": 975.9,
     "priority": "GRAIL",
     "cooldownMins": 30,
-    "active": true
+    "active": true,
+    "packCount": 36,
+    "pricePerPack": 11.67,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-fusion-strike-booster-case",
@@ -2042,7 +2474,11 @@
     "estimatedMarketValue": 1150,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 216,
+    "pricePerPack": 5.32,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-fusion-strike-etb",
@@ -2061,7 +2497,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 10.89,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-fusion-strike-etb-case",
@@ -2081,7 +2521,11 @@
     "estimatedMarketValue": 980,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 12.22,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-brilliant-stars-booster-box",
@@ -2096,10 +2540,14 @@
     "minStock": 1,
     "msrpCeiling": 143.64,
     "maxMarketBuyPrice": 508,
-    "estimatedMarketValue": 555.89,
+    "estimatedMarketValue": 554.15,
     "priority": "GRAIL",
     "cooldownMins": 30,
-    "active": true
+    "active": true,
+    "packCount": 36,
+    "pricePerPack": 7.92,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-brilliant-stars-booster-case",
@@ -2117,7 +2565,11 @@
     "estimatedMarketValue": 1150,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 216,
+    "pricePerPack": 5.32,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-brilliant-stars-etb",
@@ -2136,7 +2588,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 7.56,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-brilliant-stars-etb-case",
@@ -2156,7 +2612,11 @@
     "estimatedMarketValue": 680,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 7.22,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-astral-radiance-booster-box",
@@ -2171,10 +2631,14 @@
     "minStock": 1,
     "msrpCeiling": 143.64,
     "maxMarketBuyPrice": 212,
-    "estimatedMarketValue": 412.27,
+    "estimatedMarketValue": 411.19,
     "priority": "STANDARD",
     "cooldownMins": 30,
-    "active": true
+    "active": true,
+    "packCount": 36,
+    "pricePerPack": 6.53,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-astral-radiance-booster-case",
@@ -2192,7 +2656,11 @@
     "estimatedMarketValue": 2509.86,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 216,
+    "pricePerPack": 11.62,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-astral-radiance-etb",
@@ -2211,7 +2679,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 6.44,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-astral-radiance-etb-case",
@@ -2231,7 +2703,11 @@
     "estimatedMarketValue": 580,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 6.67,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-pokemon-go-etb",
@@ -2250,7 +2726,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 6.44,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-pokemon-go-etb-case",
@@ -2270,7 +2750,11 @@
     "estimatedMarketValue": 580,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 7.22,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-lost-origin-booster-box",
@@ -2288,7 +2772,11 @@
     "estimatedMarketValue": 732.87,
     "priority": "GRAIL",
     "cooldownMins": 30,
-    "active": true
+    "active": true,
+    "packCount": 36,
+    "pricePerPack": 9.44,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-lost-origin-booster-case",
@@ -2306,7 +2794,11 @@
     "estimatedMarketValue": 1150,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 216,
+    "pricePerPack": 5.32,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-lost-origin-etb",
@@ -2325,7 +2817,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 21.89,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-lost-origin-etb-case",
@@ -2345,7 +2841,11 @@
     "estimatedMarketValue": 720,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 7.78,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-silver-tempest-booster-box",
@@ -2360,10 +2860,14 @@
     "minStock": 1,
     "msrpCeiling": 143.64,
     "maxMarketBuyPrice": 463,
-    "estimatedMarketValue": 522.31,
+    "estimatedMarketValue": 522.69,
     "priority": "STANDARD",
     "cooldownMins": 30,
-    "active": true
+    "active": true,
+    "packCount": 36,
+    "pricePerPack": 6.81,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-silver-tempest-booster-case",
@@ -2381,7 +2885,11 @@
     "estimatedMarketValue": 1150,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 216,
+    "pricePerPack": 5.32,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-silver-tempest-etb",
@@ -2400,7 +2908,11 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 6.44,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-silver-tempest-etb-case",
@@ -2420,7 +2932,11 @@
     "estimatedMarketValue": 580,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 6.67,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-crown-zenith-etb",
@@ -2440,7 +2956,11 @@
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true,
-    "owned": false
+    "owned": false,
+    "packCount": 9,
+    "pricePerPack": 12.78,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-crown-zenith-etb-case",
@@ -2462,7 +2982,11 @@
     "estimatedMarketValue": 1150,
     "priority": "GRAIL",
     "cooldownMins": 60,
-    "active": true
+    "active": true,
+    "packCount": 90,
+    "pricePerPack": 8.33,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   },
   {
     "id": "swsh-crown-zenith-bundle",
@@ -2480,6 +3004,10 @@
     "estimatedMarketValue": 80,
     "priority": "GRAIL",
     "cooldownMins": 45,
-    "active": true
+    "active": true,
+    "packCount": 6,
+    "pricePerPack": 9,
+    "isRipValueLeader": false,
+    "isPreRelease": false
   }
 ]

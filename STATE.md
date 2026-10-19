@@ -85,22 +85,26 @@ All persistent JSON files are written via `atomicWriteJson()` (`.tmp` write + `f
 
 ---
 
-## 5. Executive UI Architecture (V4 Step 2B — Live in `public/index.html` & `dashboard.html`)
+## 5. Current Phase & Executive UI Architecture (V4 Step 2B — 100% Complete & Live on `http://localhost:3000`)
 
-- **Collapsible 4-Tab Sidebar Navigation:**
-  1. `📡 Live Command`: Real-time radar, 3 Hero KPI cards (Vault & Portfolio Value, Active Sniper Radar, `💎 Unicorn MSRP Trophy Counter`), Live Deal Feed with Rule of 3 instant-cart buttons (`⚡ 1x`, `⚡ 2x`, `⚡ 3x Family Pack`) and 1-Click `🏆 Claim Trophy`, plus 3-column Market Intelligence Bento and collapsible 14-Day Market Ledger.
-  2. `🎯 Bounty Hunter`: On-demand live recon interface powered by `/api/bounty-recon`, comparing Top 5 lowest landed options, `$/Pack` rip math (`🔥 RIP VALUE LEADER <= $4.25/pk`), `#1 Best Sealed Hold`, and `#1 Cheapest Pack Rip`.
-  3. `🏆 The Conquered Vault`: Gamified Conquered Vault & Trophy Plaque showcase powered by `/api/conquered-vault` (featuring Trophy #1 `30th Celebration 10-ETB Case` and Trophy #2 `Chaos Rising ETB @ $51.00 MSRP`, recreated Discord alert banners, interactive `ruleOf3Status` pips, editable memory notes, and Wall Display Checklist with case overlay badges).
-  4. `⚙️ Target Matrix & Config`: Full 38-target policy configuration grid with `$/Pack` badges, Pre-Release Bleed warnings (`⏳ PRE-RELEASE BLEED`), Universal Calibrate presets, and admin controls.
-- **Dynamic Pokédex Chameleon / Click-to-Evolve & Shiny Header Engine:**
-  - Defaults to **Scott's Gyarados + Logan's Arcanine Tag-Team** over a **Royal Purple / Obsidian** executive theme (`#08070E` / `#110F1D`).
-  - Supports interactive **Click-to-Evolve & Shiny toggle** across the Hall of Fame roster + live PokeAPI search (`1-1025`), dynamically shifting header sprites, `.ogg` cries (`0.35` volume), and `--accent-primary` / `--accent-secondary` elemental palettes.
+- **Current Phase:** **V4 Step 2B — 100% COMPLETE & VERIFIED LIVE (`http://localhost:3000`)**
+  - Includes the **Executive Sidebar UI Overhaul**, **Collapsible Hero Battle Stage (`Arena: Open / Mini`)**, **1080p/2K/4K Responsive Layout**, **Diagonal Cartoon Scene-Wipe Transitions (`0.75s` `#sidebar-wipe-overlay`)**, and **Logan's Playable Pokédex Battle Stadium** (`#clash-cutin-overlay` in `Hold-Open` mode by default with Live Arcade HP Bars, 4 Clickable Attack Moves + Ultimate Signature Attacks, Web Audio API Synth SFX + `.ogg` Cries, Elemental Projectiles, Real 18-Type Damage/Crit Math, `Sim Full Battle`, `Random Battle`, `Full Heal`, inside-stadium `Evolve (+30% HP)` & `Shiny: ON/OFF`, and the Bottom 22-Pokémon All-Star Roster Dock + `#1–1025` Live Search).
+- **Collapsible 4-Tab Sidebar Navigation (`COMMAND VIEWS` — Zero Emoji/Icon Clutter):**
+  1. `Live Command`: Real-time radar, 3 Hero KPI cards (Vault & Portfolio Value, Active Sniper Radar, `Unicorn MSRP Trophy Counter`), Live Deal Feed with quick filters (`All Hits`, `Under Trigger`, `Sealed Cases`, `ETBs & Boxes`, `Best $/Pack`), Rule of 3 instant-cart buttons (`1x`, `2x`, `3x`), and 1-Click `Claim`, plus 3-column Market Intelligence Bento and collapsible 14-Day Market Ledger.
+  2. `Bounty Hunter`: On-demand live recon interface powered by `/api/bounty-recon`, comparing Top 5 lowest landed options, `$/Pack` rip math (`RIP VALUE LEADER <= $4.25/pk`), `#1 Best Sealed Hold`, and `#1 Cheapest Pack Rip`.
+  3. `Conquered Vault`: Gamified Conquered Vault & Trophy Plaque showcase powered by `/api/conquered-vault` (featuring Trophy #1 `30th Celebration 10-ETB Case` and Trophy #2 `Chaos Rising ETB @ $51.00 MSRP`, recreated Discord alert banners, interactive `ruleOf3Status` pips, editable memory notes, and Wall Display Checklist with case overlay badges).
+  4. `Target Matrix`: Full 38-target policy configuration grid with `$/Pack` badges, Pre-Release Bleed warnings (`PRE-RELEASE BLEED`), Universal Calibrate presets, and admin controls.
+- **Dynamic Pokédex Chameleon, Collapsible Hero Battle Stage & Logan's Playable Battle Stadium:**
+  - Defaults to **Scott's Gyarados + Logan's Arcanine Tag-Team** over a **Royal Purple / Obsidian** executive theme (`#08070F`) with collinear diagonal polygon washes and `0.26` opacity official artwork watermarks shining through smoked-glass cards (`rgba(11, 10, 19, 0.36)`).
+  - Supports interactive **Click-to-Evolve (`Stage X/N` recursive PokeAPI resolver for all 1,025 Pokémon) & Shiny toggle**, portal-mounted `Switch ▾` selector (`z-index: 99995`), `.ogg` cries (`0.35` volume), and full-screen playable turn-based / auto-sim battles inside `#clash-cutin-overlay`.
 
 ---
 
 ## 6. Last Touch Log
 
 - **2026-10-18 | Agent: Gemini 4 Argon (via `agy`)**
+  - **V4 Step 2B Final Checkpoint & GitHub Backup (`100% Complete & Verified Live on http://localhost:3000`):**
+    - Recorded full completion of **V4 Step 2B** across `STATE.md`, `public/index.html`, `dashboard.html`, `server.js`, `conqueredVault.json`, and `data/msrpTrophies.json`: Executive Sidebar UI Overhaul, Collapsible Hero Battle Stage (`Arena: Open / Mini`), 1080p/2K/4K Responsive Layout, Diagonal Cartoon Scene-Wipe Transitions (`#sidebar-wipe-overlay`), and Logan's Playable Pokédex Battle Stadium with Live HP/Attacks/Auto-Sim/Roster Dock.
   - Completed V4 Step 2B.7 ("Logan's Interactive Pokédex Battle Stadium + Hold-Open Mode + Sidebar Cartoon Scene Wipe") in `public/index.html` (and synced `dashboard.html`):
     - **Hold-Open Battle Stadium Mode (`battleAutoClose: false` by Default):** `#clash-cutin-overlay` stays open indefinitely by default and never closes when clicking on the background, Pokémon, or stat cards. Added explicit top-right `✕ Exit Stadium (Esc)` button + `Auto-Close: OFF / 6s` toggle pill (`toggleBattleAutoClose`), and restricted keyboard dismissal to `Escape` only.
     - **Playable Turn-Based / Click-to-Attack Battle Stadium (`executeStadiumMove`, `TYPE_MOVE_POOL`, `getFourMovesForPokemon`):** Added arcade **Live HP Health Bars** (`HP: 348 / 348` transitioning Emerald Green ➔ Amber Yellow `<50%` ➔ Crimson Red `<20%`) with floating `-XX HP` damage popups and K.O. trophy celebration banner; **4 Clickable Attack Move Buttons** per Pokémon (pulling real moves from PokeAPI `/api/v2/pokemon/{id}` + 18-Type signature move pools including an Ultimate Signature Attack with `2x SUPER` / `0.5x RESIST` / `0x IMMUNE` tags); attacker lunge (`anim-lunge-right` / `anim-lunge-left`), elemental projectile bursts across the diagonal seam (`spawnElementalProjectile`), Web Audio API synth SFX (`playBattleSynthSfx('whoosh'|'impact'|'victory')`) + `.ogg` cries, defender flash/recoil (`anim-hit-recoil`), arena shake (`anim-arena-shake`), real Pokémon damage formula (`ATK`/`SPA` vs `DEF`/`SPD`, `15%` crit chance, 18-Type multiplier), Center VS Battle Announcer Log (`#stadiumBattleLogText`), `Sim Full Battle` (`toggleAutoSimBattle`), `Random Battle` (`triggerRandomStadiumBattle`), `Full Heal` (`resetBattleStadiumMatch`), and live inside-stadium `Evolve (+30% HP)` (`stadiumEvolvePokemon`) + `Shiny: ON/OFF` (`stadiumToggleShiny`).

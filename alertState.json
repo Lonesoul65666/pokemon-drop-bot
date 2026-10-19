@@ -7,46 +7,46 @@
     "alertCount": 3
   },
   "me-pitch-black-etb__TCGPlayer Verified Seller": {
-    "lastPrice": 64,
-    "lowestAlertedPrice": 64,
-    "timestamp": 1792243162028,
-    "timeStr": "08:19 AM",
-    "alertCount": 3
+    "lastPrice": 63,
+    "lowestAlertedPrice": 63,
+    "timestamp": 1792324457107,
+    "timeStr": "06:54 AM",
+    "alertCount": 6
   },
   "swsh-lost-origin-etb__TCGPlayer Verified Seller": {
-    "lastPrice": 196.99,
+    "lastPrice": 197,
     "lowestAlertedPrice": 195.99,
-    "timestamp": 1792274220296,
-    "timeStr": "04:57 PM",
-    "alertCount": 3
+    "timestamp": 1792364039410,
+    "timeStr": "05:53 PM",
+    "alertCount": 9
   },
   "sv-journey-together-booster-box__PKMN Colosseum": {
     "lastPrice": 185.99,
     "lowestAlertedPrice": 185.99,
-    "timestamp": 1792273759267,
-    "timeStr": "04:49 PM",
-    "alertCount": 3
+    "timestamp": 1792360879937,
+    "timeStr": "05:01 PM",
+    "alertCount": 9
   },
   "me-ascended-heroes-etb-case__TCGPlayer Verified Seller": {
-    "lastPrice": 1582,
-    "lowestAlertedPrice": 1582,
-    "timestamp": 1792273829931,
-    "timeStr": "04:50 PM",
-    "alertCount": 3
+    "lastPrice": 1580,
+    "lowestAlertedPrice": 1580,
+    "timestamp": 1792363649582,
+    "timeStr": "05:47 PM",
+    "alertCount": 9
   },
   "me-30th-celebration-etb-case__TCGPlayer Verified Seller": {
-    "lastPrice": 1412.89,
-    "lowestAlertedPrice": 1412.88,
-    "timestamp": 1792273851637,
-    "timeStr": "04:50 PM",
-    "alertCount": 3
+    "lastPrice": 1412.87,
+    "lowestAlertedPrice": 1387.89,
+    "timestamp": 1792362103721,
+    "timeStr": "05:21 PM",
+    "alertCount": 9
   },
   "sv-prismatic-evolutions-etb-case__TCGPlayer Verified Seller": {
-    "lastPrice": 1320,
-    "lowestAlertedPrice": 1320,
-    "timestamp": 1792274054833,
-    "timeStr": "04:54 PM",
-    "alertCount": 3
+    "lastPrice": 1315.01,
+    "lowestAlertedPrice": 1315.01,
+    "timestamp": 1792372241899,
+    "timeStr": "08:10 PM",
+    "alertCount": 10
   },
   "swsh-fusion-strike-etb__TCGPlayer Verified Seller": {
     "lastPrice": 320,
@@ -56,31 +56,73 @@
     "alertCount": 3
   },
   "me-chaos-rising-etb__TCGPlayer Verified Seller": {
-    "lastPrice": 62,
-    "lowestAlertedPrice": 62,
-    "timestamp": 1792246540049,
-    "timeStr": "09:15 AM",
-    "alertCount": 1
+    "lastPrice": 66.19,
+    "lowestAlertedPrice": 51,
+    "timestamp": 1792346247627,
+    "timeStr": "12:57 PM",
+    "alertCount": 4
   },
   "sv-twilight-masquerade-etb__TCGPlayer Verified Seller": {
     "lastPrice": 92.57,
     "lowestAlertedPrice": 92.57,
-    "timestamp": 1792266726703,
-    "timeStr": "02:52 PM",
-    "alertCount": 2
+    "timestamp": 1792329003870,
+    "timeStr": "08:10 AM",
+    "alertCount": 6
   },
   "sv-journey-together-booster-box__TCGPlayer Verified Seller": {
-    "lastPrice": 189.4,
-    "lowestAlertedPrice": 189.4,
-    "timestamp": 1792262604923,
-    "timeStr": "01:43 PM",
-    "alertCount": 1
+    "lastPrice": 179.4,
+    "lowestAlertedPrice": 179.4,
+    "timestamp": 1792349154923,
+    "timeStr": "01:45 PM",
+    "alertCount": 4
   },
   "sv-destined-rivals-etb__TCGPlayer Verified Seller": {
     "lastPrice": 104,
     "lowestAlertedPrice": 104,
     "timestamp": 1792265242049,
     "timeStr": "02:27 PM",
+    "alertCount": 1
+  },
+  "sv-prismatic-evolutions-etb__TCGPlayer Verified Seller": {
+    "lastPrice": 109,
+    "lowestAlertedPrice": 109,
+    "timestamp": 1792371699769,
+    "timeStr": "08:01 PM",
+    "alertCount": 3
+  },
+  "sv-shrouded-fable-bundle__TCGPlayer Verified Seller": {
+    "lastPrice": 52.99,
+    "lowestAlertedPrice": 46.99,
+    "timestamp": 1792362794399,
+    "timeStr": "05:33 PM",
+    "alertCount": 3
+  },
+  "swsh-celebrations-etb__TCGPlayer Verified Seller": {
+    "lastPrice": 280,
+    "lowestAlertedPrice": 280,
+    "timestamp": 1792291197581,
+    "timeStr": "09:39 PM",
+    "alertCount": 1
+  },
+  "me-perfect-order-etb__TCGPlayer Verified Seller": {
+    "lastPrice": 62.3,
+    "lowestAlertedPrice": 62.3,
+    "timestamp": 1792310245406,
+    "timeStr": "02:57 AM",
+    "alertCount": 2
+  },
+  "sv-prismatic-evolutions-bundle__TCGPlayer Verified Seller": {
+    "lastPrice": 45.28,
+    "lowestAlertedPrice": 45.28,
+    "timestamp": 1792331164144,
+    "timeStr": "08:46 AM",
+    "alertCount": 1
+  },
+  "sv-surging-sparks-etb__TCGPlayer Verified Seller": {
+    "lastPrice": 59.49,
+    "lowestAlertedPrice": 59.49,
+    "timestamp": 1792340684900,
+    "timeStr": "11:24 AM",
     "alertCount": 1
   }
 }
