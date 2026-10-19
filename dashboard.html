@@ -242,7 +242,8 @@
       margin-bottom: 18px;
       border-radius: 16px;
       position: relative;
-      overflow: visible;
+      z-index: 600;
+      overflow: visible !important;
       background:
         linear-gradient(120deg,
           rgba(var(--slot1-primary-rgb), 0.22) 0%,
@@ -838,7 +839,7 @@
       <button onclick="toggleHeroStageMode()" id="stageModeBtn" title="Collapse or expand the Premier Pokédex Tag-Team Hero Stage below"
               class="top-ctrl-pill bg-[#161329]/85 hover:bg-[#221D3B] text-slate-200 border border-white/15">
         <span id="stageModeDot" class="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#00F0FF]"></span>
-        <span id="stageModeLabel">Stage: Open</span>
+        <span id="stageModeLabel">Arena: Open</span>
       </button>
 
       <button onclick="togglePeekArtMode(event)" id="peekArtBtn" title="Fade UI cards down to 5% opacity so you can admire the full-screen background Pokémon clash unobstructed (click anywhere to restore)"
@@ -919,14 +920,15 @@
         </div>
 
         <!-- Expanded Mode Full Eye-Level Telemetry Card -->
-        <div class="telemetry-expanded-content glass-card rounded-xl p-3.5 space-y-2.5">
-          <div class="flex items-center justify-between">
-            <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-300">Sniper Telemetry</span>
-            <span class="inline-flex items-center gap-1.5 text-[10px] font-mono-num font-bold text-emerald-400">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_#10B981]"></span>31/31 Stores
-            </span>
+        <div class="telemetry-expanded-content glass-card rounded-xl p-3.5 space-y-2">
+          <div class="space-y-1">
+            <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-300 whitespace-nowrap">Sniper Telemetry</div>
+            <div class="inline-flex items-center gap-1.5 text-[11px] font-mono-num font-bold text-emerald-400 whitespace-nowrap">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_#10B981]"></span>
+              <span>31/31 Stores Online</span>
+            </div>
           </div>
-          <div class="text-[11px] text-slate-200 font-mono-num" id="sidebarStreamStatus">
+          <div class="text-[11px] text-slate-200 font-mono-num whitespace-nowrap" id="sidebarStreamStatus">
             31 Shopify + 9 Big-Box + TCGP
           </div>
           <div class="grid grid-cols-2 gap-1.5 pt-1 text-[10px] font-mono-num">
@@ -954,8 +956,8 @@
         <!-- =================================================================== -->
         <!-- TIER 2: PREMIER "POKÉDEX TAG-TEAM & VERSUS STAGE" HERO BANNER       -->
         <!-- =================================================================== -->
-        <div id="premierBattleStage" class="premier-battle-stage">
-          <!-- Expanded Showcase Mode (Stage: Open) -->
+        <div id="premierBattleStage" class="premier-battle-stage" style="position: relative; z-index: 600; overflow: visible !important;">
+          <!-- Expanded Showcase Mode (Arena: Open) -->
           <div id="heroStageExpanded" class="px-5 py-3.5 grid grid-cols-1 xl:grid-cols-[1fr_auto_1fr] items-center gap-4">
             <!-- Left Wing: Slot 1 Showcase -->
             <div class="flex items-center gap-4 min-w-0">
@@ -983,10 +985,10 @@
                 </div>
                 <!-- Spacious Non-Overlapping Action Pills -->
                 <div class="flex items-center gap-1.5 flex-wrap pt-0.5">
-                  <button onclick="openRosterPopover(1)" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] font-extrabold text-cyan-200 border border-white/15 whitespace-nowrap transition">Switch ▾</button>
+                  <button onclick="openRosterPopover(1, event)" id="slot1SwitchBtn" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] font-extrabold text-cyan-200 border border-white/15 whitespace-nowrap transition">Switch ▾</button>
                   <button onclick="onEvolveClick(1)" id="slot1EvolveBtn" class="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/35 text-cyan-200 border border-cyan-400/40 text-[11px] font-extrabold whitespace-nowrap transition">Reset Base</button>
-                  <button onclick="onShinyToggleClick(1)" id="slot1ShinyBtn" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-amber-500/30 text-slate-200 hover:text-amber-200 border border-white/15 text-[11px] font-bold whitespace-nowrap transition">Shiny OFF</button>
-                  <button onclick="onResetBaseClick(1)" id="slot1ResetBaseBtn" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/15 text-slate-300 border border-white/10 text-[11px] font-semibold whitespace-nowrap transition">Stage 1</button>
+                  <button onclick="onShinyToggleClick(1)" id="slot1ShinyBtn" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-amber-500/30 text-slate-200 hover:text-amber-200 border border-white/15 text-[11px] font-bold whitespace-nowrap transition">Shiny: OFF</button>
+                  <button onclick="onResetBaseClick(1)" id="slot1ResetBaseBtn" title="Evolution Stage Position (Click to return to Stage 1)" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/15 text-slate-300 border border-white/10 text-[11px] font-mono-num font-semibold whitespace-nowrap transition">Stage 2/2</button>
                 </div>
               </div>
             </div>
@@ -1038,10 +1040,10 @@
                 </div>
                 <!-- Spacious Non-Overlapping Action Pills -->
                 <div class="flex items-center justify-end gap-1.5 flex-wrap pt-0.5">
-                  <button onclick="onResetBaseClick(2)" id="slot2ResetBaseBtn" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/15 text-slate-300 border border-white/10 text-[11px] font-semibold whitespace-nowrap transition">Stage 1</button>
-                  <button onclick="onShinyToggleClick(2)" id="slot2ShinyBtn" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-amber-500/30 text-slate-200 hover:text-amber-200 border border-white/15 text-[11px] font-bold whitespace-nowrap transition">Shiny OFF</button>
+                  <button onclick="onResetBaseClick(2)" id="slot2ResetBaseBtn" title="Evolution Stage Position (Click to return to Stage 1)" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/15 text-slate-300 border border-white/10 text-[11px] font-mono-num font-semibold whitespace-nowrap transition">Stage 2/2</button>
+                  <button onclick="onShinyToggleClick(2)" id="slot2ShinyBtn" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-amber-500/30 text-slate-200 hover:text-amber-200 border border-white/15 text-[11px] font-bold whitespace-nowrap transition">Shiny: OFF</button>
                   <button onclick="onEvolveClick(2)" id="slot2EvolveBtn" class="px-2.5 py-1 rounded-lg bg-orange-500/20 hover:bg-orange-500/35 text-orange-200 border border-orange-400/40 text-[11px] font-extrabold whitespace-nowrap transition">Reset Base</button>
-                  <button onclick="openRosterPopover(2)" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] font-extrabold text-amber-200 border border-white/15 whitespace-nowrap transition">Switch ▾</button>
+                  <button onclick="openRosterPopover(2, event)" id="slot2SwitchBtn" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] font-extrabold text-amber-200 border border-white/15 whitespace-nowrap transition">Switch ▾</button>
                 </div>
               </div>
 
@@ -1061,7 +1063,7 @@
             </div>
           </div>
 
-          <!-- Collapsed Slim Ribbon Mode (Stage: Mini, 44px height) -->
+          <!-- Collapsed Slim Ribbon Mode (Arena: Mini, 44px height) -->
           <div id="heroStageMini" class="hidden h-[44px] px-4 flex items-center justify-between gap-3">
             <div class="flex items-center gap-3 min-w-0">
               <img id="miniSlot1Sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/130.png" class="w-7 h-7 object-contain" alt="" />
@@ -1069,76 +1071,77 @@
               <img id="miniSlot2Sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/59.png" class="w-7 h-7 object-contain" alt="" />
             </div>
             <div class="flex items-center gap-2 shrink-0">
-              <button onclick="openRosterPopover(1)" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] font-bold text-cyan-200 whitespace-nowrap">Switch Slot 1</button>
-              <button onclick="openRosterPopover(2)" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] font-bold text-amber-200 whitespace-nowrap">Switch Slot 2</button>
+              <button onclick="openRosterPopover(1, event)" id="miniSlot1SwitchBtn" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] font-bold text-cyan-200 whitespace-nowrap">Switch Slot 1</button>
+              <button onclick="openRosterPopover(2, event)" id="miniSlot2SwitchBtn" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] font-bold text-amber-200 whitespace-nowrap">Switch Slot 2</button>
               <button onclick="replayTagTeamClash()" class="px-2.5 py-1 rounded-lg bg-purple-500/25 hover:bg-purple-500/40 text-[11px] font-extrabold text-purple-200 border border-purple-400/40 whitespace-nowrap">Full-Screen Battle</button>
               <button onclick="toggleHeroStageMode()" class="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/35 text-[11px] font-extrabold text-cyan-200 border border-cyan-400/40 whitespace-nowrap">Expand Arena ▾</button>
             </div>
           </div>
+        </div>
 
-          <!-- Roster Popover Drawer -->
-          <div id="rosterPopover" class="hidden absolute top-full mt-2 left-1/2 -translate-x-1/2 w-[380px] sm:w-[480px] glass-card rounded-2xl p-4 z-50 shadow-2xl border border-white/25" style="background: rgba(11, 10, 20, 0.94); backdrop-filter: blur(16px);">
-            <div class="flex items-center justify-between pb-2.5 mb-3 border-b border-white/10">
-              <div>
-                <div class="text-xs font-extrabold text-white uppercase tracking-wider">Scott &amp; Logan Hall of Fame Roster</div>
-                <div id="rosterSlotIndicator" class="text-[10px] text-cyan-300 font-semibold">Selecting Partner for Slot 1 (Left Flank Aura)</div>
-              </div>
-              <div class="flex items-center gap-1">
-                <button onclick="switchRosterTargetSlot(1)" id="rosterSlot1Btn" class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">Slot 1</button>
-                <button onclick="switchRosterTargetSlot(2)" id="rosterSlot2Btn" class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-300 border border-white/10">Slot 2</button>
-                <button onclick="closeRosterPopover()" class="ml-1 text-slate-300 hover:text-white font-bold px-1.5">&times;</button>
-              </div>
+        <!-- Portal-Level Click-Outside Backdrop + Fixed Pokémon Switcher Popover (Mounted to document.body at z-index: 99995) -->
+        <div id="rosterPopoverBackdrop" onclick="closeRosterPopover()" class="hidden" style="position: fixed; inset: 0; z-index: 99990; background: rgba(4, 3, 10, 0.35);"></div>
+        <div id="rosterPopover" onclick="event.stopPropagation()" class="hidden w-[380px] sm:w-[460px] rounded-2xl p-4 shadow-[0_24px_64px_rgba(0,0,0,0.92)] border border-cyan-400/40" style="position: fixed; top: 165px; left: 260px; z-index: 99995; background: rgba(11, 10, 20, 0.96); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);">
+          <div class="flex items-center justify-between pb-2.5 mb-3 border-b border-white/10">
+            <div>
+              <div class="text-xs font-extrabold text-white uppercase tracking-wider">Scott &amp; Logan Hall of Fame Roster</div>
+              <div id="rosterSlotIndicator" class="text-[10px] text-cyan-300 font-semibold">Selecting Partner for Slot 1 (Upper-Left Aura)</div>
             </div>
+            <div class="flex items-center gap-1">
+              <button onclick="switchRosterTargetSlot(1)" id="rosterSlot1Btn" class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">Slot 1</button>
+              <button onclick="switchRosterTargetSlot(2)" id="rosterSlot2Btn" class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-300 border border-white/10">Slot 2</button>
+              <button onclick="closeRosterPopover()" class="ml-1 text-slate-300 hover:text-white font-bold px-1.5">&times;</button>
+            </div>
+          </div>
 
-            <!-- Featured Tag-Team Presets -->
-            <div class="mb-3">
-              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Featured Tag-Team Presets</div>
-              <div class="grid grid-cols-2 gap-1.5">
-                <button onclick="applyTeamPreset('GYARADOS_ARCANINE')" class="px-2.5 py-1.5 rounded-lg bg-[#1B1630]/80 hover:bg-[#251E42] border border-cyan-500/30 text-left text-[11px] font-bold text-white flex items-center justify-between">
-                  <span>Gyarados &amp; Arcanine</span>
-                  <span class="text-[9px] text-cyan-300 font-mono-num">2x High</span>
-                </button>
-                <button onclick="applyTeamPreset('ABSOL_DISASTER')" class="px-2.5 py-1.5 rounded-lg bg-[#1B1630]/80 hover:bg-[#251E42] border border-rose-500/30 text-left text-[11px] font-bold text-white flex items-center justify-between">
-                  <span>Absol &amp; Umbreon</span>
-                  <span class="text-[9px] text-rose-300 font-mono-num">Dark</span>
-                </button>
-                <button onclick="applyTeamPreset('MEWTWO_CHARIZARD')" class="px-2.5 py-1.5 rounded-lg bg-[#1B1630]/80 hover:bg-[#251E42] border border-purple-500/30 text-left text-[11px] font-bold text-white flex items-center justify-between">
-                  <span>Mewtwo vs. Charizard</span>
-                  <span class="text-[9px] text-purple-300 font-mono-num">Clash</span>
-                </button>
-                <button onclick="applyTeamPreset('KANTO_ORIGINALS')" class="px-2.5 py-1.5 rounded-lg bg-[#1B1630]/80 hover:bg-[#251E42] border border-emerald-500/30 text-left text-[11px] font-bold text-white flex items-center justify-between">
-                  <span>Squirtle vs. Charmander</span>
-                  <span class="text-[9px] text-emerald-300 font-mono-num">2x High</span>
-                </button>
-              </div>
+          <!-- Live PokeAPI Search (All 1,025 Pokémon — Auto-Focused on Open) -->
+          <div class="mb-3 pb-3 border-b border-white/10">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-cyan-300 mb-1">1,025 Pokémon Live Search (Auto-Resolves Full Evolution Chain &amp; Base Stats)</div>
+            <div class="flex gap-1.5">
+              <input id="pokeSearchInput" type="text" placeholder="Type name or # (e.g. blastoise, lillipup, squirtle, rayquaza)..."
+                     onkeydown="if(event.key==='Enter') searchPokeApiLive()"
+                     class="flex-1 bg-[#090710] border border-cyan-400/40 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-400" />
+              <button onclick="searchPokeApiLive()" id="pokeSearchBtn" class="px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-extrabold text-xs">Load</button>
             </div>
+            <div id="pokeSearchStatus" class="text-[10px] text-slate-300 mt-1"></div>
+          </div>
 
-            <!-- Individual Hall of Fame Roster -->
-            <div class="mb-3">
-              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Hall of Fame Roster (Full Evolution Chains Ready)</div>
-              <div id="hofRosterGrid" class="grid grid-cols-3 sm:grid-cols-4 gap-1.5 max-h-48 overflow-y-auto pr-1"></div>
+          <!-- Featured Tag-Team / Battle Matchup Presets -->
+          <div class="mb-3">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Tag-Team / Battle Matchup Presets</div>
+            <div class="grid grid-cols-2 gap-1.5">
+              <button onclick="applyTeamPreset('GYARADOS_ARCANINE')" class="px-2.5 py-1.5 rounded-lg bg-[#1B1630]/85 hover:bg-[#251E42] border border-cyan-500/30 text-left text-[11px] font-bold text-white flex items-center justify-between">
+                <span>Gyarados &amp; Arcanine</span>
+                <span class="text-[9px] text-cyan-300 font-mono-num">2x High</span>
+              </button>
+              <button onclick="applyTeamPreset('ABSOL_DISASTER')" class="px-2.5 py-1.5 rounded-lg bg-[#1B1630]/85 hover:bg-[#251E42] border border-rose-500/30 text-left text-[11px] font-bold text-white flex items-center justify-between">
+                <span>Absol &amp; Umbreon</span>
+                <span class="text-[9px] text-rose-300 font-mono-num">Dark</span>
+              </button>
+              <button onclick="applyTeamPreset('MEWTWO_CHARIZARD')" class="px-2.5 py-1.5 rounded-lg bg-[#1B1630]/85 hover:bg-[#251E42] border border-purple-500/30 text-left text-[11px] font-bold text-white flex items-center justify-between">
+                <span>Mewtwo vs. Charizard</span>
+                <span class="text-[9px] text-purple-300 font-mono-num">Clash</span>
+              </button>
+              <button onclick="applyTeamPreset('KANTO_ORIGINALS')" class="px-2.5 py-1.5 rounded-lg bg-[#1B1630]/85 hover:bg-[#251E42] border border-emerald-500/30 text-left text-[11px] font-bold text-white flex items-center justify-between">
+                <span>Squirtle vs. Charmander</span>
+                <span class="text-[9px] text-emerald-300 font-mono-num">2x High</span>
+              </button>
             </div>
+          </div>
 
-            <!-- Live PokeAPI Search (All 1,025 Pokémon) -->
-            <div class="pt-2 border-t border-white/10">
-              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1">Live PokéAPI Search (1 – 1,025 • Auto-Resolves Full Evolution Chain &amp; Base Stats)</div>
-              <div class="flex gap-1.5">
-                <input id="pokeSearchInput" type="text" placeholder="Type name or # (e.g. lillipup, squirtle, pikachu, rayquaza)..."
-                       onkeydown="if(event.key==='Enter') searchPokeApiLive()"
-                       class="flex-1 bg-[#090710] border border-white/15 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-400" />
-                <button onclick="searchPokeApiLive()" id="pokeSearchBtn" class="px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-extrabold text-xs">Load</button>
-              </div>
-              <div id="pokeSearchStatus" class="text-[10px] text-slate-300 mt-1"></div>
-            </div>
+          <!-- Individual Hall of Fame Roster -->
+          <div>
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1.5">Individual Hall of Fame Roster (Full Evolution Chains Ready)</div>
+            <div id="hofRosterGrid" class="grid grid-cols-3 sm:grid-cols-4 gap-1.5 max-h-52 overflow-y-auto pr-1"></div>
           </div>
         </div>
 
         <!-- =================================================================== -->
         <!-- VIEW 1: LIVE COMMAND (DEFAULT HOME VIEW)                            -->
         <!-- =================================================================== -->
-        <section id="view_LIVE_COMMAND" class="space-y-6">
+        <section id="view_LIVE_COMMAND" class="space-y-6" style="position: relative; z-index: 10;">
           <!-- Top Bento Row (3 Hero KPI Cards — 1080p/2K/4K Responsive, Zero Broken Wrapping) -->
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4" style="position: relative; z-index: 10;">
             <!-- Card 1 — Vault & Portfolio Value (Hero Number on Own Line, Basis Directly Underneath) -->
             <div class="kpi-card machined-card kpi-card-slot1 rounded-2xl p-5 flex flex-col justify-between">
               <div>
@@ -1188,8 +1191,8 @@
                 <div id="kpiActiveRadarPills" class="space-y-1.5 mt-1"></div>
               </div>
               <div class="pt-2.5 mt-2.5 border-t border-white/10 flex items-center justify-between gap-2 text-[11px] whitespace-nowrap">
-                <span class="text-slate-300 truncate">6-Hour Sync &amp; Proxy Pool</span>
-                <span class="font-mono-num text-emerald-400 font-bold flex items-center gap-1.5 shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>6-Hour Sync • ARMED</span>
+                <span class="text-slate-300 truncate">Proxy &amp; Poller Engine</span>
+                <span class="font-mono-num text-emerald-400 font-bold flex items-center gap-1.5 shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>ARMED &amp; NOMINAL</span>
               </div>
             </div>
 
@@ -1225,16 +1228,13 @@
             </div>
           </div>
 
-          <!-- Live Deal Feed & Recent Discord Alert Hits -->
-          <div class="glass-card machined-card rounded-2xl p-5 space-y-4">
+          <!-- Live Deal Feed (Single-Row Header + Quick Filter Pills) -->
+          <div class="glass-card machined-card rounded-2xl p-5 space-y-4" style="position: relative; z-index: 10;">
             <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-white/10">
-              <div>
-                <h2 class="text-sm font-extrabold uppercase tracking-wider text-white flex items-center gap-2">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981]"></span>
-                  <span>Live Deal Feed &amp; Recent Discord Alert Hits</span>
-                </h2>
-                <p class="text-[11px] text-slate-300 mt-0.5">Real-time restock &amp; price-drop feed across 31 LGS, Big-Box, and verified marketplace feeds</p>
-              </div>
+              <h2 class="text-sm font-extrabold uppercase tracking-wider text-white flex items-center gap-2 whitespace-nowrap">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981]"></span>
+                <span>Live Deal Feed</span>
+              </h2>
               <div class="flex items-center gap-1.5 flex-wrap">
                 <button onclick="setDealFeedFilter('ALL')" id="dfPill_ALL" class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-cyan-500 text-slate-950 whitespace-nowrap transition">All Hits</button>
                 <button onclick="setDealFeedFilter('UNDER_TRIGGER')" id="dfPill_UNDER_TRIGGER" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-slate-200 border border-white/10 hover:text-white whitespace-nowrap transition">Under Trigger</button>
@@ -2242,7 +2242,7 @@
       }
       const stModeLbl = document.getElementById('stageModeLabel');
       const stModeDot = document.getElementById('stageModeDot');
-      if (stModeLbl) stModeLbl.innerText = isMini ? 'Mini' : 'Open';
+      if (stModeLbl) stModeLbl.innerText = isMini ? 'Arena: Mini' : 'Arena: Open';
       if (stModeDot) {
         stModeDot.className = isMini
           ? 'w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_6px_#FACC15]'
@@ -2305,6 +2305,21 @@
         const nextId = slotObj.nextId !== undefined ? slotObj.nextId : (chainInfo.nextId || null);
         const baseId = slotObj.baseId || chainInfo.baseId || chainArr[0] || slotObj.id;
         const isMultiStage = chainArr.length > 1;
+        const stageIdx = Math.max(0, chainArr.indexOf(slotObj.id));
+
+        if (!evoChainCache[slotObj.id] && (!Array.isArray(slotObj.chain) || slotObj.chain.length === 0)) {
+          resolveFullEvolutionChain(slotObj.id).then(resolved => {
+            if (resolved && Array.isArray(resolved.chain) && resolved.chain.length > 1) {
+              const key = slotNum === 1 ? 'slot1' : 'slot2';
+              if (partnerState[key] && partnerState[key].id === slotObj.id) {
+                partnerState[key].chain = resolved.chain;
+                partnerState[key].nextId = resolved.nextId;
+                partnerState[key].baseId = resolved.baseId;
+                applyPartnerThemeAndHeader();
+              }
+            }
+          }).catch(() => {});
+        }
 
         if (evoBtn) {
           if (nextId) {
@@ -2320,10 +2335,11 @@
         }
 
         if (resetBtn) {
-          if (isMultiStage && slotObj.id !== baseId) {
-            resetBtn.classList.remove('hidden');
+          resetBtn.classList.remove('hidden');
+          if (isMultiStage) {
+            resetBtn.innerText = 'Stage ' + (stageIdx + 1) + '/' + chainArr.length;
           } else {
-            resetBtn.classList.add('hidden');
+            resetBtn.innerText = 'Base Form';
           }
         }
 
@@ -2520,14 +2536,62 @@
       }).join('');
     }
 
-    function openRosterPopover(slotNum) {
+    function openRosterPopover(slotNum, ev) {
+      if (ev) ev.stopPropagation();
       activeRosterTargetSlot = slotNum || 1;
       switchRosterTargetSlot(activeRosterTargetSlot);
       renderHofRosterButtons();
-      document.getElementById('rosterPopover')?.classList.remove('hidden');
+
+      const backdrop = document.getElementById('rosterPopoverBackdrop');
+      const pop = document.getElementById('rosterPopover');
+      if (!pop) return;
+
+      // Guarantee direct child of document.body so no backdrop-filter parent traps z-index
+      if (backdrop && backdrop.parentElement !== document.body) {
+        document.body.appendChild(backdrop);
+      }
+      if (pop.parentElement !== document.body) {
+        document.body.appendChild(pop);
+      }
+
+      if (backdrop) backdrop.classList.remove('hidden');
+      pop.classList.remove('hidden');
+
+      const triggerEl = (ev && ev.currentTarget)
+        || document.getElementById(partnerState.stageMode === 'MINI' ? ('miniSlot' + activeRosterTargetSlot + 'SwitchBtn') : ('slot' + activeRosterTargetSlot + 'SwitchBtn'))
+        || document.getElementById('premierBattleStage');
+
+      if (triggerEl && typeof triggerEl.getBoundingClientRect === 'function') {
+        const rect = triggerEl.getBoundingClientRect();
+        const popRect = pop.getBoundingClientRect();
+        const popW = popRect.width || 460;
+        const popH = popRect.height || 440;
+        const vw = window.innerWidth || 1440;
+        const vh = window.innerHeight || 900;
+
+        let left = activeRosterTargetSlot === 2 ? (rect.right - popW) : rect.left;
+        left = Math.max(16, Math.min(vw - popW - 16, left));
+
+        let top = rect.bottom + 8;
+        if (top + popH > vh - 16) {
+          top = Math.max(64, vh - popH - 16);
+        }
+
+        pop.style.left = Math.round(left) + 'px';
+        pop.style.top = Math.round(top) + 'px';
+      }
+
+      setTimeout(() => {
+        const searchInp = document.getElementById('pokeSearchInput');
+        if (searchInp) {
+          searchInp.focus();
+          searchInp.select();
+        }
+      }, 30);
     }
 
     function closeRosterPopover() {
+      document.getElementById('rosterPopoverBackdrop')?.classList.add('hidden');
       document.getElementById('rosterPopover')?.classList.add('hidden');
     }
 
