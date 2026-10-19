@@ -300,19 +300,13 @@
 
     .sidebar.collapsed .sidebar-section-title,
     .sidebar.collapsed .nav-label-text,
-    .sidebar.collapsed .nav-badge,
     .sidebar.collapsed .telemetry-expanded-content {
       display: none !important;
     }
 
     .sidebar.collapsed .nav-item {
       justify-content: center !important;
-      padding: 12px 0 !important;
-    }
-
-    .sidebar.collapsed .nav-item-left {
-      justify-content: center !important;
-      gap: 0 !important;
+      padding: 10px 4px !important;
     }
 
     .sidebar .telemetry-collapsed-icon {
@@ -446,26 +440,63 @@
       opacity: 1;
     }
 
-    /* Battle Showcase Panels (380px Pokémon + Official 6-Stat Pokédex Card) */
+    /* Top Centered Matchup Header Banner (top: 48px) */
+    .cutin-top-header {
+      position: absolute;
+      top: 48px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    /* Bottom Centered Dismiss Prompt + Progress Bar (bottom: 32px) */
+    .cutin-bottom-dismiss {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    /* Non-Overlapping Battle Showcase Stage */
     .cutin-combatant-stage {
       position: absolute;
       inset: 0;
       z-index: 4;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 24px 3.5vw;
+      justify-content: center;
+      gap: clamp(14px, 1.8vw, 28px);
+      padding: 118px 2.5vw 96px;
       pointer-events: none;
     }
 
+    /* True Non-Overlapping 3-Column Stat Showcase Grid */
+    .cutin-stat-grid-3col {
+      display: grid;
+      grid-template-columns: minmax(300px, 360px) 220px minmax(300px, 360px);
+      gap: 24px;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
     .cutin-wing-left {
-      transform: translate3d(-80px, 0, 0);
+      transform: translate3d(-60px, 0, 0);
       opacity: 0;
       transition: transform 0.50s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.40s ease;
     }
 
     .cutin-wing-right {
-      transform: translate3d(80px, 0, 0);
+      transform: translate3d(60px, 0, 0);
       opacity: 0;
       transition: transform 0.50s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.40s ease;
     }
@@ -479,18 +510,18 @@
     }
 
     #clash-cutin-overlay.phase-wipeout .cutin-wing-left {
-      transform: translate3d(-90px, 0, 0) scale(0.95);
+      transform: translate3d(-75px, 0, 0) scale(0.95);
       opacity: 0;
     }
 
     #clash-cutin-overlay.phase-wipeout .cutin-wing-right {
-      transform: translate3d(90px, 0, 0) scale(0.95);
+      transform: translate3d(75px, 0, 0) scale(0.95);
       opacity: 0;
     }
 
     .cutin-art-380 {
-      width: clamp(230px, 24vw, 380px);
-      height: clamp(230px, 24vw, 380px);
+      width: clamp(180px, 17vw, 340px);
+      height: clamp(180px, 17vw, 340px);
       object-fit: contain;
       transition: transform 3.5s ease-out;
     }
@@ -500,37 +531,39 @@
     }
 
     .pokedex-stat-card {
-      background: rgba(9, 8, 18, 0.84);
+      background: rgba(9, 8, 18, 0.88);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-top: 1px solid rgba(255, 255, 255, 0.24);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
-      border-left: 1px solid rgba(255, 255, 255, 0.12);
-      border-right: 1px solid rgba(255, 255, 255, 0.12);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      border-left: 1px solid rgba(255, 255, 255, 0.14);
+      border-right: 1px solid rgba(255, 255, 255, 0.14);
       border-radius: 16px;
-      padding: 14px 16px;
-      width: clamp(260px, 23vw, 340px);
+      padding: 16px 18px;
+      width: 100%;
       box-shadow: 0 20px 44px rgba(0, 0, 0, 0.85);
     }
 
-    .cutin-center-impact {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      z-index: 6;
-      transform: translate(-50%, -50%) scale(0.35);
+    /* Dedicated 220px Center Lane (Zero Overlap over Stat Cards) */
+    .cutin-center-lane {
+      width: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transform: scale(0.5);
       opacity: 0;
       transition: transform 0.50s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease;
     }
 
-    #clash-cutin-overlay.phase-wipein .cutin-center-impact,
-    #clash-cutin-overlay.phase-hold .cutin-center-impact {
-      transform: translate(-50%, -50%) scale(1);
+    #clash-cutin-overlay.phase-wipein .cutin-center-lane,
+    #clash-cutin-overlay.phase-hold .cutin-center-lane {
+      transform: scale(1);
       opacity: 1;
     }
 
-    #clash-cutin-overlay.phase-wipeout .cutin-center-impact {
-      transform: translate(-50%, -50%) scale(1.4);
+    #clash-cutin-overlay.phase-wipeout .cutin-center-lane {
+      transform: scale(1.25);
       opacity: 0;
     }
 
@@ -603,74 +636,83 @@
       <line id="cutinSeamCoreLine" x1="68%" y1="0%" x2="46%" y2="100%" stroke="#FFFFFF" stroke-width="4" />
     </svg>
 
-    <!-- Full-Screen Combatant Showcase (380px Renders + Official Pokédex 6-Stat Cards) -->
+    <!-- TOP CENTERED HEADER BANNER (top: 48px — Above Stat Cards, Zero Overlap) -->
+    <div class="cutin-top-header">
+      <div id="cutinBannerHeadline" class="px-6 py-1.5 rounded-full bg-[#090812]/95 border-2 border-white/85 text-white font-black italic uppercase tracking-wider text-base sm:text-lg shadow-[0_0_40px_rgba(0,240,255,0.8)] whitespace-nowrap">
+        GYARADOS VS ARCANINE
+      </div>
+      <div id="cutinMatchupBadge" class="mt-2 px-4 py-0.5 rounded-full bg-purple-950/95 border border-cyan-400/60 text-cyan-200 font-mono-num text-[11px] font-extrabold uppercase tracking-widest whitespace-nowrap">
+        HIGH GROUND ADVANTAGE • 2x SUPER EFFECTIVE
+      </div>
+    </div>
+
+    <!-- NON-OVERLAPPING COMBATANT & 3-COLUMN STAT SHOWCASE -->
     <div class="cutin-combatant-stage">
-      <!-- Left Wing: Slot 1 Artwork + Pokédex Base Stat Card -->
-      <div class="cutin-wing-left flex flex-col xl:flex-row items-center gap-5 max-w-[44vw]">
-        <div class="relative flex flex-col items-center">
-          <div id="cutinLeftSub" class="mb-1 px-3 py-0.5 rounded-full bg-black/75 border border-cyan-400/50 text-[10px] font-mono-num font-black uppercase tracking-widest text-cyan-200">
-            HIGH GROUND ADVANTAGE • 2x SUPER EFFECTIVE
+      <!-- Outer Left: Slot 1 Artwork + Name -->
+      <div class="cutin-wing-left flex flex-col items-center shrink-0">
+        <img id="cutinArtSlot1"
+             src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/130.png"
+             class="cutin-art-380"
+             style="filter: drop-shadow(0 0 46px var(--slot1-primary)) drop-shadow(0 16px 32px rgba(0,0,0,0.92));"
+             alt="" />
+        <div id="cutinLeftTitle" class="text-xl sm:text-3xl font-black italic uppercase tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)] whitespace-nowrap">
+          GYARADOS
+        </div>
+      </div>
+
+      <!-- True Non-Overlapping 3-Column Stat Showcase: [Slot 1 Stat Card] [220px Center VS Lane] [Slot 2 Stat Card] -->
+      <div class="cutin-stat-grid-3col">
+        <!-- Column 1: Slot 1 Official Pokédex 6-Stat Card -->
+        <div class="cutin-wing-left">
+          <div id="cutinStatCardSlot1" class="pokedex-stat-card" style="border-top: 2px solid var(--slot1-primary);"></div>
+        </div>
+
+        <!-- Column 2: Dedicated 220px Center VS Poké Ball + Matchup Pill Lane -->
+        <div class="cutin-center-lane">
+          <div id="cutinLeftSub" class="mb-2.5 px-2.5 py-0.5 rounded-full bg-black/85 border border-cyan-400/50 text-[9px] font-mono-num font-black uppercase tracking-wider text-cyan-200 text-center max-w-[210px] truncate">
+            SLOT 1 • 2x EFFECTIVE
           </div>
-          <img id="cutinArtSlot1"
-               src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/130.png"
-               class="cutin-art-380"
-               style="filter: drop-shadow(0 0 46px var(--slot1-primary)) drop-shadow(0 16px 32px rgba(0,0,0,0.92));"
-               alt="" />
-          <div id="cutinLeftTitle" class="text-2xl sm:text-4xl font-black italic uppercase tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)]">
-            GYARADOS
+          <div class="w-24 h-24 rounded-full bg-[#090812] border-4 border-white shadow-[0_0_65px_#FFFFFF,0_0_110px_#A855F7] flex items-center justify-center shrink-0">
+            <svg class="w-20 h-20" viewBox="0 0 100 100">
+              <path d="M 6 50 A 44 44 0 0 1 94 50 Z" fill="url(#pkBallTop)" />
+              <path d="M 6 50 A 44 44 0 0 0 94 50 Z" fill="#181528" />
+              <circle cx="50" cy="50" r="44" fill="none" stroke="#FFFFFF" stroke-width="6" />
+              <line x1="6" y1="50" x2="94" y2="50" stroke="#090812" stroke-width="8" />
+              <circle cx="50" cy="50" r="17" fill="#090812" stroke="#FFFFFF" stroke-width="5" />
+              <text x="50" y="55" text-anchor="middle" fill="#FACC15" font-family="Plus Jakarta Sans, sans-serif" font-weight="900" font-size="14">VS</text>
+            </svg>
+          </div>
+          <div id="cutinRightSub" class="mt-2.5 px-2.5 py-0.5 rounded-full bg-black/85 border border-amber-400/50 text-[9px] font-mono-num font-black uppercase tracking-wider text-amber-200 text-center max-w-[210px] truncate">
+            SLOT 2 • 0.5x RESISTED
           </div>
         </div>
 
-        <!-- Slot 1 Official Pokédex Stat Card -->
-        <div id="cutinStatCardSlot1" class="pokedex-stat-card" style="border-top: 2px solid var(--slot1-primary);"></div>
+        <!-- Column 3: Slot 2 Official Pokédex 6-Stat Card -->
+        <div class="cutin-wing-right">
+          <div id="cutinStatCardSlot2" class="pokedex-stat-card" style="border-top: 2px solid var(--slot2-primary);"></div>
+        </div>
       </div>
 
-      <!-- Right Wing: Slot 2 Pokédex Base Stat Card + Artwork -->
-      <div class="cutin-wing-right flex flex-col-reverse xl:flex-row items-center gap-5 max-w-[44vw]">
-        <!-- Slot 2 Official Pokédex Stat Card -->
-        <div id="cutinStatCardSlot2" class="pokedex-stat-card" style="border-top: 2px solid var(--slot2-primary);"></div>
-
-        <div class="relative flex flex-col items-center">
-          <div id="cutinRightSub" class="mb-1 px-3 py-0.5 rounded-full bg-black/75 border border-amber-400/50 text-[10px] font-mono-num font-black uppercase tracking-widest text-amber-200">
-            LOW GROUND DEFENSE • 0.5x RESISTED
-          </div>
-          <img id="cutinArtSlot2"
-               src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/59.png"
-               class="cutin-art-380"
-               style="filter: drop-shadow(0 0 46px var(--slot2-primary)) drop-shadow(0 16px 32px rgba(0,0,0,0.92));"
-               alt="" />
-          <div id="cutinRightTitle" class="text-2xl sm:text-4xl font-black italic uppercase tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)]">
-            ARCANINE
-          </div>
+      <!-- Outer Right: Slot 2 Artwork + Name -->
+      <div class="cutin-wing-right flex flex-col items-center shrink-0">
+        <img id="cutinArtSlot2"
+             src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/59.png"
+             class="cutin-art-380"
+             style="filter: drop-shadow(0 0 46px var(--slot2-primary)) drop-shadow(0 16px 32px rgba(0,0,0,0.92));"
+             alt="" />
+        <div id="cutinRightTitle" class="text-xl sm:text-3xl font-black italic uppercase tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)] whitespace-nowrap">
+          ARCANINE
         </div>
       </div>
     </div>
 
-    <!-- Center Poké Ball VS Emblem + Matchup Verdict + Click-to-Dismiss Bar -->
-    <div class="cutin-center-impact flex flex-col items-center">
-      <div class="w-24 h-24 rounded-full bg-[#090812] border-4 border-white shadow-[0_0_65px_#FFFFFF,0_0_110px_#A855F7] flex items-center justify-center">
-        <svg class="w-20 h-20" viewBox="0 0 100 100">
-          <path d="M 6 50 A 44 44 0 0 1 94 50 Z" fill="url(#pkBallTop)" />
-          <path d="M 6 50 A 44 44 0 0 0 94 50 Z" fill="#181528" />
-          <circle cx="50" cy="50" r="44" fill="none" stroke="#FFFFFF" stroke-width="6" />
-          <line x1="6" y1="50" x2="94" y2="50" stroke="#090812" stroke-width="8" />
-          <circle cx="50" cy="50" r="17" fill="#090812" stroke="#FFFFFF" stroke-width="5" />
-          <text x="50" y="55" text-anchor="middle" fill="#FACC15" font-family="Plus Jakarta Sans, sans-serif" font-weight="900" font-size="14">VS</text>
-        </svg>
-      </div>
-      <div id="cutinBannerHeadline" class="mt-3 px-5 py-1.5 rounded-full bg-[#090812]/95 border-2 border-white/85 text-white font-black italic uppercase tracking-wider text-sm sm:text-base shadow-[0_0_40px_rgba(0,240,255,0.8)] whitespace-nowrap">
-        GYARADOS VS ARCANINE
-      </div>
-      <div id="cutinMatchupBadge" class="mt-1.5 px-3.5 py-0.5 rounded-full bg-purple-950/95 border border-cyan-400/60 text-cyan-200 font-mono-num text-[11px] font-extrabold uppercase tracking-widest whitespace-nowrap">
-        HIGH GROUND ADVANTAGE • 2x SUPER EFFECTIVE
-      </div>
-
-      <!-- 7-Second Auto-Dismiss Progress Bar + Interactive Click Prompt -->
-      <div class="mt-4 w-64 bg-black/80 border border-white/20 rounded-full p-1 shadow-xl">
+    <!-- BOTTOM CENTERED DISMISS BAR (bottom: 32px — Zero Overlap with Stat Cards) -->
+    <div class="cutin-bottom-dismiss">
+      <div class="w-72 bg-[#090812]/90 border border-white/25 rounded-full px-4 py-2 shadow-2xl">
         <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
           <div id="cutinProgressBar" class="h-full bg-gradient-to-r from-cyan-400 via-purple-400 to-amber-400 rounded-full" style="width: 100%; transition: width 7s linear;"></div>
         </div>
-        <div class="text-center text-[10px] font-mono-num font-bold text-slate-200 mt-1">
+        <div class="text-center text-[10px] font-mono-num font-bold text-slate-200 mt-1 whitespace-nowrap">
           Click Anywhere or Press Space / Esc to Dismiss
         </div>
       </div>
@@ -842,41 +884,29 @@
 
   <!-- MAIN SHELL: STICKY COLLAPSIBLE LEFT SIDEBAR + ACTIVE VIEWPORT -->
   <div id="mainDashboardShell" class="relative z-10 flex-1 flex min-h-0">
-    <!-- Left Sidebar (Sticky, Single Geometric SVG Icons, Eye-Level Telemetry directly under 4 Navigation Tabs) -->
+    <!-- Left Sidebar (Sticky, Zero Symbol Clutter, Eye-Level Telemetry directly under 4 Navigation Tabs) -->
     <aside id="appSidebar" class="sidebar shrink-0 border-r border-white/10 p-3">
-      <!-- 4 Navigation Tabs -->
+      <!-- 4 Navigation Tabs (Clean Text Label + Right Numeric/Status Pill Only) -->
       <div class="space-y-1.5">
         <div class="sidebar-section-title px-3 py-1.5 text-[10px] font-mono-num font-bold uppercase tracking-widest text-slate-300">Command Views</div>
 
-        <button onclick="switchMainView('LIVE_COMMAND')" id="nav_LIVE_COMMAND" title="Live Command" class="nav-item active w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 transition">
-          <span class="nav-item-left flex items-center gap-2.5">
-            <svg class="w-4 h-4 text-cyan-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>
-            <span class="nav-label-text">Live Command</span>
-          </span>
+        <button onclick="switchMainView('LIVE_COMMAND')" id="nav_LIVE_COMMAND" title="Live Command" class="nav-item active w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 transition">
+          <span class="nav-label-text">Live Command</span>
           <span id="navLiveBadge" class="nav-badge font-mono-num text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">0</span>
         </button>
 
-        <button onclick="switchMainView('BOUNTY_HUNTER')" id="nav_BOUNTY_HUNTER" title="Bounty Hunter" class="nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 transition">
-          <span class="nav-item-left flex items-center gap-2.5">
-            <svg class="w-4 h-4 text-orange-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-            <span class="nav-label-text">Bounty Hunter</span>
-          </span>
+        <button onclick="switchMainView('BOUNTY_HUNTER')" id="nav_BOUNTY_HUNTER" title="Bounty Hunter" class="nav-item w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 transition">
+          <span class="nav-label-text">Bounty Hunter</span>
           <span class="nav-badge font-mono-num text-[10px] px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-300">RECON</span>
         </button>
 
-        <button onclick="switchMainView('CONQUERED_VAULT')" id="nav_CONQUERED_VAULT" title="Conquered Vault" class="nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 transition">
-          <span class="nav-item-left flex items-center gap-2.5">
-            <svg class="w-4 h-4 text-amber-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
-            <span class="nav-label-text">Conquered Vault</span>
-          </span>
+        <button onclick="switchMainView('CONQUERED_VAULT')" id="nav_CONQUERED_VAULT" title="Conquered Vault" class="nav-item w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 transition">
+          <span class="nav-label-text">Conquered Vault</span>
           <span id="navVaultBadge" class="nav-badge font-mono-num text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">2</span>
         </button>
 
-        <button onclick="switchMainView('TARGET_MATRIX')" id="nav_TARGET_MATRIX" title="Target Matrix" class="nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 transition">
-          <span class="nav-item-left flex items-center gap-2.5">
-            <svg class="w-4 h-4 text-purple-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
-            <span class="nav-label-text">Target Matrix</span>
-          </span>
+        <button onclick="switchMainView('TARGET_MATRIX')" id="nav_TARGET_MATRIX" title="Target Matrix" class="nav-item w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 transition">
+          <span class="nav-label-text">Target Matrix</span>
           <span id="navMatrixBadge" class="nav-badge font-mono-num text-[10px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300">38</span>
         </button>
       </div>
@@ -1135,7 +1165,7 @@
                 </div>
                 <div class="flex items-center justify-between gap-2 text-xs pt-1">
                   <span class="text-slate-300 whitespace-nowrap">Conquered Vault Trophies</span>
-                  <button onclick="switchMainView('CONQUERED_VAULT')" id="kpiConqueredCountPill" class="font-mono-num font-extrabold text-amber-300 hover:underline whitespace-nowrap shrink-0">2 Plaques Locked ↗</button>
+                  <button onclick="switchMainView('CONQUERED_VAULT')" id="kpiConqueredCountPill" class="font-mono-num font-extrabold text-amber-300 hover:underline whitespace-nowrap shrink-0">2 Plaques Locked</button>
                 </div>
               </div>
             </div>
@@ -1184,7 +1214,7 @@
                   </div>
                   <div class="text-[11px] text-cyan-100 mt-1 flex items-center justify-between gap-2">
                     <span class="truncate">Cooperstown Cards • 7% Below $54.99 MSRP</span>
-                    <button onclick="switchMainView('CONQUERED_VAULT')" class="text-amber-300 font-bold hover:underline whitespace-nowrap shrink-0">Trophy #2 ↗</button>
+                    <button onclick="switchMainView('CONQUERED_VAULT')" class="text-amber-300 font-bold hover:underline whitespace-nowrap shrink-0">Trophy #2</button>
                   </div>
                 </div>
               </div>
@@ -1203,13 +1233,13 @@
                   <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981]"></span>
                   <span>Live Deal Feed &amp; Recent Discord Alert Hits</span>
                 </h2>
-                <p class="text-[11px] text-slate-300 mt-0.5">Complete Spread Math (<span class="font-mono-num text-emerald-400 font-semibold">-XX% Under Mkt / Save $XX</span>), <span class="font-mono-num text-emerald-400 font-semibold">$/Pack</span> Rip Math, and Configured <span class="font-mono-num text-cyan-300 font-semibold">Trigger: $XXX</span> on every card</p>
+                <p class="text-[11px] text-slate-300 mt-0.5">Real-time restock &amp; price-drop feed across 31 LGS, Big-Box, and verified marketplace feeds</p>
               </div>
               <div class="flex items-center gap-1.5 flex-wrap">
                 <button onclick="setDealFeedFilter('ALL')" id="dfPill_ALL" class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-cyan-500 text-slate-950 whitespace-nowrap transition">All Hits</button>
                 <button onclick="setDealFeedFilter('UNDER_TRIGGER')" id="dfPill_UNDER_TRIGGER" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-slate-200 border border-white/10 hover:text-white whitespace-nowrap transition">Under Trigger</button>
                 <button onclick="setDealFeedFilter('CASES')" id="dfPill_CASES" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-slate-200 border border-white/10 hover:text-white whitespace-nowrap transition">Sealed Cases</button>
-                <button onclick="setDealFeedFilter('ETBS_BOXES')" id="dfPill_ETBS_BOXES" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-slate-200 border border-white/10 hover:text-white whitespace-nowrap transition">ETBs &amp; Boxes</button>
+                <button onclick="setDealFeedFilter('ETB_BOX')" id="dfPill_ETB_BOX" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-slate-200 border border-white/10 hover:text-white whitespace-nowrap transition">ETBs &amp; Boxes</button>
                 <button onclick="setDealFeedFilter('BEST_PACK')" id="dfPill_BEST_PACK" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20 whitespace-nowrap transition">Best $/Pack</button>
                 <button onclick="openClaimModal()" class="ml-1 px-3 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-extrabold whitespace-nowrap transition">
                   + Log Manual Trophy
@@ -2846,7 +2876,7 @@
       }
 
       const conqPill = document.getElementById('kpiConqueredCountPill');
-      if (conqPill) conqPill.innerText = trophies.length + ' Plaques Locked ↗';
+      if (conqPill) conqPill.innerText = trophies.length + ' Plaques Locked';
 
       const navVault = document.getElementById('navVaultBadge');
       if (navVault) navVault.innerText = String(trophies.length);
@@ -2955,7 +2985,7 @@
           '</div>' +
           '<div class="text-[11px] text-cyan-200 mt-1 flex items-center justify-between">' +
             '<span class="truncate">' + (latestCatch.store || 'Cooperstown Cards') + ' • Below $' + Number(latestCatch.msrp || 54.99).toFixed(2) + ' MSRP</span>' +
-            '<button onclick="switchMainView(\'CONQUERED_VAULT\')" class="text-amber-300 font-bold hover:underline shrink-0 ml-2">Trophy #2 ↗</button>' +
+            '<button onclick="switchMainView(\'CONQUERED_VAULT\')" class="text-amber-300 font-bold hover:underline shrink-0 ml-2">Trophy #2</button>' +
           '</div>';
       }
     }
