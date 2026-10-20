@@ -581,7 +581,18 @@ function computeFullMarketTape() {
         }
     }
     catch (e) { }
-    const enrichedSalesTape = salesHistory.slice(0, 30).map(ev => {
+    const seenVelocitySkus = new Set();
+    const dedupedSalesEvents = [];
+    for (const ev of salesHistory) {
+        const key = (ev.targetId || ev.targetName || '').toLowerCase();
+        if (!key || seenVelocitySkus.has(key))
+            continue;
+        seenVelocitySkus.add(key);
+        dedupedSalesEvents.push(ev);
+        if (dedupedSalesEvents.length >= 15)
+            break;
+    }
+    const enrichedSalesTape = dedupedSalesEvents.map(ev => {
         const pol = policies_1.WATCH_POLICIES.find(p => p.id === ev.targetId);
         const rip = (0, policies_1.computeRipMetrics)(ev.landedPrice || ev.price, ev.targetId, pol?.formFactor, ev.targetName, pol?.packCount);
         return {

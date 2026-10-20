@@ -1377,39 +1377,44 @@
         </button>
       </div>
 
-      <!-- Eye-Level Sniper Telemetry Pod (Directly Under Navigation Tabs) -->
+      <!-- Eye-Level Engine Telemetry Pod (Directly Under Navigation Tabs) -->
       <div class="pt-3 border-t border-white/10">
         <!-- Collapsed Mode Compact Status Dot -->
-        <div id="telemetryCollapsedIcon" class="telemetry-collapsed-icon" title="Sniper Telemetry: 51/51 Stores Nominal • Proxy Pool Armed">
+        <div id="telemetryCollapsedIcon" class="telemetry-collapsed-icon" title="Engine Telemetry: 91/91 Stores Nominal • Proxy Pool Armed">
           <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_#10B981]"></span>
         </div>
 
-        <!-- Expanded Mode Full Eye-Level Telemetry Card -->
-        <div class="telemetry-expanded-content glass-card rounded-xl p-3.5 space-y-2">
-          <div class="space-y-1">
-            <div class="text-[10px] font-pokedex font-extrabold uppercase tracking-wider text-slate-300 whitespace-nowrap">Sniper Telemetry</div>
-            <div class="inline-flex items-center gap-1.5 text-[11px] font-mono-num font-bold text-emerald-400 whitespace-nowrap">
+        <!-- Expanded Mode Sleek ENGINE TELEMETRY Card (Chakra Petch + Plus Jakarta Sans) -->
+        <div class="telemetry-expanded-content glass-card rounded-xl p-3.5">
+          <div class="flex items-center justify-between pb-2 mb-1 border-b border-white/10">
+            <span class="text-[11px] font-pokedex font-extrabold uppercase tracking-wider text-white whitespace-nowrap">ENGINE TELEMETRY</span>
+            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/35 text-[9px] font-pokedex font-extrabold text-emerald-300 tracking-wider">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_#10B981]"></span>
-              <span id="sidebarStoresOnlineText">51/51 Stores Online</span>
-            </div>
+              <span>ONLINE</span>
+            </span>
           </div>
-          <div class="text-[11px] text-slate-200 font-mono-num whitespace-nowrap" id="sidebarStreamStatus">
-            51 Shopify + 9 Big-Box + TCGP
+
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+            <span class="text-[11px] font-medium text-slate-300">Active Store Net</span>
+            <span id="sidebarStoresOnlineText" class="font-pokedex text-xs font-extrabold text-emerald-300 px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-400/30">91 / 91 Stores</span>
           </div>
-          <div class="grid grid-cols-2 gap-1.5 pt-1 text-[10px] font-mono-num">
-            <div class="p-1.5 rounded bg-black/40 border border-white/5">
-              <div class="text-slate-400">Proxy Gateway</div>
-              <div class="text-emerald-300 font-bold flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>ARMED</div>
-            </div>
-            <div class="p-1.5 rounded bg-black/40 border border-white/5">
-              <div class="text-slate-400">Last Poll</div>
-              <div id="sidebarLastPollTime" class="text-cyan-300 font-bold">Just now</div>
-            </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+            <span class="text-[11px] font-medium text-slate-300">Listings Monitored</span>
+            <span id="sidebarListingsMonitoredText" class="font-pokedex text-xs font-extrabold text-cyan-300">13,195+ Sealed</span>
           </div>
-          <div class="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-300">
-            <span>Collector Rank</span>
-            <span id="sidebarRankBadge" class="font-pokedex font-extrabold text-amber-300">Case Commander</span>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+            <span class="text-[11px] font-medium text-slate-300">Proxy &amp; Poller</span>
+            <span class="font-pokedex text-[11px] font-extrabold text-emerald-300">ARMED • <span id="sidebarLastPollTime" class="text-cyan-200">Just now</span></span>
           </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0 2px 0;">
+            <span class="text-[11px] font-medium text-slate-300">ETB Wall Progress</span>
+            <span id="sidebarWallProgressText" class="font-pokedex text-xs font-extrabold text-amber-300">8 / 38 Sets (21%)</span>
+          </div>
+          <div id="sidebarStreamStatus" class="hidden">91 Shopify + 9 Big-Box + TCGP</div>
+          <span id="sidebarRankBadge" class="hidden">Case Commander</span>
         </div>
       </div>
     </aside>
@@ -1735,20 +1740,21 @@
         </section>
 
       <!-- =================================================================== -->
-      <!-- VIEW 2: BOUNTY HUNTER (TRUE CROSS-STORE PRICE COMPARISON + INTEL)   -->
+      <!-- VIEW 2: BOUNTY HUNTER (HEAD-TO-HEAD STORE SCOREBOARD + LIVE RECON)  -->
       <!-- =================================================================== -->
       <section id="view_BOUNTY_HUNTER" class="hidden space-y-6">
-        <div class="bounty-card glass-card machined-card rounded-2xl p-5 space-y-3.5">
+        <!-- PART 1: TOP SEARCH & FILTER CONTROL BAR -->
+        <div class="bounty-card glass-card machined-card rounded-2xl p-5 space-y-3.5" id="bountyTopControlBar">
           <!-- Title Header -->
           <div class="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-white/10">
             <div>
               <h2 class="text-sm font-black uppercase tracking-wider text-white flex items-center gap-2">
                 <span class="w-1.5 h-1.5 rounded-full bg-orange-400 shadow-[0_0_8px_#F97316]"></span>
-                <span>Bounty Hunter — Cross-Store Price Comparison &amp; Live Recon</span>
+                <span>Bounty Hunter — Head-to-Head Store Scoreboard &amp; Live Recon</span>
               </h2>
-              <p class="text-[11px] text-slate-300 mt-0.5">Head-to-head store offer comparison ranked lowest-to-highest with <span class="font-mono-num text-emerald-400 font-semibold">$/Pack</span> Rip Math across 40 LGS + 9 Big-Box + TCGPlayer/eBay</p>
+              <p class="text-[11px] text-slate-300 mt-0.5">Spacious cross-store comparison ranked lowest-to-highest landed cost with <span class="font-mono-num text-emerald-400 font-semibold">$/Pack</span> Rip Math across <span id="bountySubStoreCount">91 LGS + 9 Big-Box + TCGPlayer/eBay</span></p>
             </div>
-            <button onclick="resetBountyToWallHunt()" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/15 border border-white/10 text-[11px] font-bold text-cyan-300 transition">
+            <button onclick="resetBountyToWallHunt()" class="px-3 py-1 rounded-lg bg-white/5 hover:bg-white/15 border border-white/10 text-[11px] font-bold text-cyan-300 transition">
               Reset Filter
             </button>
           </div>
@@ -1756,11 +1762,11 @@
           <!-- Clean Format Filter Tabs (ETBs Only Wall Hunt = Default when viewing all targets!) -->
           <div class="flex items-center gap-1.5 flex-wrap">
             <span class="text-[10px] font-pokedex font-bold uppercase tracking-wider text-slate-400 mr-1">Format Filter:</span>
-            <button onclick="setBountyFormatTab('ETB')" id="bfTab_ETB" class="px-3 py-1.5 rounded-xl text-xs font-extrabold bg-cyan-500 text-slate-950 shadow-[0_0_12px_rgba(0,240,255,0.3)] transition">ETBs Only (Wall Hunt)</button>
-            <button onclick="setBountyFormatTab('BOOSTER_BOX')" id="bfTab_BOOSTER_BOX" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-slate-200 border border-white/15 hover:text-white transition">36-Pack Booster Boxes</button>
-            <button onclick="setBountyFormatTab('CASES')" id="bfTab_CASES" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-slate-200 border border-white/15 hover:text-white transition">Sealed Cases</button>
-            <button onclick="setBountyFormatTab('BUNDLE')" id="bfTab_BUNDLE" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-slate-200 border border-white/15 hover:text-white transition">6-Pack Bundles</button>
-            <button onclick="setBountyFormatTab('ALL')" id="bfTab_ALL" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-slate-200 border border-white/15 hover:text-white transition">All Formats</button>
+            <button onclick="setBountyFormatTab('ETB')" id="bfmt_ETB" class="pokedex-badge px-3 py-1.5 rounded-xl text-xs font-extrabold bg-amber-500 text-slate-950 shadow-[0_0_12px_rgba(250,204,21,0.35)] transition">ETBs Only (Wall Hunt)</button>
+            <button onclick="setBountyFormatTab('BOOSTER_BOX')" id="bfmt_BOOSTER_BOX" class="pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-slate-300 border border-white/15 hover:text-white transition">36-Pack Booster Boxes</button>
+            <button onclick="setBountyFormatTab('CASES')" id="bfmt_CASES" class="pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-slate-300 border border-white/15 hover:text-white transition">Sealed Cases</button>
+            <button onclick="setBountyFormatTab('BUNDLE')" id="bfmt_BUNDLE" class="pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-slate-300 border border-white/15 hover:text-white transition">6-Pack Bundles</button>
+            <button onclick="setBountyFormatTab('ALL')" id="bfmt_ALL" class="pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-slate-300 border border-white/15 hover:text-white transition">All Formats</button>
           </div>
 
           <!-- Single Sleek Horizontal Toolbar: Target Selector + Search Input + Instant Search + ↻ Live Store Sweep -->
@@ -1777,7 +1783,7 @@
             </button>
           </div>
 
-          <!-- Clean Understated Quick-Filter Pills -->
+          <!-- Quick Target Pills -->
           <div class="flex items-center gap-1.5 flex-wrap pt-0.5">
             <span class="text-[10px] font-pokedex font-bold uppercase tracking-wider text-slate-400 mr-1">Compare Item Head-to-Head:</span>
             <button onclick="quickBountyPick('me-chaos-rising-etb')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-[11px] font-semibold text-slate-200 hover:text-cyan-300 border border-white/10 transition">Chaos Rising ETB</button>
@@ -1788,38 +1794,44 @@
           </div>
         </div>
 
-        <!-- Bold Target Store Comparison Banner (Visible when a specific SKU or Search Query is active) -->
+        <!-- Active Store / Target Filter Banner -->
         <div id="bountyComparisonBanner" class="hidden p-4 rounded-2xl bg-gradient-to-r from-cyan-500/20 via-purple-500/20 to-amber-500/20 border border-cyan-400/50 flex flex-wrap items-center justify-between gap-3 shadow-lg">
           <div class="flex items-center gap-3">
             <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_#00F0FF]"></span>
-            <span id="bountyComparisonBannerText" class="font-pokedex text-sm sm:text-base font-extrabold text-white tracking-wider">ALL STORE OFFERS FOR: CHAOS RISING ETB — RANKED LOWEST TO HIGHEST</span>
+            <span id="bountyComparisonTitleText" class="font-pokedex text-sm sm:text-base font-extrabold text-white tracking-wider">ALL STORE OFFERS — RANKED LOWEST TO HIGHEST</span>
           </div>
-          <button onclick="resetBountyToWallHunt()" class="px-3 py-1 rounded-xl bg-black/50 hover:bg-black/75 border border-white/15 text-xs font-bold text-cyan-200 transition">Show All Wall ETBs &times;</button>
+          <div class="flex items-center gap-2">
+            <a id="bountyStoreExternalLink" href="#" target="_blank" class="hidden px-3 py-1 rounded-xl bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 border border-emerald-400/40 text-xs font-extrabold text-emerald-300 transition">Visit Store ↗</a>
+            <button onclick="resetBountyToWallHunt()" class="px-3 py-1 rounded-xl bg-black/50 hover:bg-black/75 border border-white/15 text-xs font-bold text-cyan-200 transition">Clear Filter &times;</button>
+          </div>
         </div>
 
-        <!-- Top 2 Equal-Height 3-Column Spotlight Cards: #1 Best Sealed Hold & #1 Cheapest Pack Rip -->
+        <!-- Top 2 Equal-Height Spotlight Cards: #1 Best Sealed Hold & #1 Cheapest Pack Rip -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch" id="bountyCalloutsRow"></div>
 
-        <!-- Ranked Store Offers Table -->
-        <div class="bounty-card glass-card machined-card rounded-2xl p-5 space-y-3">
-          <div class="flex items-center justify-between border-b border-white/10 pb-3">
-            <h3 class="text-sm font-extrabold uppercase tracking-wider text-white flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-              <span id="bountyTableHeaderTitle">Lowest Landed Store Offers Right Now (ETBs Only — Wall Hunt)</span>
-            </h3>
+        <!-- PART 2: SPACIOUS HEAD-TO-HEAD STORE SCOREBOARD -->
+        <div class="bounty-card glass-card machined-card rounded-2xl p-5 space-y-3.5" id="bountyScoreboardCard">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
+            <div>
+              <h3 class="text-sm font-extrabold uppercase tracking-wider text-white flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                <span id="bountyRankHeading">Head-to-Head Store Scoreboard (ETBs Only — Wall Hunt)</span>
+              </h3>
+              <p class="text-[11px] text-slate-400 mt-0.5">Click any store badge below or in Top Store DNA to filter live inventory from that retailer</p>
+            </div>
             <span id="bountyMetaCount" class="text-xs font-mono-num text-slate-300">Evaluating sources...</span>
           </div>
-          <div id="bountyTop5Container" class="space-y-2.5"></div>
+          <div id="bountyTop5Container" class="space-y-2.5 overflow-x-auto"></div>
         </div>
 
-        <!-- Market Intelligence & Historical Analytics (48h Distributor Wave Radar, Top Store DNA, Fast Sell-Out Velocity Tape & 14-Day Ledger) -->
+        <!-- Market Intelligence & Historical Analytics (48h Distributor Wave Radar, Clickable Top Store DNA, Deduplicated Velocity Tape & 14-Day Ledger) -->
         <div class="space-y-4 pt-2">
           <div class="flex items-center justify-between px-1">
             <h3 class="text-xs font-black uppercase tracking-wider text-slate-300 flex items-center gap-2">
               <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
               <span>Cross-Store Market Intelligence &amp; 14-Day Historical Recon</span>
             </h3>
-            <span id="bountyIntelStoreCountLabel" class="text-[11px] font-mono-num text-slate-400">51 Shopify LGS + 9 Big-Box + TCGPlayer/eBay NRT</span>
+            <span id="bountyIntelStoreCountLabel" class="text-[11px] font-mono-num text-slate-400">91 Shopify LGS + 9 Big-Box + TCGPlayer/eBay NRT</span>
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -2025,9 +2037,12 @@
     </main>
   </div>
   <script>
-    // =========================================================================
-    // 1. DYNAMIC POKÉDEX CHAMELEON, 18-TYPE MATCHUP & STAT BATTLE SHOWCASE ENGINE
-    // =========================================================================
+    /* =========================================================================
+     * === MODULE: POKEDEX BATTLE STADIUM ENGINE (STANDALONE-READY) ===
+     * Cleanly encapsulated 18-Type Matchup Matrix, 1,025-Species Pokédex Loader,
+     * Dual Partner Evolution Engine, Interactive Turn-Based Battle Stadium, and
+     * WebAudio Cry Synthesizer. Ready for standalone extraction or repo sync.
+     * ========================================================================= */
     const ELEMENTAL_SPECTRUM = {
       water:    { hex: '#00F0FF', rgb: '0, 240, 255',   secondary: '#3B82F6', label: 'WATER',    badgeCls: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30' },
       fire:     { hex: '#F97316', rgb: '249, 115, 22',  secondary: '#FACC15', label: 'FIRE',     badgeCls: 'bg-orange-500/20 text-orange-300 border-orange-500/30' },
@@ -4151,13 +4166,15 @@
     // 3. DATA LOADING & POLLING
     // =========================================================================
     let liveStoreTelemetry = {
-      lgsCount: 40,
-      healthyLgsCount: 40,
+      lgsCount: 91,
+      healthyLgsCount: 91,
       bigBoxCount: 9,
       marketplaceCount: 3,
-      totalMonitoredSources: 52
+      totalMonitoredSources: 103,
+      totalListingsMonitored: 13195
     };
     let activeBountyFormatTab = 'ETB';
+    let activeBountyStoreFilter = '';
 
     async function loadAllState() {
       try {
@@ -4482,21 +4499,25 @@
       }
 
       // Dynamic Store Count Telemetry (Never Hardcoded)
-      const lgsCnt = Number(liveStoreTelemetry.lgsCount || 51);
+      const lgsCnt = Number(liveStoreTelemetry.lgsCount || 91);
       const healthyLgs = Number(liveStoreTelemetry.healthyLgsCount || lgsCnt);
       const bigBoxCnt = Number(liveStoreTelemetry.bigBoxCount || 9);
+      const listingsCnt = Number(liveStoreTelemetry.totalListingsMonitored || (lgsCnt * 145));
 
       const headerArmedEl = document.getElementById('headerArmedStoresText');
       if (headerArmedEl) headerArmedEl.innerText = lgsCnt + ' LGS + ' + bigBoxCnt + ' BIG-BOX ARMED';
 
       const sbStoresOnlineEl = document.getElementById('sidebarStoresOnlineText');
-      if (sbStoresOnlineEl) sbStoresOnlineEl.innerText = healthyLgs + '/' + lgsCnt + ' Stores Online';
+      if (sbStoresOnlineEl) sbStoresOnlineEl.innerText = healthyLgs + ' / ' + lgsCnt + ' Stores';
+
+      const sbListingsEl = document.getElementById('sidebarListingsMonitoredText');
+      if (sbListingsEl) sbListingsEl.innerText = listingsCnt.toLocaleString() + '+ Sealed';
 
       const sbStreamStatusEl = document.getElementById('sidebarStreamStatus');
       if (sbStreamStatusEl) sbStreamStatusEl.innerText = lgsCnt + ' Shopify + ' + bigBoxCnt + ' Big-Box + TCGP';
 
       const collapsedTelIcon = document.getElementById('telemetryCollapsedIcon');
-      if (collapsedTelIcon) collapsedTelIcon.title = 'Sniper Telemetry: ' + healthyLgs + '/' + lgsCnt + ' Stores Nominal • Proxy Pool Armed';
+      if (collapsedTelIcon) collapsedTelIcon.title = 'Engine Telemetry: ' + healthyLgs + '/' + lgsCnt + ' Stores Nominal • Proxy Pool Armed';
 
       const kpiSweepHealthEl = document.getElementById('kpiStoreSweepHealth');
       if (kpiSweepHealthEl) kpiSweepHealthEl.innerText = healthyLgs + '/' + lgsCnt + ' LGS + ' + bigBoxCnt + ' Big-Box';
@@ -4507,6 +4528,9 @@
       const bountyIntelCnt = document.getElementById('bountyIntelStoreCountLabel');
       if (bountyIntelCnt) bountyIntelCnt.innerText = lgsCnt + ' Shopify LGS + ' + bigBoxCnt + ' Big-Box + TCGPlayer/eBay NRT';
 
+      const bountySubCnt = document.getElementById('bountySubStoreCount');
+      if (bountySubCnt) bountySubCnt.innerText = lgsCnt + ' LGS + ' + bigBoxCnt + ' Big-Box + TCGPlayer/eBay';
+
       // Strictly filter to the 38 ETBs (formFactor === 'etb') for all Wall Display counters
       const etbs = policies.filter(p => isEtbPolicy(p));
       const totalEtbCount = etbs.length || 38;
@@ -4514,6 +4538,9 @@
       const neededEtbs = etbs.filter(p => !p.owned);
       const etbWallPct = Math.min(100, Math.round((ownedEtbs.length / Math.max(1, totalEtbCount)) * 100));
       const trophies = conqueredVault.trophies || [];
+
+      const sbWallProgEl = document.getElementById('sidebarWallProgressText');
+      if (sbWallProgEl) sbWallProgEl.innerText = ownedEtbs.length + ' / ' + totalEtbCount + ' Sets (' + etbWallPct + '%)';
 
       // Card 1: ETB WALL & SNIPE VICTORY TALLY (Zero Dollar Portfolio Values — Tracked in Collectr)
       const heroWallStat = document.getElementById('kpiWallEtbHeroStat');
@@ -4880,29 +4907,42 @@
       const dnaEl = document.getElementById('bentoStoreDna');
       if (dnaEl) {
         dnaEl.innerHTML = honeyStores.length > 0
-          ? honeyStores.slice(0, 6).map((s, idx) =>
-              '<div class="p-2.5 rounded-xl bg-black/35 border border-white/10 flex items-center justify-between gap-2">' +
-                '<div class="min-w-0">' +
-                  '<div class="text-xs font-bold text-white truncate">#' + (idx + 1) + ' ' + s.store + '</div>' +
-                  '<div class="text-[10px] font-mono-num text-slate-400">' + s.restocks + ' Drops • ' + s.lowestHits + ' Floors</div>' +
-                '</div>' +
-                '<span class="px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-mono-num text-[10px] font-extrabold shrink-0">-' + s.avgDiscountPct + '%</span>' +
-              '</div>'
-            ).join('')
+          ? honeyStores.slice(0, 6).map((s, idx) => {
+              const safeStore = String(s.store || '').replace(/'/g, "\\'");
+              return (
+                '<div onclick="filterBountyByStore(\'' + safeStore + '\')" title="Click to view live inventory from ' + s.store + '" class="p-2.5 rounded-xl bg-black/35 hover:bg-cyan-500/15 border border-white/10 hover:border-cyan-400/50 flex items-center justify-between gap-2 cursor-pointer transition-all duration-150 group">' +
+                  '<div class="min-w-0">' +
+                    '<div class="text-xs font-bold text-white group-hover:text-cyan-300 truncate flex items-center gap-1.5">#' + (idx + 1) + ' ' + s.store + ' <span class="text-[10px] text-cyan-400 opacity-75 group-hover:opacity-100">↗</span></div>' +
+                    '<div class="text-[10px] font-mono-num text-slate-400">' + s.restocks + ' Drops • ' + s.lowestHits + ' Floors</div>' +
+                  '</div>' +
+                  '<span class="px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-mono-num text-[10px] font-extrabold shrink-0">-' + s.avgDiscountPct + '%</span>' +
+                '</div>'
+              );
+            }).join('')
           : '<div class="text-xs text-slate-400 col-span-2">Accumulating 14-day store DNA...</div>';
       }
 
       const velEl = document.getElementById('bentoVelocityTape');
       if (velEl) {
-        velEl.innerHTML = recentTape.length > 0
-          ? recentTape.slice(0, 8).map(ev => {
+        const seenVelSkus = new Set();
+        const dedupedTape = [];
+        for (const ev of recentTape) {
+          const k = String(ev.targetId || ev.targetName || '').toLowerCase().trim();
+          if (!k || seenVelSkus.has(k)) continue;
+          seenVelSkus.add(k);
+          dedupedTape.push(ev);
+          if (dedupedTape.length >= 5) break;
+        }
+        velEl.innerHTML = dedupedTape.length > 0
+          ? dedupedTape.map(ev => {
+              const safeSku = String(ev.targetId || '').replace(/'/g, "\\'");
               const velBadge = ev.status === 'CLEARED'
-                ? '<span class="px-2 py-0.5 rounded bg-rose-500/20 border border-rose-500/30 text-rose-300 font-mono-num text-[10px] font-bold">' + ev.velocity + ' (' + (ev.durationMins || 1) + 'm)</span>'
-                : '<span class="px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 font-mono-num text-[10px] font-bold">ACTIVE</span>';
+                ? '<span class="px-2 py-0.5 rounded bg-rose-500/20 border border-rose-500/30 text-rose-300 font-mono-num text-[10px] font-bold shrink-0">' + ev.velocity + ' (' + (ev.durationMins || 1) + 'm)</span>'
+                : '<span class="px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 font-mono-num text-[10px] font-bold shrink-0">ACTIVE</span>';
               return (
-                '<div class="p-2 rounded-xl bg-black/35 border border-white/10 flex items-center justify-between gap-2 text-xs">' +
+                '<div onclick="quickBountyPick(\'' + safeSku + '\'); document.getElementById(\'bountyScoreboardCard\')?.scrollIntoView({behavior:\'smooth\',block:\'start\'});" title="Click to compare ' + ev.targetName + ' head-to-head across stores" class="p-2 rounded-xl bg-black/35 hover:bg-purple-500/15 border border-white/10 hover:border-purple-400/50 flex items-center justify-between gap-2 text-xs cursor-pointer transition-all duration-150 group">' +
                   '<div class="min-w-0">' +
-                    '<div class="font-bold text-white truncate">' + ev.targetName + '</div>' +
+                    '<div class="font-bold text-white group-hover:text-purple-200 truncate">' + ev.targetName + '</div>' +
                     '<div class="text-[10px] font-mono-num text-slate-400">' + ev.store + ' • $' + Number(ev.price).toFixed(2) + '</div>' +
                   '</div>' +
                   velBadge +
@@ -4965,10 +5005,25 @@
       const inp = document.getElementById('bountyQueryInput');
       if (sel) sel.value = '';
       if (inp) inp.value = '';
+      activeBountyStoreFilter = '';
       setBountyFormatTab('ETB');
     }
 
+    function filterBountyByStore(storeName) {
+      const cleanStore = String(storeName || '').replace(/\s*\(.*?\)\s*/g, '').trim();
+      if (!cleanStore) return;
+      activeBountyStoreFilter = cleanStore;
+      const sel = document.getElementById('bountySkuSelect');
+      const inp = document.getElementById('bountyQueryInput');
+      if (sel) sel.value = '';
+      if (inp) inp.value = '';
+      runBountyRecon('', false);
+      const board = document.getElementById('bountyComparisonBanner') || document.getElementById('bountyScoreboardCard');
+      if (board) board.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
     function quickBountyPick(skuId) {
+      activeBountyStoreFilter = '';
       const sel = document.getElementById('bountySkuSelect');
       const inp = document.getElementById('bountyQueryInput');
       if (sel) sel.value = skuId;
@@ -4980,12 +5035,16 @@
       renderMarketIntelligenceBento();
       const skuId = explicitSkuId !== '' ? explicitSkuId : (document.getElementById('bountySkuSelect')?.value || '');
       const query = (document.getElementById('bountyQueryInput')?.value || '').trim();
+      if (skuId || query) {
+        activeBountyStoreFilter = '';
+      }
       const calloutsRow = document.getElementById('bountyCalloutsRow');
       const top5Container = document.getElementById('bountyTop5Container');
       const metaEl = document.getElementById('bountyMetaCount');
       const probeBtn = document.getElementById('bountyLiveProbeBtn');
       const bannerEl = document.getElementById('bountyComparisonBanner');
       const bannerTextEl = document.getElementById('bountyComparisonTitleText');
+      const storeExtLinkEl = document.getElementById('bountyStoreExternalLink');
       const rankHeadingEl = document.getElementById('bountyRankHeading');
 
       if (probeBtn && liveProbe) probeBtn.innerText = '↻ Sweeping TCGP + eBay...';
@@ -4995,6 +5054,7 @@
         const params = new URLSearchParams();
         if (skuId) params.set('skuId', skuId);
         if (query) params.set('query', query);
+        if (activeBountyStoreFilter) params.set('store', activeBountyStoreFilter);
         if (!skuId && !query && activeBountyFormatTab) {
           params.set('format', activeBountyFormatTab);
         }
@@ -5008,20 +5068,37 @@
           metaEl.innerText = (data.totalCandidatesEvaluated || 0) + ' Offers Evaluated Across ' + (data.matchedTargetsCount || 0) + ' Target(s)';
         }
 
-        const isSingleTarget = Boolean(data.isSingleTargetComparison || skuId || query);
+        const isStoreMode = Boolean(activeBountyStoreFilter || data.storeFilter);
+        const isSingleTarget = Boolean(!isStoreMode && (data.isSingleTargetComparison || skuId || query));
         const targetLabel = data.targetProductName || query || skuId || 'SELECTED TARGET';
         if (bannerEl && bannerTextEl) {
-          if (isSingleTarget) {
+          if (isStoreMode) {
+            const stName = activeBountyStoreFilter || data.storeFilter;
+            bannerEl.classList.remove('hidden');
+            bannerTextEl.innerHTML = 'Showing Live Inventory from: <span class="text-cyan-300">' + stName + '</span> — <button onclick="resetBountyToWallHunt()" class="underline text-amber-300 hover:text-amber-200">[Clear Store Filter]</button>';
+            if (storeExtLinkEl) {
+              const extUrl = data.storeExternalUrl || (data.top5LowestLanded && data.top5LowestLanded[0] && data.top5LowestLanded[0].url) || '#';
+              storeExtLinkEl.href = extUrl;
+              storeExtLinkEl.innerText = 'Visit ' + stName + ' ↗';
+              storeExtLinkEl.classList.remove('hidden');
+            }
+          } else if (isSingleTarget) {
             bannerEl.classList.remove('hidden');
             bannerTextEl.innerText = 'ALL STORE OFFERS FOR: ' + String(targetLabel).toUpperCase() + ' — RANKED LOWEST TO HIGHEST';
+            if (storeExtLinkEl) storeExtLinkEl.classList.add('hidden');
           } else {
             bannerEl.classList.add('hidden');
+            if (storeExtLinkEl) storeExtLinkEl.classList.add('hidden');
           }
         }
         if (rankHeadingEl) {
-          rankHeadingEl.innerText = isSingleTarget
-            ? ('ALL STORE OFFERS FOR: ' + String(targetLabel).toUpperCase() + ' — RANKED LOWEST TO HIGHEST')
-            : ('Top Lowest Landed Options Right Now (' + (activeBountyFormatTab === 'ETB' ? 'ETBs Only — Wall Hunt' : activeBountyFormatTab.replace('_', ' ')) + ')');
+          if (isStoreMode) {
+            rankHeadingEl.innerText = 'Showing Live Inventory from: ' + (activeBountyStoreFilter || data.storeFilter) + ' — Ranked Lowest to Highest';
+          } else if (isSingleTarget) {
+            rankHeadingEl.innerText = 'ALL STORE OFFERS FOR: ' + String(targetLabel).toUpperCase() + ' — RANKED LOWEST TO HIGHEST';
+          } else {
+            rankHeadingEl.innerText = 'Head-to-Head Store Scoreboard (' + (activeBountyFormatTab === 'ETB' ? 'ETBs Only — Wall Hunt' : activeBountyFormatTab.replace('_', ' ')) + ')';
+          }
         }
 
         const hold = data.bestSealedHold;
@@ -5082,7 +5159,7 @@
           calloutsRow.innerHTML = holdCard + ripCard;
         }
 
-        // Crisp 7-Column Horizontal Grid Rows for Ranked Store Comparison (Zero Raw Enums)
+        // Spacious 7-Column Head-to-Head Store Scoreboard Rows
         if (top5Container) {
           const list = data.top5LowestLanded || [];
           if (list.length === 0) {
@@ -5091,28 +5168,57 @@
             top5Container.innerHTML = list.map(opt => {
               const imgPath = '/art/' + opt.skuId + '.jpg?v=' + cacheBuster;
               const cleanStoreSource = formatHumanSourceLabel(opt.store, opt.sourceType);
+              const safeStoreClick = String(opt.store || '').replace(/\s*\(.*?\)\s*/g, '').replace(/'/g, "\\'");
+              const eraLabel = opt.era || (String(opt.skuId || '').startsWith('me-') ? 'Mega Evolution' : (String(opt.skuId || '').startsWith('sv-') ? 'Scarlet & Violet' : 'Sword & Shield'));
+              const shipSubLabel = opt.shippingNote || (opt.landedPrice > opt.price + 0.05 ? ('+ $' + (opt.landedPrice - opt.price).toFixed(2) + ' Ship') : '+ FREE Ship');
+              const pol = policies.find(p => p.id === opt.skuId);
+              const trigPrice = Number(opt.triggerPrice || (pol ? (pol.maxMarketBuyPrice || pol.msrpCeiling) : opt.msrp) || 54.99);
+              const isUnderTrigger = Number(opt.landedPrice) <= trigPrice + 0.01;
+              const aboveDiff = Math.max(0, Number(opt.landedPrice) - trigPrice);
+              const verdictColHtml = isUnderTrigger
+                ? '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 font-pokedex text-[11px] font-extrabold shadow-[0_0_12px_rgba(16,185,129,0.25)]">UNDER TRIGGER ($' + trigPrice.toFixed(0) + ')</span>'
+                : '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-300 font-mono-num text-[11px] font-bold">$' + aboveDiff.toFixed(0) + ' Above Trigger ($' + trigPrice.toFixed(0) + ')</span>';
+              const spreadBadgeHtml = Number(opt.discountPct || 0) > 0
+                ? '<span class="px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/35 text-emerald-300 font-mono-num text-[10px] font-extrabold">-' + opt.discountPct + '% Spread</span>'
+                : '<span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-400 font-mono-num text-[10px] font-bold">At Market</span>';
+              const multiCartBtns = (opt.cart2xUrl || opt.cart3xUrl)
+                ? '<div class="flex items-center gap-1">' +
+                    (opt.cart2xUrl ? '<a href="' + opt.cart2xUrl + '" target="_blank" class="px-2 py-1.5 rounded-lg bg-white/5 hover:bg-white/15 border border-white/15 text-[10px] font-mono-num font-bold text-slate-200 transition">2x</a>' : '') +
+                    (opt.cart3xUrl ? '<a href="' + opt.cart3xUrl + '" target="_blank" class="px-2 py-1.5 rounded-lg bg-white/5 hover:bg-white/15 border border-white/15 text-[10px] font-mono-num font-bold text-slate-200 transition">3x</a>' : '') +
+                  '</div>'
+                : '';
+
               return (
-                '<div class="p-3.5 rounded-xl bg-black/45 border border-white/10 hover:border-cyan-400/40 transition" style="display:grid;grid-template-columns:36px 56px minmax(180px,1fr) auto auto auto auto;align-items:center;gap:14px;">' +
-                  '<span class="w-8 h-8 rounded-lg bg-white/10 font-mono-num text-xs font-black text-cyan-300 flex items-center justify-center">#' + opt.rank + '</span>' +
-                  '<div class="w-14 h-14 art-pedestal rounded-lg p-1 flex items-center justify-center">' +
+                '<div class="bg-black/45 border border-white/10 hover:border-cyan-400/45 transition" style="padding:14px 18px;border-radius:12px;display:grid;grid-template-columns:44px 72px 1.6fr 1fr 1fr 1.1fr auto;align-items:center;gap:16px;min-width:860px;">' +
+                  '<span class="w-10 h-10 rounded-xl bg-white/10 border border-white/15 font-pokedex text-sm font-black text-cyan-300 flex items-center justify-center">#' + opt.rank + '</span>' +
+                  '<div class="w-16 h-16 art-pedestal rounded-xl p-1.5 flex items-center justify-center shrink-0">' +
                     '<img src="' + imgPath + '" class="max-h-full max-w-full object-contain" alt="Art" />' +
                   '</div>' +
-                  '<div class="min-w-0">' +
-                    '<div class="set-title-pokedex text-sm font-extrabold text-white truncate">' + opt.productName + '</div>' +
-                    '<div class="text-xs text-cyan-200 font-semibold truncate mt-0.5">' + cleanStoreSource + '</div>' +
+                  '<div class="min-w-0 space-y-1">' +
+                    '<div class="text-[15px] font-extrabold text-white truncate">' + opt.productName + '</div>' +
+                    '<div class="flex items-center gap-2 flex-wrap">' +
+                      '<span class="px-2 py-0.5 rounded bg-purple-500/20 border border-purple-400/30 text-[10px] font-pokedex font-bold text-purple-200 uppercase">' + eraLabel + '</span>' +
+                      '<button onclick="filterBountyByStore(\'' + safeStoreClick + '\')" title="Filter scoreboard by ' + cleanStoreSource + '" class="px-2 py-0.5 rounded bg-cyan-500/15 hover:bg-cyan-500/30 border border-cyan-400/35 text-[11px] font-semibold text-cyan-200 transition truncate max-w-[240px]">' + cleanStoreSource + '</button>' +
+                    '</div>' +
+                  '</div>' +
+                  '<div class="font-mono-num">' +
+                    '<div class="font-pokedex text-xl font-black text-emerald-400">$' + Number(opt.landedPrice).toFixed(2) + '</div>' +
+                    '<div class="text-[11px] font-semibold text-slate-300">' + shipSubLabel + '</div>' +
+                  '</div>' +
+                  '<div class="space-y-1">' +
+                    '<div class="text-xs font-mono-num text-slate-300">Market: <strong class="text-amber-300">$' + Number(opt.marketValue).toFixed(2) + '</strong></div>' +
+                    '<div class="flex items-center gap-1.5 flex-wrap">' +
+                      spreadBadgeHtml +
+                      getPackBadgeHtml(opt.pricePerPack, opt.packCount, opt.isRipValueLeader) +
+                    '</div>' +
                   '</div>' +
                   '<div>' +
-                    getPackBadgeHtml(opt.pricePerPack, opt.packCount, opt.isRipValueLeader) +
+                    verdictColHtml +
                   '</div>' +
-                  '<div class="text-right font-mono-num px-2">' +
-                    '<div class="text-xs text-slate-300">Market: <strong class="text-amber-300">$' + Number(opt.marketValue).toFixed(2) + '</strong></div>' +
-                    '<div class="text-[11px] font-bold text-emerald-400">' + opt.discountPct + '% Under Market</div>' +
+                  '<div class="flex items-center gap-1.5 shrink-0">' +
+                    '<a href="' + (opt.cart1xUrl || opt.url || '#') + '" target="_blank" class="px-3.5 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 border border-cyan-500/40 text-xs font-extrabold transition whitespace-nowrap">Buy Now ↗</a>' +
+                    multiCartBtns +
                   '</div>' +
-                  '<div class="text-right font-mono-num px-2">' +
-                    '<div class="text-lg font-black text-emerald-400">$' + Number(opt.landedPrice).toFixed(2) + '</div>' +
-                    '<div class="text-[10px] uppercase tracking-wider text-slate-400">Landed</div>' +
-                  '</div>' +
-                  '<a href="' + (opt.url || '#') + '" target="_blank" class="px-3.5 py-2 rounded-lg bg-cyan-500/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 border border-cyan-500/40 text-xs font-extrabold transition whitespace-nowrap">Open ↗</a>' +
                 '</div>'
               );
             }).join('');

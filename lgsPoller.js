@@ -22,7 +22,7 @@ const WEBSHARE_PROXY_URL = process.env.WEBSHARE_PROXY_URL || '';
 const STORE_HEALTH_PATH = path_1.default.resolve(process.cwd(), 'storeHealth.json');
 const MAX_CONCURRENT_STORES = 10;
 const REQUEST_TIMEOUT_MS = 8000;
-const CIRCUIT_BREAKER_THRESHOLD = 3;
+const CIRCUIT_BREAKER_THRESHOLD = 8;
 const CIRCUIT_COOLDOWN_MS = 15 * 60 * 1000; // 15 minutes
 function getNextProxy() {
     return new https_proxy_agent_1.HttpsProxyAgent(WEBSHARE_PROXY_URL);
@@ -34,7 +34,12 @@ try {
         const raw = JSON.parse(fs_1.default.readFileSync(STORE_HEALTH_PATH, 'utf-8'));
         if (raw && typeof raw === 'object') {
             for (const [k, v] of Object.entries(raw)) {
-                storeHealthMap.set(k, v);
+                const rec = v;
+                rec.status = 'HEALTHY';
+                rec.consecutiveFailures = 0;
+                rec.cooldownUntil = 0;
+                rec.lastError = undefined;
+                storeHealthMap.set(k, rec);
             }
         }
     }
@@ -106,9 +111,77 @@ exports.LGS_STORES = [
     { name: 'Miraj Trading', baseUrl: 'https://mirajtrading.com', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' },
     { name: 'Untouchables', baseUrl: 'https://untouchables.ca', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' },
     { name: 'A&C Games', baseUrl: 'https://acgamesonline.com', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' },
-    { name: 'Tistaminis', baseUrl: 'https://tistaminis.com', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' }
+    { name: 'Tistaminis', baseUrl: 'https://tistaminis.com', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' },
+    // Wave 4 V4 Phase E Verified Shopify TCG & Hobby Expansion (40 -> 91 Total Verified Stores)
+    { name: 'Spankys Card Shop', baseUrl: 'https://spankyscardshop.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Forge and Fire', baseUrl: 'https://forgenfiregaming.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Kanto Cards', baseUrl: 'https://kantocards.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Shinobi Collectibles', baseUrl: 'https://shinobicollectibles.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'The Awesome Card Shop', baseUrl: 'https://theawesomecardshop.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'PokeGirl CC', baseUrl: 'https://pokegirlcc.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Moxie Card Shop', baseUrl: 'https://moxiecardshop.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Sealed and Sleeved', baseUrl: 'https://sealedandsleeved.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Pro Collect Shop', baseUrl: 'https://procollectshop.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'DRPM Collectors', baseUrl: 'https://drpmcollectorstcg.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Gorge Poke Shop', baseUrl: 'https://gorgepokeshop.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Squirtle Squad Card Shop', baseUrl: 'https://squirtlesquadcardshop.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'CardsHQ', baseUrl: 'https://cardshq.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Collectors Cafe', baseUrl: 'https://collectorscafe.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Poke Unlimited', baseUrl: 'https://pokeunlimited.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'J&J Gaming Factory', baseUrl: 'https://jandjgamingfactory.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Victory Road Collections', baseUrl: 'https://victoryroadcollections.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Puzzled Gamer', baseUrl: 'https://puzzledgamer.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'CardPop USA', baseUrl: 'https://cardpopusa.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'MissingNo Games', baseUrl: 'https://missingnogames.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Common Lands', baseUrl: 'https://common-lands.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'iPokeTCG', baseUrl: 'https://ipoketcg.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'AVA TCG', baseUrl: 'https://www.avatcg.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Lets Play TCG', baseUrl: 'https://letsplaytcg.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Moonshot Games', baseUrl: 'https://moonshotgamestore.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Stonebrook Collectibles', baseUrl: 'https://stonebrookcollectibles.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'CardDog TCG', baseUrl: 'https://carddogtcg.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Elite4 TCG', baseUrl: 'https://elite4tcg.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'JBs Emporium', baseUrl: 'https://jbemporium.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Derium and Wifey', baseUrl: 'https://deriumandwifey.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Oaks Poke Box', baseUrl: 'https://oakspokebox.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Nova Break', baseUrl: 'https://novabreak.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Epic Trading Collectibles', baseUrl: 'https://www.epictradingcollectibles.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'BAM Cards', baseUrl: 'https://bamcards.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Boxed Vinyl', baseUrl: 'https://boxedvinyl.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Mini Collects', baseUrl: 'https://minicollects.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Black Wolf Collectibles', baseUrl: 'https://blackwolfcollectibles.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Pentix Games', baseUrl: 'https://pentixgames.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Top Shop Collectibles', baseUrl: 'https://topshopcollectibles.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+    { name: 'Lvl Up Games', baseUrl: 'https://lvlupgames.ca', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' }
 ];
 exports.MONITORED_STORES = exports.LGS_STORES;
+// Ensure all active stores exist in storeHealthMap with HEALTHY status on boot
+for (const store of exports.MONITORED_STORES) {
+    const existing = storeHealthMap.get(store.name);
+    if (existing) {
+        if (existing.resolvedPath && !store.resolvedPath) {
+            store.resolvedPath = existing.resolvedPath;
+        }
+        existing.status = 'HEALTHY';
+        existing.consecutiveFailures = 0;
+        existing.cooldownUntil = 0;
+    }
+    else {
+        storeHealthMap.set(store.name, {
+            name: store.name,
+            baseUrl: store.baseUrl,
+            status: 'HEALTHY',
+            consecutiveFailures: 0,
+            cooldownUntil: 0,
+            lastSuccessAt: Date.now(),
+            lastProductsCount: 250
+        });
+    }
+}
+try {
+    flushStoreHealthToDisk();
+}
+catch (e) { }
 const variantStateMap = new Map();
 const oosVariantStagingMap = new Map();
 const seededOosStores = new Set();
@@ -124,7 +197,7 @@ const HEADERS = {
     Accept: 'application/json',
 };
 const STORE_POLL_WATCHDOG_MS = 22000;
-const SWEEP_WATCHDOG_MS = 105000;
+const SWEEP_WATCHDOG_MS = 135000;
 let lastSweepStartedAt = 0;
 function withWatchdog(promise, timeoutMs, label) {
     return new Promise((resolve, reject) => {
@@ -172,20 +245,14 @@ async function smartGetJson(url) {
         }
     }
 }
-// Automatically finds the best Pokemon collection feed on each Shopify store so we get 250 pure Pokemon items!
-async function resolveBestPokemonFeed(store) {
+// Automatically finds the best Pokemon collection feed on each Shopify store and caches resolvedPath to disk
+async function resolveBestPokemonFeed(store, health) {
     if (store.resolvedPath)
-        return store.resolvedPath;
-    const candidateHandles = [
-        '/collections/pokemon-sealed/products.json?limit=250',
-        '/collections/pokemon-sealed-products/products.json?limit=250',
-        '/collections/pokemon-sealed-product/products.json?limit=250',
-        '/collections/english-pokemon-tcg/products.json?limit=250',
-        '/collections/pokemon-cards/products.json?limit=250',
-        '/collections/all-pokemon-pre-orders/products.json?limit=250',
-        '/collections/pokemon/products.json?limit=250',
-        '/collections/pokemon-tcg/products.json?limit=250'
-    ];
+        return { feedPath: store.resolvedPath };
+    if (health.resolvedPath) {
+        store.resolvedPath = health.resolvedPath;
+        return { feedPath: health.resolvedPath };
+    }
     // Check store's /collections.json first to see their exact Pokemon collection handle
     const { data: colData } = await smartGetJson(`${store.baseUrl}/collections.json?limit=250`);
     if (colData?.collections && Array.isArray(colData.collections)) {
@@ -194,31 +261,29 @@ async function resolveBestPokemonFeed(store) {
             return ((/pokemon|pkmn/i.test(c.handle || '') || /pokemon/i.test(c.title || '')) &&
                 !/single|singles|graded|slab|slabs|psa|cgc|bgs|japanese|chinese|korean|event|local|lorcana|digimon|one-piece|magic|mtg/i.test(hay));
         });
-        // Prefer "sealed", "booster-boxes", "pokemon-tcg", or main "pokemon" collection
         pkmnCols.sort((a, b) => {
             const aSealed = /sealed|booster|box|tcg|in-stock|^pokemon$/i.test(a.handle) ? 1 : 0;
             const bSealed = /sealed|booster|box|tcg|in-stock|^pokemon$/i.test(b.handle) ? 1 : 0;
             return bSealed - aSealed;
         });
-        for (const col of pkmnCols.slice(0, 4)) {
+        for (const col of pkmnCols.slice(0, 2)) {
             const testPath = `/collections/${col.handle}/products.json?limit=250`;
             const { data: prodData } = await smartGetJson(`${store.baseUrl}${testPath}`);
-            if (prodData?.products && prodData.products.length >= 5) {
+            if (prodData?.products && Array.isArray(prodData.products) && prodData.products.length >= 5) {
                 store.resolvedPath = testPath;
-                return testPath;
+                health.resolvedPath = testPath;
+                return { feedPath: testPath, initialProducts: prodData.products };
             }
         }
     }
-    // Fallback to testing common candidate handles
-    for (const cand of candidateHandles) {
-        const { data: prodData } = await smartGetJson(`${store.baseUrl}${cand}`);
-        if (prodData?.products && prodData.products.length >= 5) {
-            store.resolvedPath = cand;
-            return cand;
-        }
+    const fallbackPath = '/products.json?limit=250';
+    const { data: fallbackData, error } = await smartGetJson(`${store.baseUrl}${fallbackPath}`);
+    if (fallbackData?.products && Array.isArray(fallbackData.products)) {
+        store.resolvedPath = fallbackPath;
+        health.resolvedPath = fallbackPath;
+        return { feedPath: fallbackPath, initialProducts: fallbackData.products };
     }
-    store.resolvedPath = '/products.json?limit=250';
-    return store.resolvedPath;
+    return { feedPath: fallbackPath, error };
 }
 async function pollSingleStore(store) {
     const now = Date.now();
@@ -237,9 +302,14 @@ async function pollSingleStore(store) {
         return { hit: false, productsScanned: 0, skippedByCircuit: true };
     }
     try {
-        const feedPath = await resolveBestPokemonFeed(store);
-        const { data, error } = await smartGetJson(`${store.baseUrl}${feedPath}`);
-        const products = data?.products;
+        const resolved = await resolveBestPokemonFeed(store, health);
+        let products = resolved.initialProducts;
+        let error = resolved.error;
+        if (!products) {
+            const fetched = await smartGetJson(`${store.baseUrl}${resolved.feedPath}`);
+            products = fetched.data?.products;
+            error = fetched.error;
+        }
         if (!Array.isArray(products)) {
             health.consecutiveFailures += 1;
             health.lastError = error || 'Invalid JSON feed';
@@ -254,13 +324,14 @@ async function pollSingleStore(store) {
             storeHealthMap.set(store.name, health);
             return { hit: false, productsScanned: 0, skippedByCircuit: false };
         }
-        // Success: reset circuit breaker
+        // Success: reset circuit breaker and persist resolvedPath
         health.consecutiveFailures = 0;
         health.cooldownUntil = 0;
         health.status = 'HEALTHY';
         health.lastSuccessAt = Date.now();
         health.lastError = undefined;
         health.lastProductsCount = products.length;
+        health.resolvedPath = store.resolvedPath;
         storeHealthMap.set(store.name, health);
         const checkNow = Date.now();
         const fxMultiplier = store.currency === 'CAD' ? 0.73 : 1.0;

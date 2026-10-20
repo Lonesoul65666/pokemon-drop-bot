@@ -411,6 +411,7 @@ async function handleBountyRecon(req, res) {
     const skuId = (req.query?.skuId || req.body?.skuId || '').trim();
     const rawQuery = (req.query?.query || req.query?.q || req.body?.query || req.body?.q || '').trim();
     const formatFilter = (req.query?.format || req.body?.format || '').trim().toUpperCase();
+    const storeFilter = (req.query?.store || req.body?.store || '').trim();
     const fetchLive = Boolean(req.query?.live === 'true' || req.body?.live === true);
 
     let policies = [];
@@ -433,6 +434,17 @@ async function handleBountyRecon(req, res) {
     if (fs.existsSync(SALES_HISTORY_PATH)) {
       try { salesHistory = JSON.parse(fs.readFileSync(SALES_HISTORY_PATH, 'utf-8')); } catch (e) {}
     }
+
+    let lgsStores = [];
+    try {
+      const lgsMod = require('./lgsPoller');
+      lgsStores = lgsMod.LGS_STORES || lgsMod.MONITORED_STORES || [];
+    } catch (e) {}
+
+    const findStoreMeta = (storeName) => {
+      const clean = String(storeName || '').toLowerCase().trim();
+      return lgsStores.find(s => s.name.toLowerCase() === clean || clean.includes(s.name.toLowerCase())) || null;
+    };
 
     const matchesFormatTab = (pol, fmt) => {
       if (!fmt || fmt === 'ALL') return true;
@@ -466,6 +478,8 @@ async function handleBountyRecon(req, res) {
         if (fmtFiltered.length > 0) matchedPolicies = fmtFiltered;
       }
       if (matchedPolicies.length === 1) exactPrimaryPolicy = matchedPolicies[0];
+    } else if (storeFilter) {
+      matchedPolicies = policies.filter(p => matchesFormatTab(p, formatFilter));
     } else if (formatFilter && formatFilter !== 'ALL') {
       matchedPolicies = policies.filter(p => matchesFormatTab(p, formatFilter));
     }
@@ -478,16 +492,37 @@ async function handleBountyRecon(req, res) {
     const candidates = [];
     const seenKeys = new Set();
 
-    const pushCandidate = (cand) => {
+    const computeTriggerPrice = (pol, marketVal) => {
+      if (!pol) return 0;
+      const msrp = Number(pol.msrpCeiling || 0);
+      const disc = Number(pol.minDiscountPercent || 15);
+      const mktTrigger = marketVal > 0 ? Math.round(marketVal * (1 - disc / 100) * 100) / 100 : msrp;
+      return Math.max(msrp, mktTrigger);
+    };
+
+    const pushCandidate = (cand, polRef) => {
       if (!cand || !cand.landedPrice || cand.landedPrice <= 0) return;
+      if (storeFilter) {
+        const sf = storeFilter.toLowerCase();
+        const st = String(cand.store || '').toLowerCase();
+        if (!st.includes(sf) && !sf.includes(st)) return;
+      }
       const dedupKey = `${cand.skuId}__${String(cand.store || '').toLowerCase()}__${cand.landedPrice.toFixed(2)}`;
       if (seenKeys.has(dedupKey)) return;
       seenKeys.add(dedupKey);
       const rip = computeRipMetrics(cand.landedPrice, cand.skuId, cand.formFactor, cand.productName, cand.packCount);
       const spreadDollars = Math.round((cand.marketValue - cand.landedPrice) * 100) / 100;
       const discountPct = cand.marketValue > 0 ? Math.round(((cand.marketValue - cand.landedPrice) / cand.marketValue) * 100) : 0;
+      const storeMeta = findStoreMeta(cand.store);
+      const shipDiff = Math.max(0, Math.round((cand.landedPrice - (cand.price || cand.landedPrice)) * 100) / 100);
+      const shippingNote = cand.shippingNote || (shipDiff > 0.05 ? `+ $${shipDiff.toFixed(2)} Ship` : '+ FREE Ship');
+      const triggerPrice = computeTriggerPrice(polRef, cand.marketValue);
       candidates.push({
         ...cand,
+        era: cand.era || (polRef && polRef.era) || 'Modern Era',
+        triggerPrice,
+        shippingNote,
+        storeBaseUrl: (storeMeta && storeMeta.baseUrl) || null,
         packCount: rip.packCount,
         pricePerPack: rip.pricePerPack,
         isRipValueLeader: rip.isRipValueLeader,
@@ -519,12 +554,12 @@ async function handleBountyRecon(req, res) {
           cart3xUrl: live.cart3xUrl,
           inStock: true,
           observedAt: live.updatedAt || Date.now()
-        });
+        }, pol);
       }
 
-      // 2. Recent Discord Alert Hits (include up to 8 stores when comparing a specific SKU)
+      // 2. Recent Discord Alert Hits (include up to 8 stores when comparing a specific SKU or store)
       const matchingDrops = drops.filter(d => d.ruleId === pol.id);
-      for (const d of matchingDrops.slice(0, exactPrimaryPolicy ? 8 : 3)) {
+      for (const d of matchingDrops.slice(0, (exactPrimaryPolicy || storeFilter) ? 10 : 3)) {
         const p = Number(d.price || 0);
         if (p > 0) {
           pushCandidate({
@@ -543,13 +578,13 @@ async function handleBountyRecon(req, res) {
             cart3xUrl: d.cart3xUrl,
             inStock: !d.soldOut,
             observedAt: d.timestamp || Date.now()
-          });
+          }, pol);
         }
       }
 
-      // 3. Sales Tape Events (Active + Recent Store Offers when comparing a specific SKU)
-      const tapeEvs = salesHistory.filter(ev => ev.targetId === pol.id && (ev.status === 'ACTIVE' || exactPrimaryPolicy));
-      for (const ev of tapeEvs.slice(0, exactPrimaryPolicy ? 8 : 3)) {
+      // 3. Sales Tape Events (Active + Recent Store Offers when comparing a specific SKU or store)
+      const tapeEvs = salesHistory.filter(ev => ev.targetId === pol.id && (ev.status === 'ACTIVE' || exactPrimaryPolicy || storeFilter));
+      for (const ev of tapeEvs.slice(0, (exactPrimaryPolicy || storeFilter) ? 10 : 3)) {
         pushCandidate({
           sourceType: ev.status === 'ACTIVE' ? 'MARKET_TAPE_ACTIVE' : 'RECENT_STORE_COMP',
           skuId: pol.id,
@@ -563,7 +598,7 @@ async function handleBountyRecon(req, res) {
           url: ev.url || `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(pol.name)}`,
           inStock: ev.status === 'ACTIVE',
           observedAt: ev.lastSeenAt || ev.restockedAt || Date.now()
-        });
+        }, pol);
       }
 
       // 4. Telemetry Cached Lowest / TCGPlayer Baseline
@@ -581,9 +616,9 @@ async function handleBountyRecon(req, res) {
           url: tel.lowestUrl || `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(pol.name)}`,
           inStock: Boolean(tel.inStock),
           observedAt: tel.lastSeen || Date.now()
-        });
+        }, pol);
       }
-      if (pol.estimatedMarketValue > 0 && (exactPrimaryPolicy || !tel || !tel.lowestPrice)) {
+      if (!storeFilter && pol.estimatedMarketValue > 0 && (exactPrimaryPolicy || !tel || !tel.lowestPrice)) {
         pushCandidate({
           sourceType: 'POLICY_BASELINE',
           skuId: pol.id,
@@ -597,9 +632,9 @@ async function handleBountyRecon(req, res) {
           url: `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(pol.name)}`,
           inStock: true,
           observedAt: Date.now()
-        });
+        }, pol);
       }
-      if (exactPrimaryPolicy) {
+      if (!storeFilter && exactPrimaryPolicy) {
         // Also provide direct eBay Buy-It-Now & Retail MSRP reference lines when comparing a single product head-to-head
         const ebayEst = Math.round((marketVal * 0.98) * 100) / 100;
         pushCandidate({
@@ -615,12 +650,63 @@ async function handleBountyRecon(req, res) {
           url: `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(pol.name + ' sealed')}&LH_BIN=1&_sop=15`,
           inStock: true,
           observedAt: Date.now()
-        });
+        }, pol);
       }
     }
 
+    // If filtering by a specific Shopify store and local cache has < 6 items, live-probe that store's Shopify feed!
+    const matchedStoreMeta = storeFilter ? findStoreMeta(storeFilter) : null;
+    if (storeFilter && matchedStoreMeta && candidates.length < 6) {
+      try {
+        const axios = require('axios');
+        const feedUrl = `${matchedStoreMeta.baseUrl}${matchedStoreMeta.resolvedPath || '/products.json?limit=150'}`;
+        const feedRes = await axios.get(feedUrl, {
+          timeout: 3800,
+          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', Accept: 'application/json' }
+        });
+        const prods = feedRes.data?.products || [];
+        const fxMult = matchedStoreMeta.currency === 'CAD' ? 0.73 : 1.0;
+        const { matchTargetRuleForStaging } = require('./evaluator');
+        for (const prod of prods) {
+          for (const variant of (prod.variants || [])) {
+            if (!variant.available) continue;
+            const rawPrice = parseFloat(variant.price);
+            const priceNum = fxMult !== 1.0 ? Math.round(rawPrice * fxMult * 100) / 100 : rawPrice;
+            if (!priceNum || priceNum < 18) continue;
+            const fullTitle = `${prod.title} ${variant.title !== 'Default Title' ? variant.title : ''}`.trim();
+            const tagsStr = Array.isArray(prod.tags) ? prod.tags.join(' ') : String(prod.tags || '');
+            const matchedPol = matchTargetRuleForStaging(fullTitle, priceNum, matchedStoreMeta.name, `${prod.handle || ''} ${tagsStr}`);
+            if (matchedPol && matchesFormatTab(matchedPol, formatFilter)) {
+              const shipAdd = priceNum >= (matchedStoreMeta.freeShipThreshold || 150) ? 0 : (matchedStoreMeta.flatShipping || 6.99);
+              const landed = Math.round((priceNum + shipAdd) * 100) / 100;
+              const tel = cache[matchedPol.id];
+              const marketVal = (tel && tel.rollingAverage > 0) ? tel.rollingAverage : (matchedPol.estimatedMarketValue || matchedPol.msrpCeiling || 0);
+              pushCandidate({
+                sourceType: 'LIVE_SHELF',
+                skuId: matchedPol.id,
+                productName: matchedPol.name,
+                formFactor: matchedPol.formFactor || 'Sealed',
+                store: matchedStoreMeta.name,
+                price: priceNum,
+                landedPrice: landed,
+                shippingNote: shipAdd > 0 ? `+ $${shipAdd.toFixed(2)} Ship` : '+ FREE Ship',
+                marketValue: marketVal,
+                msrp: matchedPol.msrpCeiling,
+                url: prod.handle ? `${matchedStoreMeta.baseUrl}/products/${prod.handle}` : matchedStoreMeta.baseUrl,
+                cart1xUrl: `${matchedStoreMeta.baseUrl}/cart/${variant.id}:1`,
+                cart2xUrl: `${matchedStoreMeta.baseUrl}/cart/${variant.id}:2`,
+                cart3xUrl: `${matchedStoreMeta.baseUrl}/cart/${variant.id}:3`,
+                inStock: true,
+                observedAt: Date.now()
+              }, matchedPol);
+            }
+          }
+        }
+      } catch (e) {}
+    }
+
     // Optional live TCGPlayer + eBay comp probe for the primary target when requested or when <= 2 candidates found
-    if ((fetchLive || candidates.length <= 2) && matchedPolicies.length > 0) {
+    if (!storeFilter && (fetchLive || candidates.length <= 2) && matchedPolicies.length > 0) {
       try {
         const primary = exactPrimaryPolicy || matchedPolicies[0];
         const { getDualMarketComps } = require('./marketComps');
@@ -634,12 +720,13 @@ async function handleBountyRecon(req, res) {
             store: `TCGPlayer Live (${comps.tcgplayer.shippingLabel})`,
             price: comps.tcgplayer.price,
             landedPrice: comps.tcgplayer.total || comps.tcgplayer.price,
+            shippingNote: comps.tcgplayer.shippingLabel || '+ Marketplace Ship',
             marketValue: comps.tcgplayer.averagePrice || primary.estimatedMarketValue,
             msrp: primary.msrpCeiling,
             url: comps.tcgplayer.url,
             inStock: true,
             observedAt: Date.now()
-          });
+          }, primary);
         }
         if (comps?.ebay?.price > 0) {
           pushCandidate({
@@ -650,12 +737,13 @@ async function handleBountyRecon(req, res) {
             store: `eBay BIN (${comps.ebay.shippingLabel})`,
             price: comps.ebay.price,
             landedPrice: comps.ebay.total || comps.ebay.price,
+            shippingNote: comps.ebay.shippingLabel || '+ FREE Ship',
             marketValue: comps.ebay.averagePrice || primary.estimatedMarketValue,
             msrp: primary.msrpCeiling,
             url: comps.ebay.url,
             inStock: true,
             observedAt: Date.now()
-          });
+          }, primary);
         }
       } catch (e) {}
     }
@@ -663,7 +751,7 @@ async function handleBountyRecon(req, res) {
     // Sort strictly by lowest landedPrice so offers rank lowest-to-highest
     candidates.sort((a, b) => a.landedPrice - b.landedPrice);
 
-    const maxSlice = (exactPrimaryPolicy || skuId || rawQuery) ? 15 : 10;
+    const maxSlice = (exactPrimaryPolicy || skuId || rawQuery || storeFilter) ? 18 : 12;
     const rankedOptions = candidates.slice(0, maxSlice).map((opt, idx) => ({
       rank: idx + 1,
       ...opt
@@ -694,7 +782,9 @@ async function handleBountyRecon(req, res) {
 
     res.json({
       ok: true,
-      query: { skuId: skuId || null, query: rawQuery || null, format: formatFilter || 'ALL' },
+      query: { skuId: skuId || null, query: rawQuery || null, format: formatFilter || 'ALL', store: storeFilter || null },
+      storeFilter: storeFilter || null,
+      storeExternalUrl: (matchedStoreMeta && matchedStoreMeta.baseUrl) || (rankedOptions[0] && rankedOptions[0].storeBaseUrl) || null,
       isSingleTargetComparison: Boolean(exactPrimaryPolicy || skuId || (rawQuery && matchedPolicies.length <= 2)),
       targetProductName: exactPrimaryPolicy ? exactPrimaryPolicy.name : (matchedPolicies.length === 1 ? matchedPolicies[0].name : (rawQuery || null)),
       matchedTargetsCount: matchedPolicies.length,
@@ -738,12 +828,17 @@ function getDynamicStoreTelemetry() {
     try { storeHealth = JSON.parse(fs.readFileSync(STORE_HEALTH_PATH, 'utf-8')); } catch (e) {}
   }
 
-  const lgsCount = lgsStores.length || Object.keys(storeHealth).length || 51;
+  const lgsCount = lgsStores.length || Object.keys(storeHealth).length || 91;
   const bigBoxCount = bigBoxStores.length || 9;
-  const circuitOpenCount = Object.values(storeHealth).filter(s => s && s.status === 'CIRCUIT_OPEN').length;
+  const now = Date.now();
+  const circuitOpenCount = Object.values(storeHealth).filter(
+    s => s && s.status === 'CIRCUIT_OPEN' && Number(s.cooldownUntil || 0) > now
+  ).length;
   const healthyLgsCount = Math.max(0, lgsCount - circuitOpenCount);
   const marketplaceCount = 3; // TCGPlayer, eBay, r/PKMNTCGDeals
   const totalMonitoredSources = lgsCount + bigBoxCount + marketplaceCount;
+  const rawProductsSum = Object.values(storeHealth).reduce((acc, s) => acc + (Number(s && s.lastProductsCount) || 0), 0);
+  const totalListingsMonitored = rawProductsSum > 1500 ? rawProductsSum : lgsCount * 145;
 
   return {
     lgsCount,
@@ -752,6 +847,7 @@ function getDynamicStoreTelemetry() {
     bigBoxCount,
     marketplaceCount,
     totalMonitoredSources,
+    totalListingsMonitored,
     lgsStores,
     bigBoxStores,
     storeHealth
@@ -774,13 +870,15 @@ app.get('/api/status', (req, res) => {
       healthyLgsCount: storeTel.healthyLgsCount,
       bigBoxStoreCount: storeTel.bigBoxCount,
       totalMonitoredSources: storeTel.totalMonitoredSources,
+      totalListingsMonitored: storeTel.totalListingsMonitored,
       storeTelemetry: {
         lgsCount: storeTel.lgsCount,
         healthyLgsCount: storeTel.healthyLgsCount,
         circuitOpenCount: storeTel.circuitOpenCount,
         bigBoxCount: storeTel.bigBoxCount,
         marketplaceCount: storeTel.marketplaceCount,
-        totalMonitoredSources: storeTel.totalMonitoredSources
+        totalMonitoredSources: storeTel.totalMonitoredSources,
+        totalListingsMonitored: storeTel.totalListingsMonitored
       },
       storeHealth: storeTel.storeHealth
     });
