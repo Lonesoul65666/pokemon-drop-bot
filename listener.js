@@ -34,6 +34,8 @@ async function processIncomingDrop(item) {
                 cart3xUrl: result.cart3xUrl !== undefined ? result.cart3xUrl : item.cart3xUrl,
                 price: item.price !== undefined ? item.price.toFixed(2) : undefined,
                 priceNum: item.price,
+                itemPrice: result.itemPrice ?? item.itemPrice,
+                shippingPrice: result.shippingPrice ?? item.shippingPrice,
                 landedPrice: result.landedPrice,
                 estimatedShipping: result.estimatedShipping,
                 freeShipNote: result.freeShipNote,

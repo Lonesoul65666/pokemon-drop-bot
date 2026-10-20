@@ -45,6 +45,9 @@ export interface RawRestockItem {
   cart2xUrl?: string;
   cart3xUrl?: string;
   price?: number;
+  itemPrice?: number;
+  shippingPrice?: number;
+  shippingNoteOverride?: string;
   stock?: number;
   itemId?: string;
   isPreOrder?: boolean;
@@ -57,10 +60,12 @@ export interface EvaluationResult {
   rule?: PolicyRule;
   discountPct?: number;
   savingsDollars?: number;
-  alertType?: 'NEW_DROP' | 'PRICE_DROP' | 'RESTOCK_REPEAT';
+  alertType?: 'NEW_DROP' | 'PRICE_DROP' | 'RESTOCK_REPEAT' | 'PRE_DROP_STAGING';
   previousPrice?: number;
   previousTimeStr?: string;
   landedPrice?: number;
+  itemPrice?: number;
+  shippingPrice?: number;
   estimatedShipping?: number;
   freeShipNote?: string;
   packCount?: number;
@@ -205,7 +210,19 @@ export const STORE_SHIPPING_RULES: Record<string, StoreShippingProfile> = {
   'pokebox usa': { freeShipThreshold: 150, flatShipping: 6.99 },
   '401 games': { freeShipThreshold: 175, flatShipping: 9.99 },
   'kanzen games': { freeShipThreshold: 150, flatShipping: 6.99 },
-  'the card vault': { freeShipThreshold: 150, flatShipping: 6.99 }
+  'the card vault': { freeShipThreshold: 150, flatShipping: 6.99 },
+  // Wave 3 V4 Autopilot Regional & Mom-and-Pop Verified Shopify LGS Stores (11)
+  'level one game shop': { freeShipThreshold: 125, flatShipping: 6.99 },
+  'mox boarding house': { freeShipThreshold: 100, flatShipping: 6.99 },
+  'taps games': { freeShipThreshold: 175, flatShipping: 9.99 },
+  'sports card junction': { freeShipThreshold: 150, flatShipping: 6.99 },
+  'gnome games': { freeShipThreshold: 125, flatShipping: 6.99 },
+  'silver goblin': { freeShipThreshold: 175, flatShipping: 9.99 },
+  'face to face games': { freeShipThreshold: 175, flatShipping: 9.99 },
+  'miraj trading': { freeShipThreshold: 175, flatShipping: 9.99 },
+  'untouchables': { freeShipThreshold: 175, flatShipping: 9.99 },
+  'a&c games': { freeShipThreshold: 175, flatShipping: 9.99 },
+  'tistaminis': { freeShipThreshold: 175, flatShipping: 9.99 }
 };
 
 export function getStoreShippingProfile(retailer: string): StoreShippingProfile {
@@ -224,6 +241,8 @@ export interface LiveStockEntry {
   title: string;
   retailer: string;
   price: number;
+  itemPrice?: number;
+  shippingPrice?: number;
   landedPrice?: number;
   freeShipNote?: string;
   packCount?: number;
@@ -247,6 +266,33 @@ export interface LiveStockEntry {
   inStock: boolean;
   updatedAt: number;
   timeStr: string;
+}
+
+export function matchTargetRuleForStaging(title: string, price: number, retailer: string, handleAndUrl: string): PolicyRule | null {
+  const cleanTitle = (title || '').trim();
+  for (const junkRegex of GLOBAL_JUNK_EXCLUSIONS) {
+    if (junkRegex.test(cleanTitle)) return null;
+  }
+  for (const rule of WATCH_POLICIES) {
+    if ((rule as any).active === false) continue;
+    const isMatched = rule.matchers.some((regex) => regex.test(cleanTitle));
+    if (!isMatched) continue;
+    if (!isValidSkuForFormFactor(cleanTitle, rule.formFactor, price, {
+      ruleId: rule.id,
+      targetName: rule.name,
+      handle: handleAndUrl,
+      retailer,
+      sourceUrl: handleAndUrl,
+      allowPcRetailUnlock: false
+    })) {
+      continue;
+    }
+    const minFloor = getMinPlausiblePriceFloor(rule.formFactor);
+    const maxCeiling = getMaxPlausiblePriceCeiling(rule.formFactor, rule.id, rule.name);
+    if (price < minFloor || price > maxCeiling) continue;
+    return rule;
+  }
+  return null;
 }
 
 export function upsertLiveStock(entry: LiveStockEntry) {
@@ -449,7 +495,7 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       rule.packCount
     );
 
-    let freeShipNote: string | undefined = undefined;
+    let freeShipNote: string | undefined = item.shippingNoteOverride;
 
     if (dropPrice > effectiveCeiling) {
       return {
@@ -510,6 +556,8 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       title: cleanTitle,
       retailer: item.retailer,
       price: currentPrice,
+      itemPrice: item.itemPrice,
+      shippingPrice: item.shippingPrice,
       landedPrice,
       freeShipNote,
       packCount,
@@ -631,6 +679,8 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       previousPrice,
       previousTimeStr,
       landedPrice,
+      itemPrice: item.itemPrice,
+      shippingPrice: item.shippingPrice,
       estimatedShipping,
       freeShipNote,
       packCount,

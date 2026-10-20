@@ -333,6 +333,22 @@ function doesTcgResultMatchFormFactor(title, targetName, formFactor, price, rule
     }
     return true;
 }
+function formatTransparentMarketplaceShipping(itemPrice, shippingPrice, totalPrice) {
+    const landed = totalPrice ?? Math.round(((itemPrice || 0) + (shippingPrice || 0)) * 100) / 100;
+    if (shippingPrice !== undefined && shippingPrice > 0) {
+        if (itemPrice > 0 && itemPrice < 35) {
+            return `$${itemPrice.toFixed(2)} + $${shippingPrice.toFixed(2)} Ship ($${landed.toFixed(2)} Landed — Under $35 Threshold, 2x May Unlock Free Ship)`;
+        }
+        return `$${itemPrice.toFixed(2)} + $${shippingPrice.toFixed(2)} Ship ($${landed.toFixed(2)} Landed)`;
+    }
+    if (shippingPrice === 0) {
+        return '+FREE Shipping (Confirmed $0.00 Ship)';
+    }
+    if (itemPrice > 0 && itemPrice < 35) {
+        return '+Est. Ship / Check Cart — Under $35 Threshold, 2x May Unlock Free Ship';
+    }
+    return '+FREE Shipping (Over $35 Threshold)';
+}
 async function getBestVerifiedTcgSeller(prodId, minFloor, maxCeiling) {
     try {
         const url = `https://mp-search-api.tcgplayer.com/v1/product/${prodId}/listings`;
@@ -359,6 +375,7 @@ async function getBestVerifiedTcgSeller(prodId, minFloor, maxCeiling) {
             if (itemPrice > 0 && total >= minFloor && total <= maxCeiling) {
                 return {
                     price: total,
+                    itemPrice,
                     shipping: shipPrice,
                     sellerName: l.sellerName || 'Verified Shop',
                     rating,
@@ -389,9 +406,12 @@ async function pollTcgPlayerUndercuts() {
         if (activePolicies.length === 0) {
             return;
         }
-        for (let i = 0; i < 6; i++) {
-            const policy = activePolicies[tcgCursor % activePolicies.length];
-            tcgCursor = (tcgCursor + 1) % activePolicies.length;
+        // 2x Priority Polling for the 30 "Needed for Wall" ETBs (formFactor === 'etb' && !owned)
+        const neededWallEtbs = activePolicies.filter((p) => String(p.formFactor || '').toLowerCase() === 'etb' && !p.owned && !p.inVault);
+        const priorityRotation = [...activePolicies, ...neededWallEtbs];
+        for (let i = 0; i < 8; i++) {
+            const policy = priorityRotation[tcgCursor % priorityRotation.length];
+            tcgCursor = (tcgCursor + 1) % priorityRotation.length;
             const formFactor = policy.formFactor || 'Booster Box';
             const minFloor = (0, policies_1.getMinPlausiblePriceFloor)(formFactor);
             const maxCeiling = (0, policies_1.getMaxPlausiblePriceCeiling)(formFactor, policy.id, policy.name);
@@ -404,11 +424,15 @@ async function pollTcgPlayerUndercuts() {
                         const minsSinceLast = prev ? (Date.now() - prev.timestamp) / (1000 * 60) : 999;
                         if (!prev || bestSeller.price <= prev.lowestPrice - 2 || minsSinceLast >= 15) {
                             lowestTcgSeenMap.set(policy.id, { lowestPrice: bestSeller.price, timestamp: Date.now() });
+                            const shippingNoteOverride = formatTransparentMarketplaceShipping(bestSeller.itemPrice, bestSeller.shipping, bestSeller.price);
                             await (0, listener_1.processIncomingDrop)({
                                 title: policy.name,
                                 retailer: `${bestSeller.sellerName} (TCGPlayer • ${bestSeller.rating}%)`,
                                 url: `https://www.tcgplayer.com/product/${prodId}?Language=English`,
                                 price: bestSeller.price,
+                                itemPrice: bestSeller.itemPrice,
+                                shippingPrice: bestSeller.shipping,
+                                shippingNoteOverride,
                                 stock: undefined,
                                 itemId: `tcg_${prodId}`,
                                 freeShipping: true
@@ -446,10 +470,19 @@ async function pollTcgPlayerUndercuts() {
                         continue;
                     const prodId = Math.floor(Number(item.productId));
                     const bestSeller = await getBestVerifiedTcgSeller(prodId, minFloor, maxCeiling);
-                    const fallbackCandidate = parseFloat(item.lowestPriceWithShipping || item.lowestPrice || 0);
+                    const rawItemPrice = parseFloat(item.lowestPrice || 0);
+                    const rawWithShipping = parseFloat(item.lowestPriceWithShipping || item.lowestPrice || 0);
+                    const fallbackCandidate = rawWithShipping || rawItemPrice;
                     const lowestPrice = bestSeller ? bestSeller.price : fallbackCandidate;
                     if (!lowestPrice || lowestPrice < minFloor || lowestPrice > maxCeiling)
                         continue;
+                    const parsedItemPrice = bestSeller ? bestSeller.itemPrice : (rawItemPrice > 0 ? rawItemPrice : lowestPrice);
+                    const parsedShipPrice = bestSeller
+                        ? bestSeller.shipping
+                        : (rawWithShipping > rawItemPrice && rawItemPrice > 0
+                            ? Math.round((rawWithShipping - rawItemPrice) * 100) / 100
+                            : undefined);
+                    const shippingNoteOverride = formatTransparentMarketplaceShipping(parsedItemPrice, parsedShipPrice, lowestPrice);
                     const shopLabel = bestSeller
                         ? `${bestSeller.sellerName} (TCGPlayer • ${bestSeller.rating}%)`
                         : 'TCGPlayer Verified Seller';
@@ -468,6 +501,9 @@ async function pollTcgPlayerUndercuts() {
                             retailer: shopLabel,
                             url: `https://www.tcgplayer.com/product/${prodId}?Language=English`,
                             price: lowestPrice,
+                            itemPrice: parsedItemPrice,
+                            shippingPrice: parsedShipPrice,
+                            shippingNoteOverride,
                             stock: undefined,
                             itemId: `tcg_${prodId}`,
                             isPreOrder,

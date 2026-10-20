@@ -738,7 +738,7 @@ function getDynamicStoreTelemetry() {
     try { storeHealth = JSON.parse(fs.readFileSync(STORE_HEALTH_PATH, 'utf-8')); } catch (e) {}
   }
 
-  const lgsCount = lgsStores.length || Object.keys(storeHealth).length || 40;
+  const lgsCount = lgsStores.length || Object.keys(storeHealth).length || 51;
   const bigBoxCount = bigBoxStores.length || 9;
   const circuitOpenCount = Object.values(storeHealth).filter(s => s && s.status === 'CIRCUIT_OPEN').length;
   const healthyLgsCount = Math.max(0, lgsCount - circuitOpenCount);

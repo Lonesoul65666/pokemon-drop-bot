@@ -8,6 +8,7 @@ exports.getMsrpTrophies = getMsrpTrophies;
 exports.recordMsrpTrophyCatch = recordMsrpTrophyCatch;
 exports.isPreReleaseDate = isPreReleaseDate;
 exports.getStoreShippingProfile = getStoreShippingProfile;
+exports.matchTargetRuleForStaging = matchTargetRuleForStaging;
 exports.upsertLiveStock = upsertLiveStock;
 exports.markLiveStockOut = markLiveStockOut;
 exports.evaluateItem = evaluateItem;
@@ -125,7 +126,19 @@ exports.STORE_SHIPPING_RULES = {
     'pokebox usa': { freeShipThreshold: 150, flatShipping: 6.99 },
     '401 games': { freeShipThreshold: 175, flatShipping: 9.99 },
     'kanzen games': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'the card vault': { freeShipThreshold: 150, flatShipping: 6.99 }
+    'the card vault': { freeShipThreshold: 150, flatShipping: 6.99 },
+    // Wave 3 V4 Autopilot Regional & Mom-and-Pop Verified Shopify LGS Stores (11)
+    'level one game shop': { freeShipThreshold: 125, flatShipping: 6.99 },
+    'mox boarding house': { freeShipThreshold: 100, flatShipping: 6.99 },
+    'taps games': { freeShipThreshold: 175, flatShipping: 9.99 },
+    'sports card junction': { freeShipThreshold: 150, flatShipping: 6.99 },
+    'gnome games': { freeShipThreshold: 125, flatShipping: 6.99 },
+    'silver goblin': { freeShipThreshold: 175, flatShipping: 9.99 },
+    'face to face games': { freeShipThreshold: 175, flatShipping: 9.99 },
+    'miraj trading': { freeShipThreshold: 175, flatShipping: 9.99 },
+    'untouchables': { freeShipThreshold: 175, flatShipping: 9.99 },
+    'a&c games': { freeShipThreshold: 175, flatShipping: 9.99 },
+    'tistaminis': { freeShipThreshold: 175, flatShipping: 9.99 }
 };
 function getStoreShippingProfile(retailer) {
     const key = (retailer || '').trim().toLowerCase();
@@ -136,6 +149,36 @@ function getStoreShippingProfile(retailer) {
             return profile;
     }
     return { freeShipThreshold: 150, flatShipping: 6.99 };
+}
+function matchTargetRuleForStaging(title, price, retailer, handleAndUrl) {
+    const cleanTitle = (title || '').trim();
+    for (const junkRegex of policies_1.GLOBAL_JUNK_EXCLUSIONS) {
+        if (junkRegex.test(cleanTitle))
+            return null;
+    }
+    for (const rule of policies_1.WATCH_POLICIES) {
+        if (rule.active === false)
+            continue;
+        const isMatched = rule.matchers.some((regex) => regex.test(cleanTitle));
+        if (!isMatched)
+            continue;
+        if (!(0, policies_1.isValidSkuForFormFactor)(cleanTitle, rule.formFactor, price, {
+            ruleId: rule.id,
+            targetName: rule.name,
+            handle: handleAndUrl,
+            retailer,
+            sourceUrl: handleAndUrl,
+            allowPcRetailUnlock: false
+        })) {
+            continue;
+        }
+        const minFloor = (0, policies_1.getMinPlausiblePriceFloor)(rule.formFactor);
+        const maxCeiling = (0, policies_1.getMaxPlausiblePriceCeiling)(rule.formFactor, rule.id, rule.name);
+        if (price < minFloor || price > maxCeiling)
+            continue;
+        return rule;
+    }
+    return null;
 }
 function upsertLiveStock(entry) {
     try {
@@ -315,7 +358,7 @@ function evaluateItem(item) {
         }
         catch (e) { }
         const { packCount, pricePerPack, isRipValueLeader } = (0, policies_1.computeRipMetrics)(landedPrice, rule.id, rule.formFactor, `${rule.name} ${cleanTitle}`, rule.packCount);
-        let freeShipNote = undefined;
+        let freeShipNote = item.shippingNoteOverride;
         if (dropPrice > effectiveCeiling) {
             return {
                 action: 'IGNORE',
@@ -372,6 +415,8 @@ function evaluateItem(item) {
             title: cleanTitle,
             retailer: item.retailer,
             price: currentPrice,
+            itemPrice: item.itemPrice,
+            shippingPrice: item.shippingPrice,
             landedPrice,
             freeShipNote,
             packCount,
@@ -484,6 +529,8 @@ function evaluateItem(item) {
             previousPrice,
             previousTimeStr,
             landedPrice,
+            itemPrice: item.itemPrice,
+            shippingPrice: item.shippingPrice,
             estimatedShipping,
             freeShipNote,
             packCount,

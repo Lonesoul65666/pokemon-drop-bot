@@ -87,6 +87,8 @@ export interface DropPayload {
   cart3xUrl?: string;
   price?: string;
   priceNum?: number;
+  itemPrice?: number;
+  shippingPrice?: number;
   landedPrice?: number;
   estimatedShipping?: number;
   freeShipNote?: string;
@@ -110,7 +112,7 @@ export interface DropPayload {
   discountPct?: number;
   savingsDollars?: number;
   ownedInVault?: boolean;
-  alertType?: 'NEW_DROP' | 'PRICE_DROP' | 'RESTOCK_REPEAT';
+  alertType?: 'NEW_DROP' | 'PRICE_DROP' | 'RESTOCK_REPEAT' | 'PRE_DROP_STAGING';
   previousPrice?: number;
   previousTimeStr?: string;
   bigBoxTier?: string;
@@ -131,9 +133,35 @@ const activeDiscordMessages = new Map<string, ActiveDiscordMessage>();
 const DROPS_HISTORY_PATH = path.resolve(process.cwd(), 'dropsHistory.json');
 const TELEMETRY_PATH = path.resolve(process.cwd(), 'marketCache.json');
 
-function getRetailerShippingNote(retailer: string, price: number, estimatedShipping?: number): string {
+function getRetailerShippingNote(
+  retailer: string,
+  price: number,
+  estimatedShipping?: number,
+  itemPrice?: number,
+  shippingPrice?: number,
+  freeShipNote?: string
+): string {
+  const r = (retailer || '').toLowerCase();
+  if (r.includes('tcgplayer') || r.includes('ebay')) {
+    if (shippingPrice !== undefined && shippingPrice > 0) {
+      if (itemPrice !== undefined && itemPrice > 0) {
+        return `$${itemPrice.toFixed(2)} + $${shippingPrice.toFixed(2)} Ship`;
+      }
+      return `+$${shippingPrice.toFixed(2)} Ship`;
+    }
+    if (shippingPrice === 0) {
+      return '+FREE Shipping';
+    }
+    const effItemPrice = itemPrice !== undefined && itemPrice > 0 ? itemPrice : price;
+    if (effItemPrice < 35) {
+      return '+Est. Ship / Check Cart — Under $35 Threshold, 2x May Unlock Free Ship';
+    }
+    return '+FREE Shipping';
+  }
+  if (freeShipNote && /est\.?\s*ship|under\s*\$35|\+\$[0-9]/i.test(freeShipNote)) {
+    return freeShipNote;
+  }
   if (estimatedShipping === 0 || price >= 150) return '+FREE Shipping';
-  const r = retailer.toLowerCase();
   if (
     r.includes('target') ||
     r.includes('best buy') ||
@@ -149,6 +177,55 @@ function getRetailerShippingNote(retailer: string, price: number, estimatedShipp
     return price >= 35 ? '+FREE Shipping' : `+$${(estimatedShipping ?? 5.99).toFixed(2)} Shipping`;
   }
   return `+$${(estimatedShipping ?? 6.99).toFixed(2)} Est. LGS Ship`;
+}
+
+export function recordPreDropStagingEvent(params: {
+  ruleId: string;
+  ruleName: string;
+  formFactor: string;
+  rawTitle: string;
+  retailer: string;
+  price: number;
+  msrp: number;
+  marketValue: number;
+  url: string;
+  stagingReason: string;
+}) {
+  try {
+    let history: any[] = [];
+    if (fs.existsSync(DROPS_HISTORY_PATH)) {
+      history = JSON.parse(fs.readFileSync(DROPS_HISTORY_PATH, 'utf-8'));
+    }
+    const rip = computeRipMetrics(params.price, params.ruleId, params.formFactor, params.ruleName);
+    const discountPct = params.marketValue > params.price
+      ? Math.max(0, Math.round(((params.marketValue - params.price) / params.marketValue) * 100))
+      : 0;
+    history.unshift({
+      timestamp: Date.now(),
+      timeStr: `${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • STAGING`,
+      title: params.ruleName,
+      rawTitle: params.rawTitle,
+      retailer: params.retailer,
+      price: params.price,
+      landedPrice: params.price,
+      msrp: params.msrp,
+      freeShipNote: params.stagingReason,
+      packCount: rip.packCount,
+      pricePerPack: rip.pricePerPack,
+      isRipValueLeader: rip.isRipValueLeader,
+      marketValue: params.marketValue,
+      discountPct,
+      url: params.url,
+      productUrl: params.url,
+      formFactor: params.formFactor || 'Sealed',
+      ruleId: params.ruleId,
+      alertType: 'PRE_DROP_STAGING',
+      isPreDropStaging: true,
+      soldOut: false
+    });
+    if (history.length > 25) history = history.slice(0, 25);
+    atomicWriteJson(DROPS_HISTORY_PATH, history);
+  } catch (e) {}
 }
 
 function recordDropHistory(drop: DropPayload) {
@@ -167,6 +244,8 @@ function recordDropHistory(drop: DropPayload) {
       rawTitle: drop.title,
       retailer: drop.retailer,
       price: rawPrice,
+      itemPrice: drop.itemPrice,
+      shippingPrice: drop.shippingPrice,
       landedPrice: drop.landedPrice,
       freeShipNote: drop.freeShipNote,
       packCount: drop.packCount ?? rip.packCount,
@@ -348,7 +427,14 @@ export async function sendAlert(drop: DropPayload): Promise<void> {
     ? `${drop.stock} Units Loaded`
     : 'In Stock (Qty Hidden)';
 
-  const shipNote = getRetailerShippingNote(drop.retailer, priceVal, drop.estimatedShipping);
+  const shipNote = getRetailerShippingNote(
+    drop.retailer,
+    priceVal,
+    drop.estimatedShipping,
+    drop.itemPrice,
+    drop.shippingPrice,
+    drop.freeShipNote
+  );
   const landedLine = drop.landedPrice && drop.landedPrice > priceVal
     ? `\n📦 Landed (1x): **$${drop.landedPrice.toFixed(2)}**${drop.freeShipNote ? ` • *${drop.freeShipNote}*` : ''}`
     : '';

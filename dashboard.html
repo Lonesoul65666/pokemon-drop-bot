@@ -208,6 +208,50 @@
       animation: auraPulse 0.75s ease-out;
     }
 
+    /* 0.22s Smooth Glass Cross-Fade for Sidebar View Switching (No Full-Screen Shutter Flash) */
+    @keyframes glassViewCrossFade {
+      0% { opacity: 0.14; transform: translateY(4px) scale(0.996); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .view-glass-crossfade {
+      animation: glassViewCrossFade 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* 0.45s Background-Only Elemental Pulse Behind Glass Cards on Tab Switch */
+    #ambientSeamGlow,
+    #ambientSeamCore {
+      transition: stroke-opacity 0.22s ease, stroke-width 0.22s ease, filter 0.22s ease;
+    }
+
+    body.bg-tab-surge #arena-watermark #bgWatermarkSlot1 {
+      opacity: 0.48 !important;
+      transform: scale(1.035) translateX(4px);
+      filter: saturate(1.75) contrast(1.18) brightness(1.18) drop-shadow(0 0 64px var(--slot1-primary));
+    }
+
+    body.bg-tab-surge #arena-watermark #bgWatermarkSlot2 {
+      opacity: 0.48 !important;
+      transform: scale(1.035) translateX(-4px);
+      filter: saturate(1.75) contrast(1.18) brightness(1.18) drop-shadow(0 0 64px var(--slot2-primary));
+    }
+
+    body.bg-tab-surge #ambientSeamGlow {
+      stroke-width: 28;
+      stroke-opacity: 0.62;
+      filter: drop-shadow(0 0 18px #00F0FF);
+    }
+
+    body.bg-tab-surge #ambientSeamCore {
+      stroke-width: 3.2;
+      stroke: rgba(255, 255, 255, 0.78);
+    }
+
+    body.bg-tab-surge .ambient-left-polygon,
+    body.bg-tab-surge .ambient-right-polygon {
+      filter: saturate(1.38) brightness(1.14);
+    }
+
     .font-mono-num {
       font-family: 'JetBrains Mono', monospace;
       font-variant-numeric: tabular-nums;
@@ -801,7 +845,7 @@
     <line id="ambientSeamCore" x1="68%" y1="0%" x2="46%" y2="100%" stroke="rgba(255,255,255,0.22)" stroke-width="1.5" />
   </svg>
 
-  <div class="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+  <div id="arena-watermark" class="pointer-events-none fixed inset-0 z-0 overflow-hidden">
     <img id="bgWatermarkSlot1"
          src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/130.png"
          alt="" />
@@ -1139,7 +1183,7 @@
               <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono-num text-[10px] font-bold">HOME</span>
             </div>
             <p class="text-xs text-slate-200 leading-relaxed">
-              Your clean, zero-noise sniper radar across <strong class="text-white">36 verified Shopify LGS stores + 9 Big-Box retailers</strong>. Use the <span class="text-cyan-300 font-semibold">Needed ETBs for Wall</span> filter pill to immediately isolate in-stock ETBs missing from your 38-set display wall, or <span class="text-emerald-300 font-semibold">Under Trigger</span> for instant buy alerts.
+              Your clean, zero-noise sniper radar across <strong class="text-white">51 verified Shopify LGS stores + 9 Big-Box retailers</strong>. Use the <span class="text-cyan-300 font-semibold">Needed ETBs for Wall</span> filter pill to immediately isolate in-stock ETBs missing from your 38-set display wall, or <span class="text-emerald-300 font-semibold">Under Trigger</span> for instant buy alerts.
             </p>
           </div>
           <div class="pt-2 border-t border-white/10 flex items-center justify-between text-[11px]">
@@ -1253,7 +1297,7 @@
         <span class="brand-wordmark text-base font-extrabold text-white whitespace-nowrap">DROPBOT</span>
         <span class="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/35 text-[11px] font-mono-num font-bold text-emerald-300 inline-flex items-center gap-1.5 whitespace-nowrap">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_#10B981]"></span>
-          <span id="headerArmedStoresText">40 LGS + 9 BIG-BOX ARMED</span>
+          <span id="headerArmedStoresText">51 LGS + 9 BIG-BOX ARMED</span>
         </span>
       </div>
     </div>
@@ -1336,7 +1380,7 @@
       <!-- Eye-Level Sniper Telemetry Pod (Directly Under Navigation Tabs) -->
       <div class="pt-3 border-t border-white/10">
         <!-- Collapsed Mode Compact Status Dot -->
-        <div id="telemetryCollapsedIcon" class="telemetry-collapsed-icon" title="Sniper Telemetry: 40/40 Stores Nominal • Proxy Pool Armed">
+        <div id="telemetryCollapsedIcon" class="telemetry-collapsed-icon" title="Sniper Telemetry: 51/51 Stores Nominal • Proxy Pool Armed">
           <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_#10B981]"></span>
         </div>
 
@@ -1346,11 +1390,11 @@
             <div class="text-[10px] font-pokedex font-extrabold uppercase tracking-wider text-slate-300 whitespace-nowrap">Sniper Telemetry</div>
             <div class="inline-flex items-center gap-1.5 text-[11px] font-mono-num font-bold text-emerald-400 whitespace-nowrap">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_#10B981]"></span>
-              <span id="sidebarStoresOnlineText">40/40 Stores Online</span>
+              <span id="sidebarStoresOnlineText">51/51 Stores Online</span>
             </div>
           </div>
           <div class="text-[11px] text-slate-200 font-mono-num whitespace-nowrap" id="sidebarStreamStatus">
-            40 Shopify + 9 Big-Box + TCGP
+            51 Shopify + 9 Big-Box + TCGP
           </div>
           <div class="grid grid-cols-2 gap-1.5 pt-1 text-[10px] font-mono-num">
             <div class="p-1.5 rounded bg-black/40 border border-white/5">
@@ -1617,7 +1661,7 @@
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981]"></span>
                     <span>Active Sniper Radar</span>
                   </span>
-                  <span id="kpiStoreSweepHealth" class="font-mono-num text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-200 border border-cyan-400/40 whitespace-nowrap shrink-0">40/40 LGS + 9 Big-Box</span>
+                  <span id="kpiStoreSweepHealth" class="font-mono-num text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-200 border border-cyan-400/40 whitespace-nowrap shrink-0">51/51 LGS + 9 Big-Box</span>
                 </div>
                 <div onclick="jumpToUnderTriggerDeals()" title="Click to filter Live Deal Feed to Targets Under Buy Trigger and scroll down" class="flex items-baseline gap-2.5 mb-2 cursor-pointer group">
                   <div id="kpiInStockCount" class="hero-kpi-value font-pokedex font-black text-emerald-400 group-hover:text-cyan-300 transition">0</div>
@@ -1672,7 +1716,7 @@
                   <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981]"></span>
                   <span>Live In-Stock Deal Feed</span>
                 </h2>
-                <p id="liveDealFeedSubtitle" class="text-[11px] text-slate-300 mt-0.5">Real-time in-stock hits across 40 Shopify LGS stores &amp; 9 Big-Box retailers</p>
+                <p id="liveDealFeedSubtitle" class="text-[11px] text-slate-300 mt-0.5">Real-time in-stock hits across 51 Shopify LGS stores &amp; 9 Big-Box retailers</p>
               </div>
               <div class="flex items-center gap-1.5 flex-wrap">
                 <button onclick="setDealFeedFilter('ALL')" id="dfPill_ALL" class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-cyan-500 text-slate-950 whitespace-nowrap transition">All In-Stock</button>
@@ -1775,7 +1819,7 @@
               <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
               <span>Cross-Store Market Intelligence &amp; 14-Day Historical Recon</span>
             </h3>
-            <span id="bountyIntelStoreCountLabel" class="text-[11px] font-mono-num text-slate-400">40 Shopify LGS + 9 Big-Box + TCGPlayer/eBay NRT</span>
+            <span id="bountyIntelStoreCountLabel" class="text-[11px] font-mono-num text-slate-400">51 Shopify LGS + 9 Big-Box + TCGPlayer/eBay NRT</span>
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -4048,8 +4092,14 @@
         const sec = document.getElementById('view_' + v);
         const nav = document.getElementById('nav_' + v);
         if (sec) {
-          if (v === viewName) sec.classList.remove('hidden');
-          else sec.classList.add('hidden');
+          if (v === viewName) {
+            sec.classList.remove('hidden', 'view-glass-crossfade');
+            void sec.offsetWidth;
+            sec.classList.add('view-glass-crossfade');
+          } else {
+            sec.classList.add('hidden');
+            sec.classList.remove('view-glass-crossfade');
+          }
         }
         if (nav) {
           if (v === viewName) nav.classList.add('active');
@@ -4069,45 +4119,18 @@
     }
 
     function switchMainView(viewName) {
-      const viewTitleMap = {
-        LIVE_COMMAND: 'LIVE COMMAND',
-        BOUNTY_HUNTER: 'BOUNTY HUNTER',
-        CONQUERED_VAULT: 'CONQUERED VAULT',
-        TARGET_MATRIX: 'TARGET MATRIX'
-      };
-      const wipeEl = document.getElementById('sidebar-wipe-overlay');
       const isSameView = activeMainView === viewName;
-
-      if (partnerState.cutInFx === false || !wipeEl || isSameView) {
-        applyMainViewDomSwap(viewName);
-        return;
-      }
+      applyMainViewDomSwap(viewName);
+      if (isSameView) return;
 
       if (sidebarWipeTimerA) clearTimeout(sidebarWipeTimerA);
-      if (sidebarWipeTimerB) clearTimeout(sidebarWipeTimerB);
-      if (sidebarWipeTimerC) clearTimeout(sidebarWipeTimerC);
-
-      const titleEl = document.getElementById('wipeSceneLabel');
-      if (titleEl) titleEl.innerText = viewTitleMap[viewName] || viewName;
-
-      wipeEl.classList.remove('wipe-closed');
-      wipeEl.classList.add('active');
-      // Force reflow so shutter animation plays crisply
-      void wipeEl.offsetWidth;
-      wipeEl.classList.add('wipe-closed');
-      playBattleSynthSfx('whoosh');
+      document.body.classList.remove('bg-tab-surge');
+      void document.body.offsetWidth;
+      document.body.classList.add('bg-tab-surge');
 
       sidebarWipeTimerA = setTimeout(() => {
-        applyMainViewDomSwap(viewName);
-      }, 340);
-
-      sidebarWipeTimerB = setTimeout(() => {
-        wipeEl.classList.remove('wipe-closed');
-      }, 380);
-
-      sidebarWipeTimerC = setTimeout(() => {
-        wipeEl.classList.remove('active', 'wipe-closed');
-      }, 750);
+        document.body.classList.remove('bg-tab-surge');
+      }, 450);
     }
 
     function toggleLedgerTable() {
@@ -4312,6 +4335,9 @@
           owned: Boolean(pol.owned),
           retailer: ls.retailer || 'Verified Store',
           price: Number(ls.price),
+          itemPrice: ls.itemPrice !== undefined ? Number(ls.itemPrice) : undefined,
+          shippingPrice: ls.shippingPrice !== undefined ? Number(ls.shippingPrice) : undefined,
+          freeShipNote: ls.freeShipNote,
           landedPrice: landedVal,
           marketValue: mktVal,
           triggerPrice: Number(pol.maxMarketBuyPrice || pol.msrpCeiling || mktVal),
@@ -4342,14 +4368,19 @@
         const ppp = Number(d.pricePerPack || (pol ? pol.pricePerPack : (packCnt > 0 ? landedVal / packCnt : 5.67)));
         const computedDisc = mktVal > 0 ? Math.max(0, Math.round(((mktVal - landedVal) / mktVal) * 100)) : Number(d.discountPct || 0);
         items.push({
-          isLiveNow: !d.soldOut,
+          isLiveNow: !d.soldOut && !d.isPreDropStaging && d.alertType !== 'PRE_DROP_STAGING',
           soldOut: Boolean(d.soldOut),
+          isPreDropStaging: Boolean(d.isPreDropStaging || d.alertType === 'PRE_DROP_STAGING'),
+          alertType: d.alertType,
           skuId: d.ruleId || (pol ? pol.id : 'me-chaos-rising-etb'),
           title: pol ? pol.name : (d.title || 'Pokemon Sealed Drop'),
           formFactor: ff,
           owned: pol ? Boolean(pol.owned) : false,
           retailer: d.retailer || 'Verified Store',
           price: Number(d.price || 0),
+          itemPrice: d.itemPrice !== undefined ? Number(d.itemPrice) : undefined,
+          shippingPrice: d.shippingPrice !== undefined ? Number(d.shippingPrice) : undefined,
+          freeShipNote: d.freeShipNote,
           landedPrice: landedVal,
           marketValue: mktVal,
           triggerPrice: Number(pol ? (pol.maxMarketBuyPrice || pol.msrpCeiling) : (d.msrp || 54.99)),
@@ -4451,7 +4482,7 @@
       }
 
       // Dynamic Store Count Telemetry (Never Hardcoded)
-      const lgsCnt = Number(liveStoreTelemetry.lgsCount || 40);
+      const lgsCnt = Number(liveStoreTelemetry.lgsCount || 51);
       const healthyLgs = Number(liveStoreTelemetry.healthyLgsCount || lgsCnt);
       const bigBoxCnt = Number(liveStoreTelemetry.bigBoxCount || 9);
 
@@ -4732,13 +4763,36 @@
 
         const triggerPill = '<span class="font-mono-num text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-200 border border-purple-400/30">Trigger: $' + trigVal.toFixed(0) + '</span>';
 
-        const statusBadge = item.soldOut
-          ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 text-[10px] font-extrabold shrink-0">SOLD OUT</span>'
-          : (isMsrpDefcon
-              ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-cyan-500/25 text-cyan-200 border border-cyan-400/50 text-[10px] font-extrabold shrink-0">MSRP DEFCON-1</span>'
-              : (item.isLiveNow
-                  ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-extrabold shrink-0">IN STOCK</span>'
-                  : '<span class="pokedex-badge px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[10px] font-bold shrink-0">BEST OFFER</span>'));
+        const isPreDropStaging = Boolean(item.isPreDropStaging || item.alertType === 'PRE_DROP_STAGING');
+        const statusBadge = isPreDropStaging
+          ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-amber-500/25 text-amber-200 border border-amber-400/50 text-[10px] font-extrabold shrink-0">📡 PRE-DROP STAGING</span>'
+          : (item.soldOut
+              ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 text-[10px] font-extrabold shrink-0">SOLD OUT</span>'
+              : (isMsrpDefcon
+                  ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-cyan-500/25 text-cyan-200 border border-cyan-400/50 text-[10px] font-extrabold shrink-0">MSRP DEFCON-1</span>'
+                  : (item.isLiveNow
+                      ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-extrabold shrink-0">IN STOCK</span>'
+                      : '<span class="pokedex-badge px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[10px] font-bold shrink-0">BEST OFFER</span>')));
+
+        const isMarketplaceSeller = /tcgplayer|ebay/i.test(String(item.retailer || ''));
+        const effItemPrice = item.itemPrice !== undefined && item.itemPrice > 0 ? Number(item.itemPrice) : landed;
+        let resolvedShipText = item.freeShipNote || '';
+        if (!resolvedShipText && isMarketplaceSeller) {
+          if (item.shippingPrice !== undefined && Number(item.shippingPrice) > 0) {
+            resolvedShipText = effItemPrice < 35
+              ? ('$' + effItemPrice.toFixed(2) + ' + $' + Number(item.shippingPrice).toFixed(2) + ' Ship ($' + landed.toFixed(2) + ' Landed — Under $35 Threshold, 2x May Unlock Free Ship)')
+              : ('$' + effItemPrice.toFixed(2) + ' + $' + Number(item.shippingPrice).toFixed(2) + ' Ship ($' + landed.toFixed(2) + ' Landed)');
+          } else if (item.shippingPrice === 0) {
+            resolvedShipText = '+FREE Shipping (Confirmed $0.00 Ship)';
+          } else if (effItemPrice < 35) {
+            resolvedShipText = '+Est. Ship / Check Cart — Under $35 Threshold, 2x May Unlock Free Ship';
+          } else {
+            resolvedShipText = '+FREE Shipping (Over $35 Threshold)';
+          }
+        }
+        const shipNoteLineHtml = resolvedShipText
+          ? '<div class="mt-1 text-[10px] font-mono-num ' + (/under\s*\$35|est\.?\s*ship|staging/i.test(resolvedShipText) ? 'text-amber-300' : 'text-cyan-200/90') + ' truncate" title="' + resolvedShipText.replace(/"/g, '') + '">' + resolvedShipText + '</div>'
+          : '';
 
         const c1 = item.cart1xUrl || (item.url && item.url.includes('/cart/') ? item.url : null);
         const c2 = item.cart2xUrl || (c1 ? c1.replace(/:1$/, ':2') : null);
@@ -4782,6 +4836,7 @@
                     '<span class="text-[24px] leading-none font-black font-mono-num ' + priceColorCls + '">$' + landed.toFixed(2) + '</span>' +
                     '<span class="text-xs font-mono-num text-slate-300">Mkt: <strong class="text-amber-300">$' + mktVal.toFixed(2) + '</strong></span>' +
                   '</div>' +
+                  shipNoteLineHtml +
                   '<div class="mt-1.5 flex items-center gap-1.5 flex-wrap">' +
                     spreadPill +
                     packPill +

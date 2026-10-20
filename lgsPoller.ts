@@ -5,15 +5,16 @@ import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 import { processIncomingDrop } from './listener';
-import { markAlertSoldOut } from './notifier';
+import { markAlertSoldOut, recordPreDropStagingEvent } from './notifier';
 import { isValidSkuForFormFactor, atomicWriteJson } from './policies';
+import { matchTargetRuleForStaging } from './evaluator';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 dns.setDefaultResultOrder('ipv4first');
 
 const WEBSHARE_PROXY_URL = process.env.WEBSHARE_PROXY_URL || '';
 const STORE_HEALTH_PATH = path.resolve(process.cwd(), 'storeHealth.json');
-const MAX_CONCURRENT_STORES = 8;
+const MAX_CONCURRENT_STORES = 10;
 const REQUEST_TIMEOUT_MS = 8000;
 const CIRCUIT_BREAKER_THRESHOLD = 3;
 const CIRCUIT_COOLDOWN_MS = 15 * 60 * 1000; // 15 minutes
@@ -111,12 +112,27 @@ export const LGS_STORES: MonitoredStore[] = [
   { name: 'PokeBox USA', baseUrl: 'https://pokeboxusa.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
   { name: '401 Games', baseUrl: 'https://store.401games.ca', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' },
   { name: 'Kanzen Games', baseUrl: 'https://kanzengames.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-  { name: 'The Card Vault', baseUrl: 'https://thecardvault.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' }
+  { name: 'The Card Vault', baseUrl: 'https://thecardvault.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+  // Wave 3 V4 Autopilot Regional & Mom-and-Pop Verified Shopify Stores (11)
+  { name: 'Level One Game Shop', baseUrl: 'https://levelonegameshop.com', freeShipThreshold: 125, flatShipping: 6.99, currency: 'USD' },
+  { name: 'Mox Boarding House', baseUrl: 'https://moxboardinghouse.com', freeShipThreshold: 100, flatShipping: 6.99, currency: 'USD' },
+  { name: 'Taps Games', baseUrl: 'https://tapsgames.com', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' },
+  { name: 'Sports Card Junction', baseUrl: 'https://sportscardjunction.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
+  { name: 'Gnome Games', baseUrl: 'https://gnomegames.com', freeShipThreshold: 125, flatShipping: 6.99, currency: 'USD' },
+  { name: 'Silver Goblin', baseUrl: 'https://silvergoblin.cards', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' },
+  { name: 'Face to Face Games', baseUrl: 'https://facetofacegames.com', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' },
+  { name: 'Miraj Trading', baseUrl: 'https://mirajtrading.com', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' },
+  { name: 'Untouchables', baseUrl: 'https://untouchables.ca', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' },
+  { name: 'A&C Games', baseUrl: 'https://acgamesonline.com', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' },
+  { name: 'Tistaminis', baseUrl: 'https://tistaminis.com', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' }
 ];
 
 export const MONITORED_STORES: MonitoredStore[] = LGS_STORES;
 
 const variantStateMap = new Map<number, { price: number; lastCheckedAt: number; oosStrikes: number }>();
+const oosVariantStagingMap = new Map<number, { price: number; seenAt: number }>();
+const seededOosStores = new Set<string>();
+const stagingAlertCooldownMap = new Map<string, number>();
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -132,7 +148,7 @@ const HEADERS = {
 };
 
 const STORE_POLL_WATCHDOG_MS = 22000;
-const SWEEP_WATCHDOG_MS = 90000;
+const SWEEP_WATCHDOG_MS = 105000;
 let lastSweepStartedAt = 0;
 
 function withWatchdog<T>(promise: Promise<T>, timeoutMs: number, label: string): Promise<T> {
@@ -341,10 +357,49 @@ async function pollSingleStore(store: MonitoredStore): Promise<{ hit: boolean; p
           } else {
             await markAlertSoldOut(String(variant.id));
           }
+
+          // Zero-Stock Pre-Drop Staging Detector:
+          // Detect brand-new matching target uploads or OOS price slashes to <= MSRP before inventory flips live!
+          const prevOos = oosVariantStagingMap.get(variant.id);
+          oosVariantStagingMap.set(variant.id, { price: priceNum, seenAt: checkNow });
+          const isStoreBaselineSeeded = seededOosStores.has(store.name);
+          const isNewStagingUpload = !prevOos && isStoreBaselineSeeded;
+          const isOosPriceSlashed = Boolean(prevOos && priceNum <= prevOos.price - 2 && prevOos.price > priceNum);
+
+          if (isNewStagingUpload || isOosPriceSlashed) {
+            const fullTitle = `${prod.title} ${variant.title !== 'Default Title' ? variant.title : ''}`.trim();
+            const tagsStr = Array.isArray(prod.tags) ? prod.tags.join(' ') : String(prod.tags || '');
+            const matchedRule = matchTargetRuleForStaging(fullTitle, priceNum, store.name, `${prod.handle || ''} ${tagsStr}`);
+            if (matchedRule && matchedRule.msrpCeiling > 0 && priceNum <= Math.round(matchedRule.msrpCeiling * 1.02 * 100) / 100) {
+              const stagingKey = `${store.name}__${matchedRule.id}`;
+              const lastStagedAt = stagingAlertCooldownMap.get(stagingKey) || 0;
+              if (checkNow - lastStagedAt > 4 * 60 * 60 * 1000) {
+                stagingAlertCooldownMap.set(stagingKey, checkNow);
+                const productUrl = prod.handle ? `${store.baseUrl}/products/${prod.handle}` : store.baseUrl;
+                const stagingReason = isOosPriceSlashed
+                  ? `📡 PRE-DROP STAGING RADAR: OOS Price Slashed ($${prevOos!.price.toFixed(2)} -> $${priceNum.toFixed(2)}) — Watch for Inventory Flip!`
+                  : `📡 PRE-DROP STAGING RADAR: New Target SKU Staged at $${priceNum.toFixed(2)} (OOS) — Watch for Inventory Flip!`;
+                console.log(`📡 [PRE-DROP STAGING RADAR] ${store.name} staged "${fullTitle}" at $${priceNum.toFixed(2)} (MSRP $${matchedRule.msrpCeiling.toFixed(2)}) -> ${stagingReason}`);
+                recordPreDropStagingEvent({
+                  ruleId: matchedRule.id,
+                  ruleName: matchedRule.name,
+                  formFactor: matchedRule.formFactor || 'Sealed',
+                  rawTitle: fullTitle,
+                  retailer: store.name,
+                  price: priceNum,
+                  msrp: matchedRule.msrpCeiling,
+                  marketValue: matchedRule.estimatedMarketValue || matchedRule.msrpCeiling,
+                  url: productUrl,
+                  stagingReason
+                });
+              }
+            }
+          }
         }
       }
     }
 
+    seededOosStores.add(store.name);
     return { hit: products.length > 0, productsScanned: products.length, skippedByCircuit: false };
   } catch (err: any) {
     health.consecutiveFailures += 1;
