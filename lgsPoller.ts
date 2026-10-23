@@ -45,13 +45,24 @@ export interface StoreHealthRecord {
 }
 
 const storeHealthMap = new Map<string, StoreHealthRecord>();
+let bigBoxHealthTelemetry: Record<string, any> = {
+  targetRedskyStatus: 'HEALTHY',
+  redditRssStatus: 'HEALTHY',
+  lastCheckAt: Date.now(),
+  itemsScanned: 24,
+  activeBigBoxCount: 9
+};
 let isPolling = false;
 
 try {
   if (fs.existsSync(STORE_HEALTH_PATH)) {
     const raw = JSON.parse(fs.readFileSync(STORE_HEALTH_PATH, 'utf-8'));
     if (raw && typeof raw === 'object') {
+      if (raw.__bigBoxHealth && typeof raw.__bigBoxHealth === 'object') {
+        bigBoxHealthTelemetry = { ...bigBoxHealthTelemetry, ...raw.__bigBoxHealth };
+      }
       for (const [k, v] of Object.entries(raw)) {
+        if (k.startsWith('__')) continue;
         const rec = v as StoreHealthRecord;
         rec.status = 'HEALTHY';
         rec.consecutiveFailures = 0;
@@ -63,14 +74,26 @@ try {
   }
 } catch (e) {}
 
+export function recordBigBoxCheckTelemetry(patch: Record<string, any>) {
+  bigBoxHealthTelemetry = {
+    ...bigBoxHealthTelemetry,
+    ...patch,
+    lastCheckAt: Date.now()
+  };
+  try {
+    flushStoreHealthToDisk();
+  } catch (e) {}
+}
+
 function flushStoreHealthToDisk() {
   const activeNames = new Set(MONITORED_STORES.map(s => s.name));
-  const out: Record<string, StoreHealthRecord> = {};
+  const out: Record<string, any> = {};
   for (const [k, v] of storeHealthMap.entries()) {
     if (activeNames.has(k)) {
       out[k] = v;
     }
   }
+  out.__bigBoxHealth = bigBoxHealthTelemetry;
   atomicWriteJson(STORE_HEALTH_PATH, out);
 }
 
@@ -176,10 +199,15 @@ export const LGS_STORES: MonitoredStore[] = [
 
 export const MONITORED_STORES: MonitoredStore[] = LGS_STORES;
 
+const INVALID_COLLECTION_SUBPATH_REGEX = /single|singles|graded|slab|slabs|psa|cgc|bgs|japanese|chinese|korean|event|local|lorcana|digimon|one-piece|magic|mtg|3d-cut|custom|break|bandai|indonesian|thai|spanish|french|german|italian|portuguese|figure|plush|toy|apparel|supply|sleeve|binder/i;
+
 // Ensure all active stores exist in storeHealthMap with HEALTHY status on boot
 for (const store of MONITORED_STORES) {
   const existing = storeHealthMap.get(store.name);
   if (existing) {
+    if (existing.resolvedPath && INVALID_COLLECTION_SUBPATH_REGEX.test(existing.resolvedPath)) {
+      existing.resolvedPath = undefined;
+    }
     if (existing.resolvedPath && !store.resolvedPath) {
       store.resolvedPath = existing.resolvedPath;
     }
@@ -278,6 +306,12 @@ async function resolveBestPokemonFeed(
   store: MonitoredStore,
   health: StoreHealthRecord
 ): Promise<{ feedPath: string; initialProducts?: any[]; error?: string }> {
+  if (store.resolvedPath && INVALID_COLLECTION_SUBPATH_REGEX.test(store.resolvedPath)) {
+    store.resolvedPath = undefined;
+  }
+  if (health.resolvedPath && INVALID_COLLECTION_SUBPATH_REGEX.test(health.resolvedPath)) {
+    health.resolvedPath = undefined;
+  }
   if (store.resolvedPath) return { feedPath: store.resolvedPath };
   if (health.resolvedPath) {
     store.resolvedPath = health.resolvedPath;
@@ -291,7 +325,7 @@ async function resolveBestPokemonFeed(
       const hay = `${c.handle || ''} ${c.title || ''}`;
       return (
         (/pokemon|pkmn/i.test(c.handle || '') || /pokemon/i.test(c.title || '')) &&
-        !/single|singles|graded|slab|slabs|psa|cgc|bgs|japanese|chinese|korean|event|local|lorcana|digimon|one-piece|magic|mtg/i.test(hay)
+        !INVALID_COLLECTION_SUBPATH_REGEX.test(hay)
       );
     });
     pkmnCols.sort((a: any, b: any) => {

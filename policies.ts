@@ -113,6 +113,9 @@ export const GLOBAL_JUNK_EXCLUSIONS = [
   /opened case/i,
   /unsealed case/i,
   /loose boxes/i,
+  /ripped\s*live|rip\s*(&|and|n)\s*ship|live\s*break|box\s*break|pack\s*break|personal\s*break/i,
+  /2-pack/i,
+  /2 pack/i,
   /acrylic/i,
   /protector/i,
   /\bcode\b/i,
@@ -282,6 +285,11 @@ export function isValidSkuForFormFactor(
     if (junkRegex.test(title)) {
       return false;
     }
+  }
+
+  // Never allow a "30th Celebration(s)" title to fall through into the 25th Anniversary SWSH Celebrations rule
+  if ((targetLower.includes('swsh-celebrations') || targetLower.includes('25th anniversary')) && /\b30th\b/i.test(combinedLower)) {
+    return false;
   }
 
   // Strict Standard vs. Pokemon Center Exclusive Firewall for all non-PC ETB targets,

@@ -17,7 +17,7 @@ import {
 import { recordObservation, getTelemetry } from './marketTelemetry';
 import { recordDailySnapshot, recordTapeRestock, recordTapeSoldOut } from './marketTape';
 
-export type BigBoxTier = 'MSRP_TIER_A' | 'PC_EXCLUSIVE_MSRP' | '3P_TIER_B';
+export type BigBoxTier = 'MSRP_TIER_A' | 'PC_EXCLUSIVE_MSRP' | '3P_TIER_B' | 'BIG_BOX_RESTOCK_RADAR';
 
 export interface MsrpTrophyCatch {
   productName: string;
@@ -52,6 +52,7 @@ export interface RawRestockItem {
   itemId?: string;
   isPreOrder?: boolean;
   freeShipping?: boolean;
+  isBigBoxRestockRadar?: boolean;
 }
 
 export interface EvaluationResult {
@@ -92,6 +93,44 @@ interface AlertMemoryEntry {
   timestamp: number;
   timeStr: string;
   alertCount: number;
+  wasOutOfStockSinceLastAlert?: boolean;
+  itemId?: string;
+}
+
+export interface BestOfferEntry {
+  ruleId: string;
+  ruleName: string;
+  formFactor: string;
+  era?: string;
+  title: string;
+  retailer: string;
+  price: number;
+  itemPrice?: number;
+  shippingPrice?: number;
+  landedPrice: number;
+  freeShipNote?: string;
+  triggerPrice: number;
+  msrp: number;
+  marketValue: number;
+  gapDollars: number;
+  gapPct: number;
+  rawGapDollars: number;
+  rawGapPct: number;
+  packCount: number;
+  pricePerPack: number;
+  isRipValueLeader: boolean;
+  owned: boolean;
+  isPreOrder: boolean;
+  isPreRelease: boolean;
+  preReleaseStatusTag?: string;
+  url: string;
+  productUrl?: string;
+  cart1xUrl?: string;
+  cart2xUrl?: string;
+  cart3xUrl?: string;
+  itemId?: string;
+  updatedAt: number;
+  timeStr: string;
 }
 
 const ALERT_STATE_PATH = path.resolve(process.cwd(), 'alertState.json');
@@ -108,6 +147,46 @@ try {
 
 function saveAlertMemory() {
   atomicWriteJson(ALERT_STATE_PATH, alertMemory);
+}
+
+export function normalizeAlertRetailerKey(retailer: string): string {
+  const r = (retailer || '').trim();
+  if (/tcgplayer/i.test(r)) {
+    return 'TCGPlayer Verified Seller';
+  }
+  return r;
+}
+
+export function markAlertKeyOutOfStock(ruleIdOrItemId: string, retailer?: string): void {
+  try {
+    if (fs.existsSync(ALERT_STATE_PATH)) {
+      alertMemory = JSON.parse(fs.readFileSync(ALERT_STATE_PATH, 'utf-8'));
+    }
+  } catch (e) {}
+
+  let changed = false;
+  if (retailer) {
+    const normRet = normalizeAlertRetailerKey(retailer);
+    for (const candidateKey of [`${ruleIdOrItemId}__${normRet}`, `${ruleIdOrItemId}__${retailer}`]) {
+      const entry = alertMemory[candidateKey];
+      if (entry && typeof entry === 'object' && !entry.wasOutOfStockSinceLastAlert) {
+        entry.wasOutOfStockSinceLastAlert = true;
+        changed = true;
+      }
+    }
+  } else {
+    for (const [key, entry] of Object.entries(alertMemory)) {
+      if (key.startsWith('__') || !entry || typeof entry !== 'object') continue;
+      if (entry.itemId && String(entry.itemId) === String(ruleIdOrItemId) && !entry.wasOutOfStockSinceLastAlert) {
+        entry.wasOutOfStockSinceLastAlert = true;
+        changed = true;
+      }
+    }
+  }
+
+  if (changed) {
+    saveAlertMemory();
+  }
 }
 
 export function getMsrpTrophies(): MsrpTrophiesState {
@@ -309,6 +388,48 @@ export interface LiveStockEntry {
   timeStr: string;
 }
 
+let bestOffersFlushTimer: any = null;
+const pendingBestOffers = new Map<string, BestOfferEntry>();
+
+function flushBestOffersToLiveStock() {
+  bestOffersFlushTimer = null;
+  if (pendingBestOffers.size === 0) return;
+  try {
+    let map: Record<string, any> = {};
+    if (fs.existsSync(LIVE_STOCK_PATH)) {
+      try { map = JSON.parse(fs.readFileSync(LIVE_STOCK_PATH, 'utf-8')); } catch (e) { map = {}; }
+    }
+    const bestOffers: Record<string, BestOfferEntry> = (map.__bestOffers && typeof map.__bestOffers === 'object')
+      ? map.__bestOffers
+      : {};
+    const now = Date.now();
+    for (const [ruleId, entry] of pendingBestOffers.entries()) {
+      const existing = bestOffers[ruleId];
+      if (
+        !existing ||
+        existing.retailer === entry.retailer ||
+        entry.landedPrice <= existing.landedPrice ||
+        (now - (existing.updatedAt || 0) > 20 * 60 * 1000)
+      ) {
+        bestOffers[ruleId] = entry;
+      }
+    }
+    pendingBestOffers.clear();
+    map.__bestOffers = bestOffers;
+    atomicWriteJson(LIVE_STOCK_PATH, map);
+  } catch (e) {}
+}
+
+export function upsertBestCurrentOffer(entry: BestOfferEntry) {
+  const existingPending = pendingBestOffers.get(entry.ruleId);
+  if (!existingPending || existingPending.retailer === entry.retailer || entry.landedPrice <= existingPending.landedPrice) {
+    pendingBestOffers.set(entry.ruleId, entry);
+  }
+  if (!bestOffersFlushTimer) {
+    bestOffersFlushTimer = setTimeout(flushBestOffersToLiveStock, 2500);
+  }
+}
+
 export function matchTargetRuleForStaging(title: string, price: number, retailer: string, handleAndUrl: string): PolicyRule | null {
   const cleanTitle = (title || '').trim();
   for (const junkRegex of GLOBAL_JUNK_EXCLUSIONS) {
@@ -338,7 +459,7 @@ export function matchTargetRuleForStaging(title: string, price: number, retailer
 
 export function upsertLiveStock(entry: LiveStockEntry) {
   try {
-    let map: Record<string, LiveStockEntry> = {};
+    let map: Record<string, any> = {};
     if (fs.existsSync(LIVE_STOCK_PATH)) {
       try { map = JSON.parse(fs.readFileSync(LIVE_STOCK_PATH, 'utf-8')); } catch (e) { map = {}; }
     }
@@ -357,6 +478,10 @@ export function markLiveStockOut(itemId: string) {
   } catch (e) {}
 
   try {
+    markAlertKeyOutOfStock(String(itemId));
+  } catch (e) {}
+
+  try {
     if (!fs.existsSync(LIVE_STOCK_PATH)) return;
     const map: Record<string, any> = JSON.parse(fs.readFileSync(LIVE_STOCK_PATH, 'utf-8'));
     let changed = false;
@@ -365,16 +490,28 @@ export function markLiveStockOut(itemId: string) {
       : [];
 
     for (const key of Object.keys(map)) {
-      if (key === '__recentOos') continue;
+      if (key === '__recentOos' || key === '__bestOffers') continue;
       if (map[key]?.itemId === String(itemId)) {
+        const matchedEntry = map[key];
+        if (matchedEntry.retailer) {
+          markAlertKeyOutOfStock(key, matchedEntry.retailer);
+        }
         recentOos.unshift({
-          ruleName: map[key].ruleName || map[key].title || key,
-          retailer: map[key].retailer || 'Store',
-          price: map[key].price || 0,
+          ruleName: matchedEntry.ruleName || matchedEntry.title || key,
+          retailer: matchedEntry.retailer || 'Store',
+          price: matchedEntry.price || 0,
           oosAt: Date.now()
         });
         delete map[key];
         changed = true;
+      }
+    }
+    if (map.__bestOffers && typeof map.__bestOffers === 'object') {
+      for (const [bKey, bVal] of Object.entries(map.__bestOffers as Record<string, any>)) {
+        if (bVal?.itemId === String(itemId)) {
+          delete map.__bestOffers[bKey];
+          changed = true;
+        }
       }
     }
     if (changed) {
@@ -481,7 +618,11 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       estimatedShipping <= 6.99
     );
 
-    if (isPcExclusiveRetailDrop) {
+    if (item.isBigBoxRestockRadar) {
+      bigBoxTier = 'BIG_BOX_RESTOCK_RADAR';
+      bigBoxBadge = '📡🚨 BIG-BOX RESTOCK RADAR (MSRP ASSUMED) 🚨📡';
+      priorityFront = true;
+    } else if (isPcExclusiveRetailDrop) {
       bigBoxTier = 'PC_EXCLUSIVE_MSRP';
       bigBoxBadge = '💎 POKÉMON CENTER EXCLUSIVE MSRP DROP';
       priorityFront = true;
@@ -536,7 +677,52 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       rule.packCount
     );
 
+    const now = Date.now();
+    const nowTimeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     let freeShipNote: string | undefined = item.shippingNoteOverride;
+
+    // Record into bestCurrentOffers so Live Command "Near Misses (+1% to +12%)" and Target Matrix always have the lowest live offer per SKU!
+    if (!item.isBigBoxRestockRadar && policyMaxBuy > 0) {
+      const gapDollars = Math.round((landedPrice - policyMaxBuy) * 100) / 100;
+      const gapPct = Math.round(((landedPrice - policyMaxBuy) / policyMaxBuy) * 1000) / 10;
+      const rawGapDollars = Math.round((dropPrice - policyMaxBuy) * 100) / 100;
+      const rawGapPct = Math.round(((dropPrice - policyMaxBuy) / policyMaxBuy) * 1000) / 10;
+      upsertBestCurrentOffer({
+        ruleId: rule.id,
+        ruleName: rule.name,
+        formFactor: rule.formFactor || 'Sealed',
+        era: rule.era,
+        title: cleanTitle,
+        retailer: item.retailer,
+        price: dropPrice,
+        itemPrice: item.itemPrice,
+        shippingPrice: item.shippingPrice ?? estimatedShipping,
+        landedPrice,
+        freeShipNote: freeShipNote || (estimatedShipping > 0 ? `$${dropPrice.toFixed(2)} + $${estimatedShipping.toFixed(2)} Est. Ship ($${landedPrice.toFixed(2)} Landed)` : '+FREE Shipping'),
+        triggerPrice: policyMaxBuy,
+        msrp: rule.msrpCeiling,
+        marketValue: currentMarketRef,
+        gapDollars,
+        gapPct,
+        rawGapDollars,
+        rawGapPct,
+        packCount,
+        pricePerPack,
+        isRipValueLeader,
+        owned: isInVault,
+        isPreOrder,
+        isPreRelease,
+        preReleaseStatusTag,
+        url: item.url,
+        productUrl: item.productUrl,
+        cart1xUrl,
+        cart2xUrl,
+        cart3xUrl,
+        itemId: item.itemId,
+        updatedAt: now,
+        timeStr: nowTimeStr
+      });
+    }
 
     if (dropPrice > effectiveCeiling) {
       return {
@@ -572,9 +758,7 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       }
     }
 
-    const now = Date.now();
     const currentPrice = dropPrice;
-    const nowTimeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
     recordTapeRestock({
       itemId: String(item.itemId || `${rule.id}__${item.retailer}`),
@@ -585,7 +769,7 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       landedPrice,
       marketPrice: currentMarketRef,
       url: item.productUrl || item.url,
-      bigBoxTier,
+      bigBoxTier: bigBoxTier === 'BIG_BOX_RESTOCK_RADAR' ? 'MSRP_TIER_A' : bigBoxTier,
       bigBoxBadge
     });
 
@@ -648,9 +832,10 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       }
     } catch (e) {}
 
-    // Persistent Deduplication per (Rule + Retailer)
-    const stateKey = `${rule.id}__${item.retailer}`;
-    const prev = alertMemory[stateKey];
+    // Persistent Deduplication per (Rule + Normalized Retailer)
+    const normRetailer = normalizeAlertRetailerKey(item.retailer);
+    const stateKey = `${rule.id}__${normRetailer}`;
+    const prev = alertMemory[stateKey] || alertMemory[`${rule.id}__${item.retailer}`];
 
     let alertType: 'NEW_DROP' | 'PRICE_DROP' | 'RESTOCK_REPEAT' = 'NEW_DROP';
     let previousPrice: number | undefined = undefined;
@@ -658,13 +843,22 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
 
     if (prev) {
       const elapsedHours = (now - prev.timestamp) / (1000 * 60 * 60);
-      const isSignificantPriceDrop = currentPrice <= prev.lowestAlertedPrice - 3.00;
+      const prevLowest = prev.lowestAlertedPrice || prev.lastPrice;
+      const isSignificantPriceDrop = (
+        currentPrice <= prevLowest - 3.00 ||
+        currentPrice <= Math.round(prevLowest * 0.98 * 100) / 100
+      );
+      const isTrueRestock = Boolean(prev.wasOutOfStockSinceLastAlert) && elapsedHours >= 0.25;
+      const isDailyReminder = elapsedHours >= 24;
 
-      // Block same-price repeats for 4 hours! Only allow through immediately if the price dropped by $3+
-      if (!isSignificantPriceDrop && elapsedHours < 4) {
+      // Once an alert has fired for a SKU + Store, ONLY fire a subsequent alert if:
+      // 1. True Restock (wasOutOfStockSinceLastAlert === true), OR
+      // 2. Meaningful Price Drop (<= lowestAlertedPrice - $3.00 or <= lowestAlertedPrice * 0.98), OR
+      // 3. 24-Hour Daily Reminder (elapsedHours >= 24 if still under trigger)
+      if (!isTrueRestock && !isSignificantPriceDrop && !isDailyReminder) {
         return {
           action: 'IGNORE',
-          reason: `Deduplicated repeat: ${rule.name} at ${item.retailer} already alerted at $${prev.lastPrice.toFixed(2)} (${prev.timeStr}).`,
+          reason: `Deduplicated static shelf stock: ${rule.name} at ${item.retailer} already alerted at $${prev.lastPrice.toFixed(2)} (${prev.timeStr}).`,
           rule,
           packCount,
           pricePerPack,
@@ -685,12 +879,14 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       lowestAlertedPrice: prev ? Math.min(prev.lowestAlertedPrice, currentPrice) : currentPrice,
       timestamp: now,
       timeStr: nowTimeStr,
-      alertCount: (prev?.alertCount || 0) + 1
+      alertCount: (prev?.alertCount || 0) + 1,
+      wasOutOfStockSinceLastAlert: false,
+      itemId: item.itemId ? String(item.itemId) : prev?.itemId
     };
     saveAlertMemory();
 
     // Record persistent Trophy Catch if Tier-A True Retail MSRP hit!
-    if (isMsrpUnicorn) {
+    if (isMsrpUnicorn && !item.isBigBoxRestockRadar) {
       recordMsrpTrophyCatch({
         productName: rule.name,
         ruleId: rule.id,

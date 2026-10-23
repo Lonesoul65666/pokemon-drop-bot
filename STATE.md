@@ -51,7 +51,8 @@
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| `GET` | `/api/status` | System health, `totalMsrpHits`, `msrpTrophies`, `totalConquered`, `collectorRank`, dynamic `storeTelemetry` (`51 LGS + 9 Big-Box + 3 Marketplaces = 63 sources`), and `storeHealth`. |
+| `GET` | `/api/status` | System health, `totalMsrpHits`, `msrpTrophies`, `totalConquered`, `collectorRank`, dynamic `storeTelemetry` (`91 LGS + 9 Big-Box + 3 Marketplaces = 103 sources`), `nearMisses` (`+1%` to `+12%` over trigger), `bestCurrentOffers`, and `storeHealth`. |
+| `GET` | `/api/near-misses` | Returns in-stock items across all 91 stores within `+0.5%` to `+12.5%` over buy trigger, ranked closest-gap-first with `recommendedTriggerBump`. |
 | `GET` | `/api/policies` | All target policies enriched with `packCount`, `pricePerPack`, `isRipValueLeader`, `isPreRelease`, and `preReleaseStatusTag`. |
 | `POST` | `/api/policies` | Atomically saves updated target policies (`policies.json`) and triggers hot-reload. |
 | `GET` | `/api/live-stock` | Currently in-stock items under buy threshold (`< 6h` old) with landed cost, cart links, and `$/Pack` math. |
@@ -105,6 +106,22 @@ All persistent JSON files are written via `atomicWriteJson()` (`.tmp` write + `f
 ---
 
 ## 6. Last Touch Log
+
+- **2026-10-23 | Agent: Gemini 4 Argon (via `agy`)**
+  - **Completed V4 Post-Audit Master Fix ("Kill 4h Static Repeat Spam, Fix Matcher/Collection Traps, Wire Real Big-Box/Reddit MSRP Detection, Add Near Misses Feed, and Rebuild Target Matrix as a Scalable Compact Accordion Ledger") (`policies.ts`, `policies.json`, `evaluator.ts`, `lgsPoller.ts`, `vampirePoller.ts`, `notifier.ts`, `server.js`, `storeHealth.json`, `public/index.html`, `dashboard.html`):**
+    - **1. Killed 4-Hour Static Shelf Repeat Spam & Fixed Policy Traps (`evaluator.ts`, `lgsPoller.ts`, `vampirePoller.ts`, `policies.ts`, `policies.json`):**
+      - Replaced the blind `elapsedHours >= 4` re-alert in `evaluator.ts` (`evaluateItem()`) with stateful `wasOutOfStockSinceLastAlert: boolean` tracking in `alertState.json` (`markAlertKeyOutOfStock()` in `lgsPoller.ts` and `vampirePoller.ts`). Once an alert fires for a `SKU + Store`, subsequent alerts ONLY fire on: (1) True Restock (`wasOutOfStockSinceLastAlert === true`), (2) Meaningful Price Drop (`landedPrice <= lowestAlertedPrice - 3.00` or `<= lowestAlertedPrice * 0.98`), or (3) 24-Hour Daily Reminder (`elapsedHours >= 24`).
+      - Added `isShippingScam()` in `vampirePoller.ts` (`pollTcgPlayerUndercuts()`) rejecting listings where `shippingPrice > $35` on a single box, `> $75` on a case, or `> 30%` of item price, while preserving real seller names.
+      - Fixed `me-30th-celebration-etb` / `case` / `bundle` regexes in `policies.json` to match plural `celebrations?`, added `^(?!.*30th)` negative lookahead to `swsh-celebrations-etb` + hard firewall in `isValidSkuForFormFactor()` (`policies.ts`), added `/ripped\s*live|rip\s*(&|and|n)\s*ship|live\s*break|box\s*break|pack\s*break|personal\s*break/i` to `GLOBAL_JUNK_EXCLUSIONS`, corrected `me-ascended-heroes-etb-case` (`maxMarketBuyPrice: 580`, `estimatedMarketValue: 680`, `msrpCeiling: 549.90`), and purged stale false-match entries from `liveStock.json`, `dropsHistory.json`, and `alertState.json`.
+    - **2. Fixed the 4 Wrong Shopify Collection Paths (`lgsPoller.ts` & `storeHealth.json`):**
+      - Added `INVALID_COLLECTION_SUBPATH_REGEX` (`/3d-cut|custom|break|bandai|indonesian|thai|spanish|french|german|italian|portuguese|figure|plush|toy|apparel|supply|sleeve|binder/i`) to `resolveBestPokemonFeed()` and reset `resolvedPath` in `storeHealth.json` for `Joshs Cards`, `Collector Store`, `Tistaminis`, and `Poke Unlimited`.
+    - **3. Replaced Dead TrackaLacker 403 Loop with Live Target RedSky JSON API & Multi-Subreddit Big-Box Restock Radar (`vampirePoller.ts`, `lgsPoller.ts`, `notifier.ts`, `server.js`):**
+      - Upgraded `pollRedditDeals()` to scan `r/PKMNTCGDeals/new/.rss`, `r/PKMNTCGDeals/hot/.rss`, and `r/PokemonTCG/new/.rss`, parse `<updated>`/`<published>` timestamps, and trigger **`[BIG-BOX RESTOCK RADAR]`** (`BIG_BOX_RESTOCK_RADAR` tier, defaulting price to `policy.msrpCeiling`) when a post names/links to Pokémon Center, Target, Walmart, Best Buy, Costco, Sam's Club, GameStop, Amazon, or Barnes & Noble without a literal `$XX.XX` price in the title.
+      - Replaced the dead TrackaLacker 403 loop in `pollBigBoxAggregators()` with direct **Target RedSky Fulfillment JSON API** checks (`redsky.target.com/redsky_aggregations/v1/web/plp_search_v2` with `default_purchasability_filter=true`, verified HTTP 200 OK) and logged Big-Box telemetry (`__bigBoxHealth`) into `storeHealth.json` and `/api/status`.
+    - **4. Added `"🎯 Near Misses (+1% to +12% Over Trigger)"` Filter Pill & 1-Click Trigger Bump (`evaluator.ts`, `server.js`, `public/index.html`, `dashboard.html`):**
+      - Persisted `liveStock.json.__bestOffers` across all 91 stores during every sweep (`upsertBestCurrentOffer()`), added `computeNearMissesAndBestOffers()` in `server.js` (`/api/status` & `/api/near-misses`), and added the `🎯 Near Misses (X)` filter pill (`#dfPill_NEAR_MISSES`) to `Live Command` with **`⚡ Bump Trigger ($XX) & Buy ↗`** (`bumpTriggerAndBuy()`) on every card.
+    - **5. Rebuilt `Target Matrix` Into a Scalable, Zero-Jump Compact Accordion Ledger (`public/index.html` & `dashboard.html`):**
+      - Added View Switcher (`≡ Compact Ledger [Default]` vs. `⊞ Visual Card Grid`), 5 Collapsible Category Accordions (`🎯 Still Needed Wall ETBs (30)` expanded by default, `🏆 Conquered Wall ETBs (8)`, `📦 36-Pack Booster Boxes (24)`, `🔒 Sealed Master Cases — 10-ETB & 6-Box (62)`, `⚡ 6-Pack Booster Bundles (7)`) with per-header 1-click Bulk Action buttons (`Enable All`, `Mute All`, `Set Group: MSRP`, `-15% Mkt`, `-10% Mkt`), `~52px` high-density rows, dynamic `131` target counts, and zero-jump in-place DOM updates (`updateMatrixItemDomInPlace()`).
 
 - **2026-10-20 | Agent: Gemini 4 Argon (via `agy`)**
   - **Completed V4 Phase E ("91-Store Verified Shopify LGS Pool, Sleek `ENGINE TELEMETRY` Sidebar Card, 7-Column `Bounty Hunter` Head-to-Head Scoreboard, Clickable `Top Store DNA`, Deduplicated Velocity Tape & Standalone-Ready Battle Stadium Module") (`lgsPoller.ts`, `evaluator.ts`, `marketTape.ts`, `server.js`, `public/index.html`, `dashboard.html`):**

@@ -1,6 +1,61 @@
 {
-  "totalMsrpHits": 2,
+  "totalMsrpHits": 7,
   "catches": [
+    {
+      "productName": "Mega Evolution: Chaos Rising ETB",
+      "ruleId": "me-chaos-rising-etb",
+      "store": "TCGPlayer Verified Seller",
+      "price": 58,
+      "landedPrice": 58,
+      "msrp": 54.99,
+      "url": "https://www.tcgplayer.com/product/684450?Language=English",
+      "timestamp": 1792718950453,
+      "timeStr": "2026-10-23T01:29:10.453Z"
+    },
+    {
+      "productName": "Mega Evolution: Pitch Black ETB",
+      "ruleId": "me-pitch-black-etb",
+      "store": "TCGPlayer Verified Seller",
+      "price": 59.01,
+      "landedPrice": 59.01,
+      "msrp": 54.99,
+      "url": "https://www.tcgplayer.com/product/692947?Language=English",
+      "timestamp": 1792718904599,
+      "timeStr": "2026-10-23T01:28:24.599Z"
+    },
+    {
+      "productName": "Mega Evolution: Chaos Rising ETB",
+      "ruleId": "me-chaos-rising-etb",
+      "store": "TCGPlayer Verified Seller",
+      "price": 57.71,
+      "landedPrice": 57.71,
+      "msrp": 54.99,
+      "url": "https://www.tcgplayer.com/product/684450?Language=English",
+      "timestamp": 1792695139789,
+      "timeStr": "2026-10-22T18:52:19.789Z"
+    },
+    {
+      "productName": "Shrouded Fable 6-Pack Booster Bundle",
+      "ruleId": "sv-shrouded-fable-bundle",
+      "store": "TCGPlayer Verified Seller",
+      "price": 34,
+      "landedPrice": 34,
+      "msrp": 32,
+      "url": "https://www.tcgplayer.com/product/553031?Language=English",
+      "timestamp": 1792498747994,
+      "timeStr": "2026-10-20T12:19:07.994Z"
+    },
+    {
+      "productName": "Shrouded Fable 6-Pack Booster Bundle",
+      "ruleId": "sv-shrouded-fable-bundle",
+      "store": "TCGPlayer Verified Seller",
+      "price": 34,
+      "landedPrice": 34,
+      "msrp": 32,
+      "url": "https://www.tcgplayer.com/product/553031?Language=English",
+      "timestamp": 1792484129297,
+      "timeStr": "2026-10-20T08:15:29.297Z"
+    },
     {
       "productName": "Shrouded Fable 6-Pack Booster Bundle",
       "ruleId": "sv-shrouded-fable-bundle",

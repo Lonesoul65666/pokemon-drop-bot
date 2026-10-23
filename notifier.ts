@@ -352,7 +352,10 @@ export async function sendAlert(drop: DropPayload): Promise<void> {
   let tierBadge = '🟡 SOLID DEAL — UNDER TARGET';
   let embedColor = 0xf59e0b;
 
-  if (isTierAMsrpHit) {
+  if (drop.bigBoxTier === 'BIG_BOX_RESTOCK_RADAR' && drop.bigBoxBadge) {
+    tierBadge = drop.bigBoxBadge;
+    embedColor = 0x00F0FF;
+  } else if (isTierAMsrpHit) {
     tierBadge = '🚨💎 UNICORN RETAIL MSRP HIT 💎🚨';
     embedColor = 0x00F0FF;
   } else if (drop.bigBoxTier === 'PC_EXCLUSIVE_MSRP' && drop.bigBoxBadge) {
@@ -668,7 +671,7 @@ export async function sendStockDigestCard(options?: { force?: boolean }): Promis
   const validDeals: DigestDeal[] = [];
 
   for (const [ruleId, entry] of Object.entries(liveMap)) {
-    if (ruleId === '__recentOos' || !entry || !entry.inStock) continue;
+    if (ruleId.startsWith('__') || !entry || !entry.inStock) continue;
     const pol = policyMap.get(ruleId);
     if (!pol || pol.active === false) continue;
 

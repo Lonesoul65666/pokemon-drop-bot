@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MONITORED_STORES = exports.LGS_STORES = void 0;
 exports.getNextProxy = getNextProxy;
+exports.recordBigBoxCheckTelemetry = recordBigBoxCheckTelemetry;
 exports.pollShopifyStores = pollShopifyStores;
 const axios_1 = __importDefault(require("axios"));
 const https_proxy_agent_1 = require("https-proxy-agent");
@@ -28,12 +29,24 @@ function getNextProxy() {
     return new https_proxy_agent_1.HttpsProxyAgent(WEBSHARE_PROXY_URL);
 }
 const storeHealthMap = new Map();
+let bigBoxHealthTelemetry = {
+    targetRedskyStatus: 'HEALTHY',
+    redditRssStatus: 'HEALTHY',
+    lastCheckAt: Date.now(),
+    itemsScanned: 24,
+    activeBigBoxCount: 9
+};
 let isPolling = false;
 try {
     if (fs_1.default.existsSync(STORE_HEALTH_PATH)) {
         const raw = JSON.parse(fs_1.default.readFileSync(STORE_HEALTH_PATH, 'utf-8'));
         if (raw && typeof raw === 'object') {
+            if (raw.__bigBoxHealth && typeof raw.__bigBoxHealth === 'object') {
+                bigBoxHealthTelemetry = { ...bigBoxHealthTelemetry, ...raw.__bigBoxHealth };
+            }
             for (const [k, v] of Object.entries(raw)) {
+                if (k.startsWith('__'))
+                    continue;
                 const rec = v;
                 rec.status = 'HEALTHY';
                 rec.consecutiveFailures = 0;
@@ -45,6 +58,17 @@ try {
     }
 }
 catch (e) { }
+function recordBigBoxCheckTelemetry(patch) {
+    bigBoxHealthTelemetry = {
+        ...bigBoxHealthTelemetry,
+        ...patch,
+        lastCheckAt: Date.now()
+    };
+    try {
+        flushStoreHealthToDisk();
+    }
+    catch (e) { }
+}
 function flushStoreHealthToDisk() {
     const activeNames = new Set(exports.MONITORED_STORES.map(s => s.name));
     const out = {};
@@ -53,6 +77,7 @@ function flushStoreHealthToDisk() {
             out[k] = v;
         }
     }
+    out.__bigBoxHealth = bigBoxHealthTelemetry;
     (0, policies_1.atomicWriteJson)(STORE_HEALTH_PATH, out);
 }
 exports.LGS_STORES = [
@@ -155,10 +180,14 @@ exports.LGS_STORES = [
     { name: 'Lvl Up Games', baseUrl: 'https://lvlupgames.ca', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' }
 ];
 exports.MONITORED_STORES = exports.LGS_STORES;
+const INVALID_COLLECTION_SUBPATH_REGEX = /single|singles|graded|slab|slabs|psa|cgc|bgs|japanese|chinese|korean|event|local|lorcana|digimon|one-piece|magic|mtg|3d-cut|custom|break|bandai|indonesian|thai|spanish|french|german|italian|portuguese|figure|plush|toy|apparel|supply|sleeve|binder/i;
 // Ensure all active stores exist in storeHealthMap with HEALTHY status on boot
 for (const store of exports.MONITORED_STORES) {
     const existing = storeHealthMap.get(store.name);
     if (existing) {
+        if (existing.resolvedPath && INVALID_COLLECTION_SUBPATH_REGEX.test(existing.resolvedPath)) {
+            existing.resolvedPath = undefined;
+        }
         if (existing.resolvedPath && !store.resolvedPath) {
             store.resolvedPath = existing.resolvedPath;
         }
@@ -247,6 +276,12 @@ async function smartGetJson(url) {
 }
 // Automatically finds the best Pokemon collection feed on each Shopify store and caches resolvedPath to disk
 async function resolveBestPokemonFeed(store, health) {
+    if (store.resolvedPath && INVALID_COLLECTION_SUBPATH_REGEX.test(store.resolvedPath)) {
+        store.resolvedPath = undefined;
+    }
+    if (health.resolvedPath && INVALID_COLLECTION_SUBPATH_REGEX.test(health.resolvedPath)) {
+        health.resolvedPath = undefined;
+    }
     if (store.resolvedPath)
         return { feedPath: store.resolvedPath };
     if (health.resolvedPath) {
@@ -259,7 +294,7 @@ async function resolveBestPokemonFeed(store, health) {
         const pkmnCols = colData.collections.filter((c) => {
             const hay = `${c.handle || ''} ${c.title || ''}`;
             return ((/pokemon|pkmn/i.test(c.handle || '') || /pokemon/i.test(c.title || '')) &&
-                !/single|singles|graded|slab|slabs|psa|cgc|bgs|japanese|chinese|korean|event|local|lorcana|digimon|one-piece|magic|mtg/i.test(hay));
+                !INVALID_COLLECTION_SUBPATH_REGEX.test(hay));
         });
         pkmnCols.sort((a, b) => {
             const aSealed = /sealed|booster|box|tcg|in-stock|^pokemon$/i.test(a.handle) ? 1 : 0;

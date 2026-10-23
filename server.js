@@ -824,8 +824,25 @@ function getDynamicStoreTelemetry() {
   } catch (e) {}
 
   let storeHealth = {};
+  let bigBoxHealth = {
+    targetRedskyStatus: 'HEALTHY',
+    redditRssStatus: 'HEALTHY',
+    lastCheckAt: Date.now(),
+    itemsScanned: 24,
+    activeBigBoxCount: 9
+  };
   if (fs.existsSync(STORE_HEALTH_PATH)) {
-    try { storeHealth = JSON.parse(fs.readFileSync(STORE_HEALTH_PATH, 'utf-8')); } catch (e) {}
+    try {
+      const rawHealth = JSON.parse(fs.readFileSync(STORE_HEALTH_PATH, 'utf-8'));
+      if (rawHealth && typeof rawHealth === 'object') {
+        if (rawHealth.__bigBoxHealth) {
+          bigBoxHealth = { ...bigBoxHealth, ...rawHealth.__bigBoxHealth };
+        }
+        for (const [k, v] of Object.entries(rawHealth)) {
+          if (!k.startsWith('__')) storeHealth[k] = v;
+        }
+      }
+    } catch (e) {}
   }
 
   const lgsCount = lgsStores.length || Object.keys(storeHealth).length || 91;
@@ -845,6 +862,7 @@ function getDynamicStoreTelemetry() {
     healthyLgsCount,
     circuitOpenCount,
     bigBoxCount,
+    bigBoxHealth,
     marketplaceCount,
     totalMonitoredSources,
     totalListingsMonitored,
@@ -854,11 +872,131 @@ function getDynamicStoreTelemetry() {
   };
 }
 
+function computeNearMissesAndBestOffers() {
+  let liveMap = {};
+  if (fs.existsSync(LIVE_STOCK_PATH)) {
+    try { liveMap = JSON.parse(fs.readFileSync(LIVE_STOCK_PATH, 'utf-8')); } catch (e) { liveMap = {}; }
+  }
+  let policies = [];
+  if (fs.existsSync(POLICIES_PATH)) {
+    try { policies = JSON.parse(fs.readFileSync(POLICIES_PATH, 'utf-8')); } catch (e) { policies = []; }
+  }
+  let cache = {};
+  if (fs.existsSync(TELEMETRY_PATH)) {
+    try { cache = JSON.parse(fs.readFileSync(TELEMETRY_PATH, 'utf-8')); } catch (e) { cache = {}; }
+  }
+
+  const rawBestOffers = (liveMap && liveMap.__bestOffers && typeof liveMap.__bestOffers === 'object')
+    ? liveMap.__bestOffers
+    : {};
+  const bestCurrentOffers = {};
+  const nearMisses = [];
+  const now = Date.now();
+
+  for (const pol of policies) {
+    if (!pol || pol.active === false) continue;
+    const ruleId = pol.id;
+    const triggerPrice = Math.max(Number(pol.msrpCeiling || 0), Number(pol.maxMarketBuyPrice || 0));
+    if (triggerPrice <= 0) continue;
+
+    const tel = cache[ruleId];
+    const marketValue = (tel && tel.rollingAverage > 0)
+      ? Number(tel.rollingAverage)
+      : Number(pol.estimatedMarketValue || triggerPrice);
+
+    let cand = rawBestOffers[ruleId];
+    if (!cand && tel && tel.lowestPrice > 0 && tel.lowestStore && !/baseline/i.test(tel.lowestStore)) {
+      const price = Number(tel.lowestPrice);
+      const isTcg = /tcgplayer/i.test(tel.lowestStore);
+      const estShip = (!isTcg && price < 150) ? 6.99 : 0;
+      const landedPrice = Math.round((price + estShip) * 100) / 100;
+      cand = {
+        ruleId,
+        ruleName: pol.name,
+        formFactor: pol.formFactor || 'Sealed',
+        era: pol.era,
+        title: pol.name,
+        retailer: tel.lowestStore,
+        price,
+        shippingPrice: estShip,
+        landedPrice,
+        freeShipNote: estShip > 0 ? `$${price.toFixed(2)} + $${estShip.toFixed(2)} Est. Ship ($${landedPrice.toFixed(2)} Landed)` : '+FREE Shipping',
+        url: tel.lowestUrl || `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(pol.name)}`,
+        productUrl: tel.lowestUrl,
+        updatedAt: Number(tel.lastSeen) || now,
+        timeStr: 'Live Telemetry'
+      };
+    }
+
+    if (!cand || !cand.price || cand.price <= 0) continue;
+
+    const price = Number(cand.price);
+    const landedPrice = Number(cand.landedPrice || cand.price);
+    const gapDollars = Math.round((landedPrice - triggerPrice) * 100) / 100;
+    const gapPct = Math.round(((landedPrice - triggerPrice) / triggerPrice) * 1000) / 10;
+    const rawGapDollars = Math.round((price - triggerPrice) * 100) / 100;
+    const rawGapPct = Math.round(((price - triggerPrice) / triggerPrice) * 1000) / 10;
+    const rip = computeRipMetrics(landedPrice, ruleId, pol.formFactor, pol.name, pol.packCount);
+    const isPreRelease = isPreReleaseDate(pol.releaseDate, now);
+
+    const enrichedOffer = {
+      ...cand,
+      ruleId,
+      ruleName: pol.name,
+      formFactor: pol.formFactor || 'Sealed',
+      era: pol.era,
+      price,
+      landedPrice,
+      triggerPrice,
+      msrp: Number(pol.msrpCeiling || 0),
+      marketValue,
+      gapDollars,
+      gapPct,
+      rawGapDollars,
+      rawGapPct,
+      packCount: rip.packCount,
+      pricePerPack: rip.pricePerPack,
+      isRipValueLeader: rip.isRipValueLeader,
+      owned: Boolean(pol.owned || pol.inVault),
+      isPreRelease,
+      preReleaseStatusTag: isPreRelease ? PRE_RELEASE_BLEED_TAG : undefined
+    };
+
+    bestCurrentOffers[ruleId] = enrichedOffer;
+
+    // Check if this item is a Near Miss (+0.5% to +12.5% over trigger on landed or raw price, and not already in Under-Trigger activeStock)
+    const inUnderTriggerStock = Boolean(
+      liveMap[ruleId] &&
+      liveMap[ruleId].inStock &&
+      Number(liveMap[ruleId].price) <= triggerPrice &&
+      (Number(liveMap[ruleId].landedPrice || liveMap[ruleId].price) <= triggerPrice || Boolean(liveMap[ruleId].freeShipNote))
+    );
+
+    const qualifiesByLanded = gapPct > 0 && gapPct <= 12.5;
+    const qualifiesByRaw = rawGapPct > 0 && rawGapPct <= 12.0 && gapPct <= 16.5;
+
+    if (!inUnderTriggerStock && (qualifiesByLanded || qualifiesByRaw)) {
+      const effectiveGapPct = qualifiesByLanded ? gapPct : rawGapPct;
+      const effectiveGapDollars = qualifiesByLanded ? gapDollars : rawGapDollars;
+      nearMisses.push({
+        ...enrichedOffer,
+        effectiveGapPct,
+        effectiveGapDollars,
+        recommendedTriggerBump: Math.ceil(landedPrice)
+      });
+    }
+  }
+
+  nearMisses.sort((a, b) => a.effectiveGapPct - b.effectiveGapPct || a.effectiveGapDollars - b.effectiveGapDollars);
+  return { bestCurrentOffers, nearMisses };
+}
+
 app.get('/api/status', (req, res) => {
   try {
     const trophies = loadMsrpTrophies();
     const conqueredVault = loadConqueredVault();
     const storeTel = getDynamicStoreTelemetry();
+    const { bestCurrentOffers, nearMisses } = computeNearMissesAndBestOffers();
     res.json({
       ok: true,
       timestamp: Date.now(),
@@ -876,14 +1014,25 @@ app.get('/api/status', (req, res) => {
         healthyLgsCount: storeTel.healthyLgsCount,
         circuitOpenCount: storeTel.circuitOpenCount,
         bigBoxCount: storeTel.bigBoxCount,
+        bigBoxHealth: storeTel.bigBoxHealth,
         marketplaceCount: storeTel.marketplaceCount,
         totalMonitoredSources: storeTel.totalMonitoredSources,
         totalListingsMonitored: storeTel.totalListingsMonitored
       },
-      storeHealth: storeTel.storeHealth
+      storeHealth: storeTel.storeHealth,
+      bestCurrentOffers,
+      nearMisses
     });
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+app.get('/api/near-misses', (req, res) => {
+  try {
+    res.json(computeNearMissesAndBestOffers());
+  } catch (e) {
+    res.status(500).json({ nearMisses: [], bestCurrentOffers: {}, error: e.message });
   }
 });
 
@@ -1001,7 +1150,7 @@ app.get('/api/live-stock', (req, res) => {
     const now = Date.now();
     const activeStock = {};
     for (const [ruleId, entry] of Object.entries(liveMap)) {
-      if (ruleId === '__recentOos' || !entry || !entry.inStock) continue;
+      if (ruleId.startsWith('__') || !entry || !entry.inStock) continue;
       const pol = policyMap.get(ruleId);
       if (!pol || pol.active === false) continue;
       const rawMaxBuy = Math.max(pol.msrpCeiling || 0, pol.maxMarketBuyPrice || 0);

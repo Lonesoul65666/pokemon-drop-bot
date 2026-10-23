@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getNextProxy } from './lgsPoller';
+import { getNextProxy, recordBigBoxCheckTelemetry } from './lgsPoller';
 import { processIncomingDrop } from './listener';
 import {
   WATCH_POLICIES,
@@ -9,44 +9,21 @@ import {
   detectBigBoxRetailer
 } from './policies';
 import { isValidCompTitle } from './marketComps';
-import { markLiveStockOut } from './evaluator';
+import { markLiveStockOut, markAlertKeyOutOfStock } from './evaluator';
 
 const seenRedditIds = new Set<string>();
-const lowestTcgSeenMap = new Map<string, { lowestPrice: number; timestamp: number }>();
-const seenBigBoxOffers = new Map<string, number>();
+const lowestTcgSeenMap = new Map<string, { lowestPrice: number; timestamp: number; inStockUnderTrigger: boolean }>();
+const seenBigBoxOffers = new Map<string, { price: number; timestamp: number }>();
 
-const TRACKALACKER_PAGES = [
-  { slug: 'pokemon-30th-celebration-elite-trainer-box', title: 'Pokemon 30th Celebration Elite Trainer Box', formFactor: 'ETB' },
-  { slug: 'pokemon-30th-celebration-booster-bundle', title: 'Pokemon 30th Celebration Booster Bundle', formFactor: 'Booster Bundle' },
-  { slug: 'pokemon-mega-evolution-phantasmal-flames-elite-trainer-box', title: 'Mega Evolution Phantasmal Flames Elite Trainer Box', formFactor: 'ETB' },
-  { slug: 'pokemon-mega-evolution-phantasmal-flames-booster-box', title: 'Mega Evolution Phantasmal Flames Booster Box', formFactor: 'Booster Box' },
-  { slug: 'pokemon-mega-evolution-ascended-heroes-elite-trainer-box', title: 'Mega Evolution Ascended Heroes Elite Trainer Box', formFactor: 'ETB' },
-  { slug: 'pokemon-mega-evolution-ascended-heroes-booster-bundle', title: 'Mega Evolution Ascended Heroes Booster Bundle', formFactor: 'Booster Bundle' },
-  { slug: 'pokemon-mega-evolution-mega-discovery-elite-trainer-box', title: 'Mega Evolution Mega Discovery Elite Trainer Box', formFactor: 'ETB' },
-  { slug: 'pokemon-mega-evolution-mega-discovery-booster-box', title: 'Mega Evolution Mega Discovery Booster Box', formFactor: 'Booster Box' },
-  { slug: 'pokemon-prismatic-evolutions-elite-trainer-box', title: 'Pokemon Prismatic Evolutions Elite Trainer Box', formFactor: 'ETB' },
-  { slug: 'pokemon-prismatic-evolutions-pokemon-center-elite-trainer-box', title: 'Pokemon Prismatic Evolutions Pokemon Center Elite Trainer Box', formFactor: 'ETB' },
-  { slug: 'pokemon-prismatic-evolutions-booster-bundle', title: 'Pokemon Prismatic Evolutions Booster Bundle', formFactor: 'Booster Bundle' },
-  { slug: 'pokemon-scarlet-and-violet-151-booster-bundle', title: 'Pokemon Scarlet & Violet 151 Booster Bundle', formFactor: 'Booster Bundle' },
-  { slug: 'pokemon-scarlet-and-violet-151-elite-trainer-box', title: 'Pokemon Scarlet & Violet 151 Elite Trainer Box', formFactor: 'ETB' },
-  { slug: 'pokemon-scarlet-and-violet-151-pokemon-center-elite-trainer-box', title: 'Pokemon Scarlet & Violet 151 Pokemon Center Elite Trainer Box', formFactor: 'ETB' },
-  { slug: 'pokemon-destined-rivals-elite-trainer-box', title: 'Pokemon Destined Rivals Elite Trainer Box', formFactor: 'ETB' },
-  { slug: 'pokemon-destined-rivals-pokemon-center-elite-trainer-box', title: 'Pokemon Destined Rivals Pokemon Center Elite Trainer Box', formFactor: 'ETB' },
-  { slug: 'pokemon-destined-rivals-booster-box', title: 'Pokemon Destined Rivals Booster Box', formFactor: 'Booster Box' },
-  { slug: 'pokemon-journey-together-elite-trainer-box', title: 'Pokemon Journey Together Elite Trainer Box', formFactor: 'ETB' },
-  { slug: 'pokemon-journey-together-pokemon-center-elite-trainer-box', title: 'Pokemon Journey Together Pokemon Center Elite Trainer Box', formFactor: 'ETB' },
-  { slug: 'pokemon-journey-together-booster-box', title: 'Pokemon Journey Together Booster Box', formFactor: 'Booster Box' },
-  { slug: 'pokemon-surging-sparks-elite-trainer-box', title: 'Pokemon Surging Sparks Elite Trainer Box', formFactor: 'ETB' },
-  { slug: 'pokemon-surging-sparks-pokemon-center-elite-trainer-box', title: 'Pokemon Surging Sparks Pokemon Center Elite Trainer Box', formFactor: 'ETB' },
-  { slug: 'pokemon-surging-sparks-booster-box', title: 'Pokemon Surging Sparks Booster Box', formFactor: 'Booster Box' },
-  { slug: 'pokemon-surging-sparks-booster-bundle', title: 'Pokemon Surging Sparks Booster Bundle', formFactor: 'Booster Bundle' },
-  { slug: 'pokemon-paldean-fates-elite-trainer-box', title: 'Pokemon Paldean Fates Elite Trainer Box', formFactor: 'ETB' },
-  { slug: 'pokemon-paldean-fates-booster-bundle', title: 'Pokemon Paldean Fates Booster Bundle', formFactor: 'Booster Bundle' },
-  { slug: 'pokemon-black-bolt-elite-trainer-box', title: 'Pokemon Black Bolt Elite Trainer Box', formFactor: 'ETB' },
-  { slug: 'pokemon-white-flare-elite-trainer-box', title: 'Pokemon White Flare Elite Trainer Box', formFactor: 'ETB' },
-  { slug: 'pokemon-twilight-masquerade-booster-box', title: 'Pokemon Twilight Masquerade Booster Box', formFactor: 'Booster Box' },
-  { slug: 'pokemon-paldea-evolved-booster-box', title: 'Pokemon Paldea Evolved Booster Box', formFactor: 'Booster Box' },
-  { slug: 'pokemon-crown-zenith-elite-trainer-box', title: 'Pokemon Crown Zenith Elite Trainer Box', formFactor: 'ETB' }
+const TARGET_REDSKY_QUERIES = [
+  'pokemon elite trainer box',
+  'pokemon booster bundle',
+  'pokemon booster box',
+  'pokemon prismatic evolutions',
+  'pokemon destined rivals',
+  'pokemon scarlet violet 151',
+  'pokemon mega evolution',
+  'pokemon surging sparks'
 ];
 
 export const BIG_BOX_STORES = [
@@ -61,14 +38,13 @@ export const BIG_BOX_STORES = [
   'Barnes & Noble'
 ];
 
-const SUPPORTED_BIG_BOX_REGEX = /target|best\s*buy|pokemon\s*center|pokémon\s*center|pokemoncenter|walmart|amazon|gamestop|costco|sam'?s\s*club|samsclub|barnes\s*(&|and)\s*noble|\bb&n\b/i;
-
-function normalizeBigBoxRetailerLabel(rawSeller: string, rawUrl?: string, sourceSuffix = 'Big-Box Restock'): string {
-  const detected = detectBigBoxRetailer(rawSeller, rawUrl);
-  if (detected) {
-    return `${detected} (${sourceSuffix})`;
-  }
-  return `${rawSeller.trim()} (${sourceSuffix})`;
+function isShippingScam(itemPrice: number, shippingPrice?: number, formFactor?: string): boolean {
+  if (shippingPrice === undefined || shippingPrice <= 0) return false;
+  const isCase = formFactor === 'ETB Case' || formFactor === 'Master Case';
+  const maxAbsShip = isCase ? 75 : 35;
+  if (shippingPrice > maxAbsShip) return true;
+  if (itemPrice > 0 && shippingPrice > itemPrice * 0.30) return true;
+  return false;
 }
 
 async function axiosRequestWithAbort(
@@ -108,7 +84,7 @@ async function smartPost(url: string, body: any, headers: Record<string, string>
   }
 }
 
-let tlCursor = 0;
+let targetCursor = 0;
 let isPollingBigBox = false;
 let lastBigBoxPollAt = 0;
 export async function pollBigBoxAggregators(): Promise<void> {
@@ -121,95 +97,82 @@ export async function pollBigBoxAggregators(): Promise<void> {
   }
   isPollingBigBox = true;
   lastBigBoxPollAt = Date.now();
-  const target = TRACKALACKER_PAGES[tlCursor % TRACKALACKER_PAGES.length];
-  tlCursor = (tlCursor + 1) % TRACKALACKER_PAGES.length;
+  const keyword = TARGET_REDSKY_QUERIES[targetCursor % TARGET_REDSKY_QUERIES.length];
+  targetCursor = (targetCursor + 1) % TARGET_REDSKY_QUERIES.length;
 
   try {
-    const url = `https://www.trackalacker.com/products/showcase/${target.slug}`;
-    const res = await smartGet(url, {
+    const encodedKw = encodeURIComponent(keyword);
+    const redskyUrl = `https://redsky.target.com/redsky_aggregations/v1/web/plp_search_v2?key=9f36aeafbe60771e321a7cc95a78140772ab3e96&channel=WEB&count=24&default_purchasability_filter=true&include_sponsored=false&keyword=${encodedKw}&new_search=true&offset=0&page=%2Fs%2F${encodedKw}&platform=desktop&pricing_store_id=3991&useragent=Mozilla%2F5.0&visitor_id=0192B7C8E2F0020188A9`;
+
+    const res = await smartGet(redskyUrl, {
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
-      Accept: 'text/html,application/xhtml+xml'
+      Accept: 'application/json'
     }, 8000);
 
-    const html: string = res.data || '';
-    const extractedOffers: Array<{ seller: string; price: number; link: string; rawText: string }> = [];
+    const products: any[] = res.data?.data?.search?.products || [];
+    recordBigBoxCheckTelemetry({
+      targetRedskyStatus: 'HEALTHY',
+      lastTargetKeyword: keyword,
+      itemsScanned: products.length
+    });
 
-    // 1. Parse JSON-LD InStock Offer Blocks
-    const offerBlocks = [...html.matchAll(/\{[^{}]*"availability"\s*:\s*"https?:\/\/schema\.org\/InStock"[^{}]*\}/gi)];
-    for (const m of offerBlocks) {
-      const raw = m[0];
-      const priceMatch = raw.match(/"price"\s*:\s*"?([0-9]+(?:\.[0-9]{1,2})?)"?/i);
-      const sellerMatch = raw.match(/"name"\s*:\s*"([^"]+)"/i);
-      const urlMatch = raw.match(/"url"\s*:\s*"([^"]+)"/i);
-      if (priceMatch) {
-        extractedOffers.push({
-          seller: sellerMatch ? sellerMatch[1] : 'Big-Box Retailer',
-          price: parseFloat(priceMatch[1]),
-          link: urlMatch ? urlMatch[1] : url,
-          rawText: raw
-        });
-      }
-    }
+    const activeTcinSet = new Set<string>();
+    for (const p of products) {
+      const tcin = String(p.tcin || '');
+      const rawTitle = String(p.item?.product_description?.title || '')
+        .replace(/&#38;|&amp;/g, '&')
+        .replace(/&#8212;|&mdash;/g, ' - ')
+        .trim();
+      const price = parseFloat(p.price?.current_retail || p.price?.reg_retail || 0);
+      const buyUrl = String(p.item?.enrichment?.buy_url || (tcin ? `https://www.target.com/p/-/A-${tcin}` : 'https://www.target.com'));
 
-    // 2. Parse HTML live In-Stock retailer rows for Target, Best Buy, Pokemon Center, Walmart, Amazon, GameStop, Costco, Sam's Club, Barnes & Noble
-    const rowMatches = [...html.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/gi)];
-    for (const rm of rowMatches) {
-      const rowHtml = rm[1];
-      if (!/in\s*stock|available\s*now|add\s*to\s*cart|pre-?order\s*now/i.test(rowHtml)) continue;
-      if (/out\s*of\s*stock|sold\s*out|unavailable/i.test(rowHtml)) continue;
+      if (!tcin || !rawTitle || !price || price < 18) continue;
+      activeTcinSet.add(tcin);
 
-      const retailerMatch = rowHtml.match(/(Target|Best\s*Buy|Pok[eé]mon\s*Center|Walmart|Amazon|GameStop|Costco|Sam'?s\s*Club|Barnes\s*(?:&|and|&amp;)\s*Noble)/i);
-      const priceMatch = rowHtml.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
-      const hrefMatch = rowHtml.match(/href="([^"]+)"/i);
-      if (retailerMatch && priceMatch) {
-        const rawHref = hrefMatch ? hrefMatch[1] : url;
-        const resolvedLink = rawHref.startsWith('http') ? rawHref : `https://www.trackalacker.com${rawHref}`;
-        extractedOffers.push({
-          seller: retailerMatch[1].replace(/&amp;/gi, '&'),
-          price: parseFloat(priceMatch[1]),
-          link: resolvedLink,
-          rawText: rowHtml
-        });
-      }
-    }
+      const matchedPolicy = WATCH_POLICIES.find(
+        (pol) => pol.active !== false && pol.matchers.some((rx) => rx.test(rawTitle))
+      );
+      if (!matchedPolicy) continue;
 
-    for (const offer of extractedOffers) {
-      const { seller, price, link, rawText } = offer;
-      if (/ebay|tcgplayer|stockx|goat|mercari/i.test(`${seller} ${link}`)) continue;
-      if (!SUPPORTED_BIG_BOX_REGEX.test(`${seller} ${link}`) && seller !== 'Big-Box Retailer') continue;
-
-      const normalizedRetailer = normalizeBigBoxRetailerLabel(seller, link, 'Big-Box Restock');
-      if (!isValidSkuForFormFactor(target.title, target.formFactor, price, {
-        handle: link,
-        retailer: normalizedRetailer,
-        sourceUrl: link,
-        allowPcRetailUnlock: true
+      if (!isValidSkuForFormFactor(rawTitle, matchedPolicy.formFactor, price, {
+        ruleId: matchedPolicy.id,
+        targetName: matchedPolicy.name,
+        handle: buyUrl,
+        retailer: 'Target',
+        sourceUrl: buyUrl,
+        allowPcRetailUnlock: false
       })) {
         continue;
       }
 
-      const offerKey = `${target.slug}_${normalizedRetailer}_${price}`;
-      const lastSeen = seenBigBoxOffers.get(offerKey) || 0;
-      if (Date.now() - lastSeen > 1000 * 60 * 60 * 4) {
-        seenBigBoxOffers.set(offerKey, Date.now());
-        const isPreOrder = /pre-?order|pre-?sale/i.test(`${target.title} ${rawText}`);
-        const isBigBoxFreeShip = price >= 35 && SUPPORTED_BIG_BOX_REGEX.test(normalizedRetailer);
+      const offerKey = `target_${tcin}`;
+      const prev = seenBigBoxOffers.get(offerKey);
+      const minsSince = prev ? (Date.now() - prev.timestamp) / (1000 * 60) : 999;
+
+      if (!prev || price < prev.price || minsSince >= 15) {
+        seenBigBoxOffers.set(offerKey, { price, timestamp: Date.now() });
+        const isPreOrder = /pre-?order|pre-?sale/i.test(rawTitle);
         await processIncomingDrop({
-          title: target.title,
-          retailer: normalizedRetailer,
-          url: link,
+          title: rawTitle,
+          retailer: 'Target (RedSky Live)',
+          url: buyUrl,
+          productUrl: buyUrl,
           price,
           stock: undefined,
           itemId: offerKey,
           isPreOrder,
-          freeShipping: isBigBoxFreeShip
+          freeShipping: price >= 35
         });
       }
     }
-  } catch (e) {
+  } catch (err: any) {
+    recordBigBoxCheckTelemetry({
+      targetRedskyStatus: 'DEGRADED',
+      lastTargetError: err?.message || 'RedSky poll error'
+    });
   } finally {
     isPollingBigBox = false;
-    setTimeout(pollBigBoxAggregators, 10000);
+    setTimeout(pollBigBoxAggregators, 15000);
   }
 }
 
@@ -218,8 +181,15 @@ function extractOutboundRetailerUrl(text: string, fallbackUrl: string): string {
   return urlMatch ? urlMatch[0] : fallbackUrl;
 }
 
+const REDDIT_RSS_FEEDS = [
+  'https://www.reddit.com/r/PKMNTCGDeals/new/.rss',
+  'https://www.reddit.com/r/PKMNTCGDeals/hot/.rss',
+  'https://www.reddit.com/r/PokemonTCG/new/.rss'
+];
+let redditFeedCursor = 0;
 let isPollingReddit = false;
 let lastRedditPollAt = 0;
+
 export async function pollRedditDeals(): Promise<void> {
   if (isPollingReddit) {
     if (Date.now() - lastRedditPollAt > 90000) {
@@ -230,53 +200,56 @@ export async function pollRedditDeals(): Promise<void> {
   }
   isPollingReddit = true;
   lastRedditPollAt = Date.now();
+
+  const rssUrl = REDDIT_RSS_FEEDS[redditFeedCursor % REDDIT_RSS_FEEDS.length];
+  redditFeedCursor = (redditFeedCursor + 1) % REDDIT_RSS_FEEDS.length;
+
   try {
-    const feeds = [
-      'https://www.reddit.com/r/PKMNTCGDeals/new.json?limit=20',
-      'https://www.reddit.com/r/PKMNTCGDeals/hot.json?limit=15'
-    ];
+    const rssRes = await smartGet(rssUrl, {
+      'User-Agent': 'Windows:DropBotCommander:v4.0 (by /u/Lonesoul65666)',
+      Accept: 'application/atom+xml,application/xml,text/xml'
+    }, 8000);
 
+    const xml: string = rssRes.data || '';
+    const entries = [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/gi)];
     const posts: any[] = [];
-    for (const feedUrl of feeds) {
-      try {
-        const res = await smartGet(feedUrl, {
-          'User-Agent': 'Windows:DropBotCommander:v3.3 (by /u/Lonesoul65666)',
-          Accept: 'application/json'
-        }, 8000);
-        const children = res.data?.data?.children || [];
-        for (const c of children) {
-          if (c?.data) posts.push(c.data);
-        }
-      } catch (e) {}
+
+    for (const ent of entries) {
+      const block = ent[1];
+      const idMatch = block.match(/<id>([^<]+)<\/id>/i);
+      const titleMatch = block.match(/<title>([^<]+)<\/title>/i);
+      const linkMatch = block.match(/<link[^>]*href="([^"]+)"/i);
+      const contentMatch = block.match(/<content[^>]*>([\s\S]*?)<\/content>/i);
+      const updatedMatch = block.match(/<(?:updated|published)>([^<]+)<\/(?:updated|published)>/i);
+      if (idMatch && titleMatch) {
+        const parsedUtc = updatedMatch ? Math.floor(Date.parse(updatedMatch[1]) / 1000) : 0;
+        posts.push({
+          id: idMatch[1],
+          title: titleMatch[1]
+            .replace(/&amp;/g, '&')
+            .replace(/&#39;/g, "'")
+            .replace(/&quot;/g, '"')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>'),
+          url_overridden_by_dest: linkMatch ? linkMatch[1] : '',
+          selftext: contentMatch
+            ? contentMatch[1]
+                .replace(/&amp;/g, '&')
+                .replace(/&#39;/g, "'")
+                .replace(/&quot;/g, '"')
+                .replace(/&lt;/g, '<')
+                .replace(/&gt;/g, '>')
+            : '',
+          created_utc: parsedUtc > 0 ? parsedUtc : Math.floor(Date.now() / 1000) - 60
+        });
+      }
     }
 
-    // Fallback to RSS/Atom feed if JSON endpoints return 0 posts
-    if (posts.length === 0) {
-      try {
-        const rssRes = await smartGet('https://www.reddit.com/r/PKMNTCGDeals/new/.rss', {
-          'User-Agent': 'Windows:DropBotCommander:v3.3 (by /u/Lonesoul65666)',
-          Accept: 'application/atom+xml,application/xml,text/xml'
-        }, 8000);
-        const xml: string = rssRes.data || '';
-        const entries = [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/gi)];
-        for (const ent of entries) {
-          const block = ent[1];
-          const idMatch = block.match(/<id>([^<]+)<\/id>/i);
-          const titleMatch = block.match(/<title>([^<]+)<\/title>/i);
-          const linkMatch = block.match(/<link[^>]*href="([^"]+)"/i);
-          const contentMatch = block.match(/<content[^>]*>([\s\S]*?)<\/content>/i);
-          if (idMatch && titleMatch) {
-            posts.push({
-              id: idMatch[1],
-              title: titleMatch[1].replace(/&amp;/g, '&').replace(/&#39;/g, "'").replace(/&quot;/g, '"'),
-              url_overridden_by_dest: linkMatch ? linkMatch[1] : '',
-              selftext: contentMatch ? contentMatch[1] : '',
-              created_utc: Math.floor(Date.now() / 1000) - 60
-            });
-          }
-        }
-      } catch (e) {}
-    }
+    recordBigBoxCheckTelemetry({
+      redditRssStatus: 'HEALTHY',
+      lastRedditFeed: rssUrl,
+      lastRedditPostsChecked: posts.length
+    });
 
     for (const post of posts) {
       if (!post || !post.id || seenRedditIds.has(post.id)) continue;
@@ -289,40 +262,65 @@ export async function pollRedditDeals(): Promise<void> {
       const selftext: string = post.selftext || '';
       if (/stockx/i.test(title)) continue;
 
-      const priceMatch = `${title} ${selftext}`.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
-      if (!priceMatch) continue;
-
-      const price = parseFloat(priceMatch[1]);
-      if (price < 18) continue;
-
       const rawDest = post.url_overridden_by_dest || `https://www.reddit.com${post.permalink || ''}`;
       const dealUrl = extractOutboundRetailerUrl(`${rawDest} ${selftext}`, rawDest);
 
       const storeMatch = title.match(/^\[([^\]]+)\]/);
       const rawStoreTag = storeMatch ? storeMatch[1] : '';
-      const detectedBigBox = detectBigBoxRetailer(`${rawStoreTag} ${title}`, dealUrl);
-      const retailer = detectedBigBox
-        ? `${detectedBigBox} (via PKMNTCGDeals)`
-        : (rawStoreTag ? `${rawStoreTag} (via PKMNTCGDeals)` : 'r/PKMNTCGDeals Alert');
+      const detectedBigBox = detectBigBoxRetailer(`${rawStoreTag} ${title} ${selftext}`, dealUrl);
+
+      const priceMatch = `${title} ${selftext}`.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
+      let price: number | undefined = priceMatch ? parseFloat(priceMatch[1]) : undefined;
+      let isBigBoxRestockRadar = false;
+
+      // If Reddit post omits a literal $XX.XX price (e.g. "[Pokemon Center] Prismatic Evolutions ETB Back In Stock" or "[Target] Restock"),
+      // do NOT drop it if it names or links to a supported Big-Box retailer and matches a tracked policy SKU!
+      if (!price && detectedBigBox) {
+        const matchedPolicy = WATCH_POLICIES.find(
+          (p) => p.active !== false && p.matchers.some((rx) => rx.test(`${title} ${selftext}`))
+        );
+        if (matchedPolicy && matchedPolicy.msrpCeiling > 0) {
+          price = matchedPolicy.msrpCeiling;
+          isBigBoxRestockRadar = true;
+          console.log(`📡 [BIG-BOX RESTOCK RADAR] Reddit post "${title}" matched ${matchedPolicy.name} at ${detectedBigBox} (Assumed MSRP $${price.toFixed(2)}) -> ${dealUrl}`);
+        }
+      }
+
+      if (!price || price < 18) continue;
+
+      const retailer = isBigBoxRestockRadar && detectedBigBox
+        ? `${detectedBigBox} [BIG-BOX RESTOCK RADAR]`
+        : (detectedBigBox
+            ? `${detectedBigBox} (via PKMNTCGDeals)`
+            : (rawStoreTag ? `${rawStoreTag} (via PKMNTCGDeals)` : 'r/PKMNTCGDeals Alert'));
 
       const isPreOrder = /pre-?order|pre-?sale/i.test(`${title} ${post.link_flair_text || ''}`);
-      const freeShipping = Boolean(/free ship|fs/i.test(title) || (detectedBigBox && price >= 35));
+      const freeShipping = Boolean(isBigBoxRestockRadar || /free ship|fs/i.test(title) || (detectedBigBox && price >= 35));
 
       await processIncomingDrop({
         title,
         retailer,
         url: dealUrl,
+        productUrl: dealUrl,
         price,
         stock: undefined,
         itemId: `reddit_${post.id}`,
         isPreOrder,
-        freeShipping
+        freeShipping,
+        isBigBoxRestockRadar,
+        shippingNoteOverride: isBigBoxRestockRadar
+          ? `📡 [BIG-BOX RESTOCK RADAR] Live ${detectedBigBox} Restock Signal — Assumed Retail MSRP ($${price.toFixed(2)})`
+          : undefined
       });
     }
-  } catch (e) {
+  } catch (err: any) {
+    recordBigBoxCheckTelemetry({
+      redditRssStatus: 'DEGRADED',
+      lastRedditError: err?.message || 'Reddit RSS error'
+    });
   } finally {
     isPollingReddit = false;
-    setTimeout(pollRedditDeals, 60000);
+    setTimeout(pollRedditDeals, 45000);
   }
 }
 
@@ -368,7 +366,8 @@ function formatTransparentMarketplaceShipping(itemPrice: number, shippingPrice?:
 async function getBestVerifiedTcgSeller(
   prodId: number,
   minFloor: number,
-  maxCeiling: number
+  maxCeiling: number,
+  formFactor?: string
 ): Promise<{ price: number; itemPrice: number; shipping: number; sellerName: string; rating: number; sales: number } | null> {
   try {
     const url = `https://mp-search-api.tcgplayer.com/v1/product/${prodId}/listings`;
@@ -390,6 +389,7 @@ async function getBestVerifiedTcgSeller(
       if (rating < 95) continue;
       const itemPrice = parseFloat(l.price || 0);
       const shipPrice = parseFloat(l.shippingPrice || 0);
+      if (isShippingScam(itemPrice, shipPrice, formFactor)) continue;
       const total = Math.round((itemPrice + shipPrice) * 100) / 100;
       if (itemPrice > 0 && total >= minFloor && total <= maxCeiling) {
         return {
@@ -438,16 +438,28 @@ export async function pollTcgPlayerUndercuts(): Promise<void> {
       const formFactor = policy.formFactor || 'Booster Box';
       const minFloor = getMinPlausiblePriceFloor(formFactor);
       const maxCeiling = getMaxPlausiblePriceCeiling(formFactor, policy.id, policy.name);
+      const effectiveCeiling = Math.max(policy.msrpCeiling || 0, policy.maxMarketBuyPrice || 0);
 
       try {
         if ((policy as any).tcgProductId) {
           const prodId = (policy as any).tcgProductId;
-          const bestSeller = await getBestVerifiedTcgSeller(prodId, minFloor, maxCeiling);
+          const bestSeller = await getBestVerifiedTcgSeller(prodId, minFloor, maxCeiling, formFactor);
           if (bestSeller && bestSeller.price >= minFloor && bestSeller.price <= maxCeiling) {
+            const isUnderTrigger = bestSeller.price <= effectiveCeiling;
             const prev = lowestTcgSeenMap.get(policy.id);
             const minsSinceLast = prev ? (Date.now() - prev.timestamp) / (1000 * 60) : 999;
-            if (!prev || bestSeller.price <= prev.lowestPrice - 2 || minsSinceLast >= 15) {
-              lowestTcgSeenMap.set(policy.id, { lowestPrice: bestSeller.price, timestamp: Date.now() });
+
+            if (!isUnderTrigger && prev?.inStockUnderTrigger) {
+              markLiveStockOut(`tcg_${prodId}`);
+              markAlertKeyOutOfStock(policy.id, 'TCGPlayer Verified Seller');
+            }
+
+            if (!prev || bestSeller.price <= prev.lowestPrice - 2 || (!prev.inStockUnderTrigger && isUnderTrigger) || minsSinceLast >= 15) {
+              lowestTcgSeenMap.set(policy.id, {
+                lowestPrice: bestSeller.price,
+                timestamp: Date.now(),
+                inStockUnderTrigger: isUnderTrigger
+              });
               const shippingNoteOverride = formatTransparentMarketplaceShipping(
                 bestSeller.itemPrice,
                 bestSeller.shipping,
@@ -500,9 +512,18 @@ export async function pollTcgPlayerUndercuts(): Promise<void> {
           if (!doesTcgResultMatchFormFactor(prodTitle, policy.name, formFactor, undefined, policy.id)) continue;
 
           const prodId = Math.floor(Number(item.productId));
-          const bestSeller = await getBestVerifiedTcgSeller(prodId, minFloor, maxCeiling);
+          const bestSeller = await getBestVerifiedTcgSeller(prodId, minFloor, maxCeiling, formFactor);
           const rawItemPrice = parseFloat(item.lowestPrice || 0);
           const rawWithShipping = parseFloat(item.lowestPriceWithShipping || item.lowestPrice || 0);
+          const rawShipDiff = rawWithShipping > rawItemPrice && rawItemPrice > 0
+            ? Math.round((rawWithShipping - rawItemPrice) * 100) / 100
+            : 0;
+
+          if (!bestSeller && isShippingScam(rawItemPrice, rawShipDiff, formFactor)) {
+            markLiveStockOut(`tcg_${prodId}`);
+            break;
+          }
+
           const fallbackCandidate = rawWithShipping || rawItemPrice;
           const lowestPrice = bestSeller ? bestSeller.price : fallbackCandidate;
           if (!lowestPrice || lowestPrice < minFloor || lowestPrice > maxCeiling) continue;
@@ -510,9 +531,13 @@ export async function pollTcgPlayerUndercuts(): Promise<void> {
           const parsedItemPrice = bestSeller ? bestSeller.itemPrice : (rawItemPrice > 0 ? rawItemPrice : lowestPrice);
           const parsedShipPrice = bestSeller
             ? bestSeller.shipping
-            : (rawWithShipping > rawItemPrice && rawItemPrice > 0
-                ? Math.round((rawWithShipping - rawItemPrice) * 100) / 100
-                : undefined);
+            : (rawShipDiff > 0 ? rawShipDiff : undefined);
+
+          if (isShippingScam(parsedItemPrice, parsedShipPrice, formFactor)) {
+            markLiveStockOut(`tcg_${prodId}`);
+            break;
+          }
+
           const shippingNoteOverride = formatTransparentMarketplaceShipping(
             parsedItemPrice,
             parsedShipPrice,
@@ -521,19 +546,26 @@ export async function pollTcgPlayerUndercuts(): Promise<void> {
 
           const shopLabel = bestSeller
             ? `${bestSeller.sellerName} (TCGPlayer • ${bestSeller.rating}%)`
-            : 'TCGPlayer Verified Seller';
+            : `TCGPlayer Verified Seller ($${parsedItemPrice.toFixed(2)})`;
 
-          const effectiveCeiling = Math.max(policy.msrpCeiling || 0, policy.maxMarketBuyPrice || 0);
-          if (lowestPrice > effectiveCeiling) {
-            markLiveStockOut(`tcg_${prodId}`);
-            break;
-          }
-
+          const isUnderTrigger = lowestPrice <= effectiveCeiling;
           const prev = lowestTcgSeenMap.get(policy.id);
           const minsSinceLast = prev ? (Date.now() - prev.timestamp) / (1000 * 60) : 999;
 
-          if (!prev || lowestPrice <= prev.lowestPrice - 2 || minsSinceLast >= 15) {
-            lowestTcgSeenMap.set(policy.id, { lowestPrice, timestamp: Date.now() });
+          if (!isUnderTrigger) {
+            markLiveStockOut(`tcg_${prodId}`);
+            if (prev?.inStockUnderTrigger) {
+              markAlertKeyOutOfStock(policy.id, 'TCGPlayer Verified Seller');
+            }
+          }
+
+          // Pass to processIncomingDrop when newly seen, price drops, flips into trigger, or every 15m so bestCurrentOffers / Near Misses stay fresh
+          if (!prev || lowestPrice <= prev.lowestPrice - 2 || (!prev.inStockUnderTrigger && isUnderTrigger) || minsSinceLast >= 15) {
+            lowestTcgSeenMap.set(policy.id, {
+              lowestPrice,
+              timestamp: Date.now(),
+              inStockUnderTrigger: isUnderTrigger
+            });
             const isPreOrder = /pre-?order|pre-?sale/i.test(prodTitle);
             await processIncomingDrop({
               title: prodTitle,

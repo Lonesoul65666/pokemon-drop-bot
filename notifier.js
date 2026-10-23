@@ -273,7 +273,11 @@ async function sendAlert(drop) {
         (msrpVal > 0 && landedOrPrice <= Math.round(msrpVal * 1.08 * 100) / 100 && (drop.estimatedShipping ?? 0) <= 6.99));
     let tierBadge = '🟡 SOLID DEAL — UNDER TARGET';
     let embedColor = 0xf59e0b;
-    if (isTierAMsrpHit) {
+    if (drop.bigBoxTier === 'BIG_BOX_RESTOCK_RADAR' && drop.bigBoxBadge) {
+        tierBadge = drop.bigBoxBadge;
+        embedColor = 0x00F0FF;
+    }
+    else if (isTierAMsrpHit) {
         tierBadge = '🚨💎 UNICORN RETAIL MSRP HIT 💎🚨';
         embedColor = 0x00F0FF;
     }
@@ -561,7 +565,7 @@ async function sendStockDigestCard(options) {
     const now = Date.now();
     const validDeals = [];
     for (const [ruleId, entry] of Object.entries(liveMap)) {
-        if (ruleId === '__recentOos' || !entry || !entry.inStock)
+        if (ruleId.startsWith('__') || !entry || !entry.inStock)
             continue;
         const pol = policyMap.get(ruleId);
         if (!pol || pol.active === false)
