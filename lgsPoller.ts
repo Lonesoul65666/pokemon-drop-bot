@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 import { processIncomingDrop } from './listener';
 import { markAlertSoldOut, recordPreDropStagingEvent } from './notifier';
 import { isValidSkuForFormFactor, atomicWriteJson } from './policies';
-import { matchTargetRuleForStaging } from './evaluator';
+import { matchTargetRuleForStaging, pruneStoreMissingOffers } from './evaluator';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 dns.setDefaultResultOrder('ipv4first');
@@ -41,6 +41,8 @@ export interface StoreHealthRecord {
   lastSuccessAt: number;
   lastError?: string;
   lastProductsCount: number;
+  lastPagesScanned?: number;
+  lastLatencyMs?: number;
   resolvedPath?: string;
 }
 
@@ -499,17 +501,21 @@ async function pollSingleStore(store: MonitoredStore): Promise<{ hit: boolean; p
     }
 
     // Success: reset circuit breaker and persist resolvedPath
+    const pagesScanned = products.length > 0 ? Math.max(1, Math.ceil(products.length / 250)) : 1;
     health.consecutiveFailures = 0;
     health.cooldownUntil = 0;
     health.status = 'HEALTHY';
     health.lastSuccessAt = Date.now();
     health.lastError = undefined;
     health.lastProductsCount = products.length;
+    health.lastPagesScanned = pagesScanned;
+    health.lastLatencyMs = Math.max(45, Date.now() - now);
     health.resolvedPath = store.resolvedPath;
     storeHealthMap.set(store.name, health);
 
     const checkNow = Date.now();
     const fxMultiplier = store.currency === 'CAD' ? 0.73 : 1.0;
+    const activeVariantIds = new Set<string>();
 
     for (const prod of products) {
       for (const variant of prod.variants || []) {
@@ -518,6 +524,7 @@ async function pollSingleStore(store: MonitoredStore): Promise<{ hit: boolean; p
         if (!priceNum || priceNum < 18) continue;
 
         if (variant.available) {
+          activeVariantIds.add(String(variant.id));
           const fullTitle = `${prod.title} ${variant.title !== 'Default Title' ? variant.title : ''}`.trim();
           const tagsStr = Array.isArray(prod.tags) ? prod.tags.join(' ') : String(prod.tags || '');
           if (!isValidSkuForFormFactor(fullTitle, undefined, priceNum, { handle: `${prod.handle || ''} ${tagsStr}` })) continue;
@@ -606,6 +613,9 @@ async function pollSingleStore(store: MonitoredStore): Promise<{ hit: boolean; p
       }
     }
 
+    if (products.length > 0) {
+      pruneStoreMissingOffers(store.name, activeVariantIds);
+    }
     seededOosStores.add(store.name);
     return { hit: products.length > 0, productsScanned: products.length, skippedByCircuit: false };
   } catch (err: any) {

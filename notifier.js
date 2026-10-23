@@ -238,12 +238,12 @@ async function sendAlert(drop) {
     const effectiveComparePrice = drop.freeShipNote ? priceVal : (drop.landedPrice ?? priceVal);
     const discount = bestMarketRef > 0 ? Math.round(((bestMarketRef - effectiveComparePrice) / bestMarketRef) * 100) : 0;
     const savings = Math.max(0, bestMarketRef - effectiveComparePrice);
-    // Format MSRP comparison exactly like TrackaLacker ("$49.99 (40% above)" or "$49.99 (AT MSRP!)")
+    // Format MSRP comparison with tactical typography
     let msrpComparison = 'N/A';
     if (msrpVal > 0) {
         const msrpDiffPct = Math.round(((priceVal - msrpVal) / msrpVal) * 100);
         if (msrpDiffPct <= 0) {
-            msrpComparison = `**$${msrpVal.toFixed(2)}** (${msrpDiffPct === 0 ? '🎯 Exact MSRP' : `${Math.abs(msrpDiffPct)}% BELOW MSRP!`})`;
+            msrpComparison = `**$${msrpVal.toFixed(2)}** (${msrpDiffPct === 0 ? '✦ Exact MSRP' : `${Math.abs(msrpDiffPct)}% BELOW MSRP!`})`;
         }
         else {
             msrpComparison = `**$${msrpVal.toFixed(2)}** (${msrpDiffPct}% above MSRP)`;
@@ -271,89 +271,105 @@ async function sendAlert(drop) {
     const isTierAMsrpHit = Boolean(drop.bigBoxTier === 'MSRP_TIER_A' ||
         drop.isMsrpUnicorn ||
         (msrpVal > 0 && landedOrPrice <= Math.round(msrpVal * 1.08 * 100) / 100 && (drop.estimatedShipping ?? 0) <= 6.99));
-    let tierBadge = '🟡 SOLID DEAL — UNDER TARGET';
-    let embedColor = 0xf59e0b;
+    // Format-driven tactical prefix & color
+    const ffLower = String(drop.formFactor || '').toLowerCase();
+    const combinedLabel = `${drop.ruleId || ''} ${drop.formFactor || ''} ${drop.ruleName || ''} ${drop.title || ''}`.toLowerCase();
+    let tacticalFormatCallsign = '◈ ⟦ WALL ETB // SINGLE ⟧';
+    let embedColor = 0x10b981; // Emerald/Cyan default for Wall ETB
+    if (ffLower.includes('etb case') || combinedLabel.includes('etb-case') || (combinedLabel.includes('etb') && combinedLabel.includes('case'))) {
+        tacticalFormatCallsign = '❖ ⟦ MASTER CASE // 10x ETB ⟧';
+        embedColor = 0xf59e0b; // Gold
+    }
+    else if (ffLower.includes('master case') || ffLower.includes('booster case') || combinedLabel.includes('booster-case') || combinedLabel.includes('case')) {
+        tacticalFormatCallsign = '❖ ⟦ BOOSTER CASE // 6x BOX ⟧';
+        embedColor = 0xf59e0b; // Gold
+    }
+    else if (ffLower.includes('booster box') || combinedLabel.includes('booster-box') || combinedLabel.includes('booster box')) {
+        tacticalFormatCallsign = '▲ ⟦ BOOSTER BOX // 36-PACK ⟧';
+        embedColor = 0xa855f7; // Violet
+    }
+    else if (ffLower.includes('bundle') || combinedLabel.includes('bundle')) {
+        tacticalFormatCallsign = '◆ ⟦ BOOSTER BUNDLE // 6-PACK ⟧';
+        embedColor = 0x3b82f6; // Electric Blue
+    }
+    let tierBadge = `${tacticalFormatCallsign} • UNDER TRIGGER`;
     if (drop.bigBoxTier === 'BIG_BOX_RESTOCK_RADAR' && drop.bigBoxBadge) {
-        tierBadge = drop.bigBoxBadge;
+        tierBadge = `✦ ⟦ BIG-BOX RESTOCK RADAR // MSRP ASSUMED ⟧`;
         embedColor = 0x00F0FF;
     }
     else if (isTierAMsrpHit) {
-        tierBadge = '🚨💎 UNICORN RETAIL MSRP HIT 💎🚨';
-        embedColor = 0x00F0FF;
+        tierBadge = `✦ ⟦ MSRP OVERRIDE // RETAIL HIT ⟧ • ${tacticalFormatCallsign}`;
+        embedColor = 0xe11d48;
     }
     else if (drop.bigBoxTier === 'PC_EXCLUSIVE_MSRP' && drop.bigBoxBadge) {
-        tierBadge = drop.bigBoxBadge;
+        tierBadge = `✦ ⟦ POKEMON CENTER // $59.99 EXCLUSIVE MSRP ⟧`;
         embedColor = 0x00F0FF;
     }
     else if (flashEscalation.isHighVelocityRepeat && flashEscalation.badgeText) {
-        tierBadge = flashEscalation.badgeText;
+        tierBadge = `${tacticalFormatCallsign} • HIGH-VELOCITY REPEAT`;
         embedColor = 0xe11d48;
     }
     else if (drop.isPreRelease && drop.preReleaseStatusTag) {
-        tierBadge = drop.preReleaseStatusTag;
+        tierBadge = `${tacticalFormatCallsign} • PRE-RELEASE BLEED`;
         embedColor = 0x8b5cf6;
     }
     else if (drop.isPreOrder) {
-        tierBadge = '⏳ PRE-ORDER — AT OR NEAR MSRP CEILING';
+        tierBadge = `${tacticalFormatCallsign} • PRE-ORDER ALLOCATION`;
         embedColor = 0x8b5cf6;
     }
     else if (msrpVal > 0 && priceVal <= msrpVal * 1.05) {
-        tierBadge = '🟢 AT OR NEAR MSRP — INSTANT COP';
+        tierBadge = `✦ ⟦ AT OR NEAR MSRP // INSTANT COP ⟧ • ${tacticalFormatCallsign}`;
         embedColor = 0x10b981;
     }
     else if (discount >= 22 || savings >= 60) {
-        tierBadge = `🔴 HEAVY ALPHA — ${discount}% UNDER MARKET (Save $${savings.toFixed(0)})`;
-        embedColor = 0xe60012;
+        tierBadge = `${tacticalFormatCallsign} • HEAVY ALPHA (${discount}% UNDER MARKET • SAVE $${savings.toFixed(0)})`;
     }
     let headerPrefix = isTierAMsrpHit
-        ? '🚨💎 UNICORN RETAIL MSRP HIT 💎🚨'
+        ? '✦ ⟦ MSRP OVERRIDE // RETAIL HIT ⟧'
         : (drop.bigBoxTier === 'PC_EXCLUSIVE_MSRP'
-            ? '💎 PC EXCLUSIVE MSRP:'
-            : (drop.isPreRelease
-                ? '⏳ PRE-RELEASE:'
-                : (drop.isPreOrder ? '⏳ PRE-ORDER:' : (flashEscalation.isHighVelocityRepeat ? '⚡ FLASH REPEAT:' : '🚨 IN STOCK:'))));
+            ? '✦ ⟦ PC EXCLUSIVE MSRP ⟧'
+            : tacticalFormatCallsign);
     let signalLine = drop.isPreOrder ? 'Pre-order allocation live (Strict MSRP+5% cap enforced)' : 'Fresh restock detected';
     if (drop.alertType === 'PRICE_DROP' && drop.previousPrice) {
         const cut = (drop.previousPrice - priceVal).toFixed(2);
         if (!isTierAMsrpHit) {
-            headerPrefix = `📉 PRICE DROP (-$${cut}):`;
-            embedColor = 0x06b6d4;
+            headerPrefix = `${tacticalFormatCallsign} // PRICE DROP (-$${cut})`;
         }
         signalLine = `Slashed from $${drop.previousPrice.toFixed(2)} (seen at ${drop.previousTimeStr})`;
     }
     else if (drop.alertType === 'RESTOCK_REPEAT' && drop.previousPrice) {
         if (!isTierAMsrpHit) {
-            headerPrefix = drop.isPreOrder ? '⏳ PRE-ORDER RESTOCK:' : '🔄 RESTOCKED:';
+            headerPrefix = `${tacticalFormatCallsign} // RESTOCKED`;
         }
         signalLine = `Previously seen at $${drop.previousPrice.toFixed(2)} (${drop.previousTimeStr})`;
     }
     if (drop.isPreRelease) {
-        const bleedTag = drop.preReleaseStatusTag || '⏳ PRE-RELEASE BLEED (Wait for Launch Week)';
+        const bleedTag = '⟦ PRE-RELEASE BLEED // WAIT FOR LAUNCH WEEK ⟧';
         if (isTierAMsrpHit) {
-            signalLine += `\n✅ **PRE-RELEASE AT TRUE RETAIL MSRP** (${bleedTag} bypassed)`;
+            signalLine += `\n✦ **PRE-RELEASE AT TRUE RETAIL MSRP** (${bleedTag} bypassed)`;
         }
         else {
-            signalLine += `\n⚠️ **${bleedTag}** — Avoid inflated pre-release allocation dumps above retail MSRP!`;
+            signalLine += `\n▲ **${bleedTag}** — Avoid inflated pre-release allocation dumps above retail MSRP!`;
         }
     }
     if (flashEscalation.isHighVelocityRepeat && flashEscalation.badgeText) {
         signalLine += `\n${flashEscalation.badgeText}`;
     }
     if (drop.freeShipNote) {
-        signalLine += `\n📦 **${drop.freeShipNote}**`;
+        signalLine += `\n◈ **${drop.freeShipNote}**`;
     }
     if (drop.marketplaceWarning) {
         signalLine += `\n**${drop.marketplaceWarning}**`;
     }
     const vaultBadge = drop.ownedInVault
-        ? (isTierAMsrpHit ? '🚨💎 DEFCON-1 OVERRIDE (In Vault — MSRP Rip Alert!)' : '🟣 In Vault (Passing to Crew)')
-        : '🎯 Needed for Vault';
+        ? (isTierAMsrpHit ? '✦ ⟦ DEFCON-1 OVERRIDE // IN VAULT MSRP RIP ⟧' : '❖ ⟦ IN VAULT // PASSING TO CREW ⟧')
+        : '◈ ⟦ NEEDED FOR WALL // ACTIVE TARGET ⟧';
     const stockDisplay = typeof drop.stock === 'number' && drop.stock > 0
         ? `${drop.stock} Units Loaded`
         : 'In Stock (Qty Hidden)';
     const shipNote = getRetailerShippingNote(drop.retailer, priceVal, drop.estimatedShipping, drop.itemPrice, drop.shippingPrice, drop.freeShipNote);
     const landedLine = drop.landedPrice && drop.landedPrice > priceVal
-        ? `\n📦 Landed (1x): **$${drop.landedPrice.toFixed(2)}**${drop.freeShipNote ? ` • *${drop.freeShipNote}*` : ''}`
+        ? `\n◈ Landed (1x): **$${drop.landedPrice.toFixed(2)}**${drop.freeShipNote ? ` • *${drop.freeShipNote}*` : ''}`
         : '';
     const isShopifyCart = Boolean(drop.cart1xUrl || drop.url.includes('/cart/'));
     const baseCartRoot = (drop.cart1xUrl || drop.url).replace(/:\d+$/, '');
@@ -370,40 +386,40 @@ async function sendAlert(drop) {
     let actionLinks;
     if (isShopifyCart) {
         if (isEtbDrop) {
-            const segments = [`[**⚡ 1x Single**](${c1})`];
+            const segments = [`[**⟦ 1x SINGLE ↗ ⟧**](${c1})`];
             if (c2)
-                segments.push(`[**⚡ 2x Pair**](${c2})`);
+                segments.push(`[**⟦ 2x PAIR ↗ ⟧**](${c2})`);
             if (c3)
-                segments.push(`[**⚡ 3x Family Pack (Free Ship Threshold)**](${c3})`);
-            segments.push(`[🌐 Product Page](${prodPageUrl})`);
+                segments.push(`[**⟦ 3x FAMILY PACK (FREE SHIP) ↗ ⟧**](${c3})`);
+            segments.push(`[Product Page ↗](${prodPageUrl})`);
             actionLinks = segments.join('   •   ');
         }
         else {
-            const segments = [`[**⚡ Instant Cart (1x)**](${c1})`];
+            const segments = [`[**⟦ INSTANT CART 1x ↗ ⟧**](${c1})`];
             if (c2)
-                segments.push(`[**⚡ Instant Cart (2x)**](${c2})`);
-            segments.push(`[🌐 Product Page](${prodPageUrl})`);
+                segments.push(`[**⟦ INSTANT CART 2x ↗ ⟧**](${c2})`);
+            segments.push(`[Product Page ↗](${prodPageUrl})`);
             actionLinks = segments.join('   •   ');
         }
     }
     else {
-        actionLinks = `[**🛒 View & Checkout on ${drop.retailer} ↗**](${drop.url})`;
+        actionLinks = `[**⟦ VIEW & CHECKOUT ON ${drop.retailer.toUpperCase()} ↗ ⟧**](${drop.url})`;
     }
     const thumbUrl = getThumbnailUrl(drop.ruleId);
     const embed = {
-        title: `${headerPrefix} ${drop.ruleName || drop.title}`,
+        title: `${headerPrefix} — ${drop.ruleName || drop.title}`,
         description: `**${tierBadge}**\n*${signalLine}*`,
         url: prodPageUrl,
         color: embedColor,
         fields: [
-            { name: '💵 DROP PRICE', value: `**$${priceVal.toFixed(2)}** (${shipNote})${landedLine}\n🏪 **${drop.retailer}**`, inline: true },
-            { name: '🏷️ RETAIL MSRP', value: `${msrpComparison}\n📦 ${stockDisplay}`, inline: true },
-            { name: '📊 LIVE MARKET COMPS (LOWEST + SHIP)', value: marketBlock, inline: false },
-            { name: '🔒 VAULT STATUS', value: vaultBadge, inline: true },
-            { name: '💰 SPREAD GAIN', value: discount > 0 ? `🔥 **${discount}% Below Market** (~$${savings.toFixed(0)} edge)` : 'At Target', inline: true },
-            { name: '🚀 DIRECT CHECKOUT', value: actionLinks, inline: false }
+            { name: '◈ DROP PRICE', value: `**$${priceVal.toFixed(2)}** (${shipNote})${landedLine}\n**${drop.retailer}**`, inline: true },
+            { name: '◆ RETAIL MSRP', value: `${msrpComparison}\n${stockDisplay}`, inline: true },
+            { name: '▲ LIVE MARKET COMPS (LOWEST + SHIP)', value: marketBlock, inline: false },
+            { name: '❖ VAULT STATUS', value: vaultBadge, inline: true },
+            { name: '✦ SPREAD GAIN', value: discount > 0 ? `**${discount}% Below Market** (~$${savings.toFixed(0)} edge)` : 'At Target', inline: true },
+            { name: '◈ DIRECT CHECKOUT', value: actionLinks, inline: false }
         ],
-        footer: { text: 'DropBot Commander v4.0 • Live OOS Tracker Active (Auto-Updates When Sold Out)' },
+        footer: { text: 'DropBot Commander v4.0 • Tactical OOS Tracker Active (Auto-Updates When Sold Out)' },
         timestamp: new Date().toISOString()
     };
     if (thumbUrl) {
@@ -411,7 +427,7 @@ async function sendAlert(drop) {
     }
     const webhookPayload = { embeds: [embed] };
     if (isTierAMsrpHit) {
-        webhookPayload.content = `@everyone 🚨💎 **UNICORN RETAIL MSRP HIT** — **${drop.ruleName || drop.title}** at **$${priceVal.toFixed(2)}** on **${drop.retailer}**!`;
+        webhookPayload.content = `@everyone ✦ ⟦ **MSRP OVERRIDE // RETAIL HIT** ⟧ — **${drop.ruleName || drop.title}** at **$${priceVal.toFixed(2)}** on **${drop.retailer}**!`;
     }
     try {
         // Use ?wait=true so Discord returns the message ID, allowing us to auto-edit it when the item sells out!
@@ -447,8 +463,8 @@ async function markAlertSoldOut(itemId) {
     const durationStr = mins > 0 ? `${mins}m ${secs}s` : `${secs} seconds`;
     const updatedEmbed = {
         ...tracked.embed,
-        title: `❌ SOLD OUT: ${tracked.ruleName}`,
-        description: `**You missed it.** This restock on **${tracked.retailer}** lasted **${durationStr}** and is now Out of Stock.`,
+        title: `⟦ SOLD OUT // OOS ⟧ — ${tracked.ruleName}`,
+        description: `**Restock Depleted.** This allocation on **${tracked.retailer}** lasted **${durationStr}** and is now Out of Stock.`,
         color: 0x475569 // Slate Gray for Sold Out
     };
     try {
@@ -605,23 +621,23 @@ async function sendStockDigestCard(options) {
     const topDeals = validDeals.slice(0, 12);
     const formatDealLine = (d) => {
         const spreadText = d.spreadPct >= 0 ? `${d.spreadPct}% Under Mkt` : `${Math.abs(d.spreadPct)}% Above Mkt`;
-        const preTag = d.isPreOrder ? ' `[⏳PRE]`' : '';
-        const cartSegment = d.cartUrl ? ` • [⚡1x](${d.cartUrl})` : '';
-        return `• **${d.name}**${preTag} — **$${d.price.toFixed(2)}** (${spreadText}) @ ${d.store} — [Checkout](${d.url})${cartSegment}`;
+        const preTag = d.isPreOrder ? ' `[PRE-ORDER]`' : '';
+        const cartSegment = d.cartUrl ? ` • [1x Cart ↗](${d.cartUrl})` : '';
+        return `◈ **${d.name}**${preTag} — **$${d.price.toFixed(2)}** (${spreadText}) @ ${d.store} — [Checkout ↗](${d.url})${cartSegment}`;
     };
     const neededDeals = topDeals.filter(d => !d.owned);
     const crewDeals = topDeals.filter(d => d.owned);
     const fields = [];
     if (neededDeals.length > 0) {
         fields.push({
-            name: `🎯 NEEDED FOR VAULT (${neededDeals.length})`,
+            name: `◈ ⟦ NEEDED FOR WALL // ACTIVE (${neededDeals.length}) ⟧`,
             value: neededDeals.map(formatDealLine).join('\n').slice(0, 1020),
             inline: false
         });
     }
     if (crewDeals.length > 0) {
         fields.push({
-            name: `🔒 IN VAULT / CREW DEALS (${crewDeals.length})`,
+            name: `❖ ⟦ IN VAULT // CREW DEALS (${crewDeals.length}) ⟧`,
             value: crewDeals.map(formatDealLine).join('\n').slice(0, 1020),
             inline: false
         });
@@ -637,7 +653,7 @@ async function sendStockDigestCard(options) {
             .map(x => `${x.ruleName} ($${Number(x.price).toFixed(2)} @ ${x.retailer})`)
             .join(' • ');
         fields.push({
-            name: '💨 SOLD OUT IN LAST 4 HOURS',
+            name: '▲ ⟦ DEPLETED IN LAST 4 HOURS ⟧',
             value: oosSummary.slice(0, 1020),
             inline: false
         });
@@ -650,7 +666,7 @@ async function sendStockDigestCard(options) {
         return { sent: false, count: 0, reason: 'Digest content hash unchanged' };
     }
     const embed = {
-        title: `📋 4-HOUR LIVE SHELF DIGEST (${validDeals.length} Active Deal${validDeals.length === 1 ? '' : 's'})`,
+        title: `◈ ⟦ 4-HOUR LIVE SHELF DIGEST // ${validDeals.length} ACTIVE DEALS ⟧`,
         description: `Real-time snapshot of verified in-stock targets at or below your buy triggers.${validDeals.length > 12 ? ` *(Showing top 12 of ${validDeals.length} by % spread)*` : ''}`,
         color: 0x3b82f6,
         fields,

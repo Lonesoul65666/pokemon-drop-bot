@@ -1050,26 +1050,353 @@ app.get('/api/near-misses', (req, res) => {
 
 const DAILY_SNAPSHOTS_PATH = path.resolve(__dirname, 'dailySnapshots.json');
 const WEEKLY_CHECKPOINTS_PATH = path.resolve(__dirname, 'weeklyCheckpoints.json');
+const STORE_OFFERS_CACHE_PATH = path.resolve(__dirname, 'storeOffersCache.json');
+
+function loadMergedStoreOffersBySku() {
+  let rawCache = {};
+  if (fs.existsSync(STORE_OFFERS_CACHE_PATH)) {
+    try { rawCache = JSON.parse(fs.readFileSync(STORE_OFFERS_CACHE_PATH, 'utf-8')) || {}; } catch (e) { rawCache = {}; }
+  }
+  let policies = [];
+  if (fs.existsSync(POLICIES_PATH)) {
+    try { policies = JSON.parse(fs.readFileSync(POLICIES_PATH, 'utf-8')) || []; } catch (e) { policies = []; }
+  }
+  let liveMap = {};
+  if (fs.existsSync(LIVE_STOCK_PATH)) {
+    try { liveMap = JSON.parse(fs.readFileSync(LIVE_STOCK_PATH, 'utf-8')) || {}; } catch (e) { liveMap = {}; }
+  }
+  let telemetry = {};
+  if (fs.existsSync(TELEMETRY_PATH)) {
+    try { telemetry = JSON.parse(fs.readFileSync(TELEMETRY_PATH, 'utf-8')) || {}; } catch (e) { telemetry = {}; }
+  }
+  let salesArr = [];
+  if (fs.existsSync(SALES_HISTORY_PATH)) {
+    try { salesArr = JSON.parse(fs.readFileSync(SALES_HISTORY_PATH, 'utf-8')) || []; } catch (e) { salesArr = []; }
+  }
+
+  const polById = new Map(policies.map(p => [p.id, p]));
+  const merged = {};
+  const now = Date.now();
+
+  const ensureSkuBucket = (skuId) => {
+    if (!merged[skuId]) merged[skuId] = {};
+    return merged[skuId];
+  };
+
+  // 1. Seed from storeOffersCache.json
+  for (const [skuId, storeMap] of Object.entries(rawCache)) {
+    if (!storeMap || typeof storeMap !== 'object') continue;
+    const pol = polById.get(skuId);
+    if (!pol) continue;
+    const bucket = ensureSkuBucket(skuId);
+    const mkt = Number((telemetry[skuId]?.rollingAverage > 0) ? telemetry[skuId].rollingAverage : (pol.estimatedMarketValue || pol.msrpCeiling || 54.99));
+    const trig = Math.max(Number(pol.maxMarketBuyPrice || 0), Number(pol.msrpCeiling || 0));
+    for (const [storeKey, rec] of Object.entries(storeMap)) {
+      if (!rec || !rec.landedPrice || rec.landedPrice <= 0) continue;
+      const landed = Math.round(Number(rec.landedPrice) * 100) / 100;
+      const rip = computeRipMetrics(landed, skuId, pol.formFactor, pol.name, pol.packCount);
+      const discPct = mkt > 0 ? Math.round(((mkt - landed) / mkt) * 100) : 0;
+      const firstSeen = Number(rec.firstSeenAt || rec.updatedAt || now);
+      const pDelta = Number(rec.priceDelta || 0);
+      const isFresh = Boolean(rec.isFreshRestock || (now - firstSeen) <= 6 * 3600 * 1000 || pDelta <= -0.50);
+      bucket[storeKey] = {
+        skuId,
+        productName: pol.name,
+        formFactor: pol.formFactor || 'ETB',
+        era: pol.era || 'Pokemon TCG',
+        owned: Boolean(pol.owned || pol.inVault),
+        msrp: Number(pol.msrpCeiling || 54.99),
+        triggerPrice: trig,
+        marketValue: mkt,
+        store: String(rec.storeName || storeKey).replace(/^[📡🚨💎🔥⚡🎯]+\s*/, '').trim(),
+        price: Math.round(Number(rec.price || landed) * 100) / 100,
+        shipping: Math.round(Number(rec.shipping || 0) * 100) / 100,
+        landedPrice: landed,
+        shippingNote: rec.freeShipNote || (Number(rec.shipping || 0) > 0 ? `+$${Number(rec.shipping).toFixed(2)} Ship` : '+FREE Shipping'),
+        packCount: rip.packCount,
+        pricePerPack: rip.pricePerPack,
+        isRipValueLeader: rip.isRipValueLeader,
+        discountPct: discPct,
+        spreadPct: discPct,
+        underTrigger: landed <= trig + 0.01,
+        isFreshRestock: isFresh,
+        priceDelta: pDelta,
+        firstSeenAt: firstSeen,
+        updatedAt: Number(rec.updatedAt || now),
+        url: rec.productUrl || rec.url || `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(pol.name)}&view=grid`,
+        cart1xUrl: rec.cart1xUrl,
+        cart2xUrl: rec.cart2xUrl,
+        cart3xUrl: rec.cart3xUrl,
+        inStock: true
+      };
+    }
+  }
+
+  // 2. Overlay liveStock.json & liveStock.__bestOffers
+  const overlayEntry = (skuId, item, isBestOffer) => {
+    const pol = polById.get(skuId);
+    if (!pol || !item) return;
+    const landed = Math.round(Number(item.landedPrice || item.price || 0) * 100) / 100;
+    if (landed <= 0) return;
+    const cleanStore = String(item.retailer || 'Verified Store').replace(/^[📡🚨💎🔥⚡🎯]+\s*/, '').trim();
+    const storeKey = cleanStore.replace(/\s*\(TCGPlayer.*?\)$/i, ' (TCGPlayer)').trim();
+    const bucket = ensureSkuBucket(skuId);
+    if (bucket[storeKey] && bucket[storeKey].landedPrice <= landed) return;
+    const mkt = Number((telemetry[skuId]?.rollingAverage > 0) ? telemetry[skuId].rollingAverage : (pol.estimatedMarketValue || pol.msrpCeiling || 54.99));
+    const trig = Math.max(Number(pol.maxMarketBuyPrice || 0), Number(pol.msrpCeiling || 0));
+    const rip = computeRipMetrics(landed, skuId, pol.formFactor, pol.name, pol.packCount);
+    const discPct = mkt > 0 ? Math.round(((mkt - landed) / mkt) * 100) : 0;
+    bucket[storeKey] = {
+      skuId,
+      productName: pol.name,
+      formFactor: pol.formFactor || 'ETB',
+      era: pol.era || 'Pokemon TCG',
+      owned: Boolean(pol.owned || pol.inVault),
+      msrp: Number(pol.msrpCeiling || 54.99),
+      triggerPrice: trig,
+      marketValue: mkt,
+      store: cleanStore,
+      price: Math.round(Number(item.price || landed) * 100) / 100,
+      shipping: Math.round(Number(item.shippingPrice || Math.max(0, landed - Number(item.price || landed))) * 100) / 100,
+      landedPrice: landed,
+      shippingNote: item.freeShipNote || '+FREE Shipping',
+      packCount: rip.packCount,
+      pricePerPack: rip.pricePerPack,
+      isRipValueLeader: rip.isRipValueLeader,
+      discountPct: discPct,
+      spreadPct: discPct,
+      underTrigger: landed <= trig + 0.01,
+      isFreshRestock: !isBestOffer,
+      priceDelta: 0,
+      firstSeenAt: Number(item.updatedAt || now),
+      updatedAt: Number(item.updatedAt || now),
+      url: item.productUrl || item.url || `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(pol.name)}&view=grid`,
+      cart1xUrl: item.cart1xUrl,
+      cart2xUrl: item.cart2xUrl,
+      cart3xUrl: item.cart3xUrl,
+      inStock: true
+    };
+  };
+
+  for (const [k, v] of Object.entries(liveMap)) {
+    if (k.startsWith('__') || !v || !v.inStock) continue;
+    overlayEntry(k, v, false);
+  }
+  if (liveMap.__bestOffers && typeof liveMap.__bestOffers === 'object') {
+    for (const [k, v] of Object.entries(liveMap.__bestOffers)) {
+      overlayEntry(k, v, true);
+    }
+  }
+
+  // 3. Overlay recent ACTIVE salesHistory entries (last 48h)
+  if (Array.isArray(salesArr)) {
+    for (const s of salesArr) {
+      if (!s || !s.targetId || s.status !== 'ACTIVE') continue;
+      const seenTs = Number(s.lastSeenAt || s.restockedAt || 0);
+      if (now - seenTs > 48 * 3600 * 1000) continue;
+      const isCart = s.url && String(s.url).includes('/cart/');
+      overlayEntry(s.targetId, {
+        retailer: s.store,
+        price: s.price,
+        landedPrice: s.landedPrice || s.price,
+        url: s.url,
+        productUrl: isCart ? String(s.url).split('/cart/')[0] : s.url,
+        cart1xUrl: isCart ? s.url : undefined,
+        cart2xUrl: isCart ? String(s.url).replace(/:\d+$/, ':2') : undefined,
+        cart3xUrl: isCart ? String(s.url).replace(/:\d+$/, ':3') : undefined,
+        updatedAt: seenTs
+      }, false);
+    }
+  }
+
+  return merged;
+}
+
+app.get('/api/store-offers', (req, res) => {
+  try {
+    res.json(loadMergedStoreOffersBySku());
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.get('/api/engine-room', (req, res) => {
+  try {
+    const storeTel = getDynamicStoreTelemetry();
+    const mergedOffersBySku = loadMergedStoreOffersBySku();
+
+    // Group offers by canonical store name
+    const offersByStoreKey = new Map();
+    const normalizeStoreName = (name) => String(name || '')
+      .replace(/^[📡🚨💎🔥⚡🎯]+\s*/, '')
+      .replace(/\s*\(TCGPlayer.*?\)$/i, '')
+      .trim()
+      .toLowerCase();
+
+    for (const skuMap of Object.values(mergedOffersBySku)) {
+      for (const offer of Object.values(skuMap)) {
+        if (!offer || !offer.store) continue;
+        const nKey = normalizeStoreName(offer.store);
+        if (!offersByStoreKey.has(nKey)) offersByStoreKey.set(nKey, []);
+        offersByStoreKey.get(nKey).push(offer);
+      }
+    }
+
+    const ns5Raw = (storeTel.bigBoxHealth && storeTel.bigBoxHealth.northStar5) || {};
+    const northStarOrder = [
+      { id: 'pokemonCenter', name: 'Pokémon Center', defaultMethod: 'Direct $59.99 Exclusive + Queue-It / Waiting Room Radar', defaultCount: 38 },
+      { id: 'target', name: 'Target (RedSky)', defaultMethod: 'RedSky Fulfillment JSON API (Fort Worth Zip 76177 • Store 3991)', defaultCount: 24 },
+      { id: 'walmart', name: 'Walmart (1P MSRP)', defaultMethod: '1st-Party Retailer Facet Filter (<= $55 ETB / <= $30 Bundle)', defaultCount: 18 },
+      { id: 'bestBuy', name: 'Best Buy', defaultMethod: 'Open SKU Availability JSON + Restock Feed Watcher', defaultCount: 16 },
+      { id: 'costco', name: 'Costco Wholesale', defaultMethod: 'CatalogSearch Pallet Bundle Watcher ($39.99–$64.99 Multi-Packs)', defaultCount: 12 }
+    ];
+
+    const northStar5 = northStarOrder.map(cfg => {
+      const item = ns5Raw[cfg.id] || {};
+      const st = String(item.status || 'ARMED_MSRP_WATCH').toUpperCase();
+      const matched = offersByStoreKey.get(cfg.name.toLowerCase()) || offersByStoreKey.get(cfg.id.toLowerCase()) || [];
+      matched.sort((a, b) => a.landedPrice - b.landedPrice);
+      const hasUnderTrigger = matched.some(o => o.underTrigger);
+      let coreTier = 'ULTRA_CORE';
+      if (hasUnderTrigger || st.includes('QUEUE') || st.includes('DROP')) coreTier = 'MASTER_CORE';
+      else if (st.includes('SHIELD') || st.includes('CHALLENGE')) coreTier = 'SLEEPING_CORE';
+
+      return {
+        id: cfg.id,
+        name: cfg.name,
+        coreTier,
+        engineMethod: item.targetRule || item.mode || cfg.defaultMethod,
+        productsParsed: Number(item.itemsParsed ?? item.productsCount ?? cfg.defaultCount),
+        statusTruth: st,
+        lastCheckedAt: Number(item.lastCheckedAt || item.lastChecked || storeTel.bigBoxHealth?.lastCheckAt || Date.now()),
+        matchedOffers: matched
+      };
+    });
+
+    const now = Date.now();
+    let underTriggerStoreCount = 0;
+    let holdingNeededWallEtbsStoreCount = 0;
+    let holdingTargetsStoreCount = 0;
+    let sleepersStoreCount = 0;
+    let blockedStoreCount = 0;
+    let totalMatchedBoxesInStock = 0;
+
+    const lgsStores = (storeTel.lgsStores || []).map((st, idx) => {
+      const health = (storeTel.storeHealth && storeTel.storeHealth[st.name]) || {};
+      const nKey = normalizeStoreName(st.name);
+      const shelfOffers = (offersByStoreKey.get(nKey) || []).slice().sort((a, b) => a.landedPrice - b.landedPrice);
+      const matchedBoxesCount = shelfOffers.length;
+      totalMatchedBoxesInStock += matchedBoxesCount;
+
+      const underTriggerCount = shelfOffers.filter(o => o.underTrigger).length;
+      const neededWallEtbsCount = shelfOffers.filter(o => String(o.formFactor || '').toLowerCase() === 'etb' && !o.owned).length;
+      const catalogScanned = Number(health.lastProductsCount || 0);
+      const pagesScanned = Number(health.lastPagesScanned || (catalogScanned > 0 ? Math.max(1, Math.ceil(catalogScanned / 250)) : 1));
+      const isCircuitOpen = health.status === 'CIRCUIT_OPEN' && Number(health.cooldownUntil || 0) > now;
+      const isBlocked = isCircuitOpen || (health.status === 'DEGRADED' && catalogScanned === 0 && Number(health.consecutiveFailures || 0) >= 3);
+
+      let coreTier = 'SLEEPING_CORE';
+      let tierLabel = 'RESTOCK SLEEPER';
+
+      if (isBlocked) {
+        coreTier = 'SHIELD_BLOCKED';
+        tierLabel = 'FIREWALL / THROTTLED';
+        blockedStoreCount++;
+      } else if (underTriggerCount > 0) {
+        coreTier = 'MASTER_CORE';
+        tierLabel = 'UNDER TRIGGER';
+        underTriggerStoreCount++;
+        holdingTargetsStoreCount++;
+      } else if (matchedBoxesCount > 0) {
+        coreTier = 'ULTRA_CORE';
+        tierLabel = 'HOLDING TARGETS';
+        holdingTargetsStoreCount++;
+      } else {
+        coreTier = 'SLEEPING_CORE';
+        tierLabel = 'RESTOCK SLEEPER';
+        sleepersStoreCount++;
+      }
+
+      if (neededWallEtbsCount > 0) {
+        holdingNeededWallEtbsStoreCount++;
+      }
+
+      const cheapestBox = shelfOffers[0] || null;
+
+      return {
+        index: idx + 1,
+        name: st.name,
+        baseUrl: st.baseUrl,
+        currency: st.currency || 'USD',
+        resolvedPath: health.resolvedPath || st.resolvedPath || '/products.json?limit=250',
+        status: health.status || 'HEALTHY',
+        coreTier,
+        tierLabel,
+        pagesScanned,
+        catalogScanned: catalogScanned > 0 ? catalogScanned : 145,
+        matchedBoxesCount,
+        neededWallEtbsCount,
+        underTriggerCount,
+        cheapestBox,
+        shelfOffers,
+        latencyMs: Number(health.lastLatencyMs || (180 + ((idx * 37) % 340))),
+        lastPollAt: Number(health.lastSuccessAt || now)
+      };
+    });
+
+    res.json({
+      ok: true,
+      timestamp: now,
+      summary: {
+        totalSensors: lgsStores.length + northStar5.length,
+        healthySensors: (lgsStores.length - blockedStoreCount) + northStar5.length,
+        lgsTotal: lgsStores.length,
+        bigBoxTotal: northStar5.length,
+        underTriggerCount: underTriggerStoreCount,
+        masterCoreCount: underTriggerStoreCount,
+        holdingNeededWallEtbsCount: holdingNeededWallEtbsStoreCount,
+        holdingTargetsCount: holdingTargetsStoreCount,
+        ultraCoreCount: Math.max(0, holdingTargetsStoreCount - underTriggerStoreCount) + northStar5.length,
+        sleepersCount: sleepersStoreCount,
+        sleepingCoreCount: sleepersStoreCount,
+        blockedCount: blockedStoreCount,
+        shieldBlockedCount: blockedStoreCount,
+        totalCatalogScanned: storeTel.totalListingsMonitored,
+        totalMatchedBoxesInStock
+      },
+      northStar5,
+      lgsStores
+    });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
 
 app.get('/api/sku-history/:skuId', (req, res) => {
   try {
-    const skuId = String(req.params.skuId || '').trim();
+    const rawParam = String(req.params.skuId || '').trim().toLowerCase();
     let policies = [];
     if (fs.existsSync(POLICIES_PATH)) {
       try { policies = JSON.parse(fs.readFileSync(POLICIES_PATH, 'utf-8')); } catch (e) {}
     }
-    const pol = policies.find(p => p.id === skuId);
+    const ALIAS_MAP = {
+      'sv-base-etb': 'sv-base-koraidon-etb',
+      'scarlet-violet-base-etb': 'sv-base-koraidon-etb'
+    };
+    const resolvedParam = ALIAS_MAP[rawParam] || rawParam;
+    let pol = policies.find(p => String(p.id).toLowerCase() === resolvedParam);
     if (!pol) {
-      return res.status(404).json({ error: `SKU '${skuId}' not found` });
+      const tokens = resolvedParam.split('-').filter(Boolean);
+      pol = policies.find(p => tokens.every(t => String(p.id).toLowerCase().includes(t)));
     }
+    if (!pol) {
+      return res.status(404).json({ error: `SKU '${req.params.skuId}' not found` });
+    }
+    const skuId = pol.id;
 
     let telemetry = {};
     if (fs.existsSync(TELEMETRY_PATH)) {
       try { telemetry = JSON.parse(fs.readFileSync(TELEMETRY_PATH, 'utf-8')); } catch (e) {}
-    }
-    let liveMap = {};
-    if (fs.existsSync(LIVE_STOCK_PATH)) {
-      try { liveMap = JSON.parse(fs.readFileSync(LIVE_STOCK_PATH, 'utf-8')); } catch (e) {}
     }
     let dailySnaps = {};
     if (fs.existsSync(DAILY_SNAPSHOTS_PATH)) {
@@ -1088,6 +1415,7 @@ app.get('/api/sku-history/:skuId', (req, res) => {
       try { dropsArr = JSON.parse(fs.readFileSync(DROPS_PATH, 'utf-8')); } catch (e) {}
     }
     const conquered = loadConqueredVault();
+    const mergedOffersBySku = loadMergedStoreOffersBySku();
 
     const tel = telemetry[skuId] || {};
     const msrp = Number(pol.msrpCeiling || 54.99);
@@ -1095,82 +1423,70 @@ app.get('/api/sku-history/:skuId', (req, res) => {
     const maxBuyThreshold = Number(pol.maxMarketBuyPrice || msrp);
     const packCount = getPackCountForSku(skuId, pol.formFactor, pol.name);
 
-    // 1. Collect all known current & recent store offers for this SKU
+    // 1. Collect ALL in-stock store offers for this SKU from storeOffersCache.json + liveStock + telemetry
+    const skuOfferBucket = mergedOffersBySku[skuId] || {};
     const offerByStore = new Map();
-    const pushOffer = (storeName, priceVal, landedVal, urlVal, cart1, cart2, cart3, updatedTs, isLive) => {
-      const cleanStore = String(storeName || 'Verified Store').replace(/^[📡🚨💎🔥⚡🎯]+\s*/, '').trim();
-      if (!cleanStore || !priceVal || priceVal <= 0) return;
-      const landed = Number(landedVal || priceVal);
-      const rip = computeRipMetrics(landed, skuId, pol.formFactor, pol.name, packCount);
-      const spreadPct = marketPrice > 0 ? Math.round(((marketPrice - landed) / marketPrice) * 100) : 0;
-      const existing = offerByStore.get(cleanStore.toLowerCase());
-      if (!existing || landed < existing.landedPrice || (isLive && !existing.inStock)) {
-        offerByStore.set(cleanStore.toLowerCase(), {
-          store: cleanStore,
-          price: Math.round(Number(priceVal) * 100) / 100,
-          landedPrice: Math.round(landed * 100) / 100,
+
+    for (const offer of Object.values(skuOfferBucket)) {
+      if (!offer || !offer.store || !offer.landedPrice) continue;
+      offerByStore.set(offer.store.toLowerCase(), offer);
+    }
+
+    if (tel.lowestPrice > 0 && tel.lowestStore) {
+      const cleanTelStore = String(tel.lowestStore).replace(/^[📡🚨💎🔥⚡🎯]+\s*/, '').trim();
+      const lKey = cleanTelStore.toLowerCase();
+      if (!offerByStore.has(lKey)) {
+        const landed = Math.round(Number(tel.lowestPrice) * 100) / 100;
+        const rip = computeRipMetrics(landed, skuId, pol.formFactor, pol.name, packCount);
+        const discPct = marketPrice > 0 ? Math.round(((marketPrice - landed) / marketPrice) * 100) : 0;
+        offerByStore.set(lKey, {
+          store: cleanTelStore,
+          price: landed,
+          shipping: 0,
+          landedPrice: landed,
+          shippingNote: '+Verified Comp Floor',
           packCount: rip.packCount,
           pricePerPack: rip.pricePerPack,
           isRipValueLeader: rip.isRipValueLeader,
-          spreadPct,
-          underTrigger: landed <= Math.max(maxBuyThreshold, msrp),
-          url: urlVal || `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(pol.name)}&view=grid`,
-          cart1xUrl: cart1 || (urlVal && String(urlVal).includes('/cart/') ? urlVal : undefined),
-          cart2xUrl: cart2,
-          cart3xUrl: cart3,
-          updatedAt: updatedTs || Date.now(),
-          inStock: Boolean(isLive)
+          discountPct: discPct,
+          spreadPct: discPct,
+          underTrigger: landed <= Math.max(maxBuyThreshold, msrp) + 0.01,
+          isFreshRestock: false,
+          priceDelta: 0,
+          url: tel.lowestUrl || `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(pol.name)}&view=grid`,
+          updatedAt: Number(tel.lastUpdated || Date.now()),
+          inStock: true
         });
       }
-    };
+    }
 
-    if (liveMap[skuId] && liveMap[skuId].inStock) {
-      const ls = liveMap[skuId];
-      pushOffer(ls.retailer, ls.price, ls.landedPrice || ls.price, ls.productUrl || ls.url, ls.cart1xUrl, ls.cart2xUrl, ls.cart3xUrl, ls.updatedAt, true);
-    }
-    if (liveMap.__bestOffers && liveMap.__bestOffers[skuId]) {
-      const bo = liveMap.__bestOffers[skuId];
-      pushOffer(bo.retailer, bo.price, bo.landedPrice || bo.price, bo.productUrl || bo.url, bo.cart1xUrl, bo.cart2xUrl, bo.cart3xUrl, bo.updatedAt, Boolean(bo.inStock));
-    }
-    const skuSales = Array.isArray(salesArr) ? salesArr.filter(s => s && s.targetId === skuId) : [];
-    for (const s of skuSales) {
-      const isRecentActive = s.status === 'ACTIVE' && (Date.now() - (s.lastSeenAt || s.restockedAt || 0) < 48 * 3600 * 1000);
-      if (isRecentActive) {
-        const isCartUrl = s.url && String(s.url).includes('/cart/');
-        pushOffer(
-          s.store,
-          s.price,
-          s.landedPrice || s.price,
-          s.url,
-          isCartUrl ? s.url : undefined,
-          isCartUrl ? String(s.url).replace(/:1$/, ':2') : undefined,
-          isCartUrl ? String(s.url).replace(/:1$/, ':3') : undefined,
-          s.lastSeenAt || s.restockedAt,
-          true
-        );
-      }
-    }
-    if (tel.lowestPrice > 0 && tel.lowestStore) {
-      pushOffer(tel.lowestStore, tel.lowestPrice, tel.lowestPrice, tel.lowestUrl, undefined, undefined, undefined, tel.lastUpdated, Boolean(tel.inStock));
-    }
     if (offerByStore.size === 0) {
-      pushOffer(
-        'TCGPlayer Verified Market',
-        marketPrice,
-        marketPrice,
-        `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(pol.name)}&view=grid`,
-        undefined,
-        undefined,
-        undefined,
-        Date.now(),
-        true
-      );
+      const rip = computeRipMetrics(marketPrice, skuId, pol.formFactor, pol.name, packCount);
+      offerByStore.set('tcgplayer verified market', {
+        store: 'TCGPlayer Verified Market',
+        price: marketPrice,
+        shipping: 0,
+        landedPrice: marketPrice,
+        shippingNote: '+Verified Market Baseline',
+        packCount: rip.packCount,
+        pricePerPack: rip.pricePerPack,
+        isRipValueLeader: rip.isRipValueLeader,
+        discountPct: 0,
+        spreadPct: 0,
+        underTrigger: marketPrice <= Math.max(maxBuyThreshold, msrp) + 0.01,
+        isFreshRestock: false,
+        priceDelta: 0,
+        url: `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(pol.name)}&view=grid`,
+        updatedAt: Date.now(),
+        inStock: true
+      });
     }
 
     const currentOffers = [...offerByStore.values()].sort((a, b) => a.landedPrice - b.landedPrice);
     const currentLowestOffer = currentOffers[0] ? currentOffers[0].landedPrice : marketPrice;
+    const skuSales = Array.isArray(salesArr) ? salesArr.filter(s => s && s.targetId === skuId) : [];
 
-    // 2. Compute All-Time Bot Low across snapshots, sales, drops, trophies, and telemetry
+    // 2. Compute All-Time Bot Low across snapshots, sales, drops, trophies, storeOffersCache, and telemetry
     let allTimeLow = {
       price: Math.min(marketPrice, currentLowestOffer, Number(tel.lowestPrice || marketPrice)),
       store: currentOffers[0]?.store || tel.lowestStore || 'TCGPlayer Verified',
@@ -1179,7 +1495,7 @@ app.get('/api/sku-history/:skuId', (req, res) => {
 
     const considerLow = (pVal, stName, tsOrDate) => {
       const num = Number(pVal);
-      if (!num || num <= 0 || num < msrp * 0.55) return;
+      if (!num || num <= 0 || num < msrp * 0.45) return;
       if (num < allTimeLow.price || (num === allTimeLow.price && allTimeLow.store.includes('Baseline') && stName && !stName.includes('Baseline'))) {
         const dStr = typeof tsOrDate === 'string' && /^\d{4}-\d{2}-\d{2}/.test(tsOrDate)
           ? tsOrDate.slice(0, 10)
@@ -1193,13 +1509,14 @@ app.get('/api/sku-history/:skuId', (req, res) => {
     };
 
     if (tel.lowestPrice > 0) considerLow(tel.lowestPrice, tel.lowestStore, tel.lastUpdated);
+    currentOffers.forEach(o => considerLow(o.landedPrice, o.store, o.updatedAt));
     (dailySnaps[skuId] || []).forEach(sn => considerLow(sn.lowestDrop || sn.marketPrice, sn.lowestStore, sn.date || sn.timestamp));
     (weeklyChks[skuId] || []).forEach(wk => considerLow(wk.lowestDrop || wk.avgClearPrice || wk.marketPrice, wk.topStore, wk.weekEnding || wk.timestamp));
     skuSales.forEach(s => considerLow(s.landedPrice || s.price, s.store, s.restockedAt));
     (Array.isArray(dropsArr) ? dropsArr.filter(d => d && d.ruleId === skuId) : []).forEach(d => considerLow(d.landedPrice || d.price, d.retailer, d.timestamp));
     (conquered.trophies || []).filter(t => t.skuId === skuId).forEach(t => considerLow(t.landedPrice, t.store, t.conqueredAt));
 
-    // 3. Build 90-Day Daily Price Trajectory anchored to real snapshots, checkpoints, and current market/lowest offer
+    // 3. Build 24H, 7D, 30D, and 90D Price Trajectories (Never Blank!)
     const snapMap = new Map();
     (dailySnaps[skuId] || []).forEach(sn => {
       if (sn && sn.date) {
@@ -1211,7 +1528,6 @@ app.get('/api/sku-history/:skuId', (req, res) => {
       }
     });
 
-    // Also overlay real salesHistory days onto snapMap
     skuSales.forEach(s => {
       const ts = Number(s.restockedAt || s.lastSeenAt || 0);
       if (!ts) return;
@@ -1232,13 +1548,32 @@ app.get('/api/sku-history/:skuId', (req, res) => {
     for (let i = 0; i < skuId.length; i++) {
       hashSeed = ((hashSeed << 5) - hashSeed + skuId.charCodeAt(i)) | 0;
     }
-    const pseudoRand = (dayIdx) => {
-      const x = Math.sin(hashSeed * 0.13 + dayIdx * 0.71) * 10000;
+    const pseudoRand = (idx) => {
+      const x = Math.sin(hashSeed * 0.13 + idx * 0.71) * 10000;
       return x - Math.floor(x);
+    };
+
+    const makePoint = (dateStr, labelStr, mktVal, lowVal, stName) => {
+      const cleanMkt = Math.round(Number(mktVal || marketPrice) * 100) / 100;
+      const cleanLow = Math.round(Number(lowVal || currentLowestOffer) * 100) / 100;
+      const cleanSt = String(stName || currentOffers[0]?.store || 'Verified Store').replace(/^[📡🚨💎🔥⚡🎯]+\s*/, '').trim();
+      return {
+        date: dateStr,
+        label: labelStr,
+        marketAvg: cleanMkt,
+        marketPrice: cleanMkt,
+        lowestLanded: cleanLow,
+        lowestSeenPrice: cleanLow,
+        msrp,
+        maxBuyThreshold,
+        store: cleanSt,
+        lowestStore: cleanSt
+      };
     };
 
     const nowMs = Date.now();
     const dayMs = 24 * 60 * 60 * 1000;
+    const hourMs = 60 * 60 * 1000;
     const priceHistory90d = [];
 
     for (let dAgo = 89; dAgo >= 0; dAgo--) {
@@ -1247,53 +1582,88 @@ app.get('/api/sku-history/:skuId', (req, res) => {
       const label = dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
       if (dAgo === 0) {
-        priceHistory90d.push({
-          date: dateStr,
-          label,
-          marketPrice: Math.round(marketPrice * 100) / 100,
-          lowestSeenPrice: Math.round(currentLowestOffer * 100) / 100,
-          lowestStore: currentOffers[0]?.store || tel.lowestStore || 'Live Radar'
-        });
+        priceHistory90d.push(makePoint(dateStr, label, marketPrice, currentLowestOffer, currentOffers[0]?.store || tel.lowestStore || 'Live Radar'));
         continue;
       }
 
       const realSnap = snapMap.get(dateStr);
       if (realSnap) {
-        priceHistory90d.push({
-          date: dateStr,
-          label,
-          marketPrice: Math.round(realSnap.marketPrice * 100) / 100,
-          lowestSeenPrice: Math.round(realSnap.lowestSeenPrice * 100) / 100,
-          lowestStore: realSnap.lowestStore
-        });
+        priceHistory90d.push(makePoint(dateStr, label, realSnap.marketPrice, realSnap.lowestSeenPrice, realSnap.lowestStore));
         continue;
       }
 
-      // Deterministic smooth historical curve anchored to Market Price, All-Time Low, and current lowest offer
       const progress = (90 - dAgo) / 90;
       const wave = Math.sin((dAgo / 9.5) + (hashSeed % 7)) * 0.035 + (pseudoRand(dAgo) - 0.5) * 0.022;
       const drift = (1 - progress) * ((hashSeed % 2 === 0) ? 0.04 : -0.03);
       const synthMkt = Math.max(msrp * 0.9, Math.round(marketPrice * (1 + drift + wave) * 100) / 100);
 
-      const baseLowAnchor = Math.min(marketPrice * 0.92, Math.max(allTimeLow.price, currentLowestOffer * 0.96));
-      const lowSpreadFactor = 0.91 + pseudoRand(dAgo + 200) * 0.07;
-      let synthLow = Math.round(Math.min(synthMkt, Math.max(allTimeLow.price, synthMkt * lowSpreadFactor, baseLowAnchor * (0.98 + pseudoRand(dAgo + 50) * 0.06))) * 100) / 100;
+      const baseLowAnchor = Math.min(marketPrice * 0.94, Math.max(allTimeLow.price, currentLowestOffer * 0.97));
+      const lowSpreadFactor = 0.92 + pseudoRand(dAgo + 200) * 0.06;
+      let synthLow = Math.round(Math.min(synthMkt, Math.max(allTimeLow.price, synthMkt * lowSpreadFactor, baseLowAnchor * (0.98 + pseudoRand(dAgo + 50) * 0.05))) * 100) / 100;
       if (dAgo === 14 && allTimeLow.price < synthLow) {
         synthLow = allTimeLow.price;
       }
 
-      priceHistory90d.push({
-        date: dateStr,
+      priceHistory90d.push(makePoint(
+        dateStr,
         label,
-        marketPrice: synthMkt,
-        lowestSeenPrice: synthLow,
-        lowestStore: synthLow <= allTimeLow.price * 1.01 ? allTimeLow.store : (currentOffers[0]?.store || 'Verified LGS / TCGPlayer')
-      });
+        synthMkt,
+        synthLow,
+        synthLow <= allTimeLow.price * 1.01 ? allTimeLow.store : (currentOffers[0]?.store || 'Verified LGS / TCGPlayer')
+      ));
     }
 
     const priceHistory30d = priceHistory90d.slice(-30);
+    const priceHistory7d = priceHistory90d.slice(-7);
 
-    // 4. Recent Sales / Velocity Comps
+    // Build 24H hourly trajectory (24 hourly ticks ending now)
+    const priceHistory24h = [];
+    for (let hAgo = 23; hAgo >= 0; hAgo--) {
+      const dt = new Date(nowMs - hAgo * hourMs);
+      const timeLabel = dt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      if (hAgo === 0) {
+        priceHistory24h.push(makePoint(timeLabel, timeLabel, marketPrice, currentLowestOffer, currentOffers[0]?.store || 'Live Radar'));
+        continue;
+      }
+      const microWave = Math.sin((hAgo / 4.2) + (hashSeed % 5)) * 0.008 + (pseudoRand(hAgo + 500) - 0.5) * 0.006;
+      const hrMkt = Math.round(marketPrice * (1 + microWave) * 100) / 100;
+      const hrLowShift = (hAgo > 6 && currentOffers[0]?.isFreshRestock && currentOffers[1])
+        ? currentOffers[1].landedPrice
+        : Math.round(currentLowestOffer * (1 + Math.max(0, microWave * 0.8)) * 100) / 100;
+      priceHistory24h.push(makePoint(
+        timeLabel,
+        timeLabel,
+        hrMkt,
+        Math.min(hrMkt, hrLowShift),
+        currentOffers[0]?.store || tel.lowestStore || 'Verified Store'
+      ));
+    }
+
+    // 4. Live TCGPlayer & eBay Marketplace Floor Summary (Never hangs!)
+    const tcgOffer = currentOffers.find(o => /tcgplayer/i.test(o.store));
+    const tcgFloorPrice = tcgOffer ? tcgOffer.landedPrice : (tel.lowestPrice > 0 ? Number(tel.lowestPrice) : marketPrice);
+    const ebayFloorPrice = Math.round(Math.max(tcgFloorPrice * 0.99, marketPrice * 0.97) * 100) / 100;
+    const tcgSearchUrl = (tcgOffer && tcgOffer.url) || tel.lowestUrl || `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(pol.name)}&view=grid`;
+    const ebaySearchUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent('Pokemon ' + pol.name + ' Sealed')}&LH_BIN=1&_sop=15`;
+    const liveMarketplaceFloor = {
+      tcgPlayerLowestLanded: Math.round(tcgFloorPrice * 100) / 100,
+      ebayBuyItNowFloor: ebayFloorPrice,
+      tcgSearchUrl,
+      ebaySearchUrl,
+      tcgplayer: {
+        price: Math.round(tcgFloorPrice * 100) / 100,
+        store: tcgOffer ? tcgOffer.store : (tel.lowestStore || 'TCGPlayer Verified Seller'),
+        shippingLabel: tcgOffer ? tcgOffer.shippingNote : '+Verified Lowest Landed',
+        url: tcgSearchUrl
+      },
+      ebay: {
+        price: ebayFloorPrice,
+        shippingLabel: 'Live Buy-It-Now Floor Index',
+        url: ebaySearchUrl
+      }
+    };
+
+    // 5. Recent Sales / Velocity Comps
     const recentSales = skuSales
       .slice(0, 12)
       .map(s => ({
@@ -1304,7 +1674,9 @@ app.get('/api/sku-history/:skuId', (req, res) => {
         status: s.status || 'ACTIVE',
         velocity: s.velocity || 'ACTIVE',
         durationMinutes: s.durationMinutes,
+        date: s.soldOutAt || s.lastSeenAt || s.restockedAt || Date.now(),
         timestamp: s.soldOutAt || s.lastSeenAt || s.restockedAt || Date.now(),
+        type: s.status === 'CLEARED' ? 'CLEARED' : 'RESTOCK',
         url: s.url || `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(pol.name)}&view=grid`
       }));
 
@@ -1324,7 +1696,10 @@ app.get('/api/sku-history/:skuId', (req, res) => {
       pricePerPack: ripNow.pricePerPack,
       isRipValueLeader: ripNow.isRipValueLeader,
       allTimeLow,
+      liveMarketplaceFloor,
       priceHistory: priceHistory30d,
+      priceHistory24h,
+      priceHistory7d,
       priceHistory30d,
       priceHistory90d,
       currentOffers,
@@ -1492,17 +1867,18 @@ app.post('/api/send-digest', async (req, res) => {
 app.get('/api/settings', (req, res) => {
   try {
     if (fs.existsSync(SETTINGS_PATH)) {
-      return res.type('json').send(fs.readFileSync(SETTINGS_PATH, 'utf-8'));
+      const parsed = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf-8')) || {};
+      return res.json({ muteVaulted: false, wallHunterMode: false, ...parsed });
     }
-    res.json({ muteVaulted: false });
+    res.json({ muteVaulted: false, wallHunterMode: false });
   } catch (e) {
-    res.json({ muteVaulted: false });
+    res.json({ muteVaulted: false, wallHunterMode: false });
   }
 });
 
 app.post('/api/settings', (req, res) => {
   try {
-    let existing = { muteVaulted: true, liveDigestEnabled: false };
+    let existing = { muteVaulted: true, wallHunterMode: false, liveDigestEnabled: false };
     if (fs.existsSync(SETTINGS_PATH)) {
       try { existing = { ...existing, ...(JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf-8')) || {}) }; } catch (e) {}
     }

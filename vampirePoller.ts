@@ -796,7 +796,6 @@ export async function pollTcgPlayerUndercuts(): Promise<void> {
 
             if (!isUnderTrigger && prev?.inStockUnderTrigger) {
               markLiveStockOut(`tcg_${prodId}`);
-              markAlertKeyOutOfStock(policy.id, 'TCGPlayer Verified Seller');
             }
 
             if (!prev || bestSeller.price <= prev.lowestPrice - 2 || (!prev.inStockUnderTrigger && isUnderTrigger) || minsSinceLast >= 15) {
@@ -897,11 +896,8 @@ export async function pollTcgPlayerUndercuts(): Promise<void> {
           const prev = lowestTcgSeenMap.get(policy.id);
           const minsSinceLast = prev ? (Date.now() - prev.timestamp) / (1000 * 60) : 999;
 
-          if (!isUnderTrigger) {
+          if (!isUnderTrigger && prev?.inStockUnderTrigger) {
             markLiveStockOut(`tcg_${prodId}`);
-            if (prev?.inStockUnderTrigger) {
-              markAlertKeyOutOfStock(policy.id, 'TCGPlayer Verified Seller');
-            }
           }
 
           // Pass to processIncomingDrop when newly seen, price drops, flips into trigger, or every 15m so bestCurrentOffers / Near Misses stay fresh

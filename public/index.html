@@ -1110,7 +1110,8 @@
           <div class="min-w-0 space-y-1">
             <div class="flex items-center gap-2 flex-wrap">
               <span id="phModalEraPill" class="pokedex-badge px-2 py-0.5 rounded bg-purple-500/20 border border-purple-400/35 text-[10px] font-bold text-purple-200 uppercase">Pokemon TCG</span>
-              <span id="phModalFormatPill" class="pokedex-badge px-2 py-0.5 rounded bg-cyan-500/15 border border-cyan-400/35 text-[10px] font-bold text-cyan-300 uppercase">ETB</span>
+              <span id="phModalFormatPill" class="pokedex-badge px-2 py-0.5 rounded bg-cyan-500/15 border border-cyan-400/35 text-[10px] font-bold text-cyan-300 uppercase">⟦ WALL ETB ⟧</span>
+              <span id="phModalOwnedBadge" class="pokedex-badge px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/35 text-[10px] font-bold text-amber-300 uppercase">STILL NEEDED</span>
               <span id="phModalPackBadge"></span>
             </div>
             <h3 id="phModalTitle" class="set-title-pokedex text-base sm:text-lg font-black text-white leading-snug truncate">Product Price History &amp; Comps</h3>
@@ -1147,9 +1148,11 @@
           <span class="inline-flex items-center gap-1.5 text-orange-300 font-bold"><span class="w-3 h-0.5 border-b border-dotted border-orange-400 inline-block"></span>MSRP Floor</span>
         </div>
         <div class="flex items-center gap-1.5">
-          <div class="inline-flex items-center bg-[#090710] p-0.5 rounded-xl border border-white/15">
-            <button onclick="setPriceHistoryRange('30D')" id="phRangeBtn_30D" class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-cyan-500 text-slate-950 transition">30D Trajectory</button>
-            <button onclick="setPriceHistoryRange('90D')" id="phRangeBtn_90D" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-300 hover:text-white transition">90D Trajectory</button>
+          <div class="inline-flex items-center bg-[#090710] p-0.5 rounded-xl border border-white/15 font-pokedex">
+            <button onclick="setPriceHistoryRange('24H')" id="phRangeBtn_24H" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-300 hover:text-white transition">24H</button>
+            <button onclick="setPriceHistoryRange('7D')" id="phRangeBtn_7D" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-300 hover:text-white transition">7D</button>
+            <button onclick="setPriceHistoryRange('30D')" id="phRangeBtn_30D" class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-cyan-500 text-slate-950 transition">30D</button>
+            <button onclick="setPriceHistoryRange('90D')" id="phRangeBtn_90D" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-300 hover:text-white transition">90D</button>
           </div>
           <button id="phPushDiscordBtn" class="px-2.5 py-1 rounded-xl bg-indigo-500/20 hover:bg-indigo-500 text-indigo-200 hover:text-white border border-indigo-400/35 text-[11px] font-extrabold transition">Push Comps to Discord</button>
         </div>
@@ -1180,10 +1183,10 @@
               <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
               <span>Live TCGPlayer &amp; eBay Floor</span>
             </h4>
-            <div id="phModalLiveCompsBox" class="space-y-2 text-xs text-slate-300">Scanning live marketplace floors...</div>
+            <div id="phModalLiveCompsBox" class="space-y-2 text-xs text-slate-300"></div>
           </div>
           <div class="pt-2 border-t border-white/10 flex items-center justify-between text-[11px]">
-            <span class="text-slate-400">Want full store recon?</span>
+            <span class="text-slate-400">Full cross-store recon</span>
             <button id="phJumpBountyBtn" class="text-cyan-300 font-extrabold hover:underline">Open in Bounty Hunter &rarr;</button>
           </div>
         </div>
@@ -1415,6 +1418,14 @@
         <span>Arena Settings ▾</span>
       </button>
 
+      <button onclick="toggleWallHunterMode()" id="topWallHunterBtn" title="Wall Hunter Mode: When ON, filters active Discord alerts and Under-Trigger hits strictly to the 30 unowned Single Wall ETBs (muting 10-ETB cases and owned sets)"
+              class="top-ctrl-pill bg-[#161329]/85 hover:bg-[#221D3B] text-slate-200 border border-white/15 font-pokedex">
+        <svg class="w-3.5 h-3.5 text-amber-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="12" cy="12" r="8"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><circle cx="12" cy="12" r="2" fill="currentColor"/>
+        </svg>
+        <span id="topWallHunterText">⟦ WALL HUNTER: OFF ⟧</span>
+      </button>
+
       <button onclick="toggleAutoLaunch()" id="autoLaunchBtn" title="Automatically open a browser checkout tab when a new Defcon-1 / In-Stock drop hits below your buy trigger"
               class="top-ctrl-pill bg-[#161329]/85 text-slate-200 border border-white/15 hover:border-cyan-400/50">
         <span id="autoLaunchDot" class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
@@ -1467,6 +1478,18 @@
         <button onclick="switchMainView('TARGET_MATRIX')" id="nav_TARGET_MATRIX" title="Target Matrix" class="nav-item w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 transition">
           <span class="nav-label-text font-pokedex">Target Matrix</span>
           <span id="navMatrixBadge" class="nav-badge font-mono-num text-[10px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300">131</span>
+        </button>
+
+        <button onclick="switchMainView('ENGINE_ROOM')" id="nav_ENGINE_ROOM" title="Engine Room — 96 Live Store &amp; Big-Box Sensor Blade" class="nav-item w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-white/5 transition">
+          <span class="nav-label-text font-pokedex flex items-center gap-2">
+            <svg class="w-3.5 h-3.5 text-cyan-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <circle cx="12" cy="12" r="9" stroke-opacity="0.5"/>
+              <path d="M12 3a9 9 0 0 1 9 9"/>
+              <circle cx="12" cy="12" r="3" fill="currentColor"/>
+            </svg>
+            <span>Engine Room</span>
+          </span>
+          <span id="navEngineBadge" class="nav-badge font-mono-num text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/35">96</span>
         </button>
       </div>
 
@@ -1819,7 +1842,10 @@
               <div class="flex items-center gap-1.5 flex-wrap">
                 <button onclick="setDealFeedFilter('ALL')" id="dfPill_ALL" class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-cyan-500 text-slate-950 whitespace-nowrap transition">All In-Stock</button>
                 <button onclick="setDealFeedFilter('UNDER_TRIGGER')" id="dfPill_UNDER_TRIGGER" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-slate-200 border border-white/10 hover:text-white whitespace-nowrap transition">Under Trigger</button>
-                <button onclick="setDealFeedFilter('NEAR_MISSES')" id="dfPill_NEAR_MISSES" class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-[#161329]/80 text-orange-300 border border-orange-500/40 hover:bg-orange-500/20 whitespace-nowrap transition" title="In-stock items across all 91 stores that are within +1% to +12% of your buy trigger">🎯 Near Misses (+1% to +12%)</button>
+                <button onclick="setDealFeedFilter('NEAR_MISSES')" id="dfPill_NEAR_MISSES" class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-[#161329]/80 text-orange-300 border border-orange-500/40 hover:bg-orange-500/20 whitespace-nowrap transition inline-flex items-center gap-1.5" title="In-stock items across all 91 stores that are within +1% to +12% of your buy trigger">
+                  <svg class="w-3 h-3 text-orange-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>
+                  <span id="dfPillNearMissesText">⟦ NEAR MISSES (+1% TO +12%) ⟧</span>
+                </button>
                 <button onclick="setDealFeedFilter('NEEDED_WALL_ETBS')" id="dfPill_NEEDED_WALL_ETBS" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-amber-300 border border-amber-500/35 hover:bg-amber-500/20 whitespace-nowrap transition">Needed Wall ETBs</button>
                 <button onclick="setDealFeedFilter('CASES')" id="dfPill_CASES" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-slate-200 border border-white/10 hover:text-white whitespace-nowrap transition">Sealed Cases</button>
                 <button onclick="setDealFeedFilter('BEST_PACK')" id="dfPill_BEST_PACK" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20 whitespace-nowrap transition">Best $/Pack to Rip</button>
@@ -2110,6 +2136,10 @@
               <button onclick="expandOrCollapseAllMatrixGroups(false)" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white/5 hover:bg-white/15 text-slate-300 border border-white/10 transition">Collapse All</button>
               <button onclick="toggleSpectatorLock()" id="lockBtn" class="px-3 py-1 rounded-lg text-xs font-bold bg-[#18142B]/80 text-slate-300 border border-white/10 hover:border-cyan-400">Commander Unlocked</button>
               <button onclick="toggleMuteVaulted()" id="muteVaultBtn" class="px-3 py-1 rounded-lg text-xs font-bold bg-purple-600/20 text-purple-300 border border-purple-500/30 hover:bg-purple-600 hover:text-white transition">Vaulted ETBs: Alerting Crew</button>
+              <button onclick="toggleWallHunterMode()" id="matrixWallHunterBtn" class="px-3 py-1 rounded-lg text-xs font-pokedex font-extrabold bg-amber-500/15 text-amber-300 border border-amber-500/35 hover:bg-amber-500/30 transition inline-flex items-center gap-1.5" title="Filter active Discord alerts and Under-Trigger hits strictly to the 30 unowned Single Wall ETBs">
+                <svg class="w-3.5 h-3.5 text-amber-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="8"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>
+                <span id="matrixWallHunterText">⟦ WALL HUNTER MODE: OFF ⟧</span>
+              </button>
             </div>
             <div class="flex items-center gap-2 flex-wrap">
               <button onclick="resetDedupMemory()" id="resetDedupBtn" class="px-3 py-1 rounded-lg text-xs font-bold bg-emerald-600/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-600 hover:text-white transition">Clear Alert Cooldowns</button>
@@ -2146,6 +2176,117 @@
         </div>
 
         <div id="catalogContainer" class="space-y-4"></div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- VIEW 5: ENGINE ROOM (96 LIVE SENSOR BLADE: 5 BIG-BOX + 91 SHOPIFY)  -->
+      <!-- =================================================================== -->
+      <section id="view_ENGINE_ROOM" class="hidden space-y-5">
+        <!-- Top Telemetry Banner, Custom SVG Energy Core Legend & Filter Bar -->
+        <div class="glass-card machined-card rounded-2xl p-5 space-y-4">
+          <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4 pb-3.5 border-b border-white/10">
+            <div>
+              <div class="flex items-center gap-2.5">
+                <svg class="w-5 h-5 text-cyan-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <circle cx="12" cy="12" r="9" stroke-opacity="0.45"/>
+                  <path d="M12 3a9 9 0 0 1 9 9"/>
+                  <circle cx="12" cy="12" r="3" fill="#00F0FF" stroke="none"/>
+                </svg>
+                <h2 class="font-pokedex text-base font-black uppercase tracking-wider text-white">Engine Room — 96 Live Store &amp; Big-Box Sensor Blade</h2>
+                <span id="erHeaderSummaryPill" class="font-pokedex text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/40">96 / 96 ARMED</span>
+              </div>
+              <p class="text-xs text-slate-300 mt-1">Full shelf-visibility matrix across <strong class="text-cyan-300">5 North Star Big-Box Retailers</strong> and <strong class="text-emerald-300">91 Verified Shopify LGS Stores</strong>. Click any store row to expand its live in-stock Pokémon shelf.</p>
+            </div>
+
+            <!-- Custom Inline SVG Poké Ball / Energy Core Legend (Zero Generic Emojis) -->
+            <div class="flex flex-wrap items-center gap-2 text-[10px] font-pokedex font-bold uppercase tracking-wider">
+              <div class="px-2.5 py-1.5 rounded-xl bg-purple-500/15 border border-amber-400/45 text-amber-200 flex items-center gap-2" title="Store currently holds >=1 tracked target under your buy trigger">
+                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="9" fill="#3B0764" stroke="#FACC15" stroke-width="2"/>
+                  <path d="M3 12h18" stroke="#FACC15" stroke-width="2"/>
+                  <circle cx="12" cy="12" r="3.2" fill="#FACC15"/>
+                </svg>
+                <span>Master Core: Under Trigger (<span id="erCountMaster">0</span>)</span>
+              </div>
+              <div class="px-2.5 py-1.5 rounded-xl bg-emerald-500/15 border border-cyan-400/40 text-cyan-200 flex items-center gap-2" title="Store is online and holding in-stock boxes from our 131 targets (above trigger)">
+                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="9" fill="#064E3B" stroke="#00F0FF" stroke-width="2"/>
+                  <path d="M3 12h18" stroke="#00F0FF" stroke-width="2"/>
+                  <circle cx="12" cy="12" r="3.2" fill="#10B981"/>
+                </svg>
+                <span>Ultra Core: Holding Targets (<span id="erCountUltra">0</span>)</span>
+              </div>
+              <div class="px-2.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 flex items-center gap-2" title="Store is online (200 OK) and scanning catalog, currently holding 0 matched targets in stock">
+                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="9" fill="#1E1B2E" stroke="#F59E0B" stroke-width="1.8" stroke-dasharray="3 2"/>
+                  <path d="M3 12h18" stroke="#F59E0B" stroke-width="1.5"/>
+                  <circle cx="12" cy="12" r="2.8" fill="#F59E0B"/>
+                </svg>
+                <span>Sleeping Core: 0 Matched (<span id="erCountSleeper">0</span>)</span>
+              </div>
+              <div class="px-2.5 py-1.5 rounded-xl bg-rose-500/15 border border-rose-500/35 text-rose-300 flex items-center gap-2" title="Store returned 0 items parsed, 403 firewall, or circuit cooldown">
+                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                  <polygon points="12 2 21 7 21 17 12 22 3 17 3 7" fill="#4C0519" stroke="#F43F5E" stroke-width="2"/>
+                  <line x1="8" y1="8" x2="16" y2="16" stroke="#F43F5E" stroke-width="2"/>
+                  <line x1="16" y1="8" x2="8" y2="16" stroke="#F43F5E" stroke-width="2"/>
+                </svg>
+                <span>Shield Blocked (<span id="erCountBlocked">0</span>)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filter Pills + Live Search Bar -->
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-1.5 flex-wrap font-pokedex">
+              <button onclick="setEngineRoomFilter('ALL')" id="erFilter_ALL" class="px-3 py-1.5 rounded-xl text-xs font-extrabold bg-cyan-500 text-slate-950 transition">All Sensors (96)</button>
+              <button onclick="setEngineRoomFilter('BIG_BOX')" id="erFilter_BIG_BOX" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-cyan-200 border border-cyan-500/30 hover:text-white transition">North Star Big-Box (5)</button>
+              <button onclick="setEngineRoomFilter('UNDER_TRIGGER')" id="erFilter_UNDER_TRIGGER" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-amber-300 border border-amber-500/35 hover:text-white transition">Under Trigger Now</button>
+              <button onclick="setEngineRoomFilter('NEEDED_WALL')" id="erFilter_NEEDED_WALL" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-purple-200 border border-purple-500/35 hover:text-white transition">Holding Needed Wall ETBs</button>
+              <button onclick="setEngineRoomFilter('HOLDING')" id="erFilter_HOLDING" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-emerald-300 border border-emerald-500/35 hover:text-white transition">Active Inventory (Holding Targets)</button>
+              <button onclick="setEngineRoomFilter('SLEEPERS')" id="erFilter_SLEEPERS" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-slate-300 border border-white/15 hover:text-white transition">Restock Sleepers (0 Matched Stock)</button>
+              <button onclick="setEngineRoomFilter('BLOCKED')" id="erFilter_BLOCKED" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-rose-300 border border-rose-500/30 hover:text-white transition">Throttled / Blocked</button>
+            </div>
+            <div class="flex items-center gap-2">
+              <input id="erSearchInput" type="text" placeholder="Search 96 stores or in-stock sets..." oninput="renderEngineRoomView(true)" class="bg-[#0B0914]/90 border border-white/15 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-400 w-60" />
+              <button onclick="refreshEngineRoomLive()" id="erRefreshBtn" class="px-3 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-200 border border-cyan-400/40 text-xs font-pokedex font-extrabold transition">↻ Refresh Telemetry</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- DECK 1: THE NORTH STAR 5 BIG-BOX RETAIL TABLE -->
+        <div id="erDeck1Wrap" class="glass-card machined-card rounded-2xl overflow-hidden border border-cyan-500/30">
+          <div class="px-4 py-3 bg-[#120F24]/90 border-b border-white/10 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#00F0FF]"></span>
+              <span class="font-pokedex text-sm font-extrabold uppercase tracking-wider text-white">Deck 1 // North Star 5 Big-Box Retail MSRP Sensors</span>
+            </div>
+            <span class="font-mono-num text-[11px] text-cyan-300 font-bold">Strict 1P Retail MSRP Only • Zero 3P Scalper Noise</span>
+          </div>
+          <div class="overflow-x-auto">
+            <div class="min-w-[880px] divide-y divide-white/5" id="erNorthStarTableBody"></div>
+          </div>
+        </div>
+
+        <!-- DECK 2: THE 91 SHOPIFY LGS SENSOR LEDGER (STABLE ORDER, ~46px COMPACT ROWS, CLICK-TO-EXPAND SHELF) -->
+        <div id="erDeck2Wrap" class="glass-card machined-card rounded-2xl overflow-hidden border border-white/15">
+          <div class="px-4 py-3 bg-[#120F24]/90 border-b border-white/10 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981]"></span>
+              <span class="font-pokedex text-sm font-extrabold uppercase tracking-wider text-white">Deck 2 // 91 Verified Shopify LGS Sensor Ledger</span>
+            </div>
+            <span id="erDeck2SubMeta" class="font-mono-num text-[11px] text-slate-300">Click any store row to inspect all tracked boxes currently on its shelf</span>
+          </div>
+          <!-- Sticky Table Column Headers -->
+          <div class="hidden lg:grid lg:grid-cols-[44px_minmax(220px,1.4fr)_150px_165px_minmax(250px,1.6fr)_130px] items-center gap-3 px-4 py-2 bg-[#090812]/90 border-b border-white/10 text-[10px] font-pokedex font-bold uppercase tracking-wider text-slate-400">
+            <div>Core</div>
+            <div>Store Name &amp; Activity Tier</div>
+            <div>Pages &amp; Catalog</div>
+            <div>Matched Stock Now</div>
+            <div>Cheapest Box on Their Shelf Right Now</div>
+            <div class="text-right">Latency / Poll</div>
+          </div>
+          <div class="divide-y divide-white/5" id="erLgsLedgerBody"></div>
+        </div>
       </section>
 
       </div>
@@ -4174,7 +4315,10 @@
     let activeFilter = 'ALL';
     let vaultChecklistFilter = 'ALL';
     let spectatorLocked = false;
-    let botSettings = { muteVaulted: false };
+    let botSettings = { muteVaulted: false, wallHunterMode: false };
+    let engineRoomData = null;
+    let activeEngineRoomFilter = 'ALL';
+    let expandedEngineStores = {};
     let sidebarCollapsed = false;
     let saveTimeout = null;
     let seenAutoLaunchKeys = new Set();
@@ -4218,7 +4362,7 @@
 
     function applyMainViewDomSwap(viewName) {
       activeMainView = viewName;
-      ['LIVE_COMMAND', 'BOUNTY_HUNTER', 'CONQUERED_VAULT', 'TARGET_MATRIX'].forEach(v => {
+      ['LIVE_COMMAND', 'BOUNTY_HUNTER', 'CONQUERED_VAULT', 'TARGET_MATRIX', 'ENGINE_ROOM'].forEach(v => {
         const sec = document.getElementById('view_' + v);
         const nav = document.getElementById('nav_' + v);
         if (sec) {
@@ -4243,6 +4387,8 @@
         renderConqueredVaultView();
       } else if (viewName === 'TARGET_MATRIX') {
         renderMatrixCatalog();
+      } else if (viewName === 'ENGINE_ROOM') {
+        renderEngineRoomView();
       } else {
         renderLiveCommandView();
       }
@@ -4295,7 +4441,7 @@
 
     async function loadAllState() {
       try {
-        const [polRes, telRes, lsRes, drRes, trRes, cvRes, mtRes, stRes, statRes] = await Promise.all([
+        const [polRes, telRes, lsRes, drRes, trRes, cvRes, mtRes, stRes, statRes, engRes] = await Promise.all([
           fetch('/api/policies'),
           fetch('/api/telemetry'),
           fetch('/api/live-stock'),
@@ -4304,7 +4450,8 @@
           fetch('/api/conquered-vault'),
           fetch('/api/market-tape'),
           fetch('/api/settings'),
-          fetch('/api/status')
+          fetch('/api/status'),
+          fetch('/api/engine-room')
         ]);
 
         if (polRes.ok) policies = await polRes.json();
@@ -4332,9 +4479,13 @@
             bestCurrentOffersMap = statData.bestCurrentOffers;
           }
         }
+        if (engRes && engRes.ok) {
+          engineRoomData = await engRes.json();
+        }
 
         populateSelectDropdowns();
         updateMuteVaultUI();
+        updateWallHunterUI();
         renderAllActiveViews();
       } catch (e) {
         console.error('State load error:', e);
@@ -4386,6 +4537,7 @@
       renderMarketIntelligenceBento();
       if (activeMainView === 'CONQUERED_VAULT') renderConqueredVaultView();
       if (activeMainView === 'TARGET_MATRIX') renderMatrixCatalog();
+      if (activeMainView === 'ENGINE_ROOM') renderEngineRoomView();
     }
 
     function isPolicyInStockNow(p) {
@@ -4830,9 +4982,23 @@
 
       // Card 2: Active Sniper Radar — Derived from the EXACT SAME canonical array as Under Trigger (X) pill!
       const allDealItems = buildUnifiedDealFeedItems();
-      const underTriggerItems = allDealItems.filter(it => it.landedPrice <= (it.triggerPrice || it.msrp || it.marketValue));
+      const underTriggerItems = allDealItems.filter(it => {
+        const isUnder = it.landedPrice <= (it.triggerPrice || it.msrp || it.marketValue);
+        if (!isUnder) return false;
+        if (botSettings && botSettings.wallHunterMode) {
+          return String(it.formFactor || '').toLowerCase() === 'etb' && !it.owned;
+        }
+        return true;
+      });
       const underTriggerCount = underTriggerItems.length;
       const dynamicNearMisses = computeDynamicNearMissItems();
+
+      const navEngBadge = document.getElementById('navEngineRoomBadge');
+      if (navEngBadge) {
+        const totalSensors = (engineRoomData && engineRoomData.summary && engineRoomData.summary.totalSensors) || (lgsCnt + 5);
+        const healthySensors = (engineRoomData && engineRoomData.summary && engineRoomData.summary.healthySensors) || (healthyLgs + 5);
+        navEngBadge.innerText = healthySensors + '/' + totalSensors;
+      }
 
       const kpiInStock = document.getElementById('kpiInStockCount');
       if (kpiInStock) kpiInStock.innerText = String(underTriggerCount);
@@ -4844,9 +5010,9 @@
       const dfAllBtn = document.getElementById('dfPill_ALL');
       if (dfAllBtn) dfAllBtn.innerText = 'All In-Stock (' + allDealItems.length + ')';
       const dfUnderBtn = document.getElementById('dfPill_UNDER_TRIGGER');
-      if (dfUnderBtn) dfUnderBtn.innerText = 'Under Trigger (' + underTriggerCount + ')';
-      const dfNearMissBtn = document.getElementById('dfPill_NEAR_MISSES');
-      if (dfNearMissBtn) dfNearMissBtn.innerText = '🎯 Near Misses (' + dynamicNearMisses.length + ')';
+      if (dfUnderBtn) dfUnderBtn.innerText = (botSettings && botSettings.wallHunterMode ? '⟦ WALL HUNTER ⟧ Under Trigger (' : 'Under Trigger (') + underTriggerCount + ')';
+      const dfNearMissText = document.getElementById('dfPillNearMissesText');
+      if (dfNearMissText) dfNearMissText.innerText = '⟦ NEAR MISSES (' + dynamicNearMisses.length + ') ⟧';
       const dfNeededWallBtn = document.getElementById('dfPill_NEEDED_WALL_ETBS');
       if (dfNeededWallBtn) dfNeededWallBtn.innerText = 'Needed Wall ETBs (' + neededEtbs.length + ')';
 
@@ -4955,7 +5121,12 @@
       } else {
         filteredItems = items.filter(it => {
           if (activeDealFeedFilter === 'UNDER_TRIGGER') {
-            return it.landedPrice <= (it.triggerPrice || it.msrp || it.marketValue);
+            const under = it.landedPrice <= (it.triggerPrice || it.msrp || it.marketValue);
+            if (!under) return false;
+            if (botSettings && botSettings.wallHunterMode) {
+              return String(it.formFactor || '').toLowerCase() === 'etb' && !it.owned;
+            }
+            return true;
           }
           if (activeDealFeedFilter === 'NEEDED_WALL_ETBS') {
             const pol = policies.find(p => p.id === it.skuId);
@@ -5045,13 +5216,13 @@
 
         const isPreDropStaging = Boolean(item.isPreDropStaging || item.alertType === 'PRE_DROP_STAGING');
         const statusBadge = isNearMiss
-          ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-orange-500/25 text-orange-200 border border-orange-400/50 text-[10px] font-extrabold shrink-0">🎯 +' + Number(item.gapPct || 0).toFixed(1) + '% OVER</span>'
+          ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-orange-500/25 text-orange-200 border border-orange-400/50 text-[10px] font-extrabold shrink-0">◈ ⟦ +' + Number(item.gapPct || 0).toFixed(1) + '% OVER ⟧</span>'
           : (isPreDropStaging
-              ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-amber-500/25 text-amber-200 border border-amber-400/50 text-[10px] font-extrabold shrink-0">📡 PRE-DROP STAGING</span>'
+              ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-amber-500/25 text-amber-200 border border-amber-400/50 text-[10px] font-extrabold shrink-0">✦ ⟦ PRE-DROP STAGING ⟧</span>'
               : (item.soldOut
                   ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 text-[10px] font-extrabold shrink-0">SOLD OUT</span>'
                   : (isMsrpDefcon
-                      ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-cyan-500/25 text-cyan-200 border border-cyan-400/50 text-[10px] font-extrabold shrink-0">MSRP DEFCON-1</span>'
+                      ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-cyan-500/25 text-cyan-200 border border-cyan-400/50 text-[10px] font-extrabold shrink-0">✦ ⟦ MSRP DEFCON-1 ⟧</span>'
                       : (item.isLiveNow
                           ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-extrabold shrink-0">IN STOCK</span>'
                           : '<span class="pokedex-badge px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[10px] font-bold shrink-0">BEST OFFER</span>'))));
@@ -5083,7 +5254,7 @@
         const bumpVal = Math.ceil(landed);
 
         const checkoutBtns = isNearMiss
-          ? '<button onclick="bumpTriggerAndBuy(\'' + item.skuId + '\', ' + bumpVal + ', \'' + safeBuyTargetUrl + '\')" class="px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-400 text-slate-950 font-mono-num text-[11px] font-black whitespace-nowrap shrink-0 transition shadow-[0_0_12px_rgba(249,115,22,0.35)]">⚡ Bump Trigger ($' + bumpVal + ') &amp; Buy ↗</button>'
+          ? '<button onclick="bumpTriggerAndBuy(\'' + item.skuId + '\', ' + bumpVal + ', \'' + safeBuyTargetUrl + '\')" class="px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-400 text-slate-950 font-mono-num text-[11px] font-black whitespace-nowrap shrink-0 transition shadow-[0_0_12px_rgba(249,115,22,0.35)]">⟦ BUMP TRIGGER ($' + bumpVal + ') &amp; BUY ↗ ⟧</button>'
           : (c1
               ? '<div class="inline-flex items-center rounded-lg overflow-hidden border border-emerald-500/40 bg-[#0D1518] shrink-0">' +
                   '<a href="' + c1 + '" target="_blank" class="px-2.5 py-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono-num text-[11px] font-black transition">1x Cart</a>' +
@@ -5139,7 +5310,7 @@
             '<div style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding-top:12px;margin-top:12px;border-top:1px solid rgba(255,255,255,0.08);flex-wrap:nowrap;">' +
               checkoutBtns +
               '<div class="flex items-center gap-1.5 shrink-0">' +
-                '<button onclick="openPriceHistoryModal(\'' + item.skuId + '\')" class="px-2 py-1 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/35 text-[11px] font-extrabold whitespace-nowrap shrink-0 transition" title="Open 30D/90D Price Chart &amp; Store Comps">📈 Chart</button>' +
+                '<button onclick="openPriceHistoryModal(\'' + item.skuId + '\')" class="px-2 py-1 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/35 text-[11px] font-pokedex font-extrabold whitespace-nowrap shrink-0 transition" title="Open 24H/7D/30D/90D Price Chart &amp; Store Comps">⟦ CHART ⟧</button>' +
                 '<button onclick="openClaimModalFromDeal(\'' + encodedItem + '\')" class="px-2 py-1 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 border border-amber-500/35 text-[11px] font-extrabold whitespace-nowrap shrink-0 transition">Claim</button>' +
               '</div>' +
             '</div>' +
@@ -5465,7 +5636,7 @@
                     '<div class="flex items-center gap-2 flex-wrap">' +
                       '<span class="px-2 py-0.5 rounded bg-purple-500/20 border border-purple-400/30 text-[10px] font-pokedex font-bold text-purple-200 uppercase">' + eraLabel + '</span>' +
                       '<button onclick="filterBountyByStore(\'' + safeStoreClick + '\')" title="Filter scoreboard by ' + cleanStoreSource + '" class="px-2 py-0.5 rounded bg-cyan-500/15 hover:bg-cyan-500/30 border border-cyan-400/35 text-[11px] font-semibold text-cyan-200 transition truncate max-w-[240px]">' + cleanStoreSource + '</button>' +
-                      '<button onclick="openPriceHistoryModal(\'' + opt.skuId + '\')" class="px-2 py-0.5 rounded bg-indigo-500/20 hover:bg-indigo-500 text-[10px] font-bold text-indigo-200 hover:text-white transition">📈 Chart</button>' +
+                      '<button onclick="openPriceHistoryModal(\'' + opt.skuId + '\')" class="px-2 py-0.5 rounded bg-indigo-500/20 hover:bg-indigo-500 text-[10px] font-pokedex font-bold text-indigo-200 hover:text-white transition">⟦ CHART ⟧</button>' +
                     '</div>' +
                   '</div>' +
                   '<div class="font-mono-num">' +
@@ -5901,12 +6072,12 @@
 
     function getMatrixCategoryGroups(filteredPolicies) {
       const defs = [
-        { id: 'NEEDED_ETBS', title: '🎯 Still Needed Wall ETBs', accent: 'text-amber-300 border-amber-500/35 bg-amber-500/10' },
-        { id: 'CONQUERED_ETBS', title: '🏆 Conquered Wall ETBs', accent: 'text-emerald-300 border-emerald-500/35 bg-emerald-500/10' },
-        { id: 'BOOSTER_BOXES', title: '📦 36-Pack Booster Boxes', accent: 'text-cyan-300 border-cyan-500/35 bg-cyan-500/10' },
-        { id: 'MASTER_CASES', title: '🔒 Sealed Master Cases — 10-ETB & 6-Box', accent: 'text-purple-300 border-purple-500/35 bg-purple-500/10' },
-        { id: 'BOOSTER_BUNDLES', title: '⚡ 6-Pack Booster Bundles', accent: 'text-indigo-300 border-indigo-500/35 bg-indigo-500/10' },
-        { id: 'OTHER_TARGETS', title: '🧩 Additional Tracked Targets', accent: 'text-slate-200 border-white/20 bg-white/5' }
+        { id: 'NEEDED_ETBS', title: '◈ ⟦ STILL NEEDED WALL ETBS ⟧', accent: 'text-amber-300 border-amber-500/35 bg-amber-500/10' },
+        { id: 'CONQUERED_ETBS', title: '✦ ⟦ CONQUERED WALL ETBS ⟧', accent: 'text-emerald-300 border-emerald-500/35 bg-emerald-500/10' },
+        { id: 'BOOSTER_BOXES', title: '▲ ⟦ 36-PACK BOOSTER BOXES ⟧', accent: 'text-cyan-300 border-cyan-500/35 bg-cyan-500/10' },
+        { id: 'MASTER_CASES', title: '❖ ⟦ SEALED MASTER CASES — 10-ETB & 6-BOX ⟧', accent: 'text-purple-300 border-purple-500/35 bg-purple-500/10' },
+        { id: 'BOOSTER_BUNDLES', title: '◆ ⟦ 6-PACK BOOSTER BUNDLES ⟧', accent: 'text-indigo-300 border-indigo-500/35 bg-indigo-500/10' },
+        { id: 'OTHER_TARGETS', title: '⟦ ADDITIONAL TRACKED TARGETS ⟧', accent: 'text-slate-200 border-white/20 bg-white/5' }
       ];
       return defs.map(d => ({
         ...d,
@@ -6143,7 +6314,7 @@
             '<div class="flex items-center gap-1.5 mt-0.5 flex-wrap">' +
               '<span class="text-[9px] font-mono-num font-bold uppercase px-1.5 py-0.2 rounded bg-white/5 text-cyan-300 border border-white/10">' + (p.era || 'Pokemon TCG') + '</span>' +
               '<span class="text-[9px] font-mono-num text-slate-400">' + p.formFactor + ' (' + (p.packCount || 9) + 'p)</span>' +
-              '<button onclick="openPriceHistoryModal(\'' + p.id + '\')" class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-cyan-500/15 text-cyan-300 hover:bg-cyan-500 hover:text-slate-950 transition">📈 Chart &amp; Comps</button>' +
+              '<button onclick="openPriceHistoryModal(\'' + p.id + '\')" class="text-[9px] font-pokedex font-bold px-1.5 py-0.2 rounded bg-cyan-500/15 text-cyan-300 hover:bg-cyan-500 hover:text-slate-950 transition">⟦ CHART &amp; COMPS ⟧</button>' +
             '</div>' +
           '</div>' +
 
@@ -6465,12 +6636,354 @@
       });
     }
 
+    function updateWallHunterUI() {
+      const active = Boolean(botSettings && botSettings.wallHunterMode);
+      const topBtn = document.getElementById('topWallHunterBtn');
+      const topText = document.getElementById('topWallHunterText');
+      const matBtn = document.getElementById('matrixWallHunterBtn');
+      const matText = document.getElementById('matrixWallHunterText');
+
+      if (topText) topText.innerText = active ? '⟦ WALL HUNTER MODE: ON ⟧' : '⟦ WALL HUNTER MODE: OFF ⟧';
+      if (matText) matText.innerText = active ? '⟦ WALL HUNTER MODE: ON ⟧' : '⟦ WALL HUNTER MODE: OFF ⟧';
+
+      if (topBtn) {
+        topBtn.className = active
+          ? 'px-3 py-1.5 rounded-lg bg-amber-500 text-slate-950 border border-amber-300 text-xs font-pokedex font-black whitespace-nowrap inline-flex items-center gap-1.5 transition shadow-[0_0_14px_rgba(245,158,11,0.45)]'
+          : 'px-3 py-1.5 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 text-amber-200 border border-amber-400/40 text-xs font-pokedex font-extrabold whitespace-nowrap inline-flex items-center gap-1.5 transition';
+      }
+      if (matBtn) {
+        matBtn.className = active
+          ? 'px-3 py-1 rounded-lg text-xs font-pokedex font-black bg-amber-500 text-slate-950 border border-amber-300 inline-flex items-center gap-1.5 transition shadow-[0_0_14px_rgba(245,158,11,0.45)]'
+          : 'px-3 py-1 rounded-lg text-xs font-pokedex font-extrabold bg-amber-500/15 text-amber-200 border border-amber-400/40 hover:bg-amber-500/25 inline-flex items-center gap-1.5 transition';
+      }
+    }
+
+    async function toggleWallHunterMode() {
+      botSettings.wallHunterMode = !botSettings.wallHunterMode;
+      updateWallHunterUI();
+      updateGlobalBadgesAndKPIs();
+      if (activeMainView === 'LIVE_COMMAND') renderLiveCommandView();
+      await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(botSettings)
+      });
+      showCommanderToast(botSettings.wallHunterMode
+        ? '⟦ WALL HUNTER MODE: ON ⟧ — Discord & Under Trigger filtered strictly to Needed Single Wall ETBs!'
+        : '⟦ WALL HUNTER MODE: OFF ⟧ — All armed form factors active.');
+    }
+
+    // =========================================================================
+    // 10. VIEW 5: ENGINE ROOM (96 LIVE SENSOR BLADE + CUSTOM SVG ENERGY CORES)
+    // =========================================================================
+    function getEngineCoreSvg(coreTier) {
+      const t = String(coreTier || 'ULTRA_CORE').toUpperCase();
+      if (t === 'MASTER_CORE') {
+        return (
+          '<svg class="w-5 h-5 shrink-0 drop-shadow-[0_0_8px_rgba(250,204,21,0.55)]" viewBox="0 0 24 24">' +
+            '<circle cx="12" cy="12" r="9" fill="#3B0764" stroke="#FACC15" stroke-width="2"/>' +
+            '<path d="M3 12h18" stroke="#FACC15" stroke-width="2"/>' +
+            '<circle cx="12" cy="12" r="3.4" fill="#FACC15"/>' +
+          '</svg>'
+        );
+      }
+      if (t === 'SLEEPING_CORE') {
+        return (
+          '<svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24">' +
+            '<circle cx="12" cy="12" r="9" fill="#1E1B2E" stroke="#F59E0B" stroke-width="1.8" stroke-dasharray="3 2"/>' +
+            '<path d="M3 12h18" stroke="#F59E0B" stroke-width="1.5"/>' +
+            '<circle cx="12" cy="12" r="2.8" fill="#F59E0B"/>' +
+          '</svg>'
+        );
+      }
+      if (t === 'SHIELD_BLOCKED') {
+        return (
+          '<svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24">' +
+            '<polygon points="12 2 21 7 21 17 12 22 3 17 3 7" fill="#4C0519" stroke="#F43F5E" stroke-width="2"/>' +
+            '<line x1="8" y1="8" x2="16" y2="16" stroke="#F43F5E" stroke-width="2"/>' +
+            '<line x1="16" y1="8" x2="8" y2="16" stroke="#F43F5E" stroke-width="2"/>' +
+          '</svg>'
+        );
+      }
+      return (
+        '<svg class="w-5 h-5 shrink-0 drop-shadow-[0_0_6px_rgba(16,185,129,0.4)]" viewBox="0 0 24 24">' +
+          '<circle cx="12" cy="12" r="9" fill="#064E3B" stroke="#00F0FF" stroke-width="2"/>' +
+          '<path d="M3 12h18" stroke="#00F0FF" stroke-width="2"/>' +
+          '<circle cx="12" cy="12" r="3.2" fill="#10B981"/>' +
+        '</svg>'
+      );
+    }
+
+    function setEngineRoomFilter(mode) {
+      activeEngineRoomFilter = mode || 'ALL';
+      const filterDefs = [
+        { key: 'ALL', idle: 'px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-slate-200 border border-white/15 hover:text-white transition' },
+        { key: 'BIG_BOX', idle: 'px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-cyan-200 border border-cyan-500/30 hover:text-white transition' },
+        { key: 'UNDER_TRIGGER', idle: 'px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-amber-300 border border-amber-500/35 hover:text-white transition' },
+        { key: 'NEEDED_WALL', idle: 'px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-purple-200 border border-purple-500/35 hover:text-white transition' },
+        { key: 'HOLDING', idle: 'px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-emerald-300 border border-emerald-500/35 hover:text-white transition' },
+        { key: 'SLEEPERS', idle: 'px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-slate-300 border border-white/15 hover:text-white transition' },
+        { key: 'BLOCKED', idle: 'px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-rose-300 border border-rose-500/30 hover:text-white transition' }
+      ];
+      filterDefs.forEach(({ key, idle }) => {
+        const b = document.getElementById('erFilter_' + key);
+        if (!b) return;
+        b.className = key === activeEngineRoomFilter
+          ? 'px-3 py-1.5 rounded-xl text-xs font-extrabold bg-cyan-500 text-slate-950 shadow-[0_0_12px_rgba(0,240,255,0.35)] transition'
+          : idle;
+      });
+      renderEngineRoomView();
+    }
+
+    function toggleEngineStoreShelf(storeIndex) {
+      expandedEngineStores[storeIndex] = !expandedEngineStores[storeIndex];
+      const drawer = document.getElementById('erShelfDrawer_' + storeIndex);
+      if (drawer) {
+        if (expandedEngineStores[storeIndex]) drawer.classList.remove('hidden');
+        else drawer.classList.add('hidden');
+      }
+    }
+
+    async function refreshEngineRoomLive() {
+      const btn = document.getElementById('erRefreshBtn');
+      if (btn) btn.innerText = 'Syncing 96 Sensors...';
+      try {
+        const res = await fetch('/api/engine-room');
+        if (res.ok) {
+          engineRoomData = await res.json();
+          renderEngineRoomView();
+          updateGlobalBadgesAndKPIs();
+          showCommanderToast('Engine Room 96-Sensor Telemetry Synchronized');
+        }
+      } catch (e) {}
+      if (btn) btn.innerText = '↻ Refresh Telemetry';
+    }
+
+    async function renderEngineRoomView(skipFetch) {
+      if (!engineRoomData && !skipFetch) {
+        try {
+          const res = await fetch('/api/engine-room');
+          if (res.ok) engineRoomData = await res.json();
+        } catch (e) {}
+      }
+      if (!engineRoomData) return;
+
+      const sum = engineRoomData.summary || {};
+      const ns5 = Array.isArray(engineRoomData.northStar5) ? engineRoomData.northStar5 : [];
+      const lgsStores = Array.isArray(engineRoomData.lgsStores) ? engineRoomData.lgsStores : [];
+      const q = (document.getElementById('erSearchInput')?.value || '').trim().toLowerCase();
+
+      const sumPill = document.getElementById('erHeaderSummaryPill');
+      if (sumPill) sumPill.innerText = (sum.healthySensors || 96) + ' / ' + (sum.totalSensors || 96) + ' ARMED';
+      const cntMaster = document.getElementById('erCountMaster');
+      if (cntMaster) cntMaster.innerText = String(sum.masterCoreCount || 0);
+      const cntUltra = document.getElementById('erCountUltra');
+      if (cntUltra) cntUltra.innerText = String(sum.ultraCoreCount || 0);
+      const cntSleeper = document.getElementById('erCountSleeper');
+      if (cntSleeper) cntSleeper.innerText = String(sum.sleepingCoreCount || 0);
+      const cntBlocked = document.getElementById('erCountBlocked');
+      if (cntBlocked) cntBlocked.innerText = String(sum.shieldBlockedCount || 0);
+
+      // Update Filter Pill Dynamic Counts
+      const neededWallStoresCnt = lgsStores.filter(s => Number(s.neededWallEtbCount || 0) > 0).length;
+      const underTrigStoresCnt = lgsStores.filter(s => Number(s.underTriggerCount || 0) > 0).length;
+      const holdingStoresCnt = lgsStores.filter(s => Number(s.matchedInStockCount || 0) > 0).length;
+      const sleeperStoresCnt = lgsStores.filter(s => s.coreTier === 'SLEEPING_CORE').length;
+      const blockedStoresCnt = lgsStores.filter(s => s.coreTier === 'SHIELD_BLOCKED').length;
+
+      const setBtnText = (id, txt) => { const el = document.getElementById(id); if (el) el.innerText = txt; };
+      setBtnText('erFilter_ALL', 'All Sensors (' + (ns5.length + lgsStores.length) + ')');
+      setBtnText('erFilter_BIG_BOX', 'North Star Big-Box (' + ns5.length + ')');
+      setBtnText('erFilter_UNDER_TRIGGER', 'Under Trigger Now (' + underTrigStoresCnt + ')');
+      setBtnText('erFilter_NEEDED_WALL', 'Holding Needed Wall ETBs (' + neededWallStoresCnt + ')');
+      setBtnText('erFilter_HOLDING', 'Active Inventory (' + holdingStoresCnt + ')');
+      setBtnText('erFilter_SLEEPERS', 'Restock Sleepers (' + sleeperStoresCnt + ')');
+      setBtnText('erFilter_BLOCKED', 'Throttled / Blocked (' + blockedStoresCnt + ')');
+
+      // Deck 1: North Star 5 Table
+      const deck1Wrap = document.getElementById('erDeck1Wrap');
+      const nsBody = document.getElementById('erNorthStarTableBody');
+      if (deck1Wrap) {
+        if (activeEngineRoomFilter !== 'ALL' && activeEngineRoomFilter !== 'BIG_BOX') {
+          deck1Wrap.classList.add('hidden');
+        } else {
+          deck1Wrap.classList.remove('hidden');
+        }
+      }
+      if (nsBody) {
+        nsBody.innerHTML = ns5.map(r => {
+          const coreSvg = getEngineCoreSvg(r.coreTier);
+          const checkedStr = r.lastChecked ? new Date(r.lastChecked).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'Armed';
+          const statusCls = String(r.status || '').includes('QUEUE')
+            ? 'bg-rose-500/25 text-rose-200 border-rose-400/50'
+            : 'bg-emerald-500/20 text-emerald-300 border-emerald-400/40';
+          return (
+            '<div class="px-4 py-2.5 bg-[#0D0B18]/75 hover:bg-white/[0.04] grid grid-cols-[44px_minmax(195px,1.2fr)_minmax(210px,1.3fr)_minmax(190px,1.2fr)_140px_110px] items-center gap-3 text-xs">' +
+              '<div class="flex items-center justify-center">' + coreSvg + '</div>' +
+              '<div class="min-w-0">' +
+                '<div class="font-extrabold text-white truncate">' + r.name + '</div>' +
+                '<div class="text-[10px] font-mono-num text-cyan-300">' + r.cadence + ' Cadence</div>' +
+              '</div>' +
+              '<div class="font-mono-num text-[11px] text-slate-200 truncate" title="' + (r.mode || '') + '">' + (r.mode || 'Direct MSRP Poll') + '</div>' +
+              '<div class="font-mono-num text-[11px] text-amber-300 font-bold truncate">' + (r.strictFilter || '1P Retail MSRP Only') + '</div>' +
+              '<div><span class="font-pokedex text-[10px] font-extrabold px-2 py-0.5 rounded border ' + statusCls + '">⟦ ' + (r.status || 'ARMED') + ' ⟧</span></div>' +
+              '<div class="text-right font-mono-num text-[11px] text-slate-400">' + checkedStr + '</div>' +
+            '</div>'
+          );
+        }).join('');
+      }
+
+      // Deck 2: 91 Shopify LGS Sensor Ledger
+      const deck2Wrap = document.getElementById('erDeck2Wrap');
+      const lgsBody = document.getElementById('erLgsLedgerBody');
+      if (deck2Wrap) {
+        if (activeEngineRoomFilter === 'BIG_BOX') {
+          deck2Wrap.classList.add('hidden');
+          return;
+        } else {
+          deck2Wrap.classList.remove('hidden');
+        }
+      }
+
+      const filteredLgs = lgsStores.filter(s => {
+        if (activeEngineRoomFilter === 'UNDER_TRIGGER' && Number(s.underTriggerCount || 0) <= 0) return false;
+        if (activeEngineRoomFilter === 'NEEDED_WALL' && Number(s.neededWallEtbCount || 0) <= 0) return false;
+        if (activeEngineRoomFilter === 'HOLDING' && Number(s.matchedInStockCount || 0) <= 0) return false;
+        if (activeEngineRoomFilter === 'SLEEPERS' && s.coreTier !== 'SLEEPING_CORE') return false;
+        if (activeEngineRoomFilter === 'BLOCKED' && s.coreTier !== 'SHIELD_BLOCKED') return false;
+        if (q) {
+          const matchStore = String(s.name || '').toLowerCase().includes(q) || String(s.url || '').toLowerCase().includes(q);
+          const matchShelf = Array.isArray(s.shelfOffers) && s.shelfOffers.some(o => String(o.skuName || '').toLowerCase().includes(q));
+          return matchStore || matchShelf;
+        }
+        return true;
+      });
+
+      const subMeta = document.getElementById('erDeck2SubMeta');
+      if (subMeta) {
+        subMeta.innerText = 'Showing ' + filteredLgs.length + ' of ' + lgsStores.length + ' LGS Sensors • Click any store row to expand its live Pokémon shelf';
+      }
+
+      if (lgsBody) {
+        if (filteredLgs.length === 0) {
+          lgsBody.innerHTML = '<div class="p-6 text-center text-xs text-slate-400">No stores match the current Engine Room filter.</div>';
+          return;
+        }
+
+        lgsBody.innerHTML = filteredLgs.map(s => {
+          const coreSvg = getEngineCoreSvg(s.coreTier);
+          const isExpanded = Boolean(expandedEngineStores[s.index]);
+          const pollClock = s.lastSuccessAt ? new Date(s.lastSuccessAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'Pending';
+          const latencyBadge = Number(s.latencyMs || 0) > 0 ? (s.latencyMs + 'ms') : '200 OK';
+
+          let badgeHtml = '';
+          if (s.freshMoverCount > 0) {
+            badgeHtml += '<span class="font-pokedex text-[9px] font-black px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-200 border border-cyan-400/50">⟦ FRESH MOVER (' + s.freshMoverCount + ') ⟧</span>';
+          }
+          if (s.underTriggerCount > 0) {
+            badgeHtml += '<span class="font-pokedex text-[9px] font-black px-1.5 py-0.5 rounded bg-purple-500/25 text-amber-200 border border-amber-400/50">⟦ ' + s.underTriggerCount + ' UNDER TRIGGER ⟧</span>';
+          } else if (s.matchedInStockCount > 0) {
+            badgeHtml += '<span class="font-pokedex text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/35">⟦ HOLDING STOCK ⟧</span>';
+          } else if (s.coreTier === 'SLEEPING_CORE') {
+            badgeHtml += '<span class="font-pokedex text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30">⟦ RESTOCK SLEEPER ⟧</span>';
+          } else {
+            badgeHtml += '<span class="font-pokedex text-[9px] font-bold px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40">⟦ SHIELD BLOCKED ⟧</span>';
+          }
+
+          const cheap = s.cheapestBox;
+          const cheapHtml = cheap
+            ? (
+                '<div class="flex items-center justify-between gap-2 min-w-0">' +
+                  '<div class="min-w-0">' +
+                    '<div class="text-xs font-extrabold text-white truncate">' + cheap.skuName + '</div>' +
+                    '<div class="text-[10px] font-mono-num ' + (cheap.isUnderTrigger ? 'text-emerald-400 font-bold' : 'text-slate-400') + '">' +
+                      '$' + Number(cheap.landedPrice).toFixed(2) + ' Landed • Trigger $' + Number(cheap.triggerPrice).toFixed(0) +
+                    '</div>' +
+                  '</div>' +
+                  '<a href="' + (cheap.cart1xUrl || cheap.url || '#') + '" target="_blank" onclick="event.stopPropagation()" class="px-2 py-1 rounded bg-cyan-500/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 border border-cyan-400/40 font-mono-num text-[10px] font-extrabold shrink-0 transition">↗</a>' +
+                '</div>'
+              )
+            : '<span class="text-[11px] font-mono-num text-slate-400">0 Matched Targets In Stock (Watching for Restock)</span>';
+
+          const shelfOffers = Array.isArray(s.shelfOffers) ? s.shelfOffers : [];
+          const drawerHtml = shelfOffers.length === 0
+            ? '<div class="text-xs text-slate-400 py-2">Store catalog online (' + (s.catalogScanned || 0) + ' total listings scanned across ' + (s.pagesScanned || 1) + ' pages), currently holding 0 in-stock boxes matching our 131 targets.</div>'
+            : (
+                '<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2.5">' +
+                  shelfOffers.map(o => {
+                    const imgPath = '/art/' + o.skuId + '.jpg?v=' + cacheBuster;
+                    const priceCls = o.isUnderTrigger ? 'text-emerald-400' : (o.gapDollars <= 8 ? 'text-orange-300' : 'text-white');
+                    const freshTag = o.isFreshRestock
+                      ? '<span class="font-pokedex text-[9px] font-black px-1.5 py-0.2 rounded bg-cyan-500/25 text-cyan-200 border border-cyan-400/50">⟦ FRESH MOVER ⟧</span>'
+                      : '';
+                    return (
+                      '<div class="p-2.5 rounded-xl bg-black/55 border ' + (o.isUnderTrigger ? 'border-emerald-500/45' : 'border-white/10') + ' flex items-center justify-between gap-2.5">' +
+                        '<div class="flex items-center gap-2.5 min-w-0">' +
+                          '<div onclick="openPriceHistoryModal(\'' + o.skuId + '\')" class="w-10 h-10 art-pedestal rounded-lg p-1 flex items-center justify-center shrink-0 cursor-pointer">' +
+                            '<img src="' + imgPath + '" class="max-h-full max-w-full object-contain" alt="Art" />' +
+                          '</div>' +
+                          '<div class="min-w-0">' +
+                            '<div onclick="openPriceHistoryModal(\'' + o.skuId + '\')" class="text-xs font-extrabold text-white hover:text-cyan-300 cursor-pointer truncate" title="' + (o.listingTitle || o.skuName).replace(/"/g, '') + '">' + o.skuName + '</div>' +
+                            '<div class="flex items-center gap-1.5 mt-0.5 flex-wrap font-mono-num text-[10px]">' +
+                              '<span class="font-black ' + priceCls + '">$' + Number(o.landedPrice).toFixed(2) + '</span>' +
+                              '<span class="text-slate-400">Trig: $' + Number(o.triggerPrice).toFixed(0) + '</span>' +
+                              '<span class="text-amber-300">Mkt: $' + Number(o.marketValue).toFixed(0) + '</span>' +
+                              freshTag +
+                            '</div>' +
+                          '</div>' +
+                        '</div>' +
+                        '<a href="' + (o.cart1xUrl || o.url || '#') + '" target="_blank" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-300 border border-emerald-500/40 font-mono-num text-[10px] font-black shrink-0 transition">Buy ↗</a>' +
+                      '</div>'
+                    );
+                  }).join('') +
+                '</div>'
+              );
+
+          return (
+            '<div class="bg-[#0D0B18]/70 hover:bg-white/[0.03] transition">' +
+              '<div onclick="toggleEngineStoreShelf(' + s.index + ')" class="px-4 py-2.5 grid grid-cols-1 lg:grid-cols-[44px_minmax(220px,1.4fr)_150px_165px_minmax(250px,1.6fr)_130px] items-center gap-3 cursor-pointer select-none min-h-[46px]">' +
+                '<div class="flex items-center gap-1.5">' +
+                  coreSvg +
+                  '<span class="text-[10px] font-mono-num text-slate-400">#' + s.index + '</span>' +
+                '</div>' +
+                '<div class="min-w-0">' +
+                  '<div class="flex items-center gap-1.5 flex-wrap">' +
+                    '<span class="text-xs font-extrabold text-white truncate">' + s.name + '</span>' +
+                    badgeHtml +
+                  '</div>' +
+                '</div>' +
+                '<div class="font-mono-num text-[11px] text-slate-300">' +
+                  '<span class="text-cyan-300 font-bold">' + (s.pagesScanned || 1) + ' pg</span> • ' + (s.catalogScanned || 0) + ' items' +
+                '</div>' +
+                '<div class="font-mono-num text-[11px]">' +
+                  '<span class="font-extrabold ' + (s.matchedInStockCount > 0 ? 'text-emerald-400' : 'text-slate-400') + '">' + s.matchedInStockCount + ' Boxes</span>' +
+                  (s.neededWallEtbCount > 0 ? (' <span class="text-amber-300 font-bold">(' + s.neededWallEtbCount + ' Wall)</span>') : '') +
+                '</div>' +
+                '<div class="min-w-0">' + cheapHtml + '</div>' +
+                '<div class="text-right font-mono-num text-[11px] text-slate-300">' +
+                  '<div class="text-emerald-400 font-bold">' + latencyBadge + '</div>' +
+                  '<div class="text-[10px] text-slate-400">' + pollClock + '</div>' +
+                '</div>' +
+              '</div>' +
+              '<div id="erShelfDrawer_' + s.index + '" class="' + (isExpanded ? '' : 'hidden') + ' px-5 py-3.5 bg-[#07060D]/90 border-t border-white/10">' +
+                '<div class="flex items-center justify-between mb-2.5">' +
+                  '<span class="font-pokedex text-[11px] font-extrabold uppercase tracking-wider text-cyan-300">⟦ ' + s.name.toUpperCase() + ' // LIVE IN-STOCK POKÉMON SHELF (' + shelfOffers.length + ' MATCHED) ⟧</span>' +
+                  '<a href="' + s.url + '" target="_blank" class="text-[11px] font-mono-num text-cyan-300 hover:underline">Open Storefront ↗</a>' +
+                '</div>' +
+                drawerHtml +
+              '</div>' +
+            '</div>'
+          );
+        }).join('');
+      }
+    }
+
     async function resetDedupMemory() {
       const btn = document.getElementById('resetDedupBtn');
       if (btn) btn.innerText = 'Clearing...';
       await fetch('/api/reset-dedup', { method: 'POST' });
       if (btn) btn.innerText = 'Cooldowns Cleared!';
-      showCommanderToast('4-Hour Alert Cooldown Memory Cleared');
+      showCommanderToast('Alert Cooldown Memory Cleared');
       setTimeout(() => { if (btn) btn.innerText = 'Clear Alert Cooldowns'; }, 2000);
     }
 
@@ -6521,7 +7034,9 @@
       if (btn) btn.innerHTML = '<span class="status-dot bg-cyan-400"></span><span>Sync Prices</span>';
     }
 
-    // Modals & Interactive TCGPlayer Price History Chart
+    // =========================================================================
+    // 11. MODALS & INTERACTIVE 24H / 7D / 30D / 90D PRICE HISTORY CHART
+    // =========================================================================
     let activePriceModalState = {
       skuId: null,
       range: '30D',
@@ -6547,19 +7062,24 @@
       openPriceHistoryModal(p.id);
     }
 
+    function getActiveModalPriceSeries(data) {
+      if (!data) return [];
+      const r = activePriceModalState.range || '30D';
+      if (r === '24H') return data.priceHistory24h || data.priceHistory7d || data.priceHistory30d || [];
+      if (r === '7D') return data.priceHistory7d || data.priceHistory30d || [];
+      if (r === '90D') return data.priceHistory90d || data.priceHistory30d || [];
+      return data.priceHistory30d || data.priceHistory || [];
+    }
+
     function setPriceHistoryRange(range) {
-      activePriceModalState.range = range === '90D' ? '90D' : '30D';
-      const btn30 = document.getElementById('phRange30Btn');
-      const btn90 = document.getElementById('phRange90Btn');
-      if (btn30 && btn90) {
-        if (activePriceModalState.range === '30D') {
-          btn30.className = 'px-2.5 py-1 rounded-md text-[10px] font-extrabold bg-cyan-500 text-slate-950 transition';
-          btn90.className = 'px-2.5 py-1 rounded-md text-[10px] font-bold text-slate-300 hover:text-white transition';
-        } else {
-          btn90.className = 'px-2.5 py-1 rounded-md text-[10px] font-extrabold bg-cyan-500 text-slate-950 transition';
-          btn30.className = 'px-2.5 py-1 rounded-md text-[10px] font-bold text-slate-300 hover:text-white transition';
-        }
-      }
+      activePriceModalState.range = ['24H', '7D', '30D', '90D'].includes(range) ? range : '30D';
+      ['24H', '7D', '30D', '90D'].forEach(k => {
+        const b = document.getElementById('phRangeBtn_' + k);
+        if (!b) return;
+        b.className = (k === activePriceModalState.range)
+          ? 'px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-cyan-500 text-slate-950 transition'
+          : 'px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-300 hover:text-white transition';
+      });
       if (activePriceModalState.data) {
         renderPriceHistorySvgChart(activePriceModalState.data);
       }
@@ -6593,23 +7113,44 @@
       if (artEl) artEl.src = imgPath;
       const titleEl = document.getElementById('phModalTitle');
       if (titleEl) titleEl.innerText = pol.name || skuId;
-      const eraBadge = document.getElementById('phModalEraBadge');
+      const eraBadge = document.getElementById('phModalEraPill');
       if (eraBadge) eraBadge.innerText = pol.era || 'Pokemon TCG';
-      const fmtBadge = document.getElementById('phModalFormatBadge');
-      if (fmtBadge) fmtBadge.innerText = (pol.formFactor || 'etb').toUpperCase() + ' (' + (pol.packCount || 9) + ' Packs)';
+      const fmtBadge = document.getElementById('phModalFormatPill');
+      if (fmtBadge) fmtBadge.innerText = '⟦ ' + (pol.formFactor || 'ETB').toUpperCase() + ' • ' + (pol.packCount || 9) + 'P ⟧';
       const ownedBadge = document.getElementById('phModalOwnedBadge');
       if (ownedBadge) {
-        ownedBadge.innerText = pol.owned ? 'ON THE WALL ✓' : 'STILL NEEDED';
+        ownedBadge.innerText = pol.owned ? '⟦ ON THE WALL ✓ ⟧' : '⟦ STILL NEEDED ⟧';
         ownedBadge.className = pol.owned
-          ? 'text-[10px] font-mono-num font-bold uppercase px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-          : 'text-[10px] font-mono-num font-bold uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40';
+          ? 'pokedex-badge px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold uppercase'
+          : 'pokedex-badge px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-bold uppercase';
       }
 
       const trigInput = document.getElementById('phModalTriggerInput');
       if (trigInput) trigInput.value = Number(pol.maxMarketBuyPrice || pol.msrpCeiling || 54.99);
 
-      const chartWrap = document.getElementById('phChartSvgContainer');
-      if (chartWrap) chartWrap.innerHTML = '<div class="h-full flex items-center justify-center text-xs text-slate-400 animate-pulse">Loading 30D/90D price trajectory &amp; live store comps...</div>';
+      const chartWrap = document.getElementById('phModalSvgWrap');
+      if (chartWrap) chartWrap.innerHTML = '<div class="h-full flex items-center justify-center text-xs text-slate-400 animate-pulse">Loading 24H/7D/30D/90D price trajectory &amp; 91-store shelf offerings...</div>';
+
+      const jumpBtn = document.getElementById('phJumpBountyBtn');
+      if (jumpBtn) {
+        jumpBtn.onclick = () => {
+          closePriceHistoryModal();
+          switchMainView('BOUNTY_HUNTER');
+          quickBountyPick(skuId);
+        };
+      }
+
+      const pushDiscordBtn = document.getElementById('phPushDiscordBtn');
+      if (pushDiscordBtn) {
+        pushDiscordBtn.onclick = async () => {
+          pushDiscordBtn.innerText = 'Pushing...';
+          try {
+            await fetch('/api/comps/' + encodeURIComponent(skuId) + '?notify=true');
+            showCommanderToast('Dispatched Live Comps to Discord');
+          } catch (e) {}
+          setTimeout(() => { pushDiscordBtn.innerText = 'Push Comps to Discord'; }, 1800);
+        };
+      }
 
       modalEl.classList.remove('hidden');
 
@@ -6618,44 +7159,36 @@
         const data = await res.json();
         activePriceModalState.data = data;
 
-        const mktEl = document.getElementById('phModalMarketVal');
+        const mktEl = document.getElementById('phModalMarket');
         if (mktEl) mktEl.innerText = '$' + Number(data.marketPrice || 0).toFixed(2);
-        const msrpEl = document.getElementById('phModalMsrpVal');
+        const msrpEl = document.getElementById('phModalMsrp');
         if (msrpEl) msrpEl.innerText = '$' + Number(data.msrp || 0).toFixed(2);
         if (trigInput && document.activeElement !== trigInput) {
           trigInput.value = Number(data.maxBuyThreshold || 0);
         }
 
-        const atlEl = document.getElementById('phModalAtlPrice');
-        const atlSub = document.getElementById('phModalAtlMeta');
+        const atlEl = document.getElementById('phModalAllTimeLow');
         if (atlEl && data.allTimeLow) {
-          atlEl.innerText = '$' + Number(data.allTimeLow.price || 0).toFixed(2);
-          if (atlSub) atlSub.innerText = (data.allTimeLow.store || 'Verified Store') + ' • ' + (data.allTimeLow.date || 'Recorded');
+          atlEl.innerText = 'All-Time Bot Low: $' + Number(data.allTimeLow.price || 0).toFixed(2) + ' via ' + (data.allTimeLow.store || 'Verified Store') + ' (' + (data.allTimeLow.date || 'Recorded') + ')';
         }
 
-        const tcgBtn = document.getElementById('phTcgExternalLink');
-        if (tcgBtn) {
-          tcgBtn.href = 'https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=' + encodeURIComponent(data.name || pol.name || skuId) + '&view=grid';
-        }
-        const ebayBtn = document.getElementById('phEbayExternalLink');
-        if (ebayBtn) {
-          ebayBtn.href = 'https://www.ebay.com/sch/i.html?_nkw=' + encodeURIComponent('Pokemon ' + (data.name || pol.name || skuId) + ' Sealed') + '&LH_BIN=1&_sop=15';
-        }
+        setPriceHistoryRange(activePriceModalState.range || '30D');
 
-        renderPriceHistorySvgChart(data);
-
-        // Render Current Store Offers Table
-        const offersCountEl = document.getElementById('phOffersCountText');
-        const offersListEl = document.getElementById('phCurrentOffersList');
+        // Render Current Store Offers Table (ALL In-Stock Stores Carrying This SKU)
+        const offersCountEl = document.getElementById('phModalOffersCount');
+        const offersListEl = document.getElementById('phModalOffersList');
         const offers = Array.isArray(data.currentOffers) ? data.currentOffers : [];
-        if (offersCountEl) offersCountEl.innerText = offers.length + ' Live Ranked';
+        if (offersCountEl) offersCountEl.innerText = offers.length + ' In-Stock Stores Ranked';
         if (offersListEl) {
           if (offers.length === 0) {
-            offersListEl.innerHTML = '<div class="text-xs text-slate-400 py-2">No active in-stock store listings found right now.</div>';
+            offersListEl.innerHTML = '<div class="text-xs text-slate-400 py-2">No active in-stock store listings found right now across the 91 LGS sensors.</div>';
           } else {
             offersListEl.innerHTML = offers.map((o, idx) => {
               const underTrig = Number(o.landedPrice) <= Number(data.maxBuyThreshold || data.msrp || 0) + 0.01;
               const priceCls = underTrig ? 'text-emerald-400' : 'text-white';
+              const freshBadge = o.isFreshRestock
+                ? '<span class="font-pokedex text-[9px] font-black px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-200 border border-cyan-400/50">⟦ FRESH MOVER ⟧</span>'
+                : '';
               const cartBtns = o.cart1xUrl
                 ? '<div class="inline-flex items-center rounded-lg overflow-hidden border border-emerald-500/40 bg-[#0D1518] shrink-0">' +
                     '<a href="' + o.cart1xUrl + '" target="_blank" class="px-2 py-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono-num text-[10px] font-black transition">1x</a>' +
@@ -6667,9 +7200,10 @@
               return (
                 '<div class="p-2.5 rounded-xl bg-black/45 border ' + (underTrig ? 'border-emerald-500/40' : 'border-white/10') + ' flex items-center justify-between gap-2">' +
                   '<div class="min-w-0">' +
-                    '<div class="flex items-center gap-1.5">' +
+                    '<div class="flex items-center gap-1.5 flex-wrap">' +
                       '<span class="text-[10px] font-mono-num font-black px-1.5 py-0.2 rounded bg-white/10 text-cyan-300">#' + (idx + 1) + '</span>' +
                       '<span class="text-xs font-extrabold text-white truncate">' + o.store + '</span>' +
+                      freshBadge +
                     '</div>' +
                     '<div class="text-[10px] font-mono-num text-slate-400 mt-0.5">' + (o.shippingNote || 'Landed') + ' • $' + Number(o.pricePerPack || 0).toFixed(2) + '/pk</div>' +
                   '</div>' +
@@ -6686,31 +7220,42 @@
           }
         }
 
-        // Render Recent Sales & Alert Drops Tape
-        const salesCountEl = document.getElementById('phSalesCountText');
-        const salesListEl = document.getElementById('phRecentSalesList');
-        const sales = Array.isArray(data.recentSales) ? data.recentSales : [];
-        if (salesCountEl) salesCountEl.innerText = sales.length + ' Recorded Events';
-        if (salesListEl) {
-          if (sales.length === 0) {
-            salesListEl.innerHTML = '<div class="text-xs text-slate-400 py-2">No historical clears or alert drops recorded for this SKU yet.</div>';
-          } else {
-            salesListEl.innerHTML = sales.map(s => {
-              const dtStr = s.date ? new Date(s.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Recorded';
-              return (
-                '<div class="p-2.5 rounded-xl bg-black/45 border border-white/10 flex items-center justify-between gap-2 text-xs">' +
-                  '<div class="min-w-0">' +
-                    '<div class="font-bold text-white truncate">' + (s.store || 'Verified Retailer') + '</div>' +
-                    '<div class="text-[10px] font-mono-num text-slate-400">' + dtStr + '</div>' +
-                  '</div>' +
-                  '<div class="flex items-center gap-2 shrink-0 font-mono-num">' +
-                    '<span class="text-sm font-black text-emerald-400">$' + Number(s.price || 0).toFixed(2) + '</span>' +
-                    '<span class="px-1.5 py-0.5 rounded bg-purple-500/20 border border-purple-500/35 text-purple-200 text-[9px] font-bold">' + (s.type || 'DROP') + '</span>' +
-                  '</div>' +
+        // Render Immediate Live TCGPlayer & eBay Floor Panel
+        const compsBoxEl = document.getElementById('phModalLiveCompsBox');
+        if (compsBoxEl) {
+          const mf = data.liveMarketplaceFloor || {};
+          const tcgFloor = Number(mf.tcgPlayerLowestLanded || data.marketPrice || 0);
+          const ebayFloor = Number(mf.ebayBuyItNowFloor || data.marketPrice || 0);
+          const tcgUrl = mf.tcgSearchUrl || ('https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=' + encodeURIComponent(data.name || pol.name || skuId) + '&view=grid');
+          const ebayUrl = mf.ebaySearchUrl || ('https://www.ebay.com/sch/i.html?_nkw=' + encodeURIComponent('Pokemon ' + (data.name || pol.name || skuId) + ' Sealed') + '&LH_BIN=1&_sop=15');
+          const recentSales = Array.isArray(data.recentSales) ? data.recentSales.slice(0, 3) : [];
+
+          compsBoxEl.innerHTML =
+            '<div class="p-2.5 rounded-xl bg-black/55 border border-cyan-500/30 flex items-center justify-between gap-2">' +
+              '<div>' +
+                '<div class="text-[10px] font-pokedex font-bold uppercase text-cyan-300">TCGPlayer Verified Floor</div>' +
+                '<div class="text-sm font-mono-num font-black text-white">$' + tcgFloor.toFixed(2) + ' <span class="text-[10px] font-normal text-slate-400">Landed</span></div>' +
+              '</div>' +
+              '<a href="' + tcgUrl + '" target="_blank" class="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-200 border border-cyan-400/40 text-[10px] font-pokedex font-extrabold transition">TCGPlayer ↗</a>' +
+            '</div>' +
+            '<div class="p-2.5 rounded-xl bg-black/55 border border-amber-500/30 flex items-center justify-between gap-2">' +
+              '<div>' +
+                '<div class="text-[10px] font-pokedex font-bold uppercase text-amber-300">eBay Buy-It-Now Floor</div>' +
+                '<div class="text-sm font-mono-num font-black text-white">$' + ebayFloor.toFixed(2) + ' <span class="text-[10px] font-normal text-slate-400">Est. BIN</span></div>' +
+              '</div>' +
+              '<a href="' + ebayUrl + '" target="_blank" class="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500 hover:text-slate-950 text-amber-200 border border-amber-400/40 text-[10px] font-pokedex font-extrabold transition">eBay BIN ↗</a>' +
+            '</div>' +
+            (recentSales.length > 0
+              ? '<div class="pt-1.5 space-y-1">' +
+                  '<div class="text-[10px] font-pokedex font-bold uppercase text-slate-400">Recent Recorded Drops</div>' +
+                  recentSales.map(s => (
+                    '<div class="flex items-center justify-between text-[11px] font-mono-num text-slate-300">' +
+                      '<span class="truncate max-w-[145px]">' + (s.store || 'Store') + '</span>' +
+                      '<span class="text-emerald-400 font-bold">$' + Number(s.price || 0).toFixed(2) + '</span>' +
+                    '</div>'
+                  )).join('') +
                 '</div>'
-              );
-            }).join('');
-          }
+              : '');
         }
       } catch (e) {
         if (chartWrap) chartWrap.innerHTML = '<div class="h-full flex items-center justify-center text-xs text-rose-400">Failed to load SKU history telemetry.</div>';
@@ -6718,12 +7263,10 @@
     }
 
     function renderPriceHistorySvgChart(data) {
-      const chartWrap = document.getElementById('phChartSvgContainer');
+      const chartWrap = document.getElementById('phModalSvgWrap');
       if (!chartWrap || !data) return;
 
-      const series = activePriceModalState.range === '90D'
-        ? (data.priceHistory90d || data.priceHistory || [])
-        : (data.priceHistory30d || data.priceHistory || []);
+      const series = getActiveModalPriceSeries(data);
 
       if (!series || series.length === 0) {
         chartWrap.innerHTML = '<div class="h-full flex items-center justify-center text-xs text-slate-400">No time-series points available.</div>';
@@ -6774,14 +7317,15 @@
           '<text x="' + (padL - 8) + '" y="' + (y + 3).toFixed(1) + '" text-anchor="end" fill="#94A3B8" font-size="10" font-family="JetBrains Mono, monospace">$' + Math.round(v) + '</text>';
       }
 
-      // X-axis date labels (start, middle, end)
+      // X-axis date/time labels (start, middle, end)
       const xLabelsIdxs = [0, Math.floor((series.length - 1) / 2), series.length - 1];
       let xLabelsHtml = '';
       xLabelsIdxs.forEach(idx => {
         const pt = series[idx];
         if (!pt) return;
         const x = xForIdx(idx);
-        const shortDate = String(pt.date || '').slice(5);
+        const rawLabel = String(pt.label || pt.date || '');
+        const shortDate = rawLabel.length > 10 ? rawLabel.slice(5) : rawLabel;
         xLabelsHtml += '<text x="' + x.toFixed(1) + '" y="' + (H - 6) + '" text-anchor="middle" fill="#94A3B8" font-size="10" font-family="JetBrains Mono, monospace">' + shortDate + '</text>';
       });
 
@@ -6792,7 +7336,6 @@
         const cx = xForIdx(idx);
         const cyLow = yForVal(pt.lowestLanded);
         const cyMkt = yForVal(pt.marketAvg);
-        const storeSafe = String(pt.store || 'Market').replace(/"/g, '&quot;');
         circlesHtml +=
           '<g class="ph-point-group" data-idx="' + idx + '">' +
             '<circle cx="' + cx.toFixed(1) + '" cy="' + cyMkt.toFixed(1) + '" r="2.5" fill="#FACC15" opacity="0.75" />' +
@@ -6811,9 +7354,9 @@
           '</defs>' +
           gridHtml +
           xLabelsHtml +
-          '<!-- MSRP Baseline (Slate Dashed) -->' +
-          '<line x1="' + padL + '" y1="' + yMsrp.toFixed(1) + '" x2="' + (W - padR) + '" y2="' + yMsrp.toFixed(1) + '" stroke="#94A3B8" stroke-width="1" stroke-dasharray="4,4" opacity="0.65" />' +
-          '<text x="' + (padL + 6) + '" y="' + (yMsrp - 4).toFixed(1) + '" fill="#94A3B8" font-size="9" font-family="JetBrains Mono, monospace">MSRP $' + msrp.toFixed(0) + '</text>' +
+          '<!-- MSRP Baseline (Orange Dotted) -->' +
+          '<line x1="' + padL + '" y1="' + yMsrp.toFixed(1) + '" x2="' + (W - padR) + '" y2="' + yMsrp.toFixed(1) + '" stroke="#FB923C" stroke-width="1.2" stroke-dasharray="3,3" opacity="0.75" />' +
+          '<text x="' + (padL + 6) + '" y="' + (yMsrp - 4).toFixed(1) + '" fill="#FDBA74" font-size="9" font-family="JetBrains Mono, monospace">MSRP $' + msrp.toFixed(0) + '</text>' +
           '<!-- Max Buy Trigger Line (Emerald Dashed) -->' +
           '<line x1="' + padL + '" y1="' + yTrigger.toFixed(1) + '" x2="' + (W - padR) + '" y2="' + yTrigger.toFixed(1) + '" stroke="#10B981" stroke-width="1.5" stroke-dasharray="6,4" />' +
           '<text x="' + (W - padR - 6) + '" y="' + (yTrigger - 5).toFixed(1) + '" text-anchor="end" fill="#10B981" font-size="10" font-weight="bold" font-family="JetBrains Mono, monospace">Trigger $' + trigger.toFixed(0) + '</text>' +
@@ -6828,21 +7371,19 @@
     function onPriceChartHover(idx) {
       const data = activePriceModalState.data;
       if (!data) return;
-      const series = activePriceModalState.range === '90D'
-        ? (data.priceHistory90d || data.priceHistory || [])
-        : (data.priceHistory30d || data.priceHistory || []);
+      const series = getActiveModalPriceSeries(data);
       const pt = series[idx];
-      const tipEl = document.getElementById('phChartHoverReadout');
+      const tipEl = document.getElementById('phModalHoverTooltip');
       if (!pt || !tipEl) return;
       tipEl.innerHTML =
-        '<span class="text-slate-300 font-bold">' + pt.date + '</span> • ' +
-        '<span class="text-amber-300">Mkt: <strong>$' + Number(pt.marketAvg).toFixed(2) + '</strong></span> • ' +
-        '<span class="text-cyan-300">Low: <strong>$' + Number(pt.lowestLanded).toFixed(2) + '</strong> (' + (pt.store || 'Store') + ')</span>';
+        '<span class="text-slate-200 font-bold">' + (pt.label || pt.date) + '</span>' +
+        '<span>Market Avg: <strong class="text-amber-300">$' + Number(pt.marketAvg).toFixed(2) + '</strong></span>' +
+        '<span>Lowest Landed: <strong class="text-cyan-300">$' + Number(pt.lowestLanded).toFixed(2) + '</strong> via ' + (pt.store || 'Verified Store') + '</span>';
       tipEl.classList.remove('hidden');
     }
 
     function onPriceChartLeave() {
-      const tipEl = document.getElementById('phChartHoverReadout');
+      const tipEl = document.getElementById('phModalHoverTooltip');
       if (tipEl) tipEl.classList.add('hidden');
     }
 
@@ -6905,6 +7446,13 @@
         if (cvRes.ok) conqueredVault = await cvRes.json();
         updateGlobalBadgesAndKPIs();
         if (activeMainView === 'LIVE_COMMAND') renderLiveCommandView();
+        if (activeMainView === 'ENGINE_ROOM') {
+          const erRes = await fetch('/api/engine-room');
+          if (erRes.ok) {
+            engineRoomData = await erRes.json();
+            renderEngineRoomView(true);
+          }
+        }
       } catch (e) {}
     }, 8000);
   </script>
