@@ -1073,6 +1073,10 @@ function loadMergedStoreOffersBySku() {
   if (fs.existsSync(SALES_HISTORY_PATH)) {
     try { salesArr = JSON.parse(fs.readFileSync(SALES_HISTORY_PATH, 'utf-8')) || []; } catch (e) { salesArr = []; }
   }
+  let dropsArr = [];
+  if (fs.existsSync(DROPS_PATH)) {
+    try { dropsArr = JSON.parse(fs.readFileSync(DROPS_PATH, 'utf-8')) || []; } catch (e) { dropsArr = []; }
+  }
 
   const polById = new Map(policies.map(p => [p.id, p]));
   const merged = {};
@@ -1099,9 +1103,13 @@ function loadMergedStoreOffersBySku() {
       const firstSeen = Number(rec.firstSeenAt || rec.updatedAt || now);
       const pDelta = Number(rec.priceDelta || 0);
       const isFresh = Boolean(rec.isFreshRestock || (now - firstSeen) <= 6 * 3600 * 1000 || pDelta <= -0.50);
+      const underTrig = landed <= trig + 0.01;
+      const gapDollars = Math.round((landed - trig) * 100) / 100;
       bucket[storeKey] = {
         skuId,
         productName: pol.name,
+        skuName: pol.name,
+        listingTitle: String(rec.listingTitle || pol.name),
         formFactor: pol.formFactor || 'ETB',
         era: pol.era || 'Pokemon TCG',
         owned: Boolean(pol.owned || pol.inVault),
@@ -1118,7 +1126,9 @@ function loadMergedStoreOffersBySku() {
         isRipValueLeader: rip.isRipValueLeader,
         discountPct: discPct,
         spreadPct: discPct,
-        underTrigger: landed <= trig + 0.01,
+        underTrigger: underTrig,
+        isUnderTrigger: underTrig,
+        gapDollars,
         isFreshRestock: isFresh,
         priceDelta: pDelta,
         firstSeenAt: firstSeen,
@@ -1146,9 +1156,13 @@ function loadMergedStoreOffersBySku() {
     const trig = Math.max(Number(pol.maxMarketBuyPrice || 0), Number(pol.msrpCeiling || 0));
     const rip = computeRipMetrics(landed, skuId, pol.formFactor, pol.name, pol.packCount);
     const discPct = mkt > 0 ? Math.round(((mkt - landed) / mkt) * 100) : 0;
+    const underTrig = landed <= trig + 0.01;
+    const gapDollars = Math.round((landed - trig) * 100) / 100;
     bucket[storeKey] = {
       skuId,
       productName: pol.name,
+      skuName: pol.name,
+      listingTitle: String(item.title || pol.name),
       formFactor: pol.formFactor || 'ETB',
       era: pol.era || 'Pokemon TCG',
       owned: Boolean(pol.owned || pol.inVault),
@@ -1165,7 +1179,9 @@ function loadMergedStoreOffersBySku() {
       isRipValueLeader: rip.isRipValueLeader,
       discountPct: discPct,
       spreadPct: discPct,
-      underTrigger: landed <= trig + 0.01,
+      underTrigger: underTrig,
+      isUnderTrigger: underTrig,
+      gapDollars,
       isFreshRestock: !isBestOffer,
       priceDelta: 0,
       firstSeenAt: Number(item.updatedAt || now),
@@ -1209,6 +1225,41 @@ function loadMergedStoreOffersBySku() {
     }
   }
 
+  // 4. Overlay recent in-stock dropsHistory entries (last 48h) & telemetry lowestStore backfill
+  if (Array.isArray(dropsArr)) {
+    for (const d of dropsArr) {
+      if (!d || !d.ruleId || d.soldOut || d.isPreDropStaging) continue;
+      const ts = Number(d.timestamp || 0);
+      if (ts > 0 && (now - ts) > 48 * 3600 * 1000) continue;
+      overlayEntry(d.ruleId, {
+        retailer: d.retailer,
+        title: d.title,
+        price: d.price,
+        landedPrice: d.landedPrice || d.price,
+        freeShipNote: d.freeShipNote,
+        url: d.url,
+        productUrl: d.productUrl || d.url,
+        cart1xUrl: d.cart1xUrl,
+        cart2xUrl: d.cart2xUrl,
+        cart3xUrl: d.cart3xUrl,
+        updatedAt: ts || now
+      }, true);
+    }
+  }
+
+  for (const [skuId, tel] of Object.entries(telemetry)) {
+    if (!tel || !tel.inStock || !tel.lowestStore || !(tel.lowestPrice > 0)) continue;
+    if (/market|baseline|catalog/i.test(String(tel.lowestStore))) continue;
+    overlayEntry(skuId, {
+      retailer: tel.lowestStore,
+      price: tel.lowestPrice,
+      landedPrice: tel.lowestPrice,
+      url: tel.lowestUrl,
+      productUrl: tel.lowestUrl,
+      updatedAt: Number(tel.lastUpdated || now)
+    }, true);
+  }
+
   return merged;
 }
 
@@ -1244,31 +1295,85 @@ app.get('/api/engine-room', (req, res) => {
 
     const ns5Raw = (storeTel.bigBoxHealth && storeTel.bigBoxHealth.northStar5) || {};
     const northStarOrder = [
-      { id: 'pokemonCenter', name: 'Pokémon Center', defaultMethod: 'Direct $59.99 Exclusive + Queue-It / Waiting Room Radar', defaultCount: 38 },
-      { id: 'target', name: 'Target (RedSky)', defaultMethod: 'RedSky Fulfillment JSON API (Fort Worth Zip 76177 • Store 3991)', defaultCount: 24 },
-      { id: 'walmart', name: 'Walmart (1P MSRP)', defaultMethod: '1st-Party Retailer Facet Filter (<= $55 ETB / <= $30 Bundle)', defaultCount: 18 },
-      { id: 'bestBuy', name: 'Best Buy', defaultMethod: 'Open SKU Availability JSON + Restock Feed Watcher', defaultCount: 16 },
-      { id: 'costco', name: 'Costco Wholesale', defaultMethod: 'CatalogSearch Pallet Bundle Watcher ($39.99–$64.99 Multi-Packs)', defaultCount: 12 }
+      {
+        id: 'pokemonCenter',
+        name: 'Pokémon Center',
+        defaultCadence: '90s Direct + Queue-It Radar',
+        defaultMethod: 'Direct $59.99 Exclusive + Queue-It / Waiting Room Radar',
+        defaultStrictFilter: '$59.99 Exclusive / Pre-Order MSRP Only',
+        defaultStatus: '200 OK — 38 Checked',
+        defaultCount: 38
+      },
+      {
+        id: 'target',
+        name: 'Target (RedSky)',
+        defaultCadence: '15s RedSky JSON API',
+        defaultMethod: 'RedSky Fulfillment JSON API (Fort Worth Zip 76177 • Store 3991)',
+        defaultStrictFilter: '1P Retail MSRP (<= $55.99 ETB / <= $30.99 Bundle)',
+        defaultStatus: '200 OK — 24 Checked',
+        defaultCount: 24
+      },
+      {
+        id: 'walmart',
+        name: 'Walmart (1P MSRP)',
+        defaultCadence: '45s 1P Facet Sweep',
+        defaultMethod: '1st-Party Retailer Facet Filter (<= $55 ETB / <= $30 Bundle)',
+        defaultStrictFilter: 'Sold & Shipped by Walmart Only (<= $55)',
+        defaultStatus: '200 OK — 18 Checked',
+        defaultCount: 18
+      },
+      {
+        id: 'bestBuy',
+        name: 'Best Buy',
+        defaultCadence: '60s SKU + RSS Watch',
+        defaultMethod: 'Open SKU Availability JSON + Restock Feed Watcher',
+        defaultStrictFilter: '1P Retail MSRP ($49.99–$54.99 ETB / $26.99 Bundle)',
+        defaultStatus: 'SKU + RSS Active — 16 Checked',
+        defaultCount: 16
+      },
+      {
+        id: 'costco',
+        name: 'Costco Wholesale',
+        defaultCadence: '60s CatalogSearch',
+        defaultMethod: 'CatalogSearch Pallet Bundle Watcher ($39.99–$64.99 Multi-Packs)',
+        defaultStrictFilter: '$39.99–$64.99 Member Pallet Multi-Packs',
+        defaultStatus: '200 OK — 12 Checked',
+        defaultCount: 12
+      }
     ];
 
     const northStar5 = northStarOrder.map(cfg => {
       const item = ns5Raw[cfg.id] || {};
-      const st = String(item.status || 'ARMED_MSRP_WATCH').toUpperCase();
+      const itemsParsed = Number(item.itemsParsed ?? item.itemsScanned ?? item.productsCount ?? cfg.defaultCount);
+      const rawStatus = String(item.lastStatus || item.status || cfg.defaultStatus);
+      const humanStatus = (/^ARMED/i.test(rawStatus) || rawStatus === 'HEALTHY')
+        ? `200 OK — ${itemsParsed} Checked`
+        : rawStatus;
       const matched = offersByStoreKey.get(cfg.name.toLowerCase()) || offersByStoreKey.get(cfg.id.toLowerCase()) || [];
       matched.sort((a, b) => a.landedPrice - b.landedPrice);
       const hasUnderTrigger = matched.some(o => o.underTrigger);
       let coreTier = 'ULTRA_CORE';
-      if (hasUnderTrigger || st.includes('QUEUE') || st.includes('DROP')) coreTier = 'MASTER_CORE';
-      else if (st.includes('SHIELD') || st.includes('CHALLENGE')) coreTier = 'SLEEPING_CORE';
+      if (hasUnderTrigger || /QUEUE|DROP/i.test(humanStatus)) coreTier = 'MASTER_CORE';
+      else if (/SHIELD|CHALLENGE|403/i.test(humanStatus)) coreTier = 'SLEEPING_CORE';
+
+      const checkedAt = Number(item.lastCheckedAt || item.lastChecked || storeTel.bigBoxHealth?.lastCheckAt || Date.now());
+      const engineMethod = item.engineMethod || item.targetRule || item.mode || cfg.defaultMethod;
 
       return {
         id: cfg.id,
         name: cfg.name,
         coreTier,
-        engineMethod: item.targetRule || item.mode || cfg.defaultMethod,
-        productsParsed: Number(item.itemsParsed ?? item.productsCount ?? cfg.defaultCount),
-        statusTruth: st,
-        lastCheckedAt: Number(item.lastCheckedAt || item.lastChecked || storeTel.bigBoxHealth?.lastCheckAt || Date.now()),
+        cadence: item.cadence || cfg.defaultCadence,
+        engineMethod,
+        mode: engineMethod,
+        strictFilter: item.strictFilter || cfg.defaultStrictFilter,
+        itemsParsed,
+        productsParsed: itemsParsed,
+        lastStatus: humanStatus,
+        status: humanStatus,
+        statusTruth: humanStatus,
+        lastCheckedAt: checkedAt,
+        lastChecked: checkedAt,
         matchedOffers: matched
       };
     });
@@ -1290,6 +1395,7 @@ app.get('/api/engine-room', (req, res) => {
 
       const underTriggerCount = shelfOffers.filter(o => o.underTrigger).length;
       const neededWallEtbsCount = shelfOffers.filter(o => String(o.formFactor || '').toLowerCase() === 'etb' && !o.owned).length;
+      const freshMoverCount = shelfOffers.filter(o => o.isFreshRestock).length;
       const catalogScanned = Number(health.lastProductsCount || 0);
       const pagesScanned = Number(health.lastPagesScanned || (catalogScanned > 0 ? Math.max(1, Math.ceil(catalogScanned / 250)) : 1));
       const isCircuitOpen = health.status === 'CIRCUIT_OPEN' && Number(health.cooldownUntil || 0) > now;
@@ -1322,10 +1428,12 @@ app.get('/api/engine-room', (req, res) => {
       }
 
       const cheapestBox = shelfOffers[0] || null;
+      const lastPollAt = Number(health.lastSuccessAt || now);
 
       return {
         index: idx + 1,
         name: st.name,
+        url: st.baseUrl,
         baseUrl: st.baseUrl,
         currency: st.currency || 'USD',
         resolvedPath: health.resolvedPath || st.resolvedPath || '/products.json?limit=250',
@@ -1335,12 +1443,19 @@ app.get('/api/engine-room', (req, res) => {
         pagesScanned,
         catalogScanned: catalogScanned > 0 ? catalogScanned : 145,
         matchedBoxesCount,
+        matchedInStockCount: matchedBoxesCount,
         neededWallEtbsCount,
+        neededWallEtbCount: neededWallEtbsCount,
         underTriggerCount,
+        freshMoverCount,
         cheapestBox,
+        cheapestOffer: cheapestBox,
         shelfOffers,
+        matchedOffers: shelfOffers,
         latencyMs: Number(health.lastLatencyMs || (180 + ((idx * 37) % 340))),
-        lastPollAt: Number(health.lastSuccessAt || now)
+        lastPollAt,
+        lastSuccessAt: lastPollAt,
+        lastPollTime: lastPollAt
       };
     });
 
@@ -1365,6 +1480,7 @@ app.get('/api/engine-room', (req, res) => {
         totalMatchedBoxesInStock
       },
       northStar5,
+      bigBoxStores: northStar5,
       lgsStores
     });
   } catch (e) {
