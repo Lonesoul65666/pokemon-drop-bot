@@ -751,6 +751,51 @@
     .anim-hit-recoil  { animation: hitRecoilFlash 0.52s ease-out; }
     .anim-arena-shake { animation: battleShake 0.42s ease-in-out; }
 
+    @keyframes switchRecallBeam {
+      0%   { transform: scale(1); filter: brightness(1); opacity: 1; }
+      40%  { transform: scale(0.18) translateY(20px); filter: brightness(3.5) hue-rotate(45deg) drop-shadow(0 0 40px #00F0FF); opacity: 0.35; }
+      100% { transform: scale(1); filter: brightness(1); opacity: 1; }
+    }
+    .anim-switch-beam {
+      animation: switchRecallBeam 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes megaAuraPulse {
+      0%, 100% { filter: drop-shadow(0 0 28px #FACC15) drop-shadow(0 0 54px #A855F7); }
+      50%      { filter: drop-shadow(0 0 46px #00F0FF) drop-shadow(0 0 80px #FACC15); }
+    }
+    .mega-overdrive-art {
+      animation: megaAuraPulse 1.8s infinite ease-in-out !important;
+    }
+
+    @keyframes pokeballShakeAnim {
+      0%, 100% { transform: translate(-50%, -50%) rotate(0deg) scale(1.1); }
+      20%      { transform: translate(-50%, -50%) rotate(-22deg) scale(1.15); }
+      40%      { transform: translate(-50%, -50%) rotate(22deg) scale(1.15); }
+      60%      { transform: translate(-50%, -50%) rotate(-16deg) scale(1.12); }
+      80%      { transform: translate(-50%, -50%) rotate(16deg) scale(1.12); }
+    }
+    .pokeball-catch-shake {
+      animation: pokeballShakeAnim 0.65s ease-in-out 2;
+    }
+
+    .squad-slot-pill {
+      transition: all 0.18s ease;
+    }
+    .squad-slot-pill:hover:not(.squad-slot-fainted) {
+      transform: translateY(-2px);
+      border-color: rgba(0, 240, 255, 0.75);
+    }
+    .squad-slot-active {
+      border-color: #00F0FF !important;
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.22), rgba(168, 85, 247, 0.22)) !important;
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
+    }
+    .squad-slot-fainted {
+      opacity: 0.42;
+      filter: grayscale(0.95);
+    }
+
     @keyframes dmgPopupFloat {
       0% { opacity: 0; transform: translate(-50%, 10px) scale(0.7); }
       20% { opacity: 1; transform: translate(-50%, -8px) scale(1.15); }
@@ -881,7 +926,7 @@
   <!-- ===================================================================== -->
   <!-- LOGAN'S INTERACTIVE POKÉDEX BATTLE STADIUM (HOLD-OPEN BY DEFAULT)     -->
   <!-- ===================================================================== -->
-  <div id="clash-cutin-overlay" aria-hidden="true">
+  <div id="clash-cutin-overlay" data-modal="battle-stadium-modal" aria-hidden="true">
     <div class="cutin-cartoon-iris"></div>
 
     <!-- Left Polygon Shutter (Slot 1) -->
@@ -899,8 +944,18 @@
     <!-- Projectile FX Layer for Elemental Beams & Blasts -->
     <div id="stadiumProjectileLayer" class="pointer-events-none fixed inset-0 z-20 overflow-hidden"></div>
 
-    <!-- TOP-RIGHT STADIUM EXIT & AUTO-CLOSE CONTROLS -->
-    <div class="cutin-top-right-controls">
+    <!-- TOP-RIGHT STADIUM EXIT, GAUNTLET, TROPHY LOCKER & AUTO-CLOSE CONTROLS -->
+    <div class="cutin-top-right-controls flex-wrap justify-end">
+      <button onclick="startChampionGauntlet(event)" id="stadiumGauntletBtn" title="Enter the 5-Stage Champion Gauntlet Boss Ladder!"
+              class="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/35 border border-amber-400/60 text-[11px] font-mono-num font-extrabold text-amber-200 flex items-center gap-1.5 shadow-[0_0_18px_rgba(250,204,21,0.3)] transition">
+        <svg class="w-3.5 h-3.5 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 18h18M4 15l2-9 6 4 6-4 2 9H4z"/></svg>
+        <span id="stadiumGauntletLabel">GAUNTLET: OFF</span>
+      </button>
+      <button onclick="toggleTrophyLocker(event)" id="stadiumTrophyBtn" title="Open Logan's Trophy Locker (Caught Pokémon & Champion Badges)"
+              class="px-3 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/35 border border-cyan-400/60 text-[11px] font-mono-num font-extrabold text-cyan-200 flex items-center gap-1.5 transition">
+        <svg class="w-3.5 h-3.5 text-cyan-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><circle cx="12" cy="12" r="3"/></svg>
+        <span>TROPHY LOCKER (<span id="stadiumTrophyCount">0</span>)</span>
+      </button>
       <button onclick="toggleBattleAutoClose(event)" id="battleAutoCloseBtn" title="Toggle whether the Battle Stadium stays locked open (Hold Open) or auto-closes after 6s"
               class="px-3 py-1.5 rounded-xl bg-[#120F24]/90 hover:bg-[#1E1938] border border-white/20 text-[11px] font-mono-num font-bold text-slate-200 transition">
         Auto-Close: <span id="battleAutoCloseState" class="text-amber-300 font-extrabold">OFF</span>
@@ -911,19 +966,28 @@
       </button>
     </div>
 
-    <!-- TOP CENTERED HEADER BANNER (Above Stat Cards, Zero Overlap) -->
+    <!-- TOP CENTERED HEADER BANNER + 1-CLICK 3v3 BATTLE DECK PRESETS -->
     <div class="cutin-top-header">
-      <div id="cutinBannerHeadline" class="px-6 py-1 rounded-full bg-[#090812]/95 border-2 border-white/85 text-white font-black italic uppercase tracking-wider text-base sm:text-lg shadow-[0_0_40px_rgba(0,240,255,0.8)] whitespace-nowrap">
+      <div id="cutinBannerHeadline" class="px-6 py-0.5 rounded-full bg-[#090812]/95 border-2 border-white/85 text-white font-black italic uppercase tracking-wider text-sm sm:text-base shadow-[0_0_40px_rgba(0,240,255,0.8)] whitespace-nowrap">
         GYARADOS VS ARCANINE
       </div>
-      <div id="cutinMatchupBadge" class="mt-1.5 px-4 py-0.5 rounded-full bg-purple-950/95 border border-cyan-400/60 text-cyan-200 font-mono-num text-[11px] font-extrabold uppercase tracking-widest whitespace-nowrap">
-        LOGAN'S BATTLE STADIUM • CLICK ANY ATTACK MOVE BELOW TO BATTLE
+      <div id="cutinMatchupBadge" class="mt-1 px-4 py-0.5 rounded-full bg-purple-950/95 border border-cyan-400/60 text-cyan-200 font-mono-num text-[10px] font-extrabold uppercase tracking-widest whitespace-nowrap">
+        LOGAN'S 3v3 TACTICAL BATTLE STADIUM • CLICK ANY MOVE OR BENCH SLOT BELOW
+      </div>
+      <!-- 1-Click Battle Deck Presets Bar -->
+      <div class="mt-1.5 flex flex-wrap items-center justify-center gap-1.5 pointer-events-auto">
+        <span class="text-[9px] font-mono-num font-black uppercase tracking-wider text-slate-300 bg-[#090812]/90 px-2 py-0.5 rounded border border-white/15">3v3 Decks:</span>
+        <button onclick="loadBattleDeckPreset('DRAGON_LORDS')" class="px-2 py-0.5 rounded-lg bg-[#120F24]/95 hover:bg-indigo-500/35 border border-indigo-400/60 text-[10px] font-mono-num font-black text-indigo-200 transition active:scale-95">[ DRAGON LORDS ]</button>
+        <button onclick="loadBattleDeckPreset('MEGA_LEGENDS')" class="px-2 py-0.5 rounded-lg bg-[#120F24]/95 hover:bg-rose-500/35 border border-rose-400/60 text-[10px] font-mono-num font-black text-rose-200 transition active:scale-95">[ MEGA LEGENDS ]</button>
+        <button onclick="loadBattleDeckPreset('SHADOW_DARK')" class="px-2 py-0.5 rounded-lg bg-[#120F24]/95 hover:bg-purple-500/35 border border-purple-400/60 text-[10px] font-mono-num font-black text-purple-200 transition active:scale-95">[ SHADOW &amp; DARK ]</button>
+        <button onclick="loadBattleDeckPreset('GOD_TIER_MYTHICS')" class="px-2 py-0.5 rounded-lg bg-[#120F24]/95 hover:bg-amber-500/35 border border-amber-400/60 text-[10px] font-mono-num font-black text-amber-200 transition active:scale-95">[ GOD TIER MYTHICS ]</button>
+        <button onclick="loadBattleDeckPreset('RANDOM_MYSTERY')" class="px-2 py-0.5 rounded-lg bg-gradient-to-r from-cyan-500/30 to-purple-500/30 hover:from-cyan-500/50 hover:to-purple-500/50 border border-cyan-400/70 text-[10px] font-mono-num font-black text-cyan-100 transition active:scale-95">[ RANDOM MYSTERY 3v3 ]</button>
       </div>
     </div>
 
     <!-- NON-OVERLAPPING COMBATANT & 3-COLUMN INTERACTIVE BATTLE STADIUM -->
     <div id="stadiumCombatStage" class="cutin-combatant-stage">
-      <!-- Outer Left: Slot 1 Artwork + Live Evolve/Shiny Pills -->
+      <!-- Outer Left: Slot 1 Artwork + Live Evolve/Shiny/Mega Pills -->
       <div class="cutin-wing-left flex flex-col items-center shrink-0 relative">
         <div id="dmgFloatSlot1" class="dmg-float-badge px-3 py-1 rounded-full bg-rose-600/95 border-2 border-white text-white font-mono-num font-black text-sm shadow-[0_0_24px_#EF4444] whitespace-nowrap">-120 HP</div>
         <img id="cutinArtSlot1"
@@ -936,41 +1000,63 @@
         <div id="cutinLeftTitle" class="text-xl sm:text-2xl font-black italic uppercase tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)] whitespace-nowrap">
           GYARADOS
         </div>
-        <div class="mt-1.5 flex items-center gap-1.5">
+        <div class="mt-1 flex items-center gap-1.5">
           <button onclick="stadiumEvolvePokemon(1)" id="stadiumEvoBtnSlot1" class="px-2.5 py-1 rounded-lg bg-emerald-500/25 hover:bg-emerald-500/40 text-emerald-200 border border-emerald-400/50 text-[10px] font-extrabold whitespace-nowrap transition">Evolve (+30% HP)</button>
           <button onclick="stadiumToggleShiny(1)" id="stadiumShinyBtnSlot1" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-amber-500/30 text-amber-200 border border-white/20 text-[10px] font-bold whitespace-nowrap transition">Shiny: OFF</button>
         </div>
+        <!-- Player 1 Mega Overdrive Gauge & Trigger -->
+        <div class="mt-1.5 w-48 bg-[#090812]/90 border border-white/20 rounded-xl p-1.5">
+          <div class="flex items-center justify-between text-[9px] font-mono-num font-black mb-1">
+            <span class="text-amber-300 flex items-center gap-1">
+              <svg class="w-3 h-3 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 2L15 9l7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+              MEGA OVERDRIVE
+            </span>
+            <span id="megaGaugeTextSlot1" class="text-cyan-200">0%</span>
+          </div>
+          <div class="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden border border-white/10">
+            <div id="megaGaugeBarSlot1" class="h-full bg-gradient-to-r from-cyan-400 via-purple-400 to-amber-300 transition-all duration-300" style="width: 0%;"></div>
+          </div>
+          <button onclick="triggerMegaOverdrive(1)" id="megaTriggerBtnSlot1" class="hidden mt-1.5 w-full py-1 rounded-lg bg-gradient-to-r from-amber-400 via-fuchsia-500 to-cyan-400 text-slate-950 font-mono-num font-black text-[10px] uppercase tracking-wider shadow-[0_0_18px_#FACC15] animate-pulse">
+            ⟦ UNLEASH MEGA OVERDRIVE ⟧
+          </button>
+        </div>
       </div>
 
-      <!-- True Non-Overlapping 3-Column Stat & Move Showcase: [Slot 1 Card + 4 Moves] [224px Center VS + Sim + Log] [Slot 2 Card + 4 Moves] -->
+      <!-- True Non-Overlapping 3-Column Stat & Move Showcase: [Slot 1 Squad + Card + 4 Moves] [224px Center VS + Catch + Sim + Log] [Slot 2 Squad + Card + 4 Moves] -->
       <div class="cutin-stat-grid-3col">
-        <!-- Column 1: Slot 1 Live HP + Official Pokédex 6-Stat Card + 4 Attack Move Buttons -->
-        <div class="cutin-wing-left space-y-2">
+        <!-- Column 1: Player 1 (Logan) 3-Poké Ball Squad HUD + Live HP + Official Pokédex 6-Stat Card + 4 Signature Move Buttons -->
+        <div class="cutin-wing-left space-y-1.5">
+          <!-- Player 1 3-Poké Ball Party HUD (Click Bench Slot to Switch In!) -->
+          <div id="stadiumPartyHud1" class="grid grid-cols-3 gap-1.5"></div>
+
           <!-- Slot 1 Live Arcade HP Bar -->
-          <div class="p-2.5 rounded-xl bg-[#090812]/92 border border-white/20 shadow-lg">
+          <div class="p-2 rounded-xl bg-[#090812]/92 border border-white/20 shadow-lg">
             <div class="flex items-center justify-between text-xs font-mono-num font-extrabold mb-1">
               <span id="stadiumHpLabelSlot1" class="text-emerald-300">HP: 348 / 348</span>
-              <span id="stadiumStatusBadgeSlot1" class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/40">READY</span>
+              <div class="flex items-center gap-1">
+                <span id="stadiumAilmentBadgeSlot1" class="hidden text-[9px] px-1.5 py-0.5 rounded font-mono-num font-black"></span>
+                <span id="stadiumStatusBadgeSlot1" class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/40">READY</span>
+              </div>
             </div>
-            <div class="w-full h-3 bg-slate-900 rounded-full overflow-hidden border border-white/15">
+            <div class="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-white/15">
               <div id="stadiumHpBarSlot1" class="h-full bg-emerald-400 rounded-full transition-all duration-300" style="width: 100%;"></div>
             </div>
           </div>
 
           <div id="cutinStatCardSlot1" class="pokedex-stat-card" style="border-top: 2px solid var(--slot1-primary);"></div>
 
-          <!-- 4 Clickable Attack Buttons for Slot 1 -->
+          <!-- 4 Clickable Signature Attack Buttons for Slot 1 -->
           <div id="stadiumMovesSlot1" class="grid grid-cols-2 gap-1.5"></div>
         </div>
 
-        <!-- Column 2: Dedicated 224px Center VS Poké Ball + Sim Controls + Live Announcer Log -->
-        <div class="cutin-center-lane space-y-2">
+        <!-- Column 2: Dedicated 224px Center VS Poké Ball + Sim Controls + Catch System + Live Announcer Log -->
+        <div class="cutin-center-lane space-y-1.5">
           <div id="cutinLeftSub" class="px-2.5 py-0.5 rounded-full bg-black/85 border border-cyan-400/50 text-[9px] font-mono-num font-black uppercase tracking-wider text-cyan-200 text-center max-w-[216px] truncate">
             SLOT 1 • 2x EFFECTIVE
           </div>
           <div onclick="toggleAutoSimBattle()" title="Click VS Emblem to Start/Stop Auto-Sim Battle"
-               class="w-20 h-20 rounded-full bg-[#090812] border-4 border-white shadow-[0_0_55px_#FFFFFF,0_0_95px_#A855F7] flex items-center justify-center shrink-0 cursor-pointer hover:scale-110 active:scale-95 transition-transform">
-            <svg class="w-16 h-16" viewBox="0 0 100 100">
+               class="w-16 h-16 rounded-full bg-[#090812] border-4 border-white shadow-[0_0_55px_#FFFFFF,0_0_95px_#A855F7] flex items-center justify-center shrink-0 cursor-pointer hover:scale-110 active:scale-95 transition-transform">
+            <svg class="w-14 h-14" viewBox="0 0 100 100">
               <path d="M 6 50 A 44 44 0 0 1 94 50 Z" fill="url(#pkBallTop)" />
               <path d="M 6 50 A 44 44 0 0 0 94 50 Z" fill="#181528" />
               <circle cx="50" cy="50" r="44" fill="none" stroke="#FFFFFF" stroke-width="6" />
@@ -984,48 +1070,79 @@
           </div>
 
           <!-- Center Stadium Action Controls -->
-          <div class="w-full space-y-1.5 pt-1">
+          <div class="w-full space-y-1.5 pt-0.5">
             <button onclick="toggleAutoSimBattle()" id="simBattleBtn" class="w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-slate-950 font-black text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,240,255,0.45)] transition">
               Sim Full Battle
             </button>
             <div class="grid grid-cols-2 gap-1.5">
-              <button onclick="triggerRandomStadiumBattle()" class="py-1.5 px-2 rounded-lg bg-purple-500/25 hover:bg-purple-500/40 border border-purple-400/50 text-purple-100 font-extrabold text-[11px] whitespace-nowrap transition">
-                Random Battle
+              <button onclick="triggerRandomStadiumBattle()" class="py-1 px-2 rounded-lg bg-purple-500/25 hover:bg-purple-500/40 border border-purple-400/50 text-purple-100 font-extrabold text-[10px] whitespace-nowrap transition">
+                Random 3v3
               </button>
-              <button onclick="resetBattleStadiumMatch()" class="py-1.5 px-2 rounded-lg bg-emerald-500/25 hover:bg-emerald-500/40 border border-emerald-400/50 text-emerald-200 font-extrabold text-[11px] whitespace-nowrap transition">
-                Full Heal
+              <button onclick="resetBattleStadiumMatch()" class="py-1 px-2 rounded-lg bg-emerald-500/25 hover:bg-emerald-500/40 border border-emerald-400/50 text-emerald-200 font-extrabold text-[10px] whitespace-nowrap transition">
+                Full Heal Squads
+              </button>
+            </div>
+          </div>
+
+          <!-- Shiny & Boss Capture System (Poké Ball / Ultra Ball / Master Ball) -->
+          <div class="w-full p-2 rounded-xl bg-[#090812]/92 border border-amber-400/35">
+            <div class="flex items-center justify-between text-[9px] font-mono-num font-black uppercase tracking-wider text-amber-300 mb-1">
+              <span>THROW CAPTURE BALL</span>
+              <span id="masterBallCountBadge" class="text-fuchsia-300">MB: 3</span>
+            </div>
+            <div class="grid grid-cols-3 gap-1">
+              <button onclick="attemptStadiumCatch('POKE')" title="Throw Poké Ball (Best when enemy HP is low!)"
+                      class="py-1 px-1 rounded-lg bg-rose-500/20 hover:bg-rose-500/40 border border-rose-400/50 text-[9px] font-mono-num font-black text-rose-200 flex flex-col items-center gap-0.5 transition active:scale-95">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#EF4444" stroke="#FFF" stroke-width="2"/><path d="M2 12a10 10 0 0 0 20 0z" fill="#1E1B2E"/><line x1="2" y1="12" x2="22" y2="12" stroke="#FFF" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="#FFF"/></svg>
+                <span>POKÉ</span>
+              </button>
+              <button onclick="attemptStadiumCatch('ULTRA')" title="Throw Ultra Ball (2.2x Catch Power!)"
+                      class="py-1 px-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/40 border border-amber-400/50 text-[9px] font-mono-num font-black text-amber-200 flex flex-col items-center gap-0.5 transition active:scale-95">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#FACC15" stroke="#FFF" stroke-width="2"/><path d="M2 12a10 10 0 0 0 20 0z" fill="#1E1B2E"/><line x1="2" y1="12" x2="22" y2="12" stroke="#FFF" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="#FFF"/></svg>
+                <span>ULTRA</span>
+              </button>
+              <button onclick="attemptStadiumCatch('MASTER')" title="Throw Master Ball (100% Guaranteed Catch!)"
+                      class="py-1 px-1 rounded-lg bg-fuchsia-500/25 hover:bg-fuchsia-500/45 border border-fuchsia-400/60 text-[9px] font-mono-num font-black text-fuchsia-200 flex flex-col items-center gap-0.5 transition active:scale-95">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#A855F7" stroke="#FFF" stroke-width="2"/><path d="M2 12a10 10 0 0 0 20 0z" fill="#1E1B2E"/><line x1="2" y1="12" x2="22" y2="12" stroke="#FFF" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="#FACC15"/></svg>
+                <span>MASTER</span>
               </button>
             </div>
           </div>
 
           <!-- Live Battle Announcer Log Box -->
-          <div id="stadiumBattleLogBox" class="w-full p-2.5 rounded-xl bg-[#090812]/95 border border-white/20 text-center min-h-[64px] flex flex-col justify-center">
+          <div id="stadiumBattleLogBox" class="w-full p-2 rounded-xl bg-[#090812]/95 border border-white/20 text-center min-h-[60px] flex flex-col justify-center">
             <div id="stadiumBattleLogTitle" class="text-[10px] font-mono-num font-black uppercase tracking-wider text-cyan-300">STADIUM ANNOUNCER</div>
             <div id="stadiumBattleLogText" class="text-[11px] font-bold text-white leading-snug mt-0.5">Select any move below or click Sim Full Battle!</div>
           </div>
         </div>
 
-        <!-- Column 3: Slot 2 Live HP + Official Pokédex 6-Stat Card + 4 Attack Move Buttons -->
-        <div class="cutin-wing-right space-y-2">
+        <!-- Column 3: Player 2 (Boss / Dad / AI) 3-Poké Ball Squad HUD + Live HP + Official Pokédex 6-Stat Card + 4 Signature Move Buttons -->
+        <div class="cutin-wing-right space-y-1.5">
+          <!-- Player 2 3-Poké Ball Party HUD (Click Bench Slot to Switch In!) -->
+          <div id="stadiumPartyHud2" class="grid grid-cols-3 gap-1.5"></div>
+
           <!-- Slot 2 Live Arcade HP Bar -->
-          <div class="p-2.5 rounded-xl bg-[#090812]/92 border border-white/20 shadow-lg">
+          <div class="p-2 rounded-xl bg-[#090812]/92 border border-white/20 shadow-lg">
             <div class="flex items-center justify-between text-xs font-mono-num font-extrabold mb-1">
               <span id="stadiumHpLabelSlot2" class="text-emerald-300">HP: 335 / 335</span>
-              <span id="stadiumStatusBadgeSlot2" class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/40">READY</span>
+              <div class="flex items-center gap-1">
+                <span id="stadiumAilmentBadgeSlot2" class="hidden text-[9px] px-1.5 py-0.5 rounded font-mono-num font-black"></span>
+                <span id="stadiumStatusBadgeSlot2" class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/40">READY</span>
+              </div>
             </div>
-            <div class="w-full h-3 bg-slate-900 rounded-full overflow-hidden border border-white/15">
+            <div class="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-white/15">
               <div id="stadiumHpBarSlot2" class="h-full bg-emerald-400 rounded-full transition-all duration-300" style="width: 100%;"></div>
             </div>
           </div>
 
           <div id="cutinStatCardSlot2" class="pokedex-stat-card" style="border-top: 2px solid var(--slot2-primary);"></div>
 
-          <!-- 4 Clickable Attack Buttons for Slot 2 -->
+          <!-- 4 Clickable Signature Attack Buttons for Slot 2 -->
           <div id="stadiumMovesSlot2" class="grid grid-cols-2 gap-1.5"></div>
         </div>
       </div>
 
-      <!-- Outer Right: Slot 2 Artwork + Live Evolve/Shiny Pills -->
+      <!-- Outer Right: Slot 2 Artwork + Live Evolve/Shiny/Mega Pills -->
       <div class="cutin-wing-right flex flex-col items-center shrink-0 relative">
         <div id="dmgFloatSlot2" class="dmg-float-badge px-3 py-1 rounded-full bg-rose-600/95 border-2 border-white text-white font-mono-num font-black text-sm shadow-[0_0_24px_#EF4444] whitespace-nowrap">-120 HP</div>
         <img id="cutinArtSlot2"
@@ -1038,10 +1155,46 @@
         <div id="cutinRightTitle" class="text-xl sm:text-2xl font-black italic uppercase tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)] whitespace-nowrap">
           ARCANINE
         </div>
-        <div class="mt-1.5 flex items-center gap-1.5">
+        <div class="mt-1 flex items-center gap-1.5">
           <button onclick="stadiumEvolvePokemon(2)" id="stadiumEvoBtnSlot2" class="px-2.5 py-1 rounded-lg bg-orange-500/25 hover:bg-orange-500/40 text-orange-200 border border-orange-400/50 text-[10px] font-extrabold whitespace-nowrap transition">Evolve (+30% HP)</button>
           <button onclick="stadiumToggleShiny(2)" id="stadiumShinyBtnSlot2" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-amber-500/30 text-amber-200 border border-white/20 text-[10px] font-bold whitespace-nowrap transition">Shiny: OFF</button>
         </div>
+        <!-- Player 2 Mega Overdrive Gauge & Trigger -->
+        <div class="mt-1.5 w-48 bg-[#090812]/90 border border-white/20 rounded-xl p-1.5">
+          <div class="flex items-center justify-between text-[9px] font-mono-num font-black mb-1">
+            <span class="text-amber-300 flex items-center gap-1">
+              <svg class="w-3 h-3 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 2L15 9l7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+              MEGA OVERDRIVE
+            </span>
+            <span id="megaGaugeTextSlot2" class="text-orange-200">0%</span>
+          </div>
+          <div class="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden border border-white/10">
+            <div id="megaGaugeBarSlot2" class="h-full bg-gradient-to-r from-orange-400 via-rose-500 to-amber-300 transition-all duration-300" style="width: 0%;"></div>
+          </div>
+          <button onclick="triggerMegaOverdrive(2)" id="megaTriggerBtnSlot2" class="hidden mt-1.5 w-full py-1 rounded-lg bg-gradient-to-r from-amber-400 via-rose-500 to-orange-400 text-slate-950 font-mono-num font-black text-[10px] uppercase tracking-wider shadow-[0_0_18px_#FACC15] animate-pulse">
+            ⟦ UNLEASH MEGA OVERDRIVE ⟧
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOGAN'S TROPHY LOCKER & CHAMPION BADGE DRAWER (Inside Stadium) -->
+    <div id="stadiumTrophyLockerModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4" onclick="toggleTrophyLocker(event)">
+      <div class="bg-[#0C0A18] border-2 border-cyan-400/60 rounded-2xl max-w-3xl w-full p-5 shadow-[0_0_60px_rgba(0,240,255,0.35)] space-y-4" onclick="event.stopPropagation()">
+        <div class="flex items-center justify-between border-b border-white/15 pb-3">
+          <div>
+            <h3 class="text-lg font-black italic uppercase tracking-wider text-white flex items-center gap-2">
+              <svg class="w-5 h-5 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 18h18M4 15l2-9 6 4 6-4 2 9H4z"/></svg>
+              <span>LOGAN'S STADIUM TROPHY LOCKER &amp; CHAMPION VAULT</span>
+            </h3>
+            <p class="text-xs text-slate-300 mt-0.5">Click any caught Pokémon below to draft it directly into your active 3v3 Squad slot!</p>
+          </div>
+          <button onclick="toggleTrophyLocker(event)" class="px-3 py-1 rounded-lg bg-rose-500/25 hover:bg-rose-500/45 border border-rose-400/50 text-xs font-extrabold text-white">✕ Close</button>
+        </div>
+        <!-- Gauntlet Badges Row -->
+        <div id="trophyLockerBadgesRow" class="flex flex-wrap items-center gap-2 p-2.5 rounded-xl bg-[#131026] border border-white/10"></div>
+        <!-- Caught Pokemon Grid -->
+        <div id="trophyLockerGrid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-2.5 max-h-[340px] overflow-y-auto p-1"></div>
       </div>
     </div>
 
@@ -2461,33 +2614,179 @@
       65:  { id: 65,  name: 'Alakazam',   type: 'psychic',  types: ['psychic'],         nextId: null, baseId: 63,  chain: [63, 64, 65], stats: { hp: 55, atk: 50, def: 45, spa: 135, spd: 95, spe: 120, bst: 500 }, abilities: ['Synchronize', 'Magic Guard'] },
       359: { id: 359, name: 'Absol',      type: 'dark',     types: ['dark'],            nextId: null, baseId: 359, chain: [359], stats: { hp: 65, atk: 130, def: 60, spa: 75, spd: 60, spe: 75, bst: 465 }, abilities: ['Pressure', 'Super Luck'] },
       143: { id: 143, name: 'Snorlax',    type: 'normal',   types: ['normal'],          nextId: null, baseId: 143, chain: [143], stats: { hp: 160, atk: 110, def: 65, spa: 65, spd: 110, spe: 30, bst: 540 }, abilities: ['Immunity', 'Thick Fat'] },
-      150: { id: 150, name: 'Mewtwo',     type: 'psychic',  types: ['psychic'],         nextId: null, baseId: 150, chain: [150], stats: { hp: 106, atk: 110, def: 90, spa: 154, spd: 90, spe: 130, bst: 680 }, abilities: ['Pressure', 'Unnerve'] }
+      150: { id: 150, name: 'Mewtwo',     type: 'psychic',  types: ['psychic'],         nextId: null, baseId: 150, chain: [150], stats: { hp: 106, atk: 110, def: 90, spa: 154, spd: 90, spe: 130, bst: 680 }, abilities: ['Pressure', 'Unnerve'] },
+      92:  { id: 92,  name: 'Gastly',     type: 'ghost',    types: ['ghost', 'poison'], nextId: 93,   baseId: 92,  chain: [92, 93, 94], stats: { hp: 30, atk: 35, def: 30, spa: 100, spd: 35, spe: 80, bst: 310 }, abilities: ['Levitate'] },
+      93:  { id: 93,  name: 'Haunter',    type: 'ghost',    types: ['ghost', 'poison'], nextId: 94,   baseId: 92,  chain: [92, 93, 94], stats: { hp: 45, atk: 50, def: 45, spa: 115, spd: 55, spe: 95, bst: 405 }, abilities: ['Levitate'] },
+      94:  { id: 94,  name: 'Gengar',     type: 'ghost',    types: ['ghost', 'poison'], nextId: null, baseId: 92,  chain: [92, 93, 94], stats: { hp: 60, atk: 65, def: 60, spa: 130, spd: 75, spe: 110, bst: 500 }, abilities: ['Cursed Body', 'Shadow Tag'] },
+      248: { id: 248, name: 'Tyranitar',  type: 'rock',     types: ['rock', 'dark'],    nextId: null, baseId: 246, chain: [246, 247, 248], stats: { hp: 100, atk: 134, def: 110, spa: 95, spd: 100, spe: 61, bst: 600 }, abilities: ['Sand Stream', 'Unnerve'] },
+      249: { id: 249, name: 'Lugia',      type: 'psychic',  types: ['psychic', 'flying'], nextId: null, baseId: 249, chain: [249], stats: { hp: 106, atk: 90, def: 130, spa: 90, spd: 154, spe: 110, bst: 680 }, abilities: ['Pressure', 'Multiscale'] },
+      376: { id: 376, name: 'Metagross',  type: 'steel',    types: ['steel', 'psychic'], nextId: null, baseId: 374, chain: [374, 375, 376], stats: { hp: 80, atk: 135, def: 130, spa: 95, spd: 90, spe: 70, bst: 600 }, abilities: ['Clear Body', 'Tough Claws'] },
+      384: { id: 384, name: 'Rayquaza',   type: 'dragon',   types: ['dragon', 'flying'], nextId: null, baseId: 384, chain: [384], stats: { hp: 105, atk: 150, def: 90, spa: 150, spd: 90, spe: 95, bst: 680 }, abilities: ['Air Lock', 'Delta Stream'] },
+      443: { id: 443, name: 'Gible',      type: 'dragon',   types: ['dragon', 'ground'], nextId: 444, baseId: 443, chain: [443, 444, 445], stats: { hp: 58, atk: 70, def: 45, spa: 40, spd: 45, spe: 42, bst: 300 }, abilities: ['Sand Veil', 'Rough Skin'] },
+      444: { id: 444, name: 'Gabite',     type: 'dragon',   types: ['dragon', 'ground'], nextId: 445, baseId: 443, chain: [443, 444, 445], stats: { hp: 68, atk: 90, def: 65, spa: 50, spd: 55, spe: 82, bst: 410 }, abilities: ['Sand Veil', 'Rough Skin'] },
+      445: { id: 445, name: 'Garchomp',   type: 'dragon',   types: ['dragon', 'ground'], nextId: null, baseId: 443, chain: [443, 444, 445], stats: { hp: 108, atk: 130, def: 95, spa: 80, spd: 85, spe: 102, bst: 600 }, abilities: ['Rough Skin', 'Sand Veil'] },
+      447: { id: 447, name: 'Riolu',      type: 'fighting', types: ['fighting'],         nextId: 448, baseId: 447, chain: [447, 448], stats: { hp: 40, atk: 70, def: 40, spa: 35, spd: 40, spe: 60, bst: 285 }, abilities: ['Inner Focus', 'Prankster'] },
+      448: { id: 448, name: 'Lucario',    type: 'fighting', types: ['fighting', 'steel'], nextId: null, baseId: 447, chain: [447, 448], stats: { hp: 70, atk: 110, def: 70, spa: 115, spd: 70, spe: 90, bst: 525 }, abilities: ['Adaptability', 'Justified'] },
+      487: { id: 487, name: 'Giratina',   type: 'ghost',    types: ['ghost', 'dragon'],  nextId: null, baseId: 487, chain: [487], stats: { hp: 150, atk: 100, def: 120, spa: 100, spd: 120, spe: 90, bst: 680 }, abilities: ['Pressure', 'Levitate'] },
+      493: { id: 493, name: 'Arceus',     type: 'normal',   types: ['normal'],           nextId: null, baseId: 493, chain: [493], stats: { hp: 120, atk: 120, def: 120, spa: 120, spd: 120, spe: 120, bst: 720 }, abilities: ['Multitype'] },
+      656: { id: 656, name: 'Froakie',    type: 'water',    types: ['water'],            nextId: 657, baseId: 656, chain: [656, 657, 658], stats: { hp: 41, atk: 56, def: 40, spa: 62, spd: 44, spe: 71, bst: 314 }, abilities: ['Torrent', 'Protean'] },
+      657: { id: 657, name: 'Frogadier',  type: 'water',    types: ['water'],            nextId: 658, baseId: 656, chain: [656, 657, 658], stats: { hp: 54, atk: 63, def: 52, spa: 83, spd: 56, spe: 97, bst: 405 }, abilities: ['Torrent', 'Protean'] },
+      658: { id: 658, name: 'Greninja',   type: 'water',    types: ['water', 'dark'],    nextId: null, baseId: 656, chain: [656, 657, 658], stats: { hp: 72, atk: 95, def: 67, spa: 103, spd: 71, spe: 122, bst: 530 }, abilities: ['Battle Bond', 'Protean'] },
+      888: { id: 888, name: 'Zacian',     type: 'fairy',    types: ['fairy', 'steel'],   nextId: null, baseId: 888, chain: [888], stats: { hp: 92, atk: 150, def: 115, spa: 80, spd: 115, spe: 138, bst: 690 }, abilities: ['Intrepid Sword'] }
     };
 
     const HOF_ROSTER_BUTTONS = [
-      { id: 130, label: 'Gyarados' },
-      { id: 129, label: 'Magikarp' },
-      { id: 59,  label: 'Arcanine' },
-      { id: 58,  label: 'Growlithe' },
+      { id: 384, label: 'Rayquaza' },
+      { id: 445, label: 'Garchomp' },
       { id: 150, label: 'Mewtwo' },
       { id: 6,   label: 'Charizard' },
-      { id: 4,   label: 'Charmander' },
-      { id: 9,   label: 'Blastoise' },
-      { id: 7,   label: 'Squirtle' },
-      { id: 3,   label: 'Venusaur' },
-      { id: 1,   label: 'Bulbasaur' },
-      { id: 359, label: 'Absol' },
-      { id: 133, label: 'Eevee' },
-      { id: 350, label: 'Milotic' },
-      { id: 181, label: 'Ampharos' },
-      { id: 89,  label: 'Alolan Muk' },
-      { id: 18,  label: 'Pidgeot' },
+      { id: 448, label: 'Lucario' },
+      { id: 94,  label: 'Gengar' },
+      { id: 658, label: 'Greninja' },
+      { id: 197, label: 'Umbreon' },
+      { id: 493, label: 'Arceus' },
+      { id: 487, label: 'Giratina' },
+      { id: 249, label: 'Lugia' },
+      { id: 130, label: 'Gyarados' },
+      { id: 59,  label: 'Arcanine' },
       { id: 149, label: 'Dragonite' },
+      { id: 9,   label: 'Blastoise' },
+      { id: 3,   label: 'Venusaur' },
       { id: 25,  label: 'Pikachu' },
-      { id: 65,  label: 'Alakazam' },
+      { id: 248, label: 'Tyranitar' },
+      { id: 376, label: 'Metagross' },
+      { id: 350, label: 'Milotic' },
       { id: 143, label: 'Snorlax' },
-      { id: 506, label: 'Lillipup' }
+      { id: 65,  label: 'Alakazam' }
     ];
+
+    const BATTLE_DECK_PRESETS = {
+      DRAGON_LORDS:     { label: 'DRAGON LORDS',     ids: [384, 445, 149] },
+      MEGA_LEGENDS:     { label: 'MEGA LEGENDS',     ids: [150, 6, 448] },
+      SHADOW_DARK:      { label: 'SHADOW & DARK',    ids: [94, 658, 197] },
+      GOD_TIER_MYTHICS: { label: 'GOD TIER MYTHICS', ids: [493, 487, 249] }
+    };
+
+    const POWERHOUSE_POOL_IDS = [384, 445, 149, 150, 6, 448, 94, 658, 197, 493, 487, 249, 130, 59, 9, 3, 248, 376, 350, 143, 65, 888, 25, 700, 135, 181];
+
+    const CHAMPION_GAUNTLET_STAGES = [
+      { stage: 1, title: 'STAGE 1 • DRAGON MASTER LANCE',   badge: 'DRAGONBADGE',  ids: [130, 149, 6],   shinyBoss: false },
+      { stage: 2, title: 'STAGE 2 • SHADOW ELITE AGATHA',   badge: 'PHANTOMBADGE', ids: [94, 197, 65],   shinyBoss: false },
+      { stage: 3, title: 'STAGE 3 • STEEL TITAN STEVEN',    badge: 'METEORBADGE',  ids: [376, 248, 448], shinyBoss: false },
+      { stage: 4, title: 'STAGE 4 • CHAMPION CYNTHIA',      badge: 'SINNOHCREST',  ids: [445, 350, 448], shinyBoss: true  },
+      { stage: 5, title: 'STAGE 5 • APEX MYTHIC OVERLORD',  badge: 'GODSLAYER',    ids: [384, 150, 493], shinyBoss: true  }
+    ];
+
+    const SIGNATURE_MOVES_BY_ID = {
+      6: [
+        { name: 'Flamethrower', type: 'fire',   power: 90,  cat: 'spec', maxPp: 15, status: { code: 'BRN', chance: 0.25 } },
+        { name: 'Air Slash',    type: 'flying', power: 85,  cat: 'spec', maxPp: 15 },
+        { name: 'Dragon Claw',  type: 'dragon', power: 85,  cat: 'phys', maxPp: 15 },
+        { name: 'Blast Burn',   type: 'fire',   power: 150, cat: 'spec', maxPp: 5,  ultimate: true, status: { code: 'BRN', chance: 0.35 } }
+      ],
+      25: [
+        { name: 'Thunderbolt',  type: 'electric', power: 90,  cat: 'spec', maxPp: 15, status: { code: 'PAR', chance: 0.30 } },
+        { name: 'Iron Tail',    type: 'steel',    power: 100, cat: 'phys', maxPp: 15 },
+        { name: 'Quick Attack', type: 'normal',   power: 75,  cat: 'phys', maxPp: 20 },
+        { name: 'Volt Tackle',  type: 'electric', power: 140, cat: 'phys', maxPp: 5,  ultimate: true, status: { code: 'PAR', chance: 0.35 } }
+      ],
+      94: [
+        { name: 'Shadow Ball',  type: 'ghost',   power: 90,  cat: 'spec', maxPp: 15 },
+        { name: 'Sludge Bomb',  type: 'poison',  power: 90,  cat: 'spec', maxPp: 15, status: { code: 'PSN', chance: 0.35 } },
+        { name: 'Hypnosis Hex', type: 'psychic', power: 75,  cat: 'spec', maxPp: 10, status: { code: 'SLP', chance: 0.55 } },
+        { name: 'Dream Eater',  type: 'ghost',   power: 140, cat: 'spec', maxPp: 5,  ultimate: true, drain: 0.35 }
+      ],
+      150: [
+        { name: 'Psystrike',    type: 'psychic',  power: 105, cat: 'spec', maxPp: 10 },
+        { name: 'Aura Sphere',  type: 'fighting', power: 90,  cat: 'spec', maxPp: 15 },
+        { name: 'Shadow Ball',  type: 'ghost',    power: 90,  cat: 'spec', maxPp: 15 },
+        { name: 'Astral Nova',  type: 'psychic',  power: 150, cat: 'spec', maxPp: 5,  ultimate: true }
+      ],
+      384: [
+        { name: 'Dragon Pulse',  type: 'dragon', power: 90,  cat: 'spec', maxPp: 15 },
+        { name: 'Extreme Speed', type: 'normal', power: 85,  cat: 'phys', maxPp: 15 },
+        { name: 'Outrage',       type: 'dragon', power: 120, cat: 'phys', maxPp: 10 },
+        { name: 'Dragon Ascent', type: 'flying', power: 150, cat: 'phys', maxPp: 5,  ultimate: true }
+      ],
+      445: [
+        { name: 'Earthquake',   type: 'ground', power: 100, cat: 'phys', maxPp: 10 },
+        { name: 'Dragon Claw',  type: 'dragon', power: 85,  cat: 'phys', maxPp: 15 },
+        { name: 'Stone Edge',   type: 'rock',   power: 100, cat: 'phys', maxPp: 10 },
+        { name: 'Draco Meteor', type: 'dragon', power: 145, cat: 'spec', maxPp: 5,  ultimate: true }
+      ],
+      149: [
+        { name: 'Outrage',       type: 'dragon',   power: 120, cat: 'phys', maxPp: 10 },
+        { name: 'Hurricane',     type: 'flying',   power: 110, cat: 'spec', maxPp: 10 },
+        { name: 'Thunder Punch', type: 'electric', power: 85,  cat: 'phys', maxPp: 15, status: { code: 'PAR', chance: 0.30 } },
+        { name: 'Draco Impact',  type: 'dragon',   power: 145, cat: 'phys', maxPp: 5,  ultimate: true }
+      ],
+      448: [
+        { name: 'Aura Sphere',   type: 'fighting', power: 90,  cat: 'spec', maxPp: 15 },
+        { name: 'Meteor Mash',   type: 'steel',    power: 95,  cat: 'phys', maxPp: 10 },
+        { name: 'Extreme Speed', type: 'normal',   power: 85,  cat: 'phys', maxPp: 15 },
+        { name: 'Close Combat',  type: 'fighting', power: 140, cat: 'phys', maxPp: 5,  ultimate: true }
+      ],
+      658: [
+        { name: 'Water Shuriken', type: 'water', power: 90,  cat: 'spec', maxPp: 15 },
+        { name: 'Dark Pulse',     type: 'dark',  power: 90,  cat: 'spec', maxPp: 15 },
+        { name: 'Ice Beam',       type: 'ice',   power: 90,  cat: 'spec', maxPp: 15, status: { code: 'FRZ', chance: 0.25 } },
+        { name: 'Hydro Cannon',   type: 'water', power: 150, cat: 'spec', maxPp: 5,  ultimate: true }
+      ],
+      197: [
+        { name: 'Foul Play',       type: 'dark',   power: 95,  cat: 'phys', maxPp: 15 },
+        { name: 'Dark Pulse',      type: 'dark',   power: 90,  cat: 'spec', maxPp: 15 },
+        { name: 'Toxic Fang',      type: 'poison', power: 75,  cat: 'phys', maxPp: 10, status: { code: 'PSN', chance: 0.55 } },
+        { name: 'Moonlight Drain', type: 'dark',   power: 130, cat: 'spec', maxPp: 5,  ultimate: true, drain: 0.40 }
+      ],
+      493: [
+        { name: 'Extreme Speed', type: 'normal',  power: 90,  cat: 'phys', maxPp: 15 },
+        { name: 'Earth Power',   type: 'ground',  power: 90,  cat: 'spec', maxPp: 15 },
+        { name: 'Cosmic Recover', type: 'psychic', power: 85, cat: 'spec', maxPp: 10, drain: 0.35 },
+        { name: 'Judgment',      type: 'normal',  power: 155, cat: 'spec', maxPp: 5,  ultimate: true }
+      ],
+      487: [
+        { name: 'Dragon Claw',  type: 'dragon',   power: 85,  cat: 'phys', maxPp: 15 },
+        { name: 'Aura Sphere',  type: 'fighting', power: 90,  cat: 'spec', maxPp: 15 },
+        { name: 'Will-O-Wisp',  type: 'fire',     power: 75,  cat: 'spec', maxPp: 10, status: { code: 'BRN', chance: 0.55 } },
+        { name: 'Shadow Force', type: 'ghost',    power: 150, cat: 'phys', maxPp: 5,  ultimate: true }
+      ],
+      249: [
+        { name: 'Psychic',    type: 'psychic', power: 90,  cat: 'spec', maxPp: 15 },
+        { name: 'Hydro Pump', type: 'water',   power: 110, cat: 'spec', maxPp: 10 },
+        { name: 'Sky Roost',  type: 'flying',  power: 85,  cat: 'spec', maxPp: 10, drain: 0.35 },
+        { name: 'Aeroblast',  type: 'flying',  power: 145, cat: 'spec', maxPp: 5,  ultimate: true }
+      ],
+      130: [
+        { name: 'Waterfall',  type: 'water',  power: 90,  cat: 'phys', maxPp: 15 },
+        { name: 'Crunch',     type: 'dark',   power: 85,  cat: 'phys', maxPp: 15 },
+        { name: 'Ice Fang',   type: 'ice',    power: 80,  cat: 'phys', maxPp: 15, status: { code: 'FRZ', chance: 0.25 } },
+        { name: 'Hyper Geyser', type: 'water', power: 145, cat: 'phys', maxPp: 5, ultimate: true }
+      ],
+      59: [
+        { name: 'Flamethrower',  type: 'fire',     power: 90,  cat: 'spec', maxPp: 15, status: { code: 'BRN', chance: 0.25 } },
+        { name: 'Extreme Speed', type: 'normal',   power: 85,  cat: 'phys', maxPp: 15 },
+        { name: 'Wild Charge',   type: 'electric', power: 90,  cat: 'phys', maxPp: 15, status: { code: 'PAR', chance: 0.20 } },
+        { name: 'Flare Blitz',   type: 'fire',     power: 145, cat: 'phys', maxPp: 5,  ultimate: true, status: { code: 'BRN', chance: 0.35 } }
+      ],
+      9: [
+        { name: 'Aqua Tail',    type: 'water', power: 90,  cat: 'phys', maxPp: 15 },
+        { name: 'Ice Beam',     type: 'ice',   power: 90,  cat: 'spec', maxPp: 15, status: { code: 'FRZ', chance: 0.25 } },
+        { name: 'Flash Cannon', type: 'steel', power: 85,  cat: 'spec', maxPp: 15 },
+        { name: 'Hydro Cannon', type: 'water', power: 150, cat: 'spec', maxPp: 5,  ultimate: true }
+      ],
+      3: [
+        { name: 'Giga Drain',   type: 'grass',  power: 85,  cat: 'spec', maxPp: 15, drain: 0.35 },
+        { name: 'Sludge Bomb',  type: 'poison', power: 90,  cat: 'spec', maxPp: 15, status: { code: 'PSN', chance: 0.35 } },
+        { name: 'Sleep Powder', type: 'grass',  power: 70,  cat: 'spec', maxPp: 10, status: { code: 'SLP', chance: 0.55 } },
+        { name: 'Frenzy Plant', type: 'grass',  power: 150, cat: 'spec', maxPp: 5,  ultimate: true }
+      ],
+      143: [
+        { name: 'Body Slam',   type: 'normal', power: 90,  cat: 'phys', maxPp: 15, status: { code: 'PAR', chance: 0.35 } },
+        { name: 'Crunch',      type: 'dark',   power: 85,  cat: 'phys', maxPp: 15 },
+        { name: 'Earthquake',  type: 'ground', power: 100, cat: 'phys', maxPp: 10 },
+        { name: 'Giga Impact', type: 'normal', power: 150, cat: 'phys', maxPp: 5,  ultimate: true }
+      ]
+    };
 
     const TYPE_MOVE_POOL = {
       water:    [
@@ -2960,17 +3259,44 @@
       document.body.classList.add('aura-clash-pulse');
     }
 
+    const STATUS_BADGE_STYLES = {
+      BRN: { label: 'BRN', cls: 'bg-orange-500/30 text-orange-200 border border-orange-400/70' },
+      PAR: { label: 'PAR', cls: 'bg-amber-500/30 text-amber-200 border border-amber-400/70' },
+      SLP: { label: 'SLP', cls: 'bg-indigo-500/30 text-indigo-200 border border-indigo-400/70' },
+      PSN: { label: 'PSN', cls: 'bg-purple-500/30 text-purple-200 border border-purple-400/70' },
+      FRZ: { label: 'FRZ', cls: 'bg-cyan-500/30 text-cyan-200 border border-cyan-400/70' }
+    };
+
     function getFourMovesForPokemon(slotObj) {
+      const sig = SIGNATURE_MOVES_BY_ID[slotObj.id];
+      if (Array.isArray(sig) && sig.length === 4) {
+        return sig.map(m => ({
+          ...m,
+          maxPp: Number(m.maxPp || (m.ultimate ? 5 : 15))
+        }));
+      }
+
       const primaryType = String((slotObj.types && slotObj.types[0]) || slotObj.type || 'normal').toLowerCase();
       const secondaryType = String((slotObj.types && slotObj.types[1]) || primaryType).toLowerCase();
       const basePool = TYPE_MOVE_POOL[primaryType] || TYPE_MOVE_POOL.normal;
       const secPool = TYPE_MOVE_POOL[secondaryType] || basePool;
 
+      const defaultStatusByType = {
+        fire:     { code: 'BRN', chance: 0.25 },
+        electric: { code: 'PAR', chance: 0.25 },
+        ice:      { code: 'FRZ', chance: 0.20 },
+        poison:   { code: 'PSN', chance: 0.30 },
+        psychic:  { code: 'SLP', chance: 0.20 },
+        ghost:    { code: 'SLP', chance: 0.20 }
+      };
+
       const moves = [
-        { ...basePool[0] },
-        { ...basePool[1] },
-        secondaryType !== primaryType ? { ...secPool[0] } : { ...basePool[2] },
-        { ...basePool[3], ultimate: true }
+        { ...basePool[0], maxPp: 15, status: defaultStatusByType[primaryType] || null },
+        { ...basePool[1], maxPp: 10 },
+        secondaryType !== primaryType
+          ? { ...secPool[0], maxPp: 15, status: defaultStatusByType[secondaryType] || null }
+          : { ...basePool[2], maxPp: 15 },
+        { ...basePool[3], maxPp: 5, ultimate: true }
       ];
 
       if (Array.isArray(slotObj.moves) && slotObj.moves.length > 0) {
@@ -2998,7 +3324,121 @@
     function calcMaxHpForSlot(slotObj) {
       const dex = HALL_OF_FAME_DEX[slotObj.id] || {};
       const baseHp = Number((slotObj.stats && slotObj.stats.hp) || (dex.stats && dex.stats.hp) || 80);
-      return Math.round((baseHp * 2.5) + 110);
+      const megaMult = slotObj.megaActive ? 1.30 : 1.0;
+      return Math.round(((baseHp * 2.5) + 110) * megaMult);
+    }
+
+    function buildSquadMemberFromId(pokeId, shinyFlag) {
+      const dex = HALL_OF_FAME_DEX[pokeId] || HALL_OF_FAME_DEX[130];
+      const member = hydrateSlotFromDex({
+        id: dex.id,
+        name: dex.name,
+        type: dex.type,
+        types: dex.types || [dex.type],
+        stats: dex.stats ? { ...dex.stats } : undefined,
+        abilities: dex.abilities,
+        moves: dex.moves,
+        shiny: Boolean(shinyFlag),
+        nextId: dex.nextId || null,
+        baseId: dex.baseId || dex.id,
+        chain: dex.chain || [dex.id],
+        megaActive: false,
+        ailment: null,
+        sleepTurns: 0
+      });
+      member.maxHp = calcMaxHpForSlot(member);
+      member.hp = member.maxHp;
+      const mList = getFourMovesForPokemon(member);
+      member.movePp = mList.map(m => Number(m.maxPp || (m.ultimate ? 5 : 15)));
+      return member;
+    }
+
+    function loadTrophyLockerFromStorage() {
+      try {
+        const raw = localStorage.getItem('dropbot_v4_logan_trophy_locker');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            stadiumBattleState.trophyLocker = Array.isArray(parsed.caught) ? parsed.caught : [];
+            stadiumBattleState.badges = Array.isArray(parsed.badges) ? parsed.badges : [];
+            stadiumBattleState.masterBalls = typeof parsed.masterBalls === 'number' ? parsed.masterBalls : 3;
+            return;
+          }
+        }
+      } catch (e) {}
+      stadiumBattleState.trophyLocker = [
+        { id: 384, name: 'Rayquaza', type: 'dragon', shiny: true, bst: 680, caughtAt: 'Starter Gift' },
+        { id: 6,   name: 'Charizard', type: 'fire',  shiny: false, bst: 534, caughtAt: 'Starter Gift' }
+      ];
+      stadiumBattleState.badges = [];
+      stadiumBattleState.masterBalls = 3;
+    }
+
+    function saveTrophyLockerToStorage() {
+      try {
+        localStorage.setItem('dropbot_v4_logan_trophy_locker', JSON.stringify({
+          caught: stadiumBattleState.trophyLocker || [],
+          badges: stadiumBattleState.badges || [],
+          masterBalls: stadiumBattleState.masterBalls ?? 3
+        }));
+      } catch (e) {}
+    }
+
+    function ensureSquadTeamsInitialized() {
+      if (!Array.isArray(stadiumBattleState.trophyLocker)) {
+        loadTrophyLockerFromStorage();
+      }
+      if (!Array.isArray(stadiumBattleState.team1) || stadiumBattleState.team1.length !== 3) {
+        const p1Lead = hydrateSlotFromDex({ ...partnerState.slot1 });
+        p1Lead.maxHp = calcMaxHpForSlot(p1Lead);
+        p1Lead.hp = p1Lead.maxHp;
+        p1Lead.movePp = getFourMovesForPokemon(p1Lead).map(m => Number(m.maxPp || 15));
+        const b1 = buildSquadMemberFromId(p1Lead.id === 384 ? 448 : 384, false);
+        const b2 = buildSquadMemberFromId(p1Lead.id === 6 ? 94 : 6, false);
+        stadiumBattleState.team1 = [p1Lead, b1, b2];
+        stadiumBattleState.activeIdx1 = 0;
+      }
+      if (!Array.isArray(stadiumBattleState.team2) || stadiumBattleState.team2.length !== 3) {
+        const p2Lead = hydrateSlotFromDex({ ...partnerState.slot2 });
+        p2Lead.maxHp = calcMaxHpForSlot(p2Lead);
+        p2Lead.hp = p2Lead.maxHp;
+        p2Lead.movePp = getFourMovesForPokemon(p2Lead).map(m => Number(m.maxPp || 15));
+        const e1 = buildSquadMemberFromId(p2Lead.id === 150 ? 445 : 150, false);
+        const e2 = buildSquadMemberFromId(p2Lead.id === 149 ? 248 : 149, false);
+        stadiumBattleState.team2 = [p2Lead, e1, e2];
+        stadiumBattleState.activeIdx2 = 0;
+      }
+    }
+
+    function syncActiveSquadMemberWithPartnerState(slotNum) {
+      ensureSquadTeamsInitialized();
+      const team = slotNum === 1 ? stadiumBattleState.team1 : stadiumBattleState.team2;
+      const idx = slotNum === 1 ? (stadiumBattleState.activeIdx1 || 0) : (stadiumBattleState.activeIdx2 || 0);
+      const pSlot = hydrateSlotFromDex(slotNum === 1 ? partnerState.slot1 : partnerState.slot2);
+      const curMember = team[idx];
+
+      if (!curMember || curMember.id !== pSlot.id) {
+        const updated = {
+          ...pSlot,
+          megaActive: Boolean(pSlot.megaActive),
+          ailment: null,
+          sleepTurns: 0
+        };
+        updated.maxHp = calcMaxHpForSlot(updated);
+        updated.hp = updated.maxHp;
+        updated.movePp = getFourMovesForPokemon(updated).map(m => Number(m.maxPp || 15));
+        team[idx] = updated;
+      } else {
+        curMember.shiny = Boolean(pSlot.shiny);
+        curMember.name = pSlot.name;
+        curMember.type = pSlot.type;
+        curMember.types = pSlot.types;
+        curMember.stats = pSlot.stats || curMember.stats;
+        if (!Array.isArray(curMember.movePp) || curMember.movePp.length !== 4) {
+          curMember.movePp = getFourMovesForPokemon(curMember).map(m => Number(m.maxPp || 15));
+        }
+      }
+      return team[idx];
     }
 
     function stopAutoSimBattle() {
@@ -3013,19 +3453,36 @@
 
     function initStadiumCombatants(preserveLog) {
       stopAutoSimBattle();
-      const s1 = hydrateSlotFromDex(partnerState.slot1);
-      const s2 = hydrateSlotFromDex(partnerState.slot2);
-      stadiumBattleState.slot1MaxHp = calcMaxHpForSlot(s1);
-      stadiumBattleState.slot1Hp = stadiumBattleState.slot1MaxHp;
-      stadiumBattleState.slot2MaxHp = calcMaxHpForSlot(s2);
-      stadiumBattleState.slot2Hp = stadiumBattleState.slot2MaxHp;
+      ensureSquadTeamsInitialized();
+      syncActiveSquadMemberWithPartnerState(1);
+      syncActiveSquadMemberWithPartnerState(2);
+
+      [stadiumBattleState.team1, stadiumBattleState.team2].forEach(team => {
+        team.forEach(m => {
+          m.megaActive = false;
+          m.ailment = null;
+          m.sleepTurns = 0;
+          m.maxHp = calcMaxHpForSlot(m);
+          m.hp = m.maxHp;
+          m.movePp = getFourMovesForPokemon(m).map(mv => Number(mv.maxPp || (mv.ultimate ? 5 : 15)));
+        });
+      });
+
+      const active1 = stadiumBattleState.team1[stadiumBattleState.activeIdx1 || 0];
+      const active2 = stadiumBattleState.team2[stadiumBattleState.activeIdx2 || 0];
+      stadiumBattleState.slot1MaxHp = active1.maxHp;
+      stadiumBattleState.slot1Hp = active1.hp;
+      stadiumBattleState.slot2MaxHp = active2.maxHp;
+      stadiumBattleState.slot2Hp = active2.hp;
+      stadiumBattleState.overdrive1 = stadiumBattleState.overdrive1 || 0;
+      stadiumBattleState.overdrive2 = stadiumBattleState.overdrive2 || 0;
       stadiumBattleState.faintedSlot = 0;
       stadiumBattleState.attackLock = false;
 
       const art1 = document.getElementById('cutinArtSlot1');
       const art2 = document.getElementById('cutinArtSlot2');
-      if (art1) art1.classList.remove('fainted-pokemon');
-      if (art2) art2.classList.remove('fainted-pokemon');
+      if (art1) art1.classList.remove('fainted-pokemon', 'mega-overdrive-art');
+      if (art2) art2.classList.remove('fainted-pokemon', 'mega-overdrive-art');
 
       renderStadiumCombatUI();
       renderStadiumRosterDock();
@@ -3033,22 +3490,72 @@
       if (!preserveLog) {
         const logTitle = document.getElementById('stadiumBattleLogTitle');
         const logText = document.getElementById('stadiumBattleLogText');
-        if (logTitle) logTitle.innerText = 'LOGAN\'S BATTLE STADIUM READY';
-        if (logText) logText.innerText = s1.name.toUpperCase() + ' vs. ' + s2.name.toUpperCase() + ' — Click any attack move or Sim Full Battle!';
+        if (logTitle) logTitle.innerText = 'LOGAN\'S 3v3 BATTLE STADIUM READY';
+        if (logText) logText.innerText = active1.name.toUpperCase() + ' vs. ' + active2.name.toUpperCase() + ' — Click any move, switch bench Pokémon, or throw a Capture Ball!';
       }
     }
 
+    function renderSquadHudForSide(sideNum) {
+      const container = document.getElementById('stadiumPartyHud' + sideNum);
+      if (!container) return;
+      const team = sideNum === 1 ? stadiumBattleState.team1 : stadiumBattleState.team2;
+      const activeIdx = sideNum === 1 ? (stadiumBattleState.activeIdx1 || 0) : (stadiumBattleState.activeIdx2 || 0);
+      if (!Array.isArray(team)) return;
+
+      container.innerHTML = team.map((m, idx) => {
+        const isAct = idx === activeIdx;
+        const isFainted = m.hp <= 0;
+        const hpPct = Math.max(0, Math.min(100, Math.round((m.hp / Math.max(1, m.maxHp)) * 100)));
+        const hpColor = hpPct === 0 ? 'bg-rose-600' : (hpPct < 25 ? 'bg-rose-500' : (hpPct < 55 ? 'bg-amber-400' : 'bg-emerald-400'));
+        const pillCls = isAct ? 'squad-slot-active' : (isFainted ? 'squad-slot-fainted' : '');
+        const ballColor = isFainted ? '#64748B' : (isAct ? '#00F0FF' : '#10B981');
+        const statusTag = m.ailment && STATUS_BADGE_STYLES[m.ailment]
+          ? '<span class="px-1 rounded text-[8px] font-mono-num font-black ' + STATUS_BADGE_STYLES[m.ailment].cls + '">' + m.ailment + '</span>'
+          : (m.megaActive ? '<span class="px-1 rounded text-[8px] font-mono-num font-black bg-amber-400 text-slate-950">MEGA</span>' : '');
+
+        return (
+          '<button onclick="switchSquadMember(' + sideNum + ', ' + idx + ')" ' +
+                  'title="' + (isAct ? 'Active Fighter: ' + m.name : (isFainted ? m.name + ' has fainted!' : 'Click to Switch In ' + m.name + '!')) + '" ' +
+                  'class="squad-slot-pill p-1.5 rounded-xl bg-[#0B0916]/92 border border-white/20 flex flex-col gap-1 text-left ' + pillCls + '">' +
+            '<div class="flex items-center justify-between gap-1">' +
+              '<div class="flex items-center gap-1 min-w-0">' +
+                '<svg class="w-3 h-3 shrink-0" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="' + ballColor + '" stroke-width="2.2"/><line x1="3" y1="12" x2="21" y2="12" stroke="' + ballColor + '" stroke-width="2"/><circle cx="12" cy="12" r="2.5" fill="' + ballColor + '"/></svg>' +
+                '<img src="' + getArtworkFallbackUrl(m.id, m.shiny) + '" class="w-5 h-5 object-contain shrink-0" />' +
+                '<span class="text-[9px] font-extrabold text-white truncate">' + m.name + '</span>' +
+              '</div>' +
+              statusTag +
+            '</div>' +
+            '<div class="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden border border-white/10">' +
+              '<div class="h-full ' + hpColor + ' transition-all duration-300" style="width:' + hpPct + '%;"></div>' +
+            '</div>' +
+          '</button>'
+        );
+      }).join('');
+    }
+
     function renderStadiumCombatUI() {
-      const s1 = hydrateSlotFromDex(partnerState.slot1);
-      const s2 = hydrateSlotFromDex(partnerState.slot2);
+      ensureSquadTeamsInitialized();
+      const s1 = syncActiveSquadMemberWithPartnerState(1);
+      const s2 = syncActiveSquadMemberWithPartnerState(2);
+      stadiumBattleState.slot1Hp = s1.hp;
+      stadiumBattleState.slot1MaxHp = s1.maxHp;
+      stadiumBattleState.slot2Hp = s2.hp;
+      stadiumBattleState.slot2MaxHp = s2.maxHp;
+
       const spec1 = getEffectiveSlotSpectrum(s1);
       const spec2 = getEffectiveSlotSpectrum(s2);
 
-      const updateHpBar = (slotNum, curHp, maxHp) => {
+      renderSquadHudForSide(1);
+      renderSquadHudForSide(2);
+
+      const updateHpBar = (slotNum, memberObj) => {
+        const curHp = memberObj.hp;
+        const maxHp = memberObj.maxHp;
         const pct = Math.max(0, Math.min(100, Math.round((curHp / Math.max(1, maxHp)) * 100)));
         const lbl = document.getElementById('stadiumHpLabelSlot' + slotNum);
         const bar = document.getElementById('stadiumHpBarSlot' + slotNum);
         const badge = document.getElementById('stadiumStatusBadgeSlot' + slotNum);
+        const ailBadge = document.getElementById('stadiumAilmentBadgeSlot' + slotNum);
         const art = document.getElementById('cutinArtSlot' + slotNum);
 
         let barColor = 'bg-emerald-400';
@@ -3074,53 +3581,93 @@
           bar.className = 'h-full rounded-full transition-all duration-300 ' + barColor;
           bar.style.width = pct + '%';
         }
+        if (ailBadge) {
+          if (memberObj.ailment && STATUS_BADGE_STYLES[memberObj.ailment]) {
+            ailBadge.innerText = STATUS_BADGE_STYLES[memberObj.ailment].label;
+            ailBadge.className = 'text-[9px] px-1.5 py-0.5 rounded font-mono-num font-black ' + STATUS_BADGE_STYLES[memberObj.ailment].cls;
+          } else {
+            ailBadge.className = 'hidden';
+          }
+        }
         if (badge) {
           if (curHp <= 0) {
             badge.innerText = 'FAINTED!';
             badge.className = 'text-[10px] px-2 py-0.5 rounded bg-rose-500/30 text-rose-200 border border-rose-400/60 font-black';
             if (art) art.classList.add('fainted-pokemon');
+          } else if (memberObj.megaActive) {
+            badge.innerText = '⟦ MEGA +30% ⟧';
+            badge.className = 'text-[10px] px-2 py-0.5 rounded bg-amber-400/30 text-amber-200 border border-amber-300 font-black';
+            if (art) {
+              art.classList.remove('fainted-pokemon');
+              art.classList.add('mega-overdrive-art');
+            }
           } else {
             badge.innerText = pct < 25 ? 'CRITICAL' : 'BATTLE READY';
             badge.className = pct < 25
               ? 'text-[10px] px-2 py-0.5 rounded bg-amber-500/25 text-amber-200 border border-amber-400/50 font-bold'
               : 'text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 font-bold';
-            if (art) art.classList.remove('fainted-pokemon');
+            if (art) {
+              art.classList.remove('fainted-pokemon', 'mega-overdrive-art');
+            }
           }
         }
       };
 
-      updateHpBar(1, stadiumBattleState.slot1Hp, stadiumBattleState.slot1MaxHp);
-      updateHpBar(2, stadiumBattleState.slot2Hp, stadiumBattleState.slot2MaxHp);
+      updateHpBar(1, s1);
+      updateHpBar(2, s2);
 
-      const renderMovesGrid = (slotNum, attackerObj, defenderObj, spec) => {
+      // Update Mega Overdrive Gauges
+      [1, 2].forEach(sideNum => {
+        const odVal = Math.min(100, Math.max(0, Number(sideNum === 1 ? (stadiumBattleState.overdrive1 || 0) : (stadiumBattleState.overdrive2 || 0))));
+        const memberObj = sideNum === 1 ? s1 : s2;
+        const txtEl = document.getElementById('megaGaugeTextSlot' + sideNum);
+        const barEl = document.getElementById('megaGaugeBarSlot' + sideNum);
+        const btnEl = document.getElementById('megaTriggerBtnSlot' + sideNum);
+        if (txtEl) txtEl.innerText = memberObj.megaActive ? 'MEGA ACTIVE!' : (odVal + '%');
+        if (barEl) barEl.style.width = (memberObj.megaActive ? 100 : odVal) + '%';
+        if (btnEl) {
+          if (odVal >= 100 && !memberObj.megaActive && memberObj.hp > 0) {
+            btnEl.classList.remove('hidden');
+          } else {
+            btnEl.classList.add('hidden');
+          }
+        }
+      });
+
+      const renderMovesGrid = (slotNum, attackerObj, defenderObj) => {
         const container = document.getElementById('stadiumMovesSlot' + slotNum);
         if (!container) return;
         const moves = getFourMovesForPokemon(attackerObj);
+        if (!Array.isArray(attackerObj.movePp) || attackerObj.movePp.length !== 4) {
+          attackerObj.movePp = moves.map(m => Number(m.maxPp || (m.ultimate ? 5 : 15)));
+        }
         container.innerHTML = moves.map((m, idx) => {
           const eff = computeMoveEffectiveness(m.type, defenderObj.types || [defenderObj.type]);
-          const effTag = eff > 1 ? (eff + 'x SUPER') : (eff < 1 ? (eff + 'x RES') : '1x');
+          const effTag = eff > 1 ? (eff + 'x SUPER') : (eff === 0 ? '0x IMMUNE' : (eff < 1 ? (eff + 'x RES') : '1x'));
           const effCls = eff > 1 ? 'text-emerald-300' : (eff < 1 ? 'text-amber-300' : 'text-slate-300');
+          const curPp = attackerObj.movePp[idx] ?? m.maxPp;
+          const statusSub = m.status ? (' • ' + m.status.code) : (m.drain ? ' • DRAIN' : '');
           const borderCls = m.ultimate
             ? 'border-amber-400/70 bg-gradient-to-r from-amber-500/25 to-purple-600/30 hover:from-amber-500/40 hover:to-purple-500/45 shadow-[0_0_14px_rgba(250,204,21,0.25)]'
             : 'border-white/20 bg-[#120F24]/90 hover:bg-[#1E193A] hover:border-cyan-400/60';
           return (
             '<button onclick="executeStadiumMove(' + slotNum + ', ' + idx + ')" ' +
-                    'class="p-2 rounded-xl border ' + borderCls + ' text-left transition active:scale-95 flex flex-col justify-between">' +
+                    'class="p-2 rounded-xl border ' + borderCls + ' text-left transition active:scale-95 flex flex-col justify-between ' + (curPp <= 0 ? 'opacity-45' : '') + '">' +
               '<div class="flex items-center justify-between gap-1">' +
                 '<span class="text-[11px] font-extrabold text-white truncate">' + (m.ultimate ? 'ULT: ' : '') + m.name + '</span>' +
                 '<span class="text-[9px] font-mono-num font-black ' + effCls + ' shrink-0">' + effTag + '</span>' +
               '</div>' +
               '<div class="flex items-center justify-between text-[9px] font-mono-num text-slate-300 mt-1">' +
-                '<span class="uppercase">' + m.type + '</span>' +
-                '<span class="font-bold text-cyan-200">PWR ' + m.power + '</span>' +
+                '<span class="uppercase">' + m.type + statusSub + '</span>' +
+                '<span class="font-bold text-cyan-200">PWR ' + m.power + ' • PP ' + curPp + '/' + m.maxPp + '</span>' +
               '</div>' +
             '</button>'
           );
         }).join('');
       };
 
-      renderMovesGrid(1, s1, s2, spec1);
-      renderMovesGrid(2, s2, s1, spec2);
+      renderMovesGrid(1, s1, s2);
+      renderMovesGrid(2, s2, s1);
 
       // Update Stadium Evolve & Shiny Buttons
       [1, 2].forEach(slotNum => {
@@ -3148,6 +3695,19 @@
       if (autoState) {
         autoState.innerText = partnerState.battleAutoClose ? '6s' : 'OFF';
         autoState.className = partnerState.battleAutoClose ? 'text-cyan-300 font-extrabold' : 'text-amber-300 font-extrabold';
+      }
+
+      const trophyCnt = document.getElementById('stadiumTrophyCount');
+      if (trophyCnt) trophyCnt.innerText = String((stadiumBattleState.trophyLocker || []).length);
+
+      const mbBadge = document.getElementById('masterBallCountBadge');
+      if (mbBadge) mbBadge.innerText = 'MB: ' + String(stadiumBattleState.masterBalls ?? 3);
+
+      const gLabel = document.getElementById('stadiumGauntletLabel');
+      if (gLabel) {
+        gLabel.innerText = stadiumBattleState.gauntletStage > 0
+          ? ('GAUNTLET ' + stadiumBattleState.gauntletStage + '/5')
+          : 'GAUNTLET: START';
       }
     }
 
@@ -3181,21 +3741,173 @@
       }, 240);
     }
 
+    function switchSquadMember(sideNum, benchIdx, isAutoReplacement) {
+      if (stadiumBattleState.attackLock && !isAutoReplacement) return;
+      ensureSquadTeamsInitialized();
+      const team = sideNum === 1 ? stadiumBattleState.team1 : stadiumBattleState.team2;
+      const curIdx = sideNum === 1 ? (stadiumBattleState.activeIdx1 || 0) : (stadiumBattleState.activeIdx2 || 0);
+      const targetMember = team[benchIdx];
+      if (!targetMember) return;
+
+      if (benchIdx === curIdx && !isAutoReplacement) {
+        setStadiumDockTarget(sideNum);
+        return;
+      }
+      if (targetMember.hp <= 0) {
+        const logText = document.getElementById('stadiumBattleLogText');
+        if (logText) logText.innerText = targetMember.name.toUpperCase() + ' has fainted! Pick a living squad member or click Full Heal Squads.';
+        return;
+      }
+
+      if (sideNum === 1) stadiumBattleState.activeIdx1 = benchIdx;
+      else stadiumBattleState.activeIdx2 = benchIdx;
+
+      const key = sideNum === 1 ? 'slot1' : 'slot2';
+      partnerState[key] = {
+        ...partnerState[key],
+        id: targetMember.id,
+        name: targetMember.name,
+        type: targetMember.type,
+        types: targetMember.types || [targetMember.type],
+        stats: targetMember.stats,
+        abilities: targetMember.abilities,
+        moves: targetMember.moves,
+        shiny: Boolean(targetMember.shiny),
+        nextId: targetMember.nextId || null,
+        baseId: targetMember.baseId || targetMember.id,
+        chain: targetMember.chain || [targetMember.id]
+      };
+
+      const artEl = document.getElementById('cutinArtSlot' + sideNum);
+      if (artEl) {
+        artEl.classList.remove('anim-switch-beam');
+        void artEl.offsetWidth;
+        artEl.classList.add('anim-switch-beam');
+        artEl.src = getArtworkFallbackUrl(targetMember.id, targetMember.shiny);
+      }
+
+      playBattleSynthSfx('whoosh');
+      playPokemonCry(targetMember.id);
+      applyPartnerThemeAndHeader();
+
+      const s1 = syncActiveSquadMemberWithPartnerState(1);
+      const s2 = syncActiveSquadMemberWithPartnerState(2);
+      const spec1 = getEffectiveSlotSpectrum(s1);
+      const spec2 = getEffectiveSlotSpectrum(s2);
+      const matchup = getTypeMatchup(s1.types || [s1.type], s2.types || [s2.type]);
+
+      const leftTitle = document.getElementById('cutinLeftTitle');
+      const rightTitle = document.getElementById('cutinRightTitle');
+      const headline = document.getElementById('cutinBannerHeadline');
+      const statCard1 = document.getElementById('cutinStatCardSlot1');
+      const statCard2 = document.getElementById('cutinStatCardSlot2');
+      if (leftTitle) leftTitle.innerText = (s1.shiny ? 'SHINY ' : '') + s1.name.toUpperCase();
+      if (rightTitle) rightTitle.innerText = (s2.shiny ? 'SHINY ' : '') + s2.name.toUpperCase();
+      if (headline) headline.innerText = s1.name.toUpperCase() + ' VS ' + s2.name.toUpperCase();
+      if (statCard1) statCard1.innerHTML = renderPokedexStatCardHtml(s1, spec1, matchup.slot1Mult, matchup.slot2Mult);
+      if (statCard2) statCard2.innerHTML = renderPokedexStatCardHtml(s2, spec2, matchup.slot2Mult, matchup.slot1Mult);
+
+      stadiumBattleState.faintedSlot = 0;
+      renderStadiumCombatUI();
+
+      const logTitle = document.getElementById('stadiumBattleLogTitle');
+      const logText = document.getElementById('stadiumBattleLogText');
+      if (logTitle) logTitle.innerText = 'SQUAD SWITCH-IN!';
+      if (logText) logText.innerText = 'Go, ' + targetMember.name.toUpperCase() + '! Switched into battle with ' + targetMember.hp + '/' + targetMember.maxHp + ' HP!';
+    }
+
+    function triggerMegaOverdrive(sideNum) {
+      ensureSquadTeamsInitialized();
+      const member = syncActiveSquadMemberWithPartnerState(sideNum);
+      const odVal = sideNum === 1 ? (stadiumBattleState.overdrive1 || 0) : (stadiumBattleState.overdrive2 || 0);
+      if (odVal < 100 || member.megaActive || member.hp <= 0) return;
+
+      member.megaActive = true;
+      if (sideNum === 1) stadiumBattleState.overdrive1 = 0;
+      else stadiumBattleState.overdrive2 = 0;
+
+      const oldMax = member.maxHp;
+      member.maxHp = calcMaxHpForSlot(member);
+      member.hp = Math.min(member.maxHp, member.hp + Math.round((member.maxHp - oldMax) + member.maxHp * 0.25));
+      member.ailment = null;
+      member.movePp = getFourMovesForPokemon(member).map(m => Number(m.maxPp || (m.ultimate ? 5 : 15)));
+
+      playBattleSynthSfx('victory');
+      playPokemonCry(member.id);
+      pulseScreenClashAura();
+      renderStadiumCombatUI();
+
+      const logTitle = document.getElementById('stadiumBattleLogTitle');
+      const logText = document.getElementById('stadiumBattleLogText');
+      if (logTitle) logTitle.innerText = '⟦ MEGA OVERDRIVE UNLEASHED! ⟧';
+      if (logText) logText.innerText = member.name.toUpperCase() + ' ascended into MEGA OVERDRIVE! (+30% Stats, HP Surge & Full PP Restored!)';
+    }
+
     function executeStadiumMove(attackerSlot, moveIdx) {
       if (stadiumBattleState.attackLock) return;
+      ensureSquadTeamsInitialized();
       if (stadiumBattleState.faintedSlot !== 0) {
         resetBattleStadiumMatch();
         return;
       }
 
       const defenderSlot = attackerSlot === 1 ? 2 : 1;
-      const attacker = hydrateSlotFromDex(attackerSlot === 1 ? partnerState.slot1 : partnerState.slot2);
-      const defender = hydrateSlotFromDex(defenderSlot === 1 ? partnerState.slot1 : partnerState.slot2);
+      const attacker = syncActiveSquadMemberWithPartnerState(attackerSlot);
+      const defender = syncActiveSquadMemberWithPartnerState(defenderSlot);
       const specAtk = getEffectiveSlotSpectrum(attacker);
       const moves = getFourMovesForPokemon(attacker);
       const move = moves[moveIdx] || moves[0];
 
+      if (!Array.isArray(attacker.movePp) || attacker.movePp.length !== 4) {
+        attacker.movePp = moves.map(m => Number(m.maxPp || 15));
+      }
+      if (attacker.movePp[moveIdx] <= 0) {
+        const logText = document.getElementById('stadiumBattleLogText');
+        if (logText) logText.innerText = move.name.toUpperCase() + ' is out of PP! Choose another move or switch Pokémon!';
+        return;
+      }
+
+      // Check Pre-Attack Status Conditions (SLP / FRZ / PAR)
+      const logTitle = document.getElementById('stadiumBattleLogTitle');
+      const logText = document.getElementById('stadiumBattleLogText');
+      if (attacker.ailment === 'SLP') {
+        if ((attacker.sleepTurns || 0) > 0) {
+          attacker.sleepTurns--;
+          if (logTitle) logTitle.innerText = attacker.name.toUpperCase() + ' IS FAST ASLEEP!';
+          if (logText) logText.innerText = attacker.name.toUpperCase() + ' is sleeping soundly and couldn\'t move this turn!';
+          renderStadiumCombatUI();
+          return;
+        } else {
+          attacker.ailment = null;
+        }
+      } else if (attacker.ailment === 'FRZ') {
+        if (move.type !== 'fire' && Math.random() > 0.38) {
+          if (logTitle) logTitle.innerText = attacker.name.toUpperCase() + ' IS FROZEN SOLID!';
+          if (logText) logText.innerText = attacker.name.toUpperCase() + ' is frozen in ice! Use a Fire move or wait to thaw!';
+          renderStadiumCombatUI();
+          return;
+        } else {
+          attacker.ailment = null;
+        }
+      } else if (attacker.ailment === 'PAR' && Math.random() < 0.22) {
+        if (logTitle) logTitle.innerText = attacker.name.toUpperCase() + ' IS PARALYZED!';
+        if (logText) logText.innerText = attacker.name.toUpperCase() + ' is paralyzed and couldn\'t execute ' + move.name.toUpperCase() + '!';
+        renderStadiumCombatUI();
+        return;
+      }
+
+      attacker.movePp[moveIdx] = Math.max(0, attacker.movePp[moveIdx] - 1);
       stadiumBattleState.attackLock = true;
+
+      // Charge Mega Overdrive Gauges
+      if (attackerSlot === 1) {
+        stadiumBattleState.overdrive1 = Math.min(100, (stadiumBattleState.overdrive1 || 0) + 28);
+        stadiumBattleState.overdrive2 = Math.min(100, (stadiumBattleState.overdrive2 || 0) + 18);
+      } else {
+        stadiumBattleState.overdrive2 = Math.min(100, (stadiumBattleState.overdrive2 || 0) + 28);
+        stadiumBattleState.overdrive1 = Math.min(100, (stadiumBattleState.overdrive1 || 0) + 18);
+      }
+
       const atkArt = document.getElementById('cutinArtSlot' + attackerSlot);
       const defArt = document.getElementById('cutinArtSlot' + defenderSlot);
       const stageEl = document.getElementById('stadiumCombatStage');
@@ -3215,68 +3927,319 @@
       const stA = attacker.stats || dexA.stats || { atk: 90, spa: 85 };
       const stD = defender.stats || dexD.stats || { def: 80, spd: 80 };
 
-      const offStat = move.cat === 'phys' ? Number(stA.atk || 85) : Number(stA.spa || 85);
-      const defStat = move.cat === 'phys' ? Number(stD.def || 80) : Number(stD.spd || 80);
+      const megaBoostA = attacker.megaActive ? 1.30 : 1.0;
+      const megaBoostD = defender.megaActive ? 1.20 : 1.0;
+      const brnPenalty = (attacker.ailment === 'BRN' && move.cat === 'phys') ? 0.78 : 1.0;
+
+      const offStat = (move.cat === 'phys' ? Number(stA.atk || 85) : Number(stA.spa || 85)) * megaBoostA * brnPenalty;
+      const defStat = (move.cat === 'phys' ? Number(stD.def || 80) : Number(stD.spd || 80)) * megaBoostD;
       const typeMult = computeMoveEffectiveness(move.type, defender.types || [defender.type]);
       const isCrit = Math.random() < 0.15;
       const critMult = isCrit ? 1.5 : 1.0;
       const randVar = 0.90 + Math.random() * 0.16;
 
-      const rawDmg = ((22 * Number(move.power || 90) * (offStat / Math.max(25, defStat))) / 32 + 12) * typeMult * critMult * randVar;
-      const dmg = Math.max(14, Math.round(rawDmg));
+      const rawDmg = typeMult === 0
+        ? 0
+        : (((22 * Number(move.power || 90) * (offStat / Math.max(25, defStat))) / 32 + 12) * typeMult * critMult * randVar);
+      const dmg = typeMult === 0 ? 0 : Math.max(14, Math.round(rawDmg));
 
       setTimeout(() => {
         playBattleSynthSfx('impact');
-        if (defArt) {
+        if (defArt && dmg > 0) {
           defArt.classList.remove('anim-hit-recoil');
           void defArt.offsetWidth;
           defArt.classList.add('anim-hit-recoil');
         }
-        if (stageEl) {
+        if (stageEl && dmg > 0) {
           stageEl.classList.remove('anim-arena-shake');
           void stageEl.offsetWidth;
           stageEl.classList.add('anim-arena-shake');
         }
 
+        defender.hp = Math.max(0, defender.hp - dmg);
+        let statusProcNote = '';
+        if (defender.hp > 0 && move.status && !defender.ailment && Math.random() < Number(move.status.chance || 0.25)) {
+          defender.ailment = move.status.code;
+          if (move.status.code === 'SLP') defender.sleepTurns = 1 + Math.floor(Math.random() * 2);
+          statusProcNote = ' [' + move.status.code + ' INFLICTED!]';
+        }
+
+        let drainNote = '';
+        if (move.drain && dmg > 0 && attacker.hp > 0) {
+          const healAmt = Math.max(12, Math.round(dmg * Number(move.drain)));
+          attacker.hp = Math.min(attacker.maxHp, attacker.hp + healAmt);
+          drainNote = ' (+' + healAmt + ' HP DRAIN!)';
+        }
+
+        // End-of-turn Burn / Poison chip damage on attacker
+        let chipNote = '';
+        if (attacker.hp > 0 && (attacker.ailment === 'BRN' || attacker.ailment === 'PSN')) {
+          const chip = Math.max(8, Math.round(attacker.maxHp * 0.06));
+          attacker.hp = Math.max(1, attacker.hp - chip);
+          chipNote = ' (' + attacker.ailment + ' -' + chip + ' HP)';
+        }
+
         const floatEl = document.getElementById('dmgFloatSlot' + defenderSlot);
         if (floatEl) {
-          floatEl.innerText = '-' + dmg + ' HP' + (isCrit ? ' CRIT!' : '') + (typeMult > 1 ? ' (' + typeMult + 'x!)' : '');
+          floatEl.innerText = (dmg === 0 ? 'IMMUNE (0 HP)' : ('-' + dmg + ' HP')) + (isCrit ? ' CRIT!' : '') + (typeMult > 1 ? ' (' + typeMult + 'x!)' : '');
           floatEl.classList.remove('show-dmg');
           void floatEl.offsetWidth;
           floatEl.classList.add('show-dmg');
         }
 
-        if (defenderSlot === 1) {
-          stadiumBattleState.slot1Hp = Math.max(0, stadiumBattleState.slot1Hp - dmg);
-        } else {
-          stadiumBattleState.slot2Hp = Math.max(0, stadiumBattleState.slot2Hp - dmg);
-        }
-
         renderStadiumCombatUI();
 
-        const effNote = typeMult > 1 ? " It's SUPER EFFECTIVE!" : (typeMult < 1 ? " It's not very effective..." : '');
+        const effNote = typeMult > 1 ? " It's SUPER EFFECTIVE!" : (typeMult === 0 ? " It had no effect!" : (typeMult < 1 ? " It's not very effective..." : ''));
         const critNote = isCrit ? ' CRITICAL HIT!' : '';
-        const logTitle = document.getElementById('stadiumBattleLogTitle');
-        const logText = document.getElementById('stadiumBattleLogText');
-        const remHp = defenderSlot === 1 ? stadiumBattleState.slot1Hp : stadiumBattleState.slot2Hp;
 
-        if (remHp <= 0) {
+        if (defender.hp <= 0) {
+          const defTeam = defenderSlot === 1 ? stadiumBattleState.team1 : stadiumBattleState.team2;
+          const nextLivingIdx = defTeam.findIndex(m => m.hp > 0);
+
+          if (nextLivingIdx !== -1) {
+            if (logTitle) logTitle.innerText = defender.name.toUpperCase() + ' FAINTED! BENCH TAG-IN!';
+            if (logText) logText.innerText = attacker.name.toUpperCase() + ' knocked out ' + defender.name.toUpperCase() + '! Sending in ' + defTeam[nextLivingIdx].name.toUpperCase() + '...';
+            setTimeout(() => {
+              stadiumBattleState.attackLock = false;
+              switchSquadMember(defenderSlot, nextLivingIdx, true);
+            }, 680);
+            return;
+          }
+
           stadiumBattleState.faintedSlot = defenderSlot;
           stopAutoSimBattle();
           playBattleSynthSfx('victory');
           const headline = document.getElementById('cutinBannerHeadline');
-          if (headline) headline.innerText = 'WINNER: ' + attacker.name.toUpperCase() + '!';
-          if (logTitle) logTitle.innerText = 'K.O. VICTORY!';
-          if (logText) logText.innerText = attacker.name.toUpperCase() + ' used ' + move.name.toUpperCase() + ' (-' + dmg + ' HP) and scored a K.O. over ' + defender.name.toUpperCase() + '!';
+
+          // Check Champion Gauntlet Progression if Player 1 wiped Boss Squad
+          if (attackerSlot === 1 && stadiumBattleState.gauntletStage > 0) {
+            const stageCfg = CHAMPION_GAUNTLET_STAGES[stadiumBattleState.gauntletStage - 1];
+            if (stageCfg && !stadiumBattleState.badges.includes(stageCfg.badge)) {
+              stadiumBattleState.badges.push(stageCfg.badge);
+              stadiumBattleState.masterBalls = (stadiumBattleState.masterBalls ?? 3) + 1;
+              saveTrophyLockerToStorage();
+            }
+            if (stadiumBattleState.gauntletStage < CHAMPION_GAUNTLET_STAGES.length) {
+              const nextSt = stadiumBattleState.gauntletStage + 1;
+              if (headline) headline.innerText = 'STAGE ' + stadiumBattleState.gauntletStage + ' CLEARED! (+1 MASTER BALL)';
+              if (logTitle) logTitle.innerText = 'GAUNTLET STAGE ' + stadiumBattleState.gauntletStage + ' CONQUERED!';
+              if (logText) logText.innerText = 'Earned [' + stageCfg.badge + '] + 1 Master Ball! Advancing to Stage ' + nextSt + ' in 2s...';
+              setTimeout(() => {
+                stadiumBattleState.attackLock = false;
+                loadGauntletStage(nextSt);
+              }, 1900);
+              return;
+            } else {
+              stadiumBattleState.gauntletStage = 0;
+              if (headline) headline.innerText = 'GRAND CHAMPION LOGAN! ALL 5 STAGES CONQUERED!';
+              if (logTitle) logTitle.innerText = '⟦ CHAMPION GAUNTLET COMPLETE! ⟧';
+              if (logText) logText.innerText = 'Logan conquered all 5 Boss Squads and unlocked the GODSLAYER Crest in the Trophy Locker!';
+              renderStadiumCombatUI();
+            }
+          } else {
+            if (headline) headline.innerText = '3v3 SQUAD WINNER: ' + attacker.name.toUpperCase() + '!';
+            if (logTitle) logTitle.innerText = '3v3 SQUAD WIPEOUT VICTORY!';
+            if (logText) logText.innerText = attacker.name.toUpperCase() + ' used ' + move.name.toUpperCase() + ' (-' + dmg + ' HP) to finish the match!';
+          }
         } else {
-          if (logTitle) logTitle.innerText = attacker.name.toUpperCase() + ' ATTACKED!';
-          if (logText) logText.innerText = attacker.name.toUpperCase() + ' used ' + move.name.toUpperCase() + '!' + critNote + effNote + ' (-' + dmg + ' HP)';
+          if (logTitle) logTitle.innerText = attacker.name.toUpperCase() + ' USED ' + move.name.toUpperCase() + '!';
+          if (logText) logText.innerText = attacker.name.toUpperCase() + ' hit for -' + dmg + ' HP!' + critNote + effNote + statusProcNote + drainNote + chipNote;
         }
 
         setTimeout(() => {
           stadiumBattleState.attackLock = false;
         }, 220);
       }, 240);
+    }
+
+    async function loadBattleDeckPreset(deckKey) {
+      stopAutoSimBattle();
+      ensureSquadTeamsInitialized();
+      const targetSide = stadiumDockTargetSlot === 2 ? 2 : 1;
+      let ids = [384, 445, 149];
+      let label = 'MYSTERY 3v3';
+
+      if (deckKey === 'RANDOM_MYSTERY') {
+        const pool = [...POWERHOUSE_POOL_IDS].sort(() => Math.random() - 0.5);
+        ids = pool.slice(0, 3);
+      } else if (BATTLE_DECK_PRESETS[deckKey]) {
+        ids = BATTLE_DECK_PRESETS[deckKey].ids;
+        label = BATTLE_DECK_PRESETS[deckKey].label;
+      }
+
+      await Promise.all(ids.map(id => ensurePokemonMetadata(id)));
+      const newTeam = ids.map(id => buildSquadMemberFromId(id, deckKey === 'RANDOM_MYSTERY' ? (Math.random() < 0.25) : false));
+
+      if (targetSide === 1) {
+        stadiumBattleState.team1 = newTeam;
+        stadiumBattleState.activeIdx1 = 0;
+        partnerState.slot1 = { ...newTeam[0] };
+      } else {
+        stadiumBattleState.team2 = newTeam;
+        stadiumBattleState.activeIdx2 = 0;
+        partnerState.slot2 = { ...newTeam[0] };
+      }
+
+      applyPartnerThemeAndHeader();
+      playPokemonCry(newTeam[0].id);
+      triggerClashCutIn({
+        force: true,
+        headline: partnerState.slot1.name.toUpperCase() + ' VS ' + partnerState.slot2.name.toUpperCase()
+      });
+
+      const logTitle = document.getElementById('stadiumBattleLogTitle');
+      const logText = document.getElementById('stadiumBattleLogText');
+      if (logTitle) logTitle.innerText = '⟦ ' + label + ' SQUAD DEPLOYED! ⟧';
+      if (logText) logText.innerText = 'Loaded ' + newTeam.map(m => m.name).join(', ') + ' into Side ' + targetSide + '!';
+    }
+
+    function attemptStadiumCatch(ballType) {
+      if (stadiumBattleState.attackLock) return;
+      ensureSquadTeamsInitialized();
+      const target = syncActiveSquadMemberWithPartnerState(2);
+      const logTitle = document.getElementById('stadiumBattleLogTitle');
+      const logText = document.getElementById('stadiumBattleLogText');
+
+      if (ballType === 'MASTER') {
+        if ((stadiumBattleState.masterBalls ?? 3) <= 0) {
+          if (logTitle) logTitle.innerText = 'NO MASTER BALLS LEFT!';
+          if (logText) logText.innerText = 'Win Champion Gauntlet stages to earn more Master Balls, or throw an Ultra Ball!';
+          return;
+        }
+        stadiumBattleState.masterBalls--;
+      }
+
+      const hpRatio = target.hp / Math.max(1, target.maxHp);
+      let catchChance = (1.15 - hpRatio * 0.85);
+      if (ballType === 'ULTRA') catchChance *= 1.85;
+      if (target.ailment) catchChance += 0.20;
+      if (target.hp <= 0) catchChance = 0.95;
+      if (ballType === 'MASTER') catchChance = 1.0;
+
+      const defArt = document.getElementById('cutinArtSlot2');
+      if (defArt) {
+        defArt.classList.remove('anim-switch-beam');
+        void defArt.offsetWidth;
+        defArt.classList.add('anim-switch-beam');
+      }
+      playBattleSynthSfx('whoosh');
+
+      setTimeout(() => {
+        const success = Math.random() <= catchChance;
+        if (success) {
+          playBattleSynthSfx('victory');
+          const dex = HALL_OF_FAME_DEX[target.id] || {};
+          const bst = Number(target.stats?.bst || dex.stats?.bst || 540);
+          const existsIdx = stadiumBattleState.trophyLocker.findIndex(c => c.id === target.id && Boolean(c.shiny) === Boolean(target.shiny));
+          const entry = {
+            id: target.id,
+            name: target.name,
+            type: target.type || 'normal',
+            shiny: Boolean(target.shiny),
+            bst,
+            caughtWith: ballType,
+            caughtAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          };
+          if (existsIdx === -1) stadiumBattleState.trophyLocker.unshift(entry);
+          else stadiumBattleState.trophyLocker[existsIdx] = entry;
+          saveTrophyLockerToStorage();
+          renderStadiumCombatUI();
+
+          if (logTitle) logTitle.innerText = 'GOTCHA! ' + (target.shiny ? 'SHINY ' : '') + target.name.toUpperCase() + ' CAUGHT!';
+          if (logText) logText.innerText = (target.shiny ? 'SHINY ' : '') + target.name.toUpperCase() + ' was saved to Logan\'s Trophy Locker (' + ballType + ' BALL)!';
+        } else {
+          playBattleSynthSfx('impact');
+          renderStadiumCombatUI();
+          if (logTitle) logTitle.innerText = 'OH NO! IT BROKE FREE!';
+          if (logText) logText.innerText = target.name.toUpperCase() + ' broke out of the ' + ballType + ' BALL! Weaken its HP or inflict Sleep/Paralysis!';
+        }
+      }, 420);
+    }
+
+    async function loadGauntletStage(stageNum) {
+      const cfg = CHAMPION_GAUNTLET_STAGES[stageNum - 1];
+      if (!cfg) return;
+      stadiumBattleState.gauntletStage = stageNum;
+      await Promise.all(cfg.ids.map(id => ensurePokemonMetadata(id)));
+      stadiumBattleState.team2 = cfg.ids.map((id, i) => buildSquadMemberFromId(id, cfg.shinyBoss && i === 0));
+      stadiumBattleState.activeIdx2 = 0;
+      partnerState.slot2 = { ...stadiumBattleState.team2[0] };
+      applyPartnerThemeAndHeader();
+      triggerClashCutIn({
+        force: true,
+        headline: cfg.title
+      });
+      const logTitle = document.getElementById('stadiumBattleLogTitle');
+      const logText = document.getElementById('stadiumBattleLogText');
+      if (logTitle) logTitle.innerText = cfg.title;
+      if (logText) logText.innerText = 'Boss Squad: ' + stadiumBattleState.team2.map(m => (m.shiny ? 'Shiny ' : '') + m.name).join(', ') + ' — Defeat all 3 to win [' + cfg.badge + ']!';
+    }
+
+    function startChampionGauntlet(ev) {
+      if (ev) ev.stopPropagation();
+      stopAutoSimBattle();
+      ensureSquadTeamsInitialized();
+      if (stadiumBattleState.gauntletStage > 0) {
+        stadiumBattleState.gauntletStage = 0;
+        renderStadiumCombatUI();
+        const logTitle = document.getElementById('stadiumBattleLogTitle');
+        const logText = document.getElementById('stadiumBattleLogText');
+        if (logTitle) logTitle.innerText = 'GAUNTLET MODE EXITED';
+        if (logText) logText.innerText = 'Returned to Free 3v3 Squad Battle Mode.';
+        return;
+      }
+      loadGauntletStage(1);
+    }
+
+    function toggleTrophyLocker(ev) {
+      if (ev) ev.stopPropagation();
+      const modal = document.getElementById('stadiumTrophyLockerModal');
+      if (!modal) return;
+      if (!modal.classList.contains('hidden')) {
+        modal.classList.add('hidden');
+        return;
+      }
+      ensureSquadTeamsInitialized();
+      renderTrophyLockerUI();
+      modal.classList.remove('hidden');
+    }
+
+    function renderTrophyLockerUI() {
+      const badgesRow = document.getElementById('trophyLockerBadgesRow');
+      const grid = document.getElementById('trophyLockerGrid');
+      if (badgesRow) {
+        badgesRow.innerHTML = CHAMPION_GAUNTLET_STAGES.map(st => {
+          const unlocked = (stadiumBattleState.badges || []).includes(st.badge);
+          return (
+            '<div class="px-2.5 py-1 rounded-lg border text-[10px] font-mono-num font-black flex items-center gap-1.5 ' +
+              (unlocked ? 'bg-amber-500/25 border-amber-400 text-amber-200 shadow-[0_0_12px_rgba(250,204,21,0.3)]' : 'bg-white/5 border-white/10 text-slate-500') + '">' +
+              '<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2l3 6 6 1-4.5 4.5 1 6.5-5.5-3-5.5 3 1-6.5L3 9l6-1z"/></svg>' +
+              '<span>' + st.badge + (unlocked ? ' ✓' : ' (LOCKED)') + '</span>' +
+            '</div>'
+          );
+        }).join('');
+      }
+      if (grid) {
+        const list = stadiumBattleState.trophyLocker || [];
+        if (list.length === 0) {
+          grid.innerHTML = '<div class="col-span-full text-center text-xs text-slate-400 py-8">No Pokémon caught yet! Throw a Poké Ball, Ultra Ball, or Master Ball in battle!</div>';
+          return;
+        }
+        grid.innerHTML = list.map((item, idx) => (
+          '<button onclick="equipTrophyPokemon(' + idx + ')" class="p-2.5 rounded-xl bg-[#141126] hover:bg-[#1E1938] border ' + (item.shiny ? 'border-amber-400/70 shadow-[0_0_15px_rgba(250,204,21,0.25)]' : 'border-white/15') + ' flex flex-col items-center gap-1 transition active:scale-95">' +
+            '<img src="' + getArtworkFallbackUrl(item.id, item.shiny) + '" class="w-16 h-16 object-contain" />' +
+            '<span class="text-xs font-black text-white truncate max-w-full">' + (item.shiny ? '✦ SHINY ' : '') + item.name + '</span>' +
+            '<span class="text-[9px] font-mono-num font-bold text-cyan-300">#' + item.id + ' • BST ' + (item.bst || 540) + '</span>' +
+          '</button>'
+        )).join('');
+      }
+    }
+
+    async function equipTrophyPokemon(lockerIdx) {
+      const entry = (stadiumBattleState.trophyLocker || [])[lockerIdx];
+      if (!entry) return;
+      document.getElementById('stadiumTrophyLockerModal')?.classList.add('hidden');
+      await tagInStadiumPokemon(entry.id, Boolean(entry.shiny));
     }
 
     function toggleAutoSimBattle() {
@@ -3294,8 +4257,8 @@
         btn.className = 'w-full py-1.5 px-3 rounded-xl bg-rose-500 hover:bg-rose-400 text-white font-black text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(244,63,94,0.6)] transition';
       }
 
-      const s1 = hydrateSlotFromDex(partnerState.slot1);
-      const s2 = hydrateSlotFromDex(partnerState.slot2);
+      const s1 = syncActiveSquadMemberWithPartnerState(1);
+      const s2 = syncActiveSquadMemberWithPartnerState(2);
       const spe1 = Number(s1.stats?.spe || HALL_OF_FAME_DEX[s1.id]?.stats?.spe || 80);
       const spe2 = Number(s2.stats?.spe || HALL_OF_FAME_DEX[s2.id]?.stats?.spe || 80);
       stadiumBattleState.simTurnSlot = spe1 >= spe2 ? 1 : 2;
@@ -3306,6 +4269,11 @@
           return;
         }
         const atkSlot = stadiumBattleState.simTurnSlot;
+        const odVal = atkSlot === 1 ? (stadiumBattleState.overdrive1 || 0) : (stadiumBattleState.overdrive2 || 0);
+        const curFighter = syncActiveSquadMemberWithPartnerState(atkSlot);
+        if (odVal >= 100 && !curFighter.megaActive) {
+          triggerMegaOverdrive(atkSlot);
+        }
         const moveIdx = Math.floor(Math.random() * 4);
         executeStadiumMove(atkSlot, moveIdx);
         stadiumBattleState.simTurnSlot = atkSlot === 1 ? 2 : 1;
@@ -3325,47 +4293,30 @@
 
     async function triggerRandomStadiumBattle() {
       stopAutoSimBattle();
+      ensureSquadTeamsInitialized();
       const logTitle = document.getElementById('stadiumBattleLogTitle');
       const logText = document.getElementById('stadiumBattleLogText');
-      if (logTitle) logTitle.innerText = 'RANDOMIZING POKÉDEX MATCHUP...';
-      if (logText) logText.innerText = 'Pulling 2 wild challengers from the 1,025 Pokédex...';
+      if (logTitle) logTitle.innerText = 'DRAFTING RANDOM 3v3 SQUADS...';
+      if (logText) logText.innerText = 'Pulling 6 challengers from the 1,025 Pokédex...';
 
-      const id1 = Math.floor(Math.random() * 1025) + 1;
-      let id2 = Math.floor(Math.random() * 1025) + 1;
-      if (id2 === id1) id2 = (id1 % 1025) + 1;
+      const pickIds = () => {
+        const shuffled = [...POWERHOUSE_POOL_IDS].sort(() => Math.random() - 0.5);
+        return [shuffled[0], shuffled[1], Math.floor(Math.random() * 1025) + 1];
+      };
+      const ids1 = pickIds();
+      const ids2 = pickIds();
 
       try {
-        const [m1, m2] = await Promise.all([ensurePokemonMetadata(id1), ensurePokemonMetadata(id2)]);
-        const [c1, c2] = await Promise.all([resolveFullEvolutionChain(m1.id), resolveFullEvolutionChain(m2.id)]);
-        partnerState.slot1 = {
-          id: m1.id,
-          name: m1.name,
-          type: m1.type,
-          types: m1.types || [m1.type],
-          stats: m1.stats,
-          abilities: m1.abilities,
-          moves: m1.moves,
-          shiny: Math.random() < 0.20,
-          nextId: c1.nextId,
-          baseId: c1.baseId,
-          chain: c1.chain
-        };
-        partnerState.slot2 = {
-          id: m2.id,
-          name: m2.name,
-          type: m2.type,
-          types: m2.types || [m2.type],
-          stats: m2.stats,
-          abilities: m2.abilities,
-          moves: m2.moves,
-          shiny: Math.random() < 0.20,
-          nextId: c2.nextId,
-          baseId: c2.baseId,
-          chain: c2.chain
-        };
+        await Promise.all([...ids1, ...ids2].map(id => ensurePokemonMetadata(id)));
+        stadiumBattleState.team1 = ids1.map(id => buildSquadMemberFromId(id, Math.random() < 0.22));
+        stadiumBattleState.team2 = ids2.map(id => buildSquadMemberFromId(id, Math.random() < 0.22));
+        stadiumBattleState.activeIdx1 = 0;
+        stadiumBattleState.activeIdx2 = 0;
+        partnerState.slot1 = { ...stadiumBattleState.team1[0] };
+        partnerState.slot2 = { ...stadiumBattleState.team2[0] };
         applyPartnerThemeAndHeader();
-        playPokemonCry(m1.id);
-        setTimeout(() => playPokemonCry(m2.id), 250);
+        playPokemonCry(partnerState.slot1.id);
+        setTimeout(() => playPokemonCry(partnerState.slot2.id), 250);
         triggerClashCutIn({
           force: true,
           headline: partnerState.slot1.name.toUpperCase() + ' VS ' + partnerState.slot2.name.toUpperCase()
@@ -3377,13 +4328,17 @@
       await onEvolveClick(slotNum);
       const key = slotNum === 1 ? 'slot1' : 'slot2';
       const evolved = hydrateSlotFromDex(partnerState[key]);
-      const newMax = calcMaxHpForSlot(evolved);
-      if (slotNum === 1) {
-        stadiumBattleState.slot1MaxHp = newMax;
-        stadiumBattleState.slot1Hp = Math.min(newMax, Math.round(stadiumBattleState.slot1Hp + newMax * 0.30));
-      } else {
-        stadiumBattleState.slot2MaxHp = newMax;
-        stadiumBattleState.slot2Hp = Math.min(newMax, Math.round(stadiumBattleState.slot2Hp + newMax * 0.30));
+      const team = slotNum === 1 ? stadiumBattleState.team1 : stadiumBattleState.team2;
+      const idx = slotNum === 1 ? (stadiumBattleState.activeIdx1 || 0) : (stadiumBattleState.activeIdx2 || 0);
+      if (Array.isArray(team) && team[idx]) {
+        const newMax = calcMaxHpForSlot(evolved);
+        team[idx] = {
+          ...team[idx],
+          ...evolved,
+          maxHp: newMax,
+          hp: Math.min(newMax, Math.round(team[idx].hp + newMax * 0.30)),
+          movePp: getFourMovesForPokemon(evolved).map(m => Number(m.maxPp || 15))
+        };
       }
       stadiumBattleState.faintedSlot = 0;
       renderStadiumCombatUI();
@@ -3395,6 +4350,9 @@
       const s2 = hydrateSlotFromDex(partnerState.slot2);
       const art = document.getElementById('cutinArtSlot' + slotNum);
       const slotObj = slotNum === 1 ? s1 : s2;
+      const team = slotNum === 1 ? stadiumBattleState.team1 : stadiumBattleState.team2;
+      const idx = slotNum === 1 ? (stadiumBattleState.activeIdx1 || 0) : (stadiumBattleState.activeIdx2 || 0);
+      if (Array.isArray(team) && team[idx]) team[idx].shiny = Boolean(slotObj.shiny);
       if (art) art.src = getArtworkFallbackUrl(slotObj.id, slotObj.shiny);
       const titleEl = document.getElementById(slotNum === 1 ? 'cutinLeftTitle' : 'cutinRightTitle');
       if (titleEl) titleEl.innerText = (slotObj.shiny ? 'SHINY ' : '') + slotObj.name.toUpperCase();
@@ -3422,7 +4380,7 @@
         const isActive = partnerState.slot1.id === item.id || partnerState.slot2.id === item.id;
         const borderCls = isActive ? 'border-cyan-400 bg-cyan-500/20' : 'border-white/15 bg-[#151226]/90 hover:border-cyan-400/50 hover:bg-[#211C3A]';
         return (
-          '<button onclick="tagInStadiumPokemon(' + item.id + ')" title="Tag in ' + item.label + ' to Slot ' + stadiumDockTargetSlot + '" ' +
+          '<button onclick="tagInStadiumPokemon(' + item.id + ')" title="Tag in ' + item.label + ' to active Slot ' + stadiumDockTargetSlot + '" ' +
                   'class="shrink-0 px-2 py-1 rounded-xl border ' + borderCls + ' flex items-center gap-1.5 transition active:scale-95">' +
             '<img src="' + getArtworkFallbackUrl(item.id, false) + '" class="w-7 h-7 object-contain" />' +
             '<span class="text-[10px] font-extrabold text-white whitespace-nowrap">' + item.label + '</span>' +
@@ -3431,26 +4389,24 @@
       }).join('');
     }
 
-    async function tagInStadiumPokemon(idOrName) {
+    async function tagInStadiumPokemon(idOrName, forceShiny) {
       try {
         stopAutoSimBattle();
+        ensureSquadTeamsInitialized();
         const slotNum = stadiumDockTargetSlot || 1;
         const key = slotNum === 1 ? 'slot1' : 'slot2';
         const meta = await ensurePokemonMetadata(idOrName);
         const chainData = await resolveFullEvolutionChain(meta.id);
-        partnerState[key] = {
-          id: meta.id,
-          name: meta.name,
-          type: meta.type,
-          types: meta.types || [meta.type],
-          stats: meta.stats,
-          abilities: meta.abilities,
-          moves: meta.moves,
-          shiny: false,
-          nextId: chainData.nextId,
-          baseId: chainData.baseId,
-          chain: chainData.chain
-        };
+        const newMember = buildSquadMemberFromId(meta.id, Boolean(forceShiny));
+        newMember.nextId = chainData.nextId;
+        newMember.baseId = chainData.baseId;
+        newMember.chain = chainData.chain;
+
+        const team = slotNum === 1 ? stadiumBattleState.team1 : stadiumBattleState.team2;
+        const activeIdx = slotNum === 1 ? (stadiumBattleState.activeIdx1 || 0) : (stadiumBattleState.activeIdx2 || 0);
+        team[activeIdx] = newMember;
+        partnerState[key] = { ...newMember };
+
         applyPartnerThemeAndHeader();
         playPokemonCry(meta.id);
         triggerClashCutIn({
