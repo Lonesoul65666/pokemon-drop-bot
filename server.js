@@ -826,10 +826,21 @@ function getDynamicStoreTelemetry() {
   let storeHealth = {};
   let bigBoxHealth = {
     targetRedskyStatus: 'HEALTHY',
+    pokemonCenterStatus: 'ARMED_MSRP_WATCH',
+    walmartStatus: 'ARMED_1P_MSRP',
+    bestBuyStatus: 'ARMED_SKU_WATCH',
+    costcoStatus: 'ARMED_PALLET_WATCH',
     redditRssStatus: 'HEALTHY',
     lastCheckAt: Date.now(),
     itemsScanned: 24,
-    activeBigBoxCount: 9
+    activeBigBoxCount: 9,
+    northStar5: {
+      pokemonCenter: { name: 'Pokémon Center', status: 'ARMED_MSRP_WATCH', mode: 'Direct $59.99 Exclusive + Queue Radar', lastChecked: Date.now() },
+      target: { name: 'Target (RedSky)', status: 'HEALTHY', mode: 'RedSky Fulfillment API (Zip 76177)', lastChecked: Date.now() },
+      walmart: { name: 'Walmart (1P MSRP)', status: 'ARMED_1P_MSRP', mode: '1P Retail MSRP Filter + Restock Radar', lastChecked: Date.now() },
+      bestBuy: { name: 'Best Buy', status: 'ARMED_SKU_WATCH', mode: 'Open SKU JSON + Restock Radar', lastChecked: Date.now() },
+      costco: { name: 'Costco Wholesale', status: 'ARMED_PALLET_WATCH', mode: '$39.99–$64.99 Pallet Bundle Watcher', lastChecked: Date.now() }
+    }
   };
   if (fs.existsSync(STORE_HEALTH_PATH)) {
     try {
@@ -1019,6 +1030,7 @@ app.get('/api/status', (req, res) => {
         totalMonitoredSources: storeTel.totalMonitoredSources,
         totalListingsMonitored: storeTel.totalListingsMonitored
       },
+      bigBoxHealth: storeTel.bigBoxHealth,
       storeHealth: storeTel.storeHealth,
       bestCurrentOffers,
       nearMisses
