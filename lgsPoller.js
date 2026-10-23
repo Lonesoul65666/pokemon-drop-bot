@@ -32,9 +32,46 @@ const storeHealthMap = new Map();
 let bigBoxHealthTelemetry = {
     targetRedskyStatus: 'HEALTHY',
     redditRssStatus: 'HEALTHY',
+    pokemonCenterStatus: 'ARMED_MSRP_WATCH',
+    walmartStatus: 'ARMED_1P_MSRP_ONLY',
+    bestBuyStatus: 'ARMED_MSRP_WATCH',
+    costcoStatus: 'ARMED_PALLET_WATCH',
     lastCheckAt: Date.now(),
     itemsScanned: 24,
-    activeBigBoxCount: 9
+    activeBigBoxCount: 9,
+    northStar5: {
+        pokemonCenter: {
+            name: 'Pokémon Center',
+            status: 'ARMED_MSRP_WATCH',
+            targetRule: '$59.99 PC Exclusive ETBs & Pre-Orders + Queue Radar',
+            queueState: 'NORMAL',
+            lastCheckedAt: Date.now()
+        },
+        target: {
+            name: 'Target',
+            status: 'HEALTHY',
+            targetRule: 'RedSky JSON API (Zip 76177 • $49.99–$54.99 ETB / $26.99 Bundle)',
+            lastCheckedAt: Date.now()
+        },
+        walmart: {
+            name: 'Walmart',
+            status: 'ARMED_1P_MSRP_ONLY',
+            targetRule: 'Sold & Shipped by Walmart Only (<= $55 ETB / <= $30 Bundle)',
+            lastCheckedAt: Date.now()
+        },
+        bestBuy: {
+            name: 'Best Buy',
+            status: 'ARMED_MSRP_WATCH',
+            targetRule: 'SKU Availability Watch ($49.99–$54.99 ETB / $26.99 Bundle)',
+            lastCheckedAt: Date.now()
+        },
+        costco: {
+            name: 'Costco',
+            status: 'ARMED_PALLET_WATCH',
+            targetRule: '$39.99–$64.99 ETB + Tin Multi-Pack Pallet Drops',
+            lastCheckedAt: Date.now()
+        }
+    }
 };
 let isPolling = false;
 try {
@@ -59,9 +96,19 @@ try {
 }
 catch (e) { }
 function recordBigBoxCheckTelemetry(patch) {
+    const nextNorthStar5 = patch.northStar5
+        ? {
+            ...(bigBoxHealthTelemetry.northStar5 || {}),
+            ...Object.fromEntries(Object.entries(patch.northStar5).map(([k, v]) => [
+                k,
+                { ...((bigBoxHealthTelemetry.northStar5 || {})[k] || {}), ...(v || {}) }
+            ]))
+        }
+        : bigBoxHealthTelemetry.northStar5;
     bigBoxHealthTelemetry = {
         ...bigBoxHealthTelemetry,
         ...patch,
+        northStar5: nextNorthStar5,
         lastCheckAt: Date.now()
     };
     try {
@@ -215,6 +262,11 @@ const variantStateMap = new Map();
 const oosVariantStagingMap = new Map();
 const seededOosStores = new Set();
 const stagingAlertCooldownMap = new Map();
+// Two-Tier Smart Deep-Catalog Pagination Cache (10-minute TTL per store, max 10 deep store fetches per sweep)
+const DEEP_PAGE_CACHE_TTL_MS = 10 * 60 * 1000;
+const MAX_DEEP_FETCHES_PER_SWEEP = 10;
+const deepPaginationCache = new Map();
+let deepFetchesThisSweep = 0;
 function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -341,7 +393,10 @@ async function pollSingleStore(store) {
         let products = resolved.initialProducts;
         let error = resolved.error;
         if (!products) {
-            const fetched = await smartGetJson(`${store.baseUrl}${resolved.feedPath}`);
+            const page1Url = resolved.feedPath.includes('page=')
+                ? `${store.baseUrl}${resolved.feedPath}`
+                : `${store.baseUrl}${resolved.feedPath}${resolved.feedPath.includes('?') ? '&' : '?'}page=1`;
+            const fetched = await smartGetJson(page1Url);
             products = fetched.data?.products;
             error = fetched.error;
         }
@@ -358,6 +413,43 @@ async function pollSingleStore(store) {
             }
             storeHealthMap.set(store.name, health);
             return { hit: false, productsScanned: 0, skippedByCircuit: false };
+        }
+        // Tier 2 (Staggered 10-Minute Deep Shelf Sweep — Pages 2 to 4):
+        // When Page 1 returns a full 250 items, fetch pages 2..4 once every 10 minutes (staggered max 10 stores/sweep)
+        // and merge cached deep-page products so totalListingsChecked covers the full 20,000-30,000+ catalog!
+        if (products.length >= 250) {
+            let deepEntry = deepPaginationCache.get(store.name);
+            const needsDeepRefresh = !deepEntry || (now - deepEntry.lastDeepFetchAt >= DEEP_PAGE_CACHE_TTL_MS);
+            if (needsDeepRefresh && deepFetchesThisSweep < MAX_DEEP_FETCHES_PER_SWEEP) {
+                deepFetchesThisSweep += 1;
+                const extraFetched = [];
+                const baseFeed = resolved.feedPath.replace(/[?&]page=\d+/g, '');
+                const sep = baseFeed.includes('?') ? '&' : '?';
+                for (let pageNum = 2; pageNum <= 4; pageNum++) {
+                    await sleep(140);
+                    const deepRes = await smartGetJson(`${store.baseUrl}${baseFeed}${sep}page=${pageNum}`);
+                    const pageItems = deepRes.data?.products;
+                    if (!Array.isArray(pageItems) || pageItems.length === 0)
+                        break;
+                    extraFetched.push(...pageItems);
+                    if (pageItems.length < 250)
+                        break;
+                }
+                deepEntry = {
+                    lastDeepFetchAt: Date.now(),
+                    extraProducts: extraFetched
+                };
+                deepPaginationCache.set(store.name, deepEntry);
+            }
+            if (deepEntry && Array.isArray(deepEntry.extraProducts) && deepEntry.extraProducts.length > 0) {
+                const seenIds = new Set(products.map((p) => p.id));
+                for (const dp of deepEntry.extraProducts) {
+                    if (dp && dp.id && !seenIds.has(dp.id)) {
+                        seenIds.add(dp.id);
+                        products.push(dp);
+                    }
+                }
+            }
         }
         // Success: reset circuit breaker and persist resolvedPath
         health.consecutiveFailures = 0;
@@ -492,6 +584,7 @@ async function pollShopifyStores() {
     }
     isPolling = true;
     lastSweepStartedAt = Date.now();
+    deepFetchesThisSweep = 0;
     let activeStoresHit = 0;
     let totalProductsScanned = 0;
     let circuitOpenCount = 0;
