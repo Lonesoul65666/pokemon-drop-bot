@@ -1002,12 +1002,65 @@ function computeNearMissesAndBestOffers() {
   return { bestCurrentOffers, nearMisses };
 }
 
+const DAILY_SNAPSHOTS_PATH = path.resolve(__dirname, 'dailySnapshots.json');
+const WEEKLY_CHECKPOINTS_PATH = path.resolve(__dirname, 'weeklyCheckpoints.json');
+const STORE_OFFERS_CACHE_PATH = path.resolve(__dirname, 'storeOffersCache.json');
+
+function computeShelfSpreadDistribution() {
+  const mergedBySku = loadMergedStoreOffersBySku();
+  const allOffers = [];
+  for (const skuMap of Object.values(mergedBySku)) {
+    for (const offer of Object.values(skuMap || {})) {
+      if (!offer || !offer.landedPrice || offer.landedPrice <= 0) continue;
+      const trig = Number(offer.triggerPrice || offer.msrp || 54.99);
+      const msrpVal = Number(offer.msrp || 54.99);
+      const mktVal = Number(offer.marketValue || trig || msrpVal);
+      const landed = Number(offer.landedPrice);
+      const gapDollars = Math.round((landed - trig) * 100) / 100;
+      const gapPct = trig > 0 ? Math.round(((landed - trig) / trig) * 1000) / 10 : 0;
+      const discPct = mktVal > landed ? Math.round(((mktVal - landed) / mktVal) * 100) : 0;
+      const isUnderTrigger = landed <= trig + 0.01;
+      const isNearMiss = !isUnderTrigger && gapPct > 0 && gapPct <= 10.5;
+      const isUnderMarket = discPct >= 5;
+      const isAtRetailMsrp = landed <= msrpVal * 1.05;
+      allOffers.push({
+        ...offer,
+        gapDollars,
+        gapPct,
+        discountPct: discPct,
+        isUnderTrigger,
+        isNearMiss,
+        isUnderMarket,
+        isAtRetailMsrp
+      });
+    }
+  }
+  allOffers.sort((a, b) => (b.discountPct - a.discountPct) || (a.landedPrice - b.landedPrice));
+  return {
+    totalInStockOffers: allOffers.length,
+    underTriggerCount: allOffers.filter(o => o.isUnderTrigger).length,
+    nearMissesCount: allOffers.filter(o => o.isNearMiss).length,
+    underMarketCount: allOffers.filter(o => o.isUnderMarket).length,
+    atRetailMsrpCount: allOffers.filter(o => o.isAtRetailMsrp).length,
+    offers: allOffers
+  };
+}
+
+app.get('/api/shelf-spread', (req, res) => {
+  try {
+    res.json(computeShelfSpreadDistribution());
+  } catch (e) {
+    res.status(500).json({ error: e.message, offers: [] });
+  }
+});
+
 app.get('/api/status', (req, res) => {
   try {
     const trophies = loadMsrpTrophies();
     const conqueredVault = loadConqueredVault();
     const storeTel = getDynamicStoreTelemetry();
     const { bestCurrentOffers, nearMisses } = computeNearMissesAndBestOffers();
+    const shelfSpread = computeShelfSpreadDistribution();
     res.json({
       ok: true,
       timestamp: Date.now(),
@@ -1033,7 +1086,8 @@ app.get('/api/status', (req, res) => {
       bigBoxHealth: storeTel.bigBoxHealth,
       storeHealth: storeTel.storeHealth,
       bestCurrentOffers,
-      nearMisses
+      nearMisses,
+      shelfSpread
     });
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });
@@ -1047,10 +1101,6 @@ app.get('/api/near-misses', (req, res) => {
     res.status(500).json({ nearMisses: [], bestCurrentOffers: {}, error: e.message });
   }
 });
-
-const DAILY_SNAPSHOTS_PATH = path.resolve(__dirname, 'dailySnapshots.json');
-const WEEKLY_CHECKPOINTS_PATH = path.resolve(__dirname, 'weeklyCheckpoints.json');
-const STORE_OFFERS_CACHE_PATH = path.resolve(__dirname, 'storeOffersCache.json');
 
 function loadMergedStoreOffersBySku() {
   let rawCache = {};

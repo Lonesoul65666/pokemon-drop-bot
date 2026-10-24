@@ -1009,11 +1009,11 @@
             <span>P1 SQUAD BENCH (CLICK SLOT TO SWITCH)</span>
             <span id="cutinLeftSub" class="text-slate-300">LOGAN'S VANGUARD</span>
           </div>
-          <div id="stadiumPartyHud1" class="grid grid-cols-3 gap-2"></div>
+          <div id="stadiumPartyHud1" class="grid grid-cols-3 gap-1.5"></div>
         </div>
 
-        <!-- 2. Main HP & Status Bar + Mega Overdrive Meter -->
-        <div class="p-2.5 rounded-xl bg-[#060811] border border-white/15 space-y-2">
+        <!-- 2. Main HP Bar + Glowing Chakra Petch AP Pool Meter (0 to 25 AP Max) -->
+        <div class="p-2 rounded-xl bg-[#060811] border border-white/15 space-y-1.5">
           <div>
             <div class="flex items-center justify-between text-xs font-mono-num font-extrabold mb-1">
               <span id="stadiumHpLabelSlot1" class="text-emerald-300">HP: 348 / 348 (100%)</span>
@@ -1022,81 +1022,109 @@
                 <span id="stadiumStatusBadgeSlot1" class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 font-black">READY</span>
               </div>
             </div>
-            <div class="w-full h-3 bg-slate-900 rounded-full overflow-hidden border border-white/15">
+            <div class="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-white/15">
               <div id="stadiumHpBarSlot1" class="h-full bg-emerald-400 rounded-full transition-all duration-300" style="width: 100%;"></div>
             </div>
           </div>
 
-          <!-- Mega Overdrive Meter -->
+          <!-- LOGAN'S AP POOL BAR (0 to 25 AP MAX) -->
           <div class="pt-1 border-t border-white/10">
-            <div class="flex items-center justify-between text-[10px] font-mono-num font-black mb-1">
-              <span class="text-amber-300 flex items-center gap-1">
-                <span>⚡ MEGA OVERDRIVE</span>
+            <div class="flex items-center justify-between text-[11px] font-pokedex font-black mb-1">
+              <span class="text-cyan-300 flex items-center gap-1.5 tracking-wider">
+                <span class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#00F0FF]"></span>
+                <span id="apPoolHeaderSlot1">LOGAN'S AP POOL: 6 / 25 MAX</span>
               </span>
-              <span id="megaGaugeTextSlot1" class="text-cyan-200">0%</span>
+              <span id="megaGaugeTextSlot1" class="text-[10px] font-mono-num text-amber-300">ULTIMATE: 18 AP</span>
             </div>
-            <div class="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden border border-white/10">
-              <div id="megaGaugeBarSlot1" class="h-full bg-gradient-to-r from-cyan-400 via-purple-400 to-amber-300 transition-all duration-300" style="width: 0%;"></div>
+            <div class="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden border border-cyan-400/40 shadow-[inset_0_0_8px_rgba(0,0,0,0.9)]">
+              <div id="apPoolBarSlot1" class="h-full bg-gradient-to-r from-cyan-400 via-emerald-400 to-amber-300 transition-all duration-300 shadow-[0_0_12px_#00F0FF]" style="width: 24%;"></div>
             </div>
-            <button onclick="triggerMegaOverdrive(1)" id="megaTriggerBtnSlot1" class="hidden mt-1.5 w-full py-1 rounded-lg bg-gradient-to-r from-amber-400 via-fuchsia-500 to-cyan-400 text-slate-950 font-mono-num font-black text-[10px] uppercase tracking-wider shadow-[0_0_18px_#FACC15] animate-pulse">
+            <div id="megaGaugeBarSlot1" class="hidden"></div>
+            <button onclick="triggerMegaOverdrive(1)" id="megaTriggerBtnSlot1" class="hidden mt-1 w-full py-1 rounded-lg bg-gradient-to-r from-amber-400 via-fuchsia-500 to-cyan-400 text-slate-950 font-mono-num font-black text-[10px] uppercase tracking-wider shadow-[0_0_18px_#FACC15] animate-pulse">
               ⟦ UNLEASH MEGA OVERDRIVE (+35% STATS &amp; BEAM) ⟧
             </button>
           </div>
         </div>
 
         <!-- 3. Fighter Stage & Compact Single-Line Stat Pill -->
-        <div class="flex flex-col items-center justify-center relative py-1 flex-1 min-h-0">
+        <div class="flex flex-col items-center justify-center relative py-0.5 flex-1 min-h-0">
           <div id="dmgFloatSlot1" class="dmg-float-badge px-3.5 py-1 rounded-full bg-rose-600 border-2 border-white text-white font-mono-num font-black text-sm shadow-[0_0_24px_#EF4444] whitespace-nowrap">-120 HP</div>
           <img id="cutinArtSlot1"
                onclick="executeStadiumMove(1, 0)"
-               title="Click Fighter Sprite to Execute Fast Move 1!"
+               title="Click Fighter Sprite to Execute Quick Strike (5 AP)!"
                src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/130.png"
                class="cutin-art-380 cursor-pointer hover:scale-105"
-               style="filter: drop-shadow(0 0 38px var(--slot1-primary)) drop-shadow(0 12px 24px rgba(0,0,0,0.95));"
+               style="max-height: clamp(110px, 16vh, 175px); filter: drop-shadow(0 0 38px var(--slot1-primary)) drop-shadow(0 12px 24px rgba(0,0,0,0.95));"
                alt="" />
-          <div class="mt-1 flex items-center justify-center gap-2 flex-wrap">
-            <span id="cutinLeftTitle" class="text-lg sm:text-xl font-black italic uppercase tracking-tight text-white">GYARADOS</span>
-            <button onclick="stadiumToggleShiny(1)" id="stadiumShinyBtnSlot1" class="px-2 py-0.5 rounded-md bg-white/10 hover:bg-amber-500/30 text-amber-200 border border-white/20 text-[10px] font-mono-num font-bold whitespace-nowrap transition">✨ Shiny: OFF</button>
-            <button onclick="stadiumEvolvePokemon(1)" id="stadiumEvoBtnSlot1" class="px-2 py-0.5 rounded-md bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-200 border border-emerald-400/50 text-[10px] font-mono-num font-extrabold whitespace-nowrap transition">Evolve (+30% HP)</button>
+          <div class="mt-0.5 flex items-center justify-center gap-2 flex-wrap">
+            <span id="cutinLeftTitle" class="text-base sm:text-lg font-pokedex font-black italic uppercase tracking-tight text-white">GYARADOS</span>
+            <button onclick="stadiumToggleShiny(1)" id="stadiumShinyBtnSlot1" class="px-2 py-0.5 rounded-md bg-white/10 hover:bg-amber-500/30 text-amber-200 border border-white/20 text-[9px] font-mono-num font-bold whitespace-nowrap transition">✨ Shiny: OFF</button>
+            <button onclick="stadiumEvolvePokemon(1)" id="stadiumEvoBtnSlot1" class="px-2 py-0.5 rounded-md bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-200 border border-emerald-400/50 text-[9px] font-mono-num font-extrabold whitespace-nowrap transition">Evolve (+30% HP)</button>
           </div>
           <!-- Compact Single-Line Stat Summary Pill -->
-          <div id="cutinStatCardSlot1" class="mt-1.5 w-full px-3 py-1.5 rounded-xl bg-[#060811] border border-white/15 text-center font-mono-num text-[11px] font-bold text-slate-200 truncate">
+          <div id="cutinStatCardSlot1" class="mt-1 w-full px-2.5 py-1 rounded-lg bg-[#060811] border border-white/15 text-center font-mono-num text-[10px] font-bold text-slate-200 truncate">
             #130 WATER/FLYING • BST 540 • ATK 125 / SPA 60 / DEF 79 / SPE 81
           </div>
         </div>
 
-        <!-- 4. 2x2 Move Deck Grid (Large, Un-Truncated Buttons) -->
-        <div id="stadiumMovesSlot1" class="grid grid-cols-2 gap-2"></div>
+        <!-- 4. 2x2 Move Deck Grid (Large, Un-Truncated Buttons with Clear AP Costs) -->
+        <div id="stadiumMovesSlot1" class="grid grid-cols-2 gap-1.5"></div>
+
+        <!-- 5. LOGAN'S DEDICATED TRAINER BAG & EQUIPPED GEAR STRIP -->
+        <div id="trainerBagSlot1" class="p-2 rounded-xl bg-[#060811] border border-cyan-400/35 space-y-1.5">
+          <div class="flex items-center justify-between text-[9px] font-pokedex font-extrabold uppercase tracking-wider text-cyan-300">
+            <span>🎒 LOGAN'S TRAINER BAG &amp; GEAR</span>
+            <span id="loganEquippedRelicsBadge" class="text-amber-300 font-mono-num truncate">Relics: Ready</span>
+          </div>
+          <div class="grid grid-cols-2 gap-1">
+            <button onclick="useTrainerItem(1, 'POTION')" id="bagBtn1_POTION" class="py-1 px-2 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/50 text-[9px] font-mono-num font-black text-emerald-200 whitespace-nowrap transition active:scale-95 text-left flex items-center justify-between">
+              <span>🧪 Hyper Potion (+65%)</span>
+              <span class="px-1 rounded bg-black/50 text-emerald-300">5 AP • x<span id="bagCount1_POTION">2</span></span>
+            </button>
+            <button onclick="useTrainerItem(1, 'X_ATTACK')" id="bagBtn1_X_ATTACK" class="py-1 px-2 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/35 border border-cyan-400/50 text-[9px] font-mono-num font-black text-cyan-200 whitespace-nowrap transition active:scale-95 text-left flex items-center justify-between">
+              <span>⚔️ X-Attack 2x DMG</span>
+              <span class="px-1 rounded bg-black/50 text-cyan-300">4 AP • x<span id="bagCount1_X_ATTACK">1</span></span>
+            </button>
+            <button onclick="useTrainerItem(1, 'SHIELD')" id="bagBtn1_SHIELD" class="py-1 px-2 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/35 border border-indigo-400/50 text-[9px] font-mono-num font-black text-indigo-200 whitespace-nowrap transition active:scale-95 text-left flex items-center justify-between">
+              <span>🛡️ Elemental Shield -50%</span>
+              <span class="px-1 rounded bg-black/50 text-indigo-200">4 AP</span>
+            </button>
+            <button onclick="attemptStadiumCatch('ULTRA', 1)" id="bagBtn1_BALL" class="py-1 px-2 rounded-lg bg-rose-500/20 hover:bg-rose-500/35 border border-rose-400/50 text-[9px] font-mono-num font-black text-rose-200 whitespace-nowrap transition active:scale-95 text-left flex items-center justify-between">
+              <span>🔴 Capture Ball (&lt;35%)</span>
+              <span class="px-1 rounded bg-black/50 text-amber-300">3 AP • x<span id="bagCount1_BALL">3</span></span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- =================================================================== -->
-      <!-- CENTER ARENA COLUMN (THE D20 TACTICAL CORE & CONTROLS)              -->
+      <!-- CENTER ARENA COLUMN (THE D20 AP POOL & BANKING CORE)                -->
       <!-- =================================================================== -->
       <div class="stadium-center-col">
-        <!-- Top: Glowing VS Emblem -->
-        <div class="flex flex-col items-center gap-1">
-          <div onclick="toggleAutoSimBattle()" title="Click VS Emblem to Start/Stop Full 3v3 Auto-Sim"
-               class="w-14 h-14 rounded-full bg-[#060811] border-2 border-white shadow-[0_0_35px_#00F0FF,0_0_65px_#A855F7] flex items-center justify-center shrink-0 cursor-pointer hover:scale-110 active:scale-95 transition-transform">
-            <svg class="w-12 h-12" viewBox="0 0 100 100">
-              <path d="M 6 50 A 44 44 0 0 1 94 50 Z" fill="url(#pkBallTop)" />
-              <path d="M 6 50 A 44 44 0 0 0 94 50 Z" fill="#181528" />
-              <circle cx="50" cy="50" r="44" fill="none" stroke="#FFFFFF" stroke-width="6" />
-              <line x1="6" y1="50" x2="94" y2="50" stroke="#090812" stroke-width="8" />
-              <circle cx="50" cy="50" r="17" fill="#090812" stroke="#FFFFFF" stroke-width="5" />
-              <text x="50" y="55" text-anchor="middle" fill="#FACC15" font-family="Plus Jakarta Sans, sans-serif" font-weight="900" font-size="14">VS</text>
-            </svg>
+        <!-- 1. Live 3-Step Turn Guide Ribbon at Top of Center Column -->
+        <div id="stadiumTurnGuideRibbon" class="w-full p-1.5 rounded-xl bg-[#060811] border border-cyan-400/40 space-y-1">
+          <div class="text-[9px] font-pokedex font-extrabold uppercase tracking-wider text-center text-cyan-300" id="activeTurnOwnerBanner">
+            ACTIVE TURN: LOGAN (PLAYER 1)
           </div>
-          <span class="text-[9px] font-mono-num font-black uppercase tracking-widest text-slate-400">D20 TACTICAL COMBAT CORE</span>
+          <div class="grid grid-cols-1 gap-1 text-[9px] font-mono-num font-black">
+            <div id="turnStep1Pill" class="px-2 py-1 rounded-lg bg-amber-400 text-slate-950 border border-white text-center shadow-[0_0_12px_rgba(250,204,21,0.6)] transition">
+              1. ROLL D20 FOR AP
+            </div>
+            <div id="turnStep2Pill" class="px-2 py-1 rounded-lg bg-[#10162B] text-slate-400 border border-white/10 text-center transition">
+              2. SPEND AP ON MOVES / BAG
+            </div>
+            <div id="turnStep3Pill" class="px-2 py-1 rounded-lg bg-[#10162B] text-slate-400 border border-white/10 text-center transition">
+              3. BANK AP &amp; END TURN
+            </div>
+          </div>
         </div>
 
-        <!-- Centerpiece: Animated 20-Sided Tactical Die (#stadium-d20-die) -->
+        <!-- 2. Centerpiece: Animated 20-Sided Tactical Die (#stadium-d20-die) + Roll & Bank Buttons -->
         <div class="w-full p-2.5 rounded-2xl bg-[#060811] border border-cyan-400/40 flex flex-col items-center gap-1.5 shadow-[inset_0_0_24px_rgba(0,240,255,0.12)]">
-          <div id="stadium-d20-die" onclick="executeStadiumMove(1, 0)" title="20-Sided Tactical Combat Die — Rolls 1–20 before every attack!"
-               class="relative w-24 h-24 flex items-center justify-center cursor-pointer select-none transition-transform hover:scale-105">
-            <svg class="w-24 h-24 drop-shadow-[0_0_18px_rgba(0,240,255,0.65)]" viewBox="0 0 100 100">
-              <!-- Outer Icosahedron Hexagon -->
+          <div id="stadium-d20-die" onclick="rollD20ForTurnAp()" title="Click to Roll the 20-Sided Die and add Action Points (AP) to your AP Pool!"
+               class="relative w-20 h-20 flex items-center justify-center cursor-pointer select-none transition-transform hover:scale-105">
+            <svg class="w-20 h-20 drop-shadow-[0_0_18px_rgba(0,240,255,0.65)]" viewBox="0 0 100 100">
               <polygon id="stadiumD20OuterPoly" points="50,4 93,27 93,73 50,96 7,73 7,27" fill="#0D152C" stroke="#00F0FF" stroke-width="3.5" />
-              <!-- Inner D20 Facet Lines -->
               <polygon id="stadiumD20InnerPoly" points="50,18 80,66 20,66" fill="rgba(0,240,255,0.14)" stroke="#A855F7" stroke-width="2" />
               <line x1="50" y1="4" x2="50" y2="18" stroke="#00F0FF" stroke-width="1.8" />
               <line x1="93" y1="27" x2="50" y2="18" stroke="#00F0FF" stroke-width="1.5" />
@@ -1108,63 +1136,55 @@
               <line x1="50" y1="96" x2="80" y2="66" stroke="#00F0FF" stroke-width="1.5" />
               <line x1="50" y1="96" x2="20" y2="66" stroke="#00F0FF" stroke-width="1.5" />
             </svg>
-            <span id="stadiumD20Number" class="absolute inset-0 flex items-center justify-center pt-2 font-mono-num font-black text-2xl text-white drop-shadow-[0_2px_10px_#000000]">20</span>
+            <span id="stadiumD20Number" class="absolute inset-0 flex items-center justify-center pt-1.5 font-mono-num font-black text-2xl text-white drop-shadow-[0_2px_10px_#000000]">20</span>
           </div>
+
           <div id="stadiumD20Formula" class="text-[10px] font-mono-num font-bold text-cyan-200 text-center leading-tight">
-            D20 Roll: Ready (1–20 + Stat Mod)
+            Roll 1–20 + Speed Bonus &rarr; AP Pool!
           </div>
-          <div id="stadiumD20Outcome" class="px-2.5 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-400/50 text-[10px] font-mono-num font-black text-cyan-200 uppercase tracking-wider text-center">
-            15–19 SURGE (1.35x) • 20 CRIT (2.0x)
+          <div id="stadiumD20Outcome" class="px-2 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-400/50 text-[9px] font-mono-num font-black text-cyan-200 uppercase tracking-wider text-center truncate max-w-full">
+            NAT 20 = +25 AP FULL CHARGE!
           </div>
+
+          <!-- Primary Step 1 Button: Roll D20 for AP -->
+          <button onclick="rollD20ForTurnAp()" id="rollD20ApBtn"
+                  class="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 hover:from-amber-300 hover:to-yellow-200 text-slate-950 font-pokedex font-black text-xs uppercase tracking-wider shadow-[0_0_22px_rgba(250,204,21,0.7)] animate-pulse transition active:scale-95">
+            [ 🎲 ROLL D20 FOR AP ]
+          </button>
+
+          <!-- Primary Step 3 Button: Pass & Bank Remaining AP for Next Turn -->
+          <button onclick="bankRemainingApAndEndTurn()" id="bankApEndTurnBtn"
+                  class="w-full py-1.5 px-2.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/60 text-emerald-200 font-pokedex font-black text-[10px] uppercase tracking-wider transition active:scale-95">
+            [ ⏭️ PASS &amp; BANK +6 AP FOR NEXT TURN ]
+          </button>
         </div>
 
-        <!-- Action Controls & Trainer Item Strip -->
+        <!-- 3. Post-Match Victory Mystery Reward Card Pop-Up (Celebratory Gold Drop Banner) -->
+        <div id="stadiumVictoryRewardBanner" class="hidden w-full p-2.5 rounded-xl bg-gradient-to-r from-amber-500/30 via-yellow-500/25 to-amber-500/30 border-2 border-amber-300 shadow-[0_0_28px_rgba(250,204,21,0.5)] text-center space-y-1">
+          <div class="text-[9px] font-pokedex font-black uppercase tracking-widest text-amber-300">🏆 VICTORY MYSTERY REWARD DROP!</div>
+          <div id="victoryRewardTitle" class="text-xs font-pokedex font-black text-white">+1 BONUS MASTER BALL UNLOCKED!</div>
+          <div id="victoryRewardDesc" class="text-[10px] font-mono-num text-amber-100">Saved to Logan's Persistent Stadium Vault!</div>
+        </div>
+
+        <!-- 4. Match & Auto-Sim Controls -->
         <div class="w-full space-y-1.5">
-          <button onclick="toggleAutoSimBattle()" id="simBattleBtn" class="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-cyan-400 to-purple-500 hover:from-cyan-300 hover:to-purple-400 text-slate-950 font-mono-num font-black text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,240,255,0.4)] transition">
+          <button onclick="toggleAutoSimBattle()" id="simBattleBtn" class="w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-cyan-400 to-purple-500 hover:from-cyan-300 hover:to-purple-400 text-slate-950 font-mono-num font-black text-[11px] uppercase tracking-wider shadow-[0_0_16px_rgba(0,240,255,0.35)] transition">
             [ ⚡ SIM FULL 3v3 BATTLE ]
           </button>
           <div class="grid grid-cols-2 gap-1.5">
-            <button onclick="resetBattleStadiumMatch()" class="py-1.5 px-2 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/50 text-emerald-200 font-mono-num font-extrabold text-[10px] whitespace-nowrap transition">
+            <button onclick="resetBattleStadiumMatch()" class="py-1 px-2 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/50 text-emerald-200 font-mono-num font-extrabold text-[10px] whitespace-nowrap transition">
               [ ↻ Full Heal / Reset ]
             </button>
-            <button onclick="triggerRandomStadiumBattle()" class="py-1.5 px-2 rounded-lg bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/50 text-purple-200 font-mono-num font-extrabold text-[10px] whitespace-nowrap transition">
+            <button onclick="triggerRandomStadiumBattle()" class="py-1 px-2 rounded-lg bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/50 text-purple-200 font-mono-num font-extrabold text-[10px] whitespace-nowrap transition">
               [ 🎲 Random 3v3 ]
             </button>
           </div>
-
-          <!-- Compact Trainer Item Strip -->
-          <div id="trainerItemBagBox" class="w-full p-2 rounded-xl bg-[#060811] border border-amber-400/35 space-y-1.5">
-            <div class="grid grid-cols-2 gap-1.5">
-              <button onclick="useTrainerItem('POTION')" id="itemBtn_POTION" title="Restores +65% HP and cures status effects"
-                      class="py-1.5 px-2 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/40 border border-emerald-400/60 text-[10px] font-mono-num font-black text-emerald-200 whitespace-nowrap transition active:scale-95">
-                🧪 Heal +65% (<span id="potionCountLabel">2</span>)
-              </button>
-              <button onclick="useTrainerItem('X_ATTACK')" id="itemBtn_X_ATTACK" title="Doubles your next attack's damage (2.0x)"
-                      class="py-1.5 px-2 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/40 border border-cyan-400/60 text-[10px] font-mono-num font-black text-cyan-200 whitespace-nowrap transition active:scale-95">
-                ⚔️ 2x Boost (<span id="xAttackCountLabel">1</span>)
-              </button>
-            </div>
-            <div class="grid grid-cols-3 gap-1">
-              <button onclick="attemptStadiumCatch('POKE')" id="catchBtn_POKE" title="Throw Poké Ball"
-                      class="py-1 px-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/40 border border-rose-400/50 text-[9px] font-mono-num font-black text-rose-200 whitespace-nowrap transition active:scale-95">
-                🔴 Poké Ball
-              </button>
-              <button onclick="attemptStadiumCatch('ULTRA')" id="catchBtn_ULTRA" title="Throw Ultra Ball (2.2x Catch Rate)"
-                      class="py-1 px-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/40 border border-amber-400/50 text-[9px] font-mono-num font-black text-amber-200 whitespace-nowrap transition active:scale-95">
-                🟡 Ultra Ball
-              </button>
-              <button onclick="attemptStadiumCatch('MASTER')" id="catchBtn_MASTER" title="Throw Master Ball (100% Guaranteed Catch)"
-                      class="py-1 px-1.5 rounded-lg bg-fuchsia-500/25 hover:bg-fuchsia-500/45 border border-fuchsia-400/60 text-[9px] font-mono-num font-black text-fuchsia-200 whitespace-nowrap transition active:scale-95">
-                🟣 Master (<span id="masterBallCountBadge">3</span>)
-              </button>
-            </div>
-          </div>
         </div>
 
-        <!-- Combat Log Ticker (Clean 2-Line Battle Announcer Box) -->
-        <div id="stadiumBattleLogBox" class="w-full p-2.5 rounded-xl bg-[#060811] border border-white/20 text-center min-h-[64px] flex flex-col justify-center">
+        <!-- 5. Combat Log Ticker (Clean 2-Line Battle Announcer Box) -->
+        <div id="stadiumBattleLogBox" class="w-full p-2 rounded-xl bg-[#060811] border border-white/20 text-center min-h-[58px] flex flex-col justify-center">
           <div id="stadiumBattleLogTitle" class="text-[10px] font-mono-num font-black uppercase tracking-wider text-cyan-300 truncate">STADIUM ANNOUNCER</div>
-          <div id="stadiumBattleLogText" class="text-[11px] font-bold text-white leading-snug mt-0.5 line-clamp-2">Pick a move below or click Sim Full 3v3 Battle!</div>
+          <div id="stadiumBattleLogText" class="text-[11px] font-bold text-white leading-snug mt-0.5 line-clamp-2">Step 1: Click [ 🎲 ROLL D20 FOR AP ] to charge your AP Pool!</div>
         </div>
       </div>
 
@@ -1178,11 +1198,11 @@
             <span>P2 SQUAD BENCH (CLICK SLOT TO SWITCH)</span>
             <span id="cutinRightSub" class="text-slate-300">CHALLENGER</span>
           </div>
-          <div id="stadiumPartyHud2" class="grid grid-cols-3 gap-2"></div>
+          <div id="stadiumPartyHud2" class="grid grid-cols-3 gap-1.5"></div>
         </div>
 
-        <!-- 2. Main HP & Status Bar + Mega Overdrive Meter -->
-        <div class="p-2.5 rounded-xl bg-[#060811] border border-white/15 space-y-2">
+        <!-- 2. Main HP Bar + Glowing Chakra Petch AP Pool Meter (0 to 25 AP Max) -->
+        <div class="p-2 rounded-xl bg-[#060811] border border-white/15 space-y-1.5">
           <div>
             <div class="flex items-center justify-between text-xs font-mono-num font-extrabold mb-1">
               <span id="stadiumHpLabelSlot2" class="text-emerald-300">HP: 335 / 335 (100%)</span>
@@ -1191,51 +1211,79 @@
                 <span id="stadiumStatusBadgeSlot2" class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 font-black">READY</span>
               </div>
             </div>
-            <div class="w-full h-3 bg-slate-900 rounded-full overflow-hidden border border-white/15">
+            <div class="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-white/15">
               <div id="stadiumHpBarSlot2" class="h-full bg-emerald-400 rounded-full transition-all duration-300" style="width: 100%;"></div>
             </div>
           </div>
 
-          <!-- Mega Overdrive Meter -->
+          <!-- OPPONENT / DAD'S AP POOL BAR (0 to 25 AP MAX) -->
           <div class="pt-1 border-t border-white/10">
-            <div class="flex items-center justify-between text-[10px] font-mono-num font-black mb-1">
-              <span class="text-amber-300 flex items-center gap-1">
-                <span>⚡ MEGA OVERDRIVE</span>
+            <div class="flex items-center justify-between text-[11px] font-pokedex font-black mb-1">
+              <span class="text-amber-300 flex items-center gap-1.5 tracking-wider">
+                <span class="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_#FACC15]"></span>
+                <span id="apPoolHeaderSlot2">DAD / BOSS AP POOL: 6 / 25 MAX</span>
               </span>
-              <span id="megaGaugeTextSlot2" class="text-orange-200">0%</span>
+              <span id="megaGaugeTextSlot2" class="text-[10px] font-mono-num text-orange-200">ULTIMATE: 18 AP</span>
             </div>
-            <div class="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden border border-white/10">
-              <div id="megaGaugeBarSlot2" class="h-full bg-gradient-to-r from-orange-400 via-rose-500 to-amber-300 transition-all duration-300" style="width: 0%;"></div>
+            <div class="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden border border-amber-400/40 shadow-[inset_0_0_8px_rgba(0,0,0,0.9)]">
+              <div id="apPoolBarSlot2" class="h-full bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-300 transition-all duration-300 shadow-[0_0_12px_#FACC15]" style="width: 24%;"></div>
             </div>
-            <button onclick="triggerMegaOverdrive(2)" id="megaTriggerBtnSlot2" class="hidden mt-1.5 w-full py-1 rounded-lg bg-gradient-to-r from-amber-400 via-rose-500 to-orange-400 text-slate-950 font-mono-num font-black text-[10px] uppercase tracking-wider shadow-[0_0_18px_#FACC15] animate-pulse">
+            <div id="megaGaugeBarSlot2" class="hidden"></div>
+            <button onclick="triggerMegaOverdrive(2)" id="megaTriggerBtnSlot2" class="hidden mt-1 w-full py-1 rounded-lg bg-gradient-to-r from-amber-400 via-rose-500 to-orange-400 text-slate-950 font-mono-num font-black text-[10px] uppercase tracking-wider shadow-[0_0_18px_#FACC15] animate-pulse">
               ⟦ UNLEASH MEGA OVERDRIVE (+35% STATS &amp; BEAM) ⟧
             </button>
           </div>
         </div>
 
         <!-- 3. Fighter Stage & Compact Single-Line Stat Pill -->
-        <div class="flex flex-col items-center justify-center relative py-1 flex-1 min-h-0">
+        <div class="flex flex-col items-center justify-center relative py-0.5 flex-1 min-h-0">
           <div id="dmgFloatSlot2" class="dmg-float-badge px-3.5 py-1 rounded-full bg-rose-600 border-2 border-white text-white font-mono-num font-black text-sm shadow-[0_0_24px_#EF4444] whitespace-nowrap">-120 HP</div>
           <img id="cutinArtSlot2"
                onclick="executeStadiumMove(2, 0)"
-               title="Click Fighter Sprite to Execute Fast Move 1!"
+               title="Click Fighter Sprite to Execute Quick Strike (5 AP)!"
                src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/59.png"
                class="cutin-art-380 cursor-pointer hover:scale-105"
-               style="filter: drop-shadow(0 0 38px var(--slot2-primary)) drop-shadow(0 12px 24px rgba(0,0,0,0.95));"
+               style="max-height: clamp(110px, 16vh, 175px); filter: drop-shadow(0 0 38px var(--slot2-primary)) drop-shadow(0 12px 24px rgba(0,0,0,0.95));"
                alt="" />
-          <div class="mt-1 flex items-center justify-center gap-2 flex-wrap">
-            <span id="cutinRightTitle" class="text-lg sm:text-xl font-black italic uppercase tracking-tight text-white">ARCANINE</span>
-            <button onclick="stadiumToggleShiny(2)" id="stadiumShinyBtnSlot2" class="px-2 py-0.5 rounded-md bg-white/10 hover:bg-amber-500/30 text-amber-200 border border-white/20 text-[10px] font-mono-num font-bold whitespace-nowrap transition">✨ Shiny: OFF</button>
-            <button onclick="stadiumEvolvePokemon(2)" id="stadiumEvoBtnSlot2" class="px-2 py-0.5 rounded-md bg-orange-500/20 hover:bg-orange-500/40 text-orange-200 border border-orange-400/50 text-[10px] font-mono-num font-extrabold whitespace-nowrap transition">Evolve (+30% HP)</button>
+          <div class="mt-0.5 flex items-center justify-center gap-2 flex-wrap">
+            <span id="cutinRightTitle" class="text-base sm:text-lg font-pokedex font-black italic uppercase tracking-tight text-white">ARCANINE</span>
+            <button onclick="stadiumToggleShiny(2)" id="stadiumShinyBtnSlot2" class="px-2 py-0.5 rounded-md bg-white/10 hover:bg-amber-500/30 text-amber-200 border border-white/20 text-[9px] font-mono-num font-bold whitespace-nowrap transition">✨ Shiny: OFF</button>
+            <button onclick="stadiumEvolvePokemon(2)" id="stadiumEvoBtnSlot2" class="px-2 py-0.5 rounded-md bg-orange-500/20 hover:bg-orange-500/40 text-orange-200 border border-orange-400/50 text-[9px] font-mono-num font-extrabold whitespace-nowrap transition">Evolve (+30% HP)</button>
           </div>
           <!-- Compact Single-Line Stat Summary Pill -->
-          <div id="cutinStatCardSlot2" class="mt-1.5 w-full px-3 py-1.5 rounded-xl bg-[#060811] border border-white/15 text-center font-mono-num text-[11px] font-bold text-slate-200 truncate">
+          <div id="cutinStatCardSlot2" class="mt-1 w-full px-2.5 py-1 rounded-lg bg-[#060811] border border-white/15 text-center font-mono-num text-[10px] font-bold text-slate-200 truncate">
             #59 FIRE • BST 555 • ATK 110 / SPA 100 / DEF 80 / SPE 95
           </div>
         </div>
 
-        <!-- 4. 2x2 Move Deck Grid (Large, Un-Truncated Buttons) -->
-        <div id="stadiumMovesSlot2" class="grid grid-cols-2 gap-2"></div>
+        <!-- 4. 2x2 Move Deck Grid (Large, Un-Truncated Buttons with Clear AP Costs) -->
+        <div id="stadiumMovesSlot2" class="grid grid-cols-2 gap-1.5"></div>
+
+        <!-- 5. DAD / BOSS'S DEDICATED TRAINER BAG & EQUIPPED GEAR STRIP -->
+        <div id="trainerBagSlot2" class="p-2 rounded-xl bg-[#060811] border border-amber-400/35 space-y-1.5">
+          <div class="flex items-center justify-between text-[9px] font-pokedex font-extrabold uppercase tracking-wider text-amber-300">
+            <span id="p2BagHeaderTitle">🎒 DAD / BOSS TRAINER BAG &amp; GEAR</span>
+            <span class="text-orange-200 font-mono-num">Tactical Kit</span>
+          </div>
+          <div class="grid grid-cols-2 gap-1">
+            <button onclick="useTrainerItem(2, 'POTION')" id="bagBtn2_POTION" class="py-1 px-2 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/50 text-[9px] font-mono-num font-black text-emerald-200 whitespace-nowrap transition active:scale-95 text-left flex items-center justify-between">
+              <span>🧪 Hyper Potion (+65%)</span>
+              <span class="px-1 rounded bg-black/50 text-emerald-300">5 AP • x<span id="bagCount2_POTION">2</span></span>
+            </button>
+            <button onclick="useTrainerItem(2, 'X_ATTACK')" id="bagBtn2_X_ATTACK" class="py-1 px-2 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/35 border border-cyan-400/50 text-[9px] font-mono-num font-black text-cyan-200 whitespace-nowrap transition active:scale-95 text-left flex items-center justify-between">
+              <span>⚔️ X-Attack 2x DMG</span>
+              <span class="px-1 rounded bg-black/50 text-cyan-300">4 AP • x<span id="bagCount2_X_ATTACK">1</span></span>
+            </button>
+            <button onclick="useTrainerItem(2, 'SHIELD')" id="bagBtn2_SHIELD" class="py-1 px-2 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/35 border border-indigo-400/50 text-[9px] font-mono-num font-black text-indigo-200 whitespace-nowrap transition active:scale-95 text-left flex items-center justify-between">
+              <span>🛡️ Elemental Shield -50%</span>
+              <span class="px-1 rounded bg-black/50 text-indigo-200">4 AP</span>
+            </button>
+            <button onclick="attemptStadiumCatch('ULTRA', 2)" id="bagBtn2_BALL" class="py-1 px-2 rounded-lg bg-rose-500/20 hover:bg-rose-500/35 border border-rose-400/50 text-[9px] font-mono-num font-black text-rose-200 whitespace-nowrap transition active:scale-95 text-left flex items-center justify-between">
+              <span>🔴 Capture Ball (&lt;35%)</span>
+              <span class="px-1 rounded bg-black/50 text-amber-300">3 AP • x<span id="bagCount2_BALL">3</span></span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -2057,6 +2105,28 @@
                 <span class="px-2 py-0.5 rounded bg-blue-500/15 border border-blue-400/35 text-blue-200 font-bold">Walmart: 1P MSRP Only (&le;$55)</span>
                 <span class="px-2 py-0.5 rounded bg-amber-500/15 border border-amber-400/35 text-amber-200 font-bold">Best Buy: SKU MSRP Watch</span>
                 <span class="px-2 py-0.5 rounded bg-purple-500/15 border border-purple-400/35 text-purple-200 font-bold">Costco: $39.99–$64.99 Pallet Watch</span>
+              </div>
+            </div>
+
+            <!-- Live Shelf Spread Distribution Quick-Bar (91 Stores via storeOffersCache.json) -->
+            <div id="liveMarketSpreadBar" class="px-3.5 py-2.5 rounded-xl bg-[#0B0E1D]/85 border border-cyan-400/25 flex flex-wrap items-center justify-between gap-2.5">
+              <div class="flex items-center gap-2 font-pokedex text-[11px] font-extrabold uppercase tracking-wider text-slate-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981]"></span>
+                <span>91-Store Live Shelf Spread Distribution:</span>
+              </div>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <button onclick="setDealFeedFilter('UNDER_TRIGGER')" id="spreadBtn_UNDER_TRIGGER" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/50 text-[11px] font-mono-num font-extrabold text-emerald-300 whitespace-nowrap transition">
+                  Under Trigger (<span id="spreadCnt_UNDER_TRIGGER">0</span>)
+                </button>
+                <button onclick="setDealFeedFilter('NEAR_MISSES')" id="spreadBtn_NEAR_MISSES" class="px-2.5 py-1 rounded-lg bg-orange-500/20 hover:bg-orange-500/35 border border-orange-400/50 text-[11px] font-mono-num font-extrabold text-orange-300 whitespace-nowrap transition">
+                  Near Misses (+1% to +10% Over Trigger) (<span id="spreadCnt_NEAR_MISSES">0</span>)
+                </button>
+                <button onclick="setDealFeedFilter('UNDER_MARKET')" id="spreadBtn_UNDER_MARKET" class="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/35 border border-cyan-400/50 text-[11px] font-mono-num font-extrabold text-cyan-200 whitespace-nowrap transition">
+                  Under Market (-5% to -20% Off TCGP Market) (<span id="spreadCnt_UNDER_MARKET">0</span>)
+                </button>
+                <button onclick="setDealFeedFilter('AT_RETAIL_MSRP')" id="spreadBtn_AT_RETAIL_MSRP" class="px-2.5 py-1 rounded-lg bg-purple-500/20 hover:bg-purple-500/35 border border-purple-400/50 text-[11px] font-mono-num font-extrabold text-purple-200 whitespace-nowrap transition">
+                  At Retail MSRP (<span id="spreadCnt_AT_RETAIL_MSRP">0</span>)
+                </button>
               </div>
             </div>
 
@@ -3378,35 +3448,39 @@
       SHD: { label: '🛡️ SHIELD',    cls: 'bg-emerald-500/30 text-emerald-200 border border-emerald-400/70' }
     };
 
+    const MOVE_AP_COSTS = [5, 9, 12, 18];
+    const MOVE_COOLDOWN_TURNS = [0, 1, 2, 0];
+
     function getFourMovesForPokemon(slotObj) {
       const defaultStatusByType = {
-        fire:     { code: 'BRN', chance: 0.35 },
-        electric: { code: 'PAR', chance: 0.35 },
-        ice:      { code: 'FRZ', chance: 0.30 },
-        poison:   { code: 'PSN', chance: 0.40 },
-        psychic:  { code: 'SLP', chance: 0.30 },
-        ghost:    { code: 'SLP', chance: 0.30 },
-        steel:    { code: 'SHD', chance: 0.35 },
-        rock:     { code: 'SHD', chance: 0.35 },
-        water:    { code: 'FRZ', chance: 0.25 },
-        dragon:   { code: 'PAR', chance: 0.25 },
-        dark:     { code: 'PSN', chance: 0.30 },
-        grass:    { code: 'SLP', chance: 0.35 },
-        flying:   { code: 'PAR', chance: 0.25 },
-        fighting: { code: 'BRN', chance: 0.25 },
-        ground:   { code: 'SHD', chance: 0.30 },
-        fairy:    { code: 'SLP', chance: 0.30 },
-        bug:      { code: 'PSN', chance: 0.35 },
-        normal:   { code: 'PAR', chance: 0.25 }
+        fire:     { code: 'BRN', chance: 0.45 },
+        electric: { code: 'PAR', chance: 0.45 },
+        ice:      { code: 'FRZ', chance: 0.40 },
+        poison:   { code: 'PSN', chance: 0.45 },
+        psychic:  { code: 'SLP', chance: 0.40 },
+        ghost:    { code: 'SLP', chance: 0.40 },
+        steel:    { code: 'SHD', chance: 0.45 },
+        rock:     { code: 'SHD', chance: 0.45 },
+        water:    { code: 'FRZ', chance: 0.35 },
+        dragon:   { code: 'PAR', chance: 0.35 },
+        dark:     { code: 'PSN', chance: 0.40 },
+        grass:    { code: 'SLP', chance: 0.40 },
+        flying:   { code: 'PAR', chance: 0.35 },
+        fighting: { code: 'BRN', chance: 0.35 },
+        ground:   { code: 'SHD', chance: 0.40 },
+        fairy:    { code: 'SLP', chance: 0.40 },
+        bug:      { code: 'PSN', chance: 0.45 },
+        normal:   { code: 'PAR', chance: 0.35 }
       };
 
       const sig = SIGNATURE_MOVES_BY_ID[slotObj.id];
       if (Array.isArray(sig) && sig.length === 4) {
         return sig.map((m, idx) => ({
           ...m,
-          cooldownTurns: idx === 0 ? 0 : (idx === 1 || idx === 2 ? 2 : 0),
+          apCost: MOVE_AP_COSTS[idx] || 5,
+          cooldownTurns: MOVE_COOLDOWN_TURNS[idx] || 0,
           ultimate: idx === 3 || Boolean(m.ultimate),
-          status: m.status || (idx === 2 ? (defaultStatusByType[String(m.type || 'normal').toLowerCase()] || { code: 'PAR', chance: 0.30 }) : null),
+          status: m.status || (idx === 2 ? (defaultStatusByType[String(m.type || 'normal').toLowerCase()] || { code: 'PAR', chance: 0.40 }) : null),
           acc: Number(m.acc || (m.ultimate ? 95 : 100)),
           maxPp: Number(m.maxPp || (m.ultimate ? 5 : 15))
         }));
@@ -3418,12 +3492,12 @@
       const secPool = TYPE_MOVE_POOL[secondaryType] || basePool;
 
       const moves = [
-        { ...basePool[0], cooldownTurns: 0, acc: 100, maxPp: 15 },
-        { ...basePool[1], cooldownTurns: 2, acc: 95,  maxPp: 10 },
+        { ...basePool[0], apCost: 5,  cooldownTurns: 0, acc: 100, maxPp: 15 },
+        { ...basePool[1], apCost: 9,  cooldownTurns: 1, acc: 95,  maxPp: 10 },
         secondaryType !== primaryType
-          ? { ...secPool[0], cooldownTurns: 2, acc: 100, maxPp: 15, status: defaultStatusByType[secondaryType] || { code: 'PAR', chance: 0.30 } }
-          : { ...basePool[2], cooldownTurns: 2, acc: 100, maxPp: 15, status: defaultStatusByType[primaryType] || { code: 'BRN', chance: 0.30 } },
-        { ...basePool[3], cooldownTurns: 0, acc: 95,  maxPp: 5, ultimate: true, status: defaultStatusByType[primaryType] || { code: 'BRN', chance: 0.35 } }
+          ? { ...secPool[0], apCost: 12, cooldownTurns: 2, acc: 100, maxPp: 15, status: defaultStatusByType[secondaryType] || { code: 'PAR', chance: 0.40 } }
+          : { ...basePool[2], apCost: 12, cooldownTurns: 2, acc: 100, maxPp: 15, status: defaultStatusByType[primaryType] || { code: 'BRN', chance: 0.40 } },
+        { ...basePool[3], apCost: 18, cooldownTurns: 0, acc: 95,  maxPp: 5, ultimate: true, status: defaultStatusByType[primaryType] || { code: 'BRN', chance: 0.45 } }
       ];
 
       if (Array.isArray(slotObj.moves) && slotObj.moves.length > 0) {
@@ -3451,7 +3525,7 @@
     function calcMaxHpForSlot(slotObj) {
       const dex = HALL_OF_FAME_DEX[slotObj.id] || {};
       const baseHp = Number((slotObj.stats && slotObj.stats.hp) || (dex.stats && dex.stats.hp) || 80);
-      const megaMult = slotObj.megaActive ? 1.30 : 1.0;
+      const megaMult = slotObj.megaActive ? 1.35 : 1.0;
       return Math.round(((baseHp * 2.5) + 110) * megaMult);
     }
 
@@ -3470,6 +3544,7 @@
         baseId: dex.baseId || dex.id,
         chain: dex.chain || [dex.id],
         megaActive: false,
+        shieldActive: false,
         ailment: null,
         sleepTurns: 0,
         moveCooldowns: [0, 0, 0, 0],
@@ -3491,6 +3566,8 @@
             stadiumBattleState.trophyLocker = Array.isArray(parsed.caught) ? parsed.caught : [];
             stadiumBattleState.badges = Array.isArray(parsed.badges) ? parsed.badges : [];
             stadiumBattleState.masterBalls = typeof parsed.masterBalls === 'number' ? parsed.masterBalls : 3;
+            stadiumBattleState.luckyCharmLevel = Number(parsed.luckyCharmLevel || 0);
+            stadiumBattleState.megaCoreLevel = Number(parsed.megaCoreLevel || 0);
             return;
           }
         }
@@ -3501,6 +3578,8 @@
       ];
       stadiumBattleState.badges = [];
       stadiumBattleState.masterBalls = 3;
+      stadiumBattleState.luckyCharmLevel = 0;
+      stadiumBattleState.megaCoreLevel = 0;
     }
 
     function saveTrophyLockerToStorage() {
@@ -3508,9 +3587,51 @@
         localStorage.setItem('dropbot_v4_logan_trophy_locker', JSON.stringify({
           caught: stadiumBattleState.trophyLocker || [],
           badges: stadiumBattleState.badges || [],
-          masterBalls: stadiumBattleState.masterBalls ?? 3
+          masterBalls: stadiumBattleState.masterBalls ?? 3,
+          luckyCharmLevel: stadiumBattleState.luckyCharmLevel || 0,
+          megaCoreLevel: stadiumBattleState.megaCoreLevel || 0
         }));
       } catch (e) {}
+    }
+
+    function awardVictoryMysteryReward(reasonLabel) {
+      const rewardPool = [
+        {
+          key: 'MASTER_BALL',
+          title: '🟣 +1 BONUS MASTER BALL UNLOCKED!',
+          desc: reasonLabel + ' • Guaranteed 100% Capture Ball added to Logan\'s Vault!'
+        },
+        {
+          key: 'LUCKY_CHARM',
+          title: '🍀 LUCKY CHARM RELIC (+2 MIN D20 ROLL)!',
+          desc: reasonLabel + ' • Logan\'s D20 rolls now have a permanent +2 floor boost!'
+        },
+        {
+          key: 'MEGA_CORE',
+          title: '⚡ MEGA CORE RELIC (+3 STARTING AP)!',
+          desc: reasonLabel + ' • Logan starts Round 1 with +3 Bonus AP in his pool!'
+        }
+      ];
+      const pick = rewardPool[Math.floor(Math.random() * rewardPool.length)];
+      if (pick.key === 'MASTER_BALL') {
+        stadiumBattleState.masterBalls = (stadiumBattleState.masterBalls ?? 3) + 1;
+        if (stadiumBattleState.bag1) stadiumBattleState.bag1.balls = (stadiumBattleState.bag1.balls ?? 3) + 1;
+      } else if (pick.key === 'LUCKY_CHARM') {
+        stadiumBattleState.luckyCharmLevel = Math.min(3, (stadiumBattleState.luckyCharmLevel || 0) + 1);
+      } else if (pick.key === 'MEGA_CORE') {
+        stadiumBattleState.megaCoreLevel = Math.min(3, (stadiumBattleState.megaCoreLevel || 0) + 1);
+      }
+      saveTrophyLockerToStorage();
+
+      const banner = document.getElementById('stadiumVictoryRewardBanner');
+      const titleEl = document.getElementById('victoryRewardTitle');
+      const descEl = document.getElementById('victoryRewardDesc');
+      if (banner && titleEl && descEl) {
+        titleEl.innerText = pick.title;
+        descEl.innerText = pick.desc;
+        banner.classList.remove('hidden');
+      }
+      showArcadeCombatCallout(pick.title, 'SHINY');
     }
 
     function ensureSquadTeamsInitialized() {
@@ -3523,6 +3644,7 @@
         p1Lead.hp = p1Lead.maxHp;
         p1Lead.movePp = getFourMovesForPokemon(p1Lead).map(m => Number(m.maxPp || 15));
         p1Lead.moveCooldowns = [0, 0, 0, 0];
+        p1Lead.shieldActive = false;
         p1Lead.ultUnlockedByD20 = false;
         const b1 = buildSquadMemberFromId(p1Lead.id === 384 ? 448 : 384, false);
         const b2 = buildSquadMemberFromId(p1Lead.id === 6 ? 94 : 6, false);
@@ -3535,6 +3657,7 @@
         p2Lead.hp = p2Lead.maxHp;
         p2Lead.movePp = getFourMovesForPokemon(p2Lead).map(m => Number(m.maxPp || 15));
         p2Lead.moveCooldowns = [0, 0, 0, 0];
+        p2Lead.shieldActive = false;
         p2Lead.ultUnlockedByD20 = false;
         const e1 = buildSquadMemberFromId(p2Lead.id === 150 ? 445 : 150, false);
         const e2 = buildSquadMemberFromId(p2Lead.id === 149 ? 248 : 149, false);
@@ -3554,6 +3677,7 @@
         const updated = {
           ...pSlot,
           megaActive: Boolean(pSlot.megaActive),
+          shieldActive: false,
           ailment: null,
           sleepTurns: 0,
           moveCooldowns: [0, 0, 0, 0],
@@ -3585,7 +3709,7 @@
       const btn = document.getElementById('simBattleBtn');
       if (btn) {
         btn.innerText = '[ ⚡ SIM FULL 3v3 BATTLE ]';
-        btn.className = 'w-full py-2 px-3 rounded-xl bg-gradient-to-r from-cyan-400 to-purple-500 hover:from-cyan-300 hover:to-purple-400 text-slate-950 font-mono-num font-black text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,240,255,0.4)] transition';
+        btn.className = 'w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-cyan-400 to-purple-500 hover:from-cyan-300 hover:to-purple-400 text-slate-950 font-mono-num font-black text-[11px] uppercase tracking-wider shadow-[0_0_16px_rgba(0,240,255,0.35)] transition';
       }
     }
 
@@ -3599,6 +3723,7 @@
         team.forEach(m => {
           m.megaActive = false;
           m.overclock2x = false;
+          m.shieldActive = false;
           m.ailment = null;
           m.sleepTurns = 0;
           m.moveCooldowns = [0, 0, 0, 0];
@@ -3615,16 +3740,34 @@
       stadiumBattleState.slot1Hp = active1.hp;
       stadiumBattleState.slot2MaxHp = active2.maxHp;
       stadiumBattleState.slot2Hp = active2.hp;
+
+      const startBonusAp1 = (stadiumBattleState.megaCoreLevel || 0) > 0 ? 3 : 0;
+      stadiumBattleState.apPool1 = Math.min(25, 6 + startBonusAp1);
+      stadiumBattleState.apPool2 = 6;
+      stadiumBattleState.activeTurnSlot = 1;
+      stadiumBattleState.turnRolled = false;
+      stadiumBattleState.hotseatTurn = 1;
+
+      stadiumBattleState.bag1 = {
+        potions: 2,
+        xAttacks: 1,
+        balls: Math.max(3, Number(stadiumBattleState.masterBalls ?? 3))
+      };
+      stadiumBattleState.bag2 = {
+        potions: 2,
+        xAttacks: 1,
+        balls: 3
+      };
+
       stadiumBattleState.overdrive1 = 0;
       stadiumBattleState.overdrive2 = 0;
-      stadiumBattleState.potionsLeft = 2;
-      stadiumBattleState.xAttacksLeft = 1;
-      stadiumBattleState.roundNum = 1;
+      stadiumBattleState.roundNumber = 1;
       stadiumBattleState.gameMode = stadiumBattleState.gameMode || 'FREE_ARENA';
-      stadiumBattleState.hotseatTurn = 1;
       stadiumBattleState.winStreak = stadiumBattleState.winStreak || 0;
       stadiumBattleState.faintedSlot = 0;
       stadiumBattleState.attackLock = false;
+
+      document.getElementById('stadiumVictoryRewardBanner')?.classList.add('hidden');
 
       const art1 = document.getElementById('cutinArtSlot1');
       const art2 = document.getElementById('cutinArtSlot2');
@@ -3642,11 +3785,11 @@
         const logTitle = document.getElementById('stadiumBattleLogTitle');
         const logText = document.getElementById('stadiumBattleLogText');
         if (logTitle) {
-          logTitle.innerText = stadiumBattleState.gameMode === 'HOTSEAT_2P'
-            ? '2P HOTSEAT • TURN: PLAYER 1 (LOGAN)'
-            : 'LOGAN\'S 3v3 BATTLE STADIUM READY';
+          logTitle.innerText = 'STEP 1: CLICK [ 🎲 ROLL D20 FOR AP ] TO START TURN!';
         }
-        if (logText) logText.innerText = active1.name.toUpperCase() + ' vs. ' + active2.name.toUpperCase() + ' — Roll the D20 by clicking any Move Card below!';
+        if (logText) {
+          logText.innerText = active1.name.toUpperCase() + ' starts with ' + stadiumBattleState.apPool1 + ' AP! Roll the D20 to charge your AP Pool (up to 25 AP Max)!';
+        }
       }
     }
 
@@ -3765,8 +3908,8 @@
       const matchup = getTypeMatchup(s1.types || [s1.type], s2.types || [s2.type]);
       const statCard1 = document.getElementById('cutinStatCardSlot1');
       const statCard2 = document.getElementById('cutinStatCardSlot2');
-      if (statCard1) statCard1.innerHTML = renderPokedexStatCardHtml(s1, spec1, matchup.slot1Mult, matchup.slot2Mult);
-      if (statCard2) statCard2.innerHTML = renderPokedexStatCardHtml(s2, spec2, matchup.slot2Mult, matchup.slot1Mult);
+      if (statCard1) statCard1.textContent = renderPokedexStatCardHtml(s1, spec1, matchup.slot1Mult, matchup.slot2Mult);
+      if (statCard2) statCard2.textContent = renderPokedexStatCardHtml(s2, spec2, matchup.slot2Mult, matchup.slot1Mult);
 
       const updateHpBar = (slotNum, memberObj) => {
         const curHp = memberObj.hp;
@@ -3802,9 +3945,10 @@
           bar.style.width = pct + '%';
         }
         if (ailBadge) {
-          if (memberObj.ailment && STATUS_BADGE_STYLES[memberObj.ailment]) {
-            ailBadge.innerText = STATUS_BADGE_STYLES[memberObj.ailment].label;
-            ailBadge.className = 'text-[9px] px-1.5 py-0.5 rounded font-mono-num font-black ' + STATUS_BADGE_STYLES[memberObj.ailment].cls;
+          const effAilment = memberObj.shieldActive ? 'SHD' : memberObj.ailment;
+          if (effAilment && STATUS_BADGE_STYLES[effAilment]) {
+            ailBadge.innerText = STATUS_BADGE_STYLES[effAilment].label;
+            ailBadge.className = 'text-[9px] px-1.5 py-0.5 rounded font-mono-num font-black ' + STATUS_BADGE_STYLES[effAilment].cls;
           } else {
             ailBadge.className = 'hidden';
           }
@@ -3822,8 +3966,11 @@
               art.classList.add('mega-overdrive-art');
             }
           } else if (memberObj.overclock2x) {
-            badge.innerText = '⟦ 2x BOOST ⟧';
+            badge.innerText = '⟦ 2x DMG ARMED ⟧';
             badge.className = 'text-[10px] px-2 py-0.5 rounded bg-cyan-400/30 text-cyan-200 border border-cyan-300 font-black';
+          } else if (memberObj.shieldActive) {
+            badge.innerText = '⟦ SHIELD -50% ⟧';
+            badge.className = 'text-[10px] px-2 py-0.5 rounded bg-indigo-500/30 text-indigo-200 border border-indigo-400 font-black';
           } else {
             badge.innerText = pct < 25 ? 'CRITICAL' : 'BATTLE READY';
             badge.className = pct < 25
@@ -3839,25 +3986,71 @@
       updateHpBar(1, s1);
       updateHpBar(2, s2);
 
-      // Update Mega Overdrive Gauges
-      [1, 2].forEach(sideNum => {
-        const odVal = Math.min(100, Math.max(0, Number(sideNum === 1 ? (stadiumBattleState.overdrive1 || 0) : (stadiumBattleState.overdrive2 || 0))));
-        const memberObj = sideNum === 1 ? s1 : s2;
-        const txtEl = document.getElementById('megaGaugeTextSlot' + sideNum);
-        const barEl = document.getElementById('megaGaugeBarSlot' + sideNum);
-        const btnEl = document.getElementById('megaTriggerBtnSlot' + sideNum);
-        if (txtEl) txtEl.innerText = memberObj.megaActive ? 'MEGA ACTIVE!' : (odVal + '%');
-        if (barEl) barEl.style.width = (memberObj.megaActive ? 100 : odVal) + '%';
-        if (btnEl) {
-          if (odVal >= 100 && !memberObj.megaActive && memberObj.hp > 0) {
-            btnEl.classList.remove('hidden');
-          } else {
-            btnEl.classList.add('hidden');
-          }
-        }
-      });
+      // Update Player 1 & Player 2 AP Pool Counters (0 to 25 AP Max)
+      const ap1 = Math.min(25, Math.max(0, Number(stadiumBattleState.apPool1 ?? 6)));
+      const ap2 = Math.min(25, Math.max(0, Number(stadiumBattleState.apPool2 ?? 6)));
+      const activeTurn = Number(stadiumBattleState.activeTurnSlot || 1);
+      const turnRolled = Boolean(stadiumBattleState.turnRolled);
 
-      // Render Large, Un-Truncated 2x2 Move Deck Grid with Cooldowns & Ultimate Locks
+      const apHdr1 = document.getElementById('apPoolHeaderSlot1');
+      const apBar1 = document.getElementById('apPoolBarSlot1');
+      const megaTxt1 = document.getElementById('megaGaugeTextSlot1');
+      if (apHdr1) apHdr1.innerText = "LOGAN'S AP POOL: " + ap1 + " / 25 MAX";
+      if (apBar1) apBar1.style.width = Math.round((ap1 / 25) * 100) + '%';
+      if (megaTxt1) megaTxt1.innerText = s1.megaActive ? '✦ MEGA +35% ACTIVE!' : (ap1 >= 18 ? '⚡ 18 AP ULTIMATE READY!' : ('ULTIMATE: ' + ap1 + '/18 AP'));
+
+      const p2NameLabel = stadiumBattleState.gameMode === 'HOTSEAT_2P'
+        ? "DAD'S AP POOL: "
+        : (stadiumBattleState.gauntletStage > 0 ? "BOSS AP POOL: " : "OPPONENT'S AP POOL: ");
+      const apHdr2 = document.getElementById('apPoolHeaderSlot2');
+      const apBar2 = document.getElementById('apPoolBarSlot2');
+      const megaTxt2 = document.getElementById('megaGaugeTextSlot2');
+      if (apHdr2) apHdr2.innerText = p2NameLabel + ap2 + " / 25 MAX";
+      if (apBar2) apBar2.style.width = Math.round((ap2 / 25) * 100) + '%';
+      if (megaTxt2) megaTxt2.innerText = s2.megaActive ? '✦ MEGA +35% ACTIVE!' : (ap2 >= 18 ? '⚡ 18 AP ULTIMATE READY!' : ('ULTIMATE: ' + ap2 + '/18 AP'));
+
+      // Update Center 3-Step Turn Guide Ribbon & Roll / Bank Buttons
+      const ownerBanner = document.getElementById('activeTurnOwnerBanner');
+      if (ownerBanner) {
+        ownerBanner.innerText = activeTurn === 1
+          ? 'ACTIVE TURN: LOGAN (PLAYER 1) • ' + ap1 + ' AP'
+          : ('ACTIVE TURN: ' + (stadiumBattleState.gameMode === 'HOTSEAT_2P' ? 'DAD (PLAYER 2)' : 'BOSS / AI (P2)') + ' • ' + ap2 + ' AP');
+        ownerBanner.className = 'text-[9px] font-pokedex font-extrabold uppercase tracking-wider text-center ' + (activeTurn === 1 ? 'text-cyan-300' : 'text-amber-300');
+      }
+
+      const step1El = document.getElementById('turnStep1Pill');
+      const step2El = document.getElementById('turnStep2Pill');
+      const step3El = document.getElementById('turnStep3Pill');
+      const rollBtn = document.getElementById('rollD20ApBtn');
+      const bankBtn = document.getElementById('bankApEndTurnBtn');
+      const activePoolVal = activeTurn === 1 ? ap1 : ap2;
+
+      if (!turnRolled) {
+        if (step1El) step1El.className = 'px-2 py-1 rounded-lg bg-amber-400 text-slate-950 border border-white text-center shadow-[0_0_12px_rgba(250,204,21,0.65)] transition';
+        if (step2El) step2El.className = 'px-2 py-1 rounded-lg bg-[#10162B] text-slate-400 border border-white/10 text-center transition';
+        if (step3El) step3El.className = 'px-2 py-1 rounded-lg bg-[#10162B] text-slate-400 border border-white/10 text-center transition';
+        if (rollBtn) {
+          rollBtn.innerText = '[ 🎲 ROLL D20 FOR AP (' + (activeTurn === 1 ? 'LOGAN' : 'P2') + ') ]';
+          rollBtn.className = 'w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 hover:from-amber-300 hover:to-yellow-200 text-slate-950 font-pokedex font-black text-xs uppercase tracking-wider shadow-[0_0_22px_rgba(250,204,21,0.75)] animate-pulse transition active:scale-95';
+        }
+      } else {
+        if (step1El) step1El.className = 'px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-center transition';
+        if (step2El) step2El.className = 'px-2 py-1 rounded-lg bg-cyan-400 text-slate-950 border border-white text-center shadow-[0_0_12px_rgba(0,240,255,0.55)] transition';
+        if (step3El) step3El.className = 'px-2 py-1 rounded-lg bg-emerald-400/25 text-emerald-200 border border-emerald-400/60 text-center transition';
+        if (rollBtn) {
+          rollBtn.innerText = '✓ D20 ROLLED (' + activePoolVal + ' AP READY TO SPEND)';
+          rollBtn.className = 'w-full py-1.5 px-3 rounded-xl bg-slate-800/90 text-emerald-300 border border-emerald-400/40 font-pokedex font-black text-[10px] uppercase tracking-wider transition';
+        }
+      }
+
+      if (bankBtn) {
+        bankBtn.innerText = '[ ⏭️ PASS & BANK +' + activePoolVal + ' AP FOR NEXT TURN ]';
+        bankBtn.className = (turnRolled && activePoolVal < 5)
+          ? 'w-full py-1.5 px-2.5 rounded-xl bg-emerald-400 text-slate-950 border border-white font-pokedex font-black text-[10px] uppercase tracking-wider shadow-[0_0_16px_rgba(16,185,129,0.6)] animate-pulse transition active:scale-95'
+          : 'w-full py-1.5 px-2.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/60 text-emerald-200 font-pokedex font-black text-[10px] uppercase tracking-wider transition active:scale-95';
+      }
+
+      // Render Large, Un-Truncated 2x2 Move Deck Grid with Clear AP Cost Badges & Affordability Gating
       const renderMovesGrid = (slotNum, attackerObj, defenderObj) => {
         const container = document.getElementById('stadiumMovesSlot' + slotNum);
         if (!container) return;
@@ -3868,13 +4061,14 @@
         if (!Array.isArray(attackerObj.moveCooldowns) || attackerObj.moveCooldowns.length !== 4) {
           attackerObj.moveCooldowns = [0, 0, 0, 0];
         }
-        const odVal = slotNum === 1 ? (stadiumBattleState.overdrive1 || 0) : (stadiumBattleState.overdrive2 || 0);
+        const sideAp = slotNum === 1 ? ap1 : ap2;
 
         container.innerHTML = moves.map((m, idx) => {
+          const apCost = Number(m.apCost || MOVE_AP_COSTS[idx] || 5);
           const eff = computeMoveEffectiveness(m.type, defenderObj.types || [defenderObj.type]);
           const effTag = eff > 1
-            ? (eff + 'x SUPER EFFECTIVE')
-            : (eff === 0 ? '0x IMMUNE' : (eff < 1 ? (eff + 'x RESISTED') : '1x NEUTRAL'));
+            ? (eff + 'x SUPER')
+            : (eff === 0 ? '0x IMMUNE' : (eff < 1 ? (eff + 'x RESIST') : '1x HIT'));
           const effCls = eff > 1
             ? 'text-emerald-300 bg-emerald-500/20 border-emerald-400/50'
             : (eff < 1 ? 'text-amber-300 bg-amber-500/15 border-amber-400/40' : 'text-slate-300 bg-white/5 border-white/15');
@@ -3882,41 +4076,43 @@
 
           const cdLeft = Number(attackerObj.moveCooldowns[idx] || 0);
           const isUlt = idx === 3 || Boolean(m.ultimate);
-          const ultUnlocked = isUlt ? (odVal >= 100 || Boolean(attackerObj.ultUnlockedByD20) || Boolean(attackerObj.megaActive)) : true;
-          const isLocked = cdLeft > 0 || (isUlt && !ultUnlocked);
+          const canAfford = sideAp >= apCost;
+          const isUnlocked = canAfford && cdLeft <= 0;
 
-          let cdStatusHtml = '';
-          if (isUlt) {
-            cdStatusHtml = ultUnlocked
-              ? '<span class="text-[9px] font-mono-num font-black text-amber-300 bg-amber-500/25 px-1.5 py-0.5 rounded border border-amber-300 animate-pulse">⚡ ULT READY!</span>'
-              : '<span class="text-[9px] font-mono-num font-extrabold text-amber-200/80 bg-black/60 px-1.5 py-0.5 rounded border border-amber-400/40">🔒 100% OD / D20≥16</span>';
-          } else if (cdLeft > 0) {
-            cdStatusHtml = '<span class="text-[9px] font-mono-num font-black text-rose-300 bg-rose-500/25 px-1.5 py-0.5 rounded border border-rose-400/50">⏳ ' + cdLeft + 'T CD</span>';
-          } else if (idx === 0) {
-            cdStatusHtml = '<span class="text-[9px] font-mono-num font-extrabold text-emerald-300 bg-emerald-500/15 px-1.5 py-0.5 rounded border border-emerald-400/40">READY (+25% OD)</span>';
+          let statusPillHtml = '';
+          if (cdLeft > 0) {
+            statusPillHtml = '<span class="text-[8px] font-mono-num font-black text-rose-300 bg-rose-500/25 px-1.5 py-0.5 rounded border border-rose-400/50">⏳ ' + cdLeft + 'T CD</span>';
+          } else if (isUnlocked) {
+            statusPillHtml = isUlt
+              ? '<span class="text-[8px] font-mono-num font-black text-amber-200 bg-amber-500/30 px-1.5 py-0.5 rounded border border-amber-300 animate-pulse">⚡ MEGA ULT UNLOCKED!</span>'
+              : '<span class="text-[8px] font-mono-num font-black text-emerald-300 bg-emerald-500/20 px-1.5 py-0.5 rounded border border-emerald-400/50">UNLOCKED • FIRE</span>';
           } else {
-            cdStatusHtml = '<span class="text-[9px] font-mono-num font-extrabold text-cyan-300 bg-cyan-500/15 px-1.5 py-0.5 rounded border border-cyan-400/40">READY</span>';
+            statusPillHtml = isUlt
+              ? '<span class="text-[8px] font-mono-num font-extrabold text-amber-200/80 bg-black/60 px-1.5 py-0.5 rounded border border-amber-400/40">🔒 NEEDS 18 AP (BANK TURN)</span>'
+              : '<span class="text-[8px] font-mono-num font-bold text-slate-400 bg-black/50 px-1.5 py-0.5 rounded border border-white/10">🔒 NEEDS ' + apCost + ' AP (ROLL D20)</span>';
           }
 
-          const borderCls = isUlt
-            ? (ultUnlocked
-                ? 'border-amber-300 bg-gradient-to-r from-amber-500/30 to-purple-600/35 shadow-[0_0_18px_rgba(250,204,21,0.4)]'
-                : 'border-amber-400/35 bg-[#0D1122] opacity-75')
-            : (cdLeft > 0
-                ? 'border-rose-500/30 bg-[#0A0D1A] opacity-55'
-                : 'border-white/20 bg-[#0E1428] hover:bg-[#17203D] hover:border-cyan-400/70');
+          const costBadgeCls = isUnlocked
+            ? (isUlt ? 'bg-amber-400 text-slate-950 border-white shadow-[0_0_10px_#FACC15]' : 'bg-cyan-400 text-slate-950 border-white')
+            : 'bg-slate-900 text-slate-300 border-white/20';
+
+          const borderCls = isUnlocked
+            ? (isUlt
+                ? 'border-2 border-amber-300 bg-gradient-to-r from-amber-500/30 to-purple-600/35 shadow-[0_0_18px_rgba(250,204,21,0.45)]'
+                : 'border-2 border-emerald-400/80 bg-[#0F1B33] hover:bg-[#162647] shadow-[0_0_12px_rgba(16,185,129,0.22)]')
+            : 'border border-white/10 bg-[#090D1A] opacity-60 hover:opacity-85';
 
           return (
             '<button onclick="executeStadiumMove(' + slotNum + ', ' + idx + ')" ' +
-                    'class="p-2.5 rounded-xl border ' + borderCls + ' text-left transition active:scale-95 flex flex-col justify-between gap-1.5 min-w-0">' +
-              '<div class="flex items-center justify-between gap-1.5 flex-wrap">' +
-                '<span class="text-[12px] font-extrabold text-white whitespace-nowrap leading-tight">' + m.name + '</span>' +
-                '<span class="px-1.5 py-0.5 rounded uppercase font-mono-num font-black text-[8px] text-white border border-white/25 shrink-0" style="background:' + typeHex + '44;">' + m.type + '</span>' +
+                    'class="p-2 rounded-xl ' + borderCls + ' text-left transition active:scale-95 flex flex-col justify-between gap-1 min-w-0">' +
+              '<div class="flex items-center justify-between gap-1">' +
+                '<span class="text-[11px] font-extrabold text-white whitespace-nowrap truncate">' + m.name + '</span>' +
+                '<span class="px-1.5 py-0.5 rounded font-pokedex font-black text-[9px] border shrink-0 ' + costBadgeCls + '">COST: ' + apCost + ' AP</span>' +
               '</div>' +
-              '<div class="flex items-center justify-between gap-1 flex-wrap text-[9px] font-mono-num">' +
-                '<span class="font-extrabold text-cyan-200">PWR ' + m.power + '</span>' +
-                '<span class="font-black px-1.5 py-0.5 rounded border ' + effCls + ' whitespace-nowrap">' + effTag + '</span>' +
-                cdStatusHtml +
+              '<div class="flex items-center justify-between gap-1 flex-wrap text-[8px] font-mono-num">' +
+                '<span class="px-1 py-0.2 rounded uppercase font-black text-white border border-white/20" style="background:' + typeHex + '55;">' + m.type + ' • PWR ' + m.power + '</span>' +
+                '<span class="font-black px-1 py-0.2 rounded border ' + effCls + ' whitespace-nowrap">' + effTag + '</span>' +
+                statusPillHtml +
               '</div>' +
             '</button>'
           );
@@ -3926,23 +4122,45 @@
       renderMovesGrid(1, s1, s2);
       renderMovesGrid(2, s2, s1);
 
-      // Update Trainer Item Bag Counts & Pulsing Catch Zone Alert
-      const potLbl = document.getElementById('potionCountLabel');
-      if (potLbl) potLbl.innerText = String(stadiumBattleState.potionsLeft ?? 2);
-      const xAtkLbl = document.getElementById('xAttackCountLabel');
-      if (xAtkLbl) xAtkLbl.innerText = String(stadiumBattleState.xAttacksLeft ?? 1);
+      // Update Separate Trainer Bags for Logan (Slot 1) and Dad/Boss (Slot 2)
+      const bag1 = stadiumBattleState.bag1 || { potions: 2, xAttacks: 1, balls: 3 };
+      const bag2 = stadiumBattleState.bag2 || { potions: 2, xAttacks: 1, balls: 3 };
+      const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = String(val); };
+      setTxt('bagCount1_POTION', bag1.potions ?? 2);
+      setTxt('bagCount1_X_ATTACK', bag1.xAttacks ?? 1);
+      setTxt('bagCount1_BALL', bag1.balls ?? 3);
+      setTxt('bagCount2_POTION', bag2.potions ?? 2);
+      setTxt('bagCount2_X_ATTACK', bag2.xAttacks ?? 1);
+      setTxt('bagCount2_BALL', bag2.balls ?? 3);
+
+      const relicsBadge = document.getElementById('loganEquippedRelicsBadge');
+      if (relicsBadge) {
+        const lc = stadiumBattleState.luckyCharmLevel || 0;
+        const mc = stadiumBattleState.megaCoreLevel || 0;
+        const parts = [];
+        if (lc > 0) parts.push('🍀 Lucky +' + (lc * 2) + ' D20');
+        if (mc > 0) parts.push('⚡ Core +3 AP');
+        parts.push('🟣 ' + (stadiumBattleState.masterBalls ?? 3) + ' Master');
+        relicsBadge.innerText = parts.join(' • ');
+      }
+
+      const p2BagHdr = document.getElementById('p2BagHeaderTitle');
+      if (p2BagHdr) {
+        p2BagHdr.innerText = stadiumBattleState.gameMode === 'HOTSEAT_2P'
+          ? "🎒 DAD'S TRAINER BAG & GEAR"
+          : "🎒 BOSS / OPPONENT BAG & GEAR";
+      }
 
       const enemyHpRatio = s2.hp / Math.max(1, s2.maxHp);
       const isCatchZone = (enemyHpRatio <= 0.35 && s2.hp > 0) || Boolean(s2.shiny);
-      ['catchBtn_POKE', 'catchBtn_ULTRA', 'catchBtn_MASTER'].forEach(btnId => {
-        const el = document.getElementById(btnId);
-        if (!el) return;
+      const ballBtn1 = document.getElementById('bagBtn1_BALL');
+      if (ballBtn1) {
         if (isCatchZone) {
-          el.classList.add('animate-pulse', 'ring-2', 'ring-amber-400', 'shadow-[0_0_18px_#FACC15]');
+          ballBtn1.classList.add('animate-pulse', 'ring-2', 'ring-amber-400', 'shadow-[0_0_16px_#FACC15]');
         } else {
-          el.classList.remove('animate-pulse', 'ring-2', 'ring-amber-400', 'shadow-[0_0_18px_#FACC15]');
+          ballBtn1.classList.remove('animate-pulse', 'ring-2', 'ring-amber-400', 'shadow-[0_0_16px_#FACC15]');
         }
-      });
+      }
 
       // Update Stadium Evolve & Shiny Buttons
       [1, 2].forEach(slotNum => {
@@ -4260,48 +4478,107 @@
       if (logText) logText.innerText = member.name.toUpperCase() + ' unleashed MEGA OVERDRIVE! (+35% ATK/DEF, +30% HP Heal & -' + finisherDmg + ' HP Finisher Beam!)';
     }
 
-    function useTrainerItem(itemType) {
+    function useTrainerItem(sideNumOrItem, maybeItemType) {
       if (stadiumBattleState.attackLock) return;
       ensureSquadTeamsInitialized();
-      const activeSide = (stadiumBattleState.gameMode === 'HOTSEAT_2P' && stadiumBattleState.hotseatTurn === 2) ? 2 : 1;
-      const fighter = syncActiveSquadMemberWithPartnerState(activeSide);
+      let sideNum = 1;
+      let itemType = sideNumOrItem;
+      if (typeof sideNumOrItem === 'number') {
+        sideNum = sideNumOrItem;
+        itemType = maybeItemType;
+      } else {
+        sideNum = (stadiumBattleState.gameMode === 'HOTSEAT_2P' && stadiumBattleState.hotseatTurn === 2) ? 2 : (stadiumBattleState.activeTurnSlot || 1);
+      }
+
       const logTitle = document.getElementById('stadiumBattleLogTitle');
       const logText = document.getElementById('stadiumBattleLogText');
+      const activeTurn = stadiumBattleState.activeTurnSlot || 1;
+
+      if (!stadiumBattleState.simRunning && sideNum !== activeTurn) {
+        if (logTitle) logTitle.innerText = 'WAIT YOUR TURN! (SIDE ' + activeTurn + ')';
+        if (logText) logText.innerText = 'Only the active player can spend AP on Trainer Bag items right now!';
+        return;
+      }
+
+      if (!stadiumBattleState.turnRolled) {
+        rollD20ForTurnAp(sideNum);
+      }
+
+      const fighter = syncActiveSquadMemberWithPartnerState(sideNum);
+      const bag = sideNum === 1
+        ? (stadiumBattleState.bag1 || (stadiumBattleState.bag1 = { potions: 2, xAttacks: 1, balls: 3 }))
+        : (stadiumBattleState.bag2 || (stadiumBattleState.bag2 = { potions: 2, xAttacks: 1, balls: 3 }));
+      const curAp = sideNum === 1 ? (stadiumBattleState.apPool1 || 0) : (stadiumBattleState.apPool2 || 0);
+      const deductSideAp = (amt) => {
+        if (sideNum === 1) stadiumBattleState.apPool1 = Math.max(0, (stadiumBattleState.apPool1 || 0) - amt);
+        else stadiumBattleState.apPool2 = Math.max(0, (stadiumBattleState.apPool2 || 0) - amt);
+      };
 
       if (itemType === 'POTION') {
-        if ((stadiumBattleState.potionsLeft ?? 2) <= 0) {
+        if ((bag.potions ?? 0) <= 0) {
           if (logTitle) logTitle.innerText = 'NO HYPER POTIONS LEFT!';
-          if (logText) logText.innerText = 'You used all 2 Hyper Potions this match!';
+          if (logText) logText.innerText = (sideNum === 1 ? 'Logan' : 'Dad/Boss') + ' used both Hyper Potions this match!';
           return;
         }
-        stadiumBattleState.potionsLeft = (stadiumBattleState.potionsLeft ?? 2) - 1;
+        if (curAp < 5) {
+          if (logTitle) logTitle.innerText = 'NEEDS 5 AP FOR HYPER POTION!';
+          if (logText) logText.innerText = 'Roll D20 for AP or bank your remaining AP to afford Hyper Potion (5 AP)!';
+          return;
+        }
+        deductSideAp(5);
+        bag.potions = Math.max(0, (bag.potions ?? 2) - 1);
         const healAmt = Math.round(fighter.maxHp * 0.65);
         fighter.hp = Math.min(fighter.maxHp, fighter.hp + healAmt);
         fighter.ailment = null;
         playBattleSynthSfx('heal');
-        const floatEl = document.getElementById('dmgFloatSlot' + activeSide);
+        const floatEl = document.getElementById('dmgFloatSlot' + sideNum);
         if (floatEl) {
-          floatEl.innerText = '+' + healAmt + ' HP HYPER POTION!';
+          floatEl.innerText = '+' + healAmt + ' HP HYPER POTION! (-5 AP)';
           floatEl.classList.remove('show-dmg');
           void floatEl.offsetWidth;
           floatEl.classList.add('show-dmg');
         }
         renderStadiumCombatUI();
-        if (logTitle) logTitle.innerText = 'HYPER POTION USED! (+65% HP)';
-        if (logText) logText.innerText = 'Restored +' + healAmt + ' HP and cured status ailments on ' + fighter.name.toUpperCase() + '!';
+        if (logTitle) logTitle.innerText = '🧪 HYPER POTION USED! (+65% HP • -5 AP)';
+        if (logText) logText.innerText = 'Restored +' + healAmt + ' HP & cured status on ' + fighter.name.toUpperCase() + '! You can keep chaining actions or Bank AP!';
       } else if (itemType === 'X_ATTACK') {
-        if ((stadiumBattleState.xAttacksLeft ?? 1) <= 0) {
-          if (logTitle) logTitle.innerText = 'NO X-ATTACK OVERCLOCK LEFT!';
-          if (logText) logText.innerText = 'X-Attack Overclock was already used this match!';
+        if ((bag.xAttacks ?? 0) <= 0) {
+          if (logTitle) logTitle.innerText = 'NO X-ATTACK LEFT!';
+          if (logText) logText.innerText = 'X-Attack 2x DMG was already used this match!';
           return;
         }
-        stadiumBattleState.xAttacksLeft = (stadiumBattleState.xAttacksLeft ?? 1) - 1;
+        if (curAp < 4) {
+          if (logTitle) logTitle.innerText = 'NEEDS 4 AP FOR X-ATTACK!';
+          if (logText) logText.innerText = 'You need at least 4 AP to activate X-Attack 2x Damage!';
+          return;
+        }
+        deductSideAp(4);
+        bag.xAttacks = Math.max(0, (bag.xAttacks ?? 1) - 1);
         fighter.overclock2x = true;
         playBattleSynthSfx('super_effective');
-        showArcadeCombatCallout('X-ATTACK OVERCLOCK! (NEXT HIT 2.0x)', 'OVERDRIVE');
+        showArcadeCombatCallout('⚔️ X-ATTACK ARMED! (NEXT HIT 2.0x DMG)', 'OVERDRIVE');
         renderStadiumCombatUI();
-        if (logTitle) logTitle.innerText = 'X-ATTACK OVERCLOCK ARMED!';
-        if (logText) logText.innerText = fighter.name.toUpperCase() + '\'s next attack will deal DOUBLE (2.0x) DAMAGE!';
+        if (logTitle) logTitle.innerText = '⚔️ X-ATTACK 2x DMG ARMED! (-4 AP)';
+        if (logText) logText.innerText = fighter.name.toUpperCase() + '\'s next attack will deal DOUBLE (2.0x) DAMAGE! Chain a move now or Bank AP!';
+      } else if (itemType === 'SHIELD') {
+        if (fighter.shieldActive) {
+          if (logTitle) logTitle.innerText = 'ELEMENTAL SHIELD ALREADY ACTIVE!';
+          if (logText) logText.innerText = fighter.name.toUpperCase() + ' already has a -50% Damage Elemental Shield raised!';
+          return;
+        }
+        if (curAp < 4) {
+          if (logTitle) logTitle.innerText = 'NEEDS 4 AP FOR ELEMENTAL SHIELD!';
+          if (logText) logText.innerText = 'You need at least 4 AP to raise an Elemental Shield (-50% damage next hit)!';
+          return;
+        }
+        deductSideAp(4);
+        fighter.shieldActive = true;
+        fighter.ailment = fighter.ailment || 'SHD';
+        playBattleSynthSfx('heal');
+        showArcadeCombatCallout('🛡️ ELEMENTAL SHIELD RAISED! (-50% DMG NEXT HIT)', 'OVERDRIVE');
+        renderStadiumCombatUI();
+        if (logTitle) logTitle.innerText = '🛡️ ELEMENTAL SHIELD RAISED! (-4 AP)';
+        if (logText) logText.innerText = fighter.name.toUpperCase() + ' takes -50% damage from the next incoming attack!';
       }
     }
 
@@ -4322,7 +4599,7 @@
       const logTitle = document.getElementById('stadiumBattleLogTitle');
       const logText = document.getElementById('stadiumBattleLogText');
       if (logTitle) logTitle.innerText = '✦ SHINY ENCOUNTER TRIGGERED! ✦';
-      if (logText) logText.innerText = 'A rare SHINY ' + enemy.name.toUpperCase() + ' appeared! Throw a Poké Ball, Ultra Ball, or Master Ball to catch it!';
+      if (logText) logText.innerText = 'A rare SHINY ' + enemy.name.toUpperCase() + ' appeared! Spend 3 AP on Capture Ball in your Trainer Bag to catch it!';
     }
 
     function setStadiumGameMode(modeKey) {
@@ -4330,6 +4607,8 @@
       ensureSquadTeamsInitialized();
       stadiumBattleState.gameMode = modeKey;
       stadiumBattleState.hotseatTurn = 1;
+      stadiumBattleState.activeTurnSlot = 1;
+      stadiumBattleState.turnRolled = false;
       const logTitle = document.getElementById('stadiumBattleLogTitle');
       const logText = document.getElementById('stadiumBattleLogText');
 
@@ -4342,11 +4621,177 @@
       if (modeKey === 'HOTSEAT_2P') {
         showArcadeCombatCallout('2P HOTSEAT: LOGAN VS DAD!', 'OVERDRIVE');
         if (logTitle) logTitle.innerText = '2P HOTSEAT • TURN: PLAYER 1 (LOGAN)';
-        if (logText) logText.innerText = 'Logan (Left) and Dad (Right) take turns picking moves on the same screen!';
+        if (logText) logText.innerText = 'Step 1: Click [🎲 ROLL D20 FOR AP], Step 2: Spend AP on Moves/Bag, Step 3: Bank remaining AP!';
       } else {
-        if (logTitle) logTitle.innerText = 'FREE ARENA (1v1 / 3v3 SANDBOX)';
-        if (logText) logText.innerText = 'Pick any matchup, test signature moves, or draft 3v3 Battle Decks!';
+        if (logTitle) logTitle.innerText = 'FREE ARENA (D20 AP POOL & BANKING)';
+        if (logText) logText.innerText = 'Click [🎲 ROLL D20 FOR AP] to charge your AP Pool (up to 25 AP), chain moves or items, or bank AP for a Mega Finisher!';
       }
+    }
+
+    function rollD20ForTurnAp(forcedSide) {
+      if (stadiumBattleState.attackLock) return null;
+      ensureSquadTeamsInitialized();
+      if (stadiumBattleState.faintedSlot !== 0) {
+        resetBattleStadiumMatch();
+        return null;
+      }
+
+      const activeSlot = forcedSide || stadiumBattleState.activeTurnSlot || 1;
+      stadiumBattleState.activeTurnSlot = activeSlot;
+      const fighter = syncActiveSquadMemberWithPartnerState(activeSlot);
+      const logTitle = document.getElementById('stadiumBattleLogTitle');
+      const logText = document.getElementById('stadiumBattleLogText');
+
+      if (stadiumBattleState.turnRolled && !forcedSide) {
+        if (logTitle) logTitle.innerText = 'ALREADY ROLLED D20 THIS TURN!';
+        if (logText) logText.innerText = 'Spend your AP Pool on unlocked Moves or Bag items, or click [⏭️ PASS & BANK AP FOR NEXT TURN]!';
+        return null;
+      }
+
+      // Tick down cooldowns by 1 turn at the start of this fighter's turn roll
+      if (Array.isArray(fighter.moveCooldowns)) {
+        fighter.moveCooldowns = fighter.moveCooldowns.map(c => Math.max(0, Number(c || 0) - 1));
+      } else {
+        fighter.moveCooldowns = [0, 0, 0, 0];
+      }
+
+      const dex = HALL_OF_FAME_DEX[fighter.id] || {};
+      const st = fighter.stats || dex.stats || { atk: 90, spa: 85, spe: 85 };
+      const speVal = Number(st.spe || 80);
+      const speedBonus = speVal >= 105 ? 3 : (speVal >= 80 ? 2 : 1);
+      const luckyMin = (activeSlot === 1 && (stadiumBattleState.luckyCharmLevel || 0) > 0)
+        ? Math.min(8, 1 + (stadiumBattleState.luckyCharmLevel * 2))
+        : 1;
+      const rawRoll = Math.floor(Math.random() * 20) + 1;
+      const natRoll = Math.max(luckyMin, rawRoll);
+
+      let apGained = Math.min(25, natRoll + speedBonus);
+      let label = '+' + apGained + ' AP ADDED TO POOL!';
+      let colorCls = 'text-cyan-200 border-cyan-400/50 bg-cyan-500/20';
+
+      if (natRoll === 20) {
+        apGained = 25;
+        label = 'NAT 20 BONUS! +25 AP FULL CHARGE!';
+        colorCls = 'text-amber-200 border-amber-300 bg-amber-500/30 shadow-[0_0_14px_rgba(250,204,21,0.5)]';
+      } else if (apGained >= 18) {
+        label = 'HIGH ROLL! +' + apGained + ' AP (18 AP ULTIMATE READY!)';
+        colorCls = 'text-emerald-200 border-emerald-400/60 bg-emerald-500/25 shadow-[0_0_12px_rgba(16,185,129,0.35)]';
+      }
+
+      const prevAp = activeSlot === 1 ? (stadiumBattleState.apPool1 || 0) : (stadiumBattleState.apPool2 || 0);
+      const newAp = Math.min(25, prevAp + apGained);
+      if (activeSlot === 1) stadiumBattleState.apPool1 = newAp;
+      else stadiumBattleState.apPool2 = newAp;
+
+      stadiumBattleState.turnRolled = true;
+
+      const dieEl = document.getElementById('stadium-d20-die');
+      const numEl = document.getElementById('stadiumD20Number');
+      const formEl = document.getElementById('stadiumD20Formula');
+      const outEl = document.getElementById('stadiumD20Outcome');
+
+      if (dieEl) {
+        dieEl.classList.remove('anim-d20-roll');
+        void dieEl.offsetWidth;
+        dieEl.classList.add('anim-d20-roll');
+      }
+      if (numEl) {
+        numEl.textContent = String(natRoll);
+        numEl.className = 'relative z-10 text-xl font-mono-num font-black drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] ' +
+          (natRoll === 20 ? 'text-amber-300' : (apGained >= 16 ? 'text-emerald-300' : 'text-white'));
+      }
+      if (formEl) {
+        formEl.textContent = 'D20: ' + natRoll + ' (+' + speedBonus + ' Spd) -> Pool: ' + newAp + '/25 AP';
+      }
+      if (outEl) {
+        outEl.textContent = label;
+        outEl.className = 'text-[9px] font-mono-num font-black uppercase px-2 py-0.5 rounded border mt-0.5 truncate ' + colorCls;
+      }
+
+      playBattleSynthSfx(natRoll === 20 ? 'super_effective' : 'whoosh');
+      if (natRoll === 20) {
+        showArcadeCombatCallout('🎲 NAT 20! +25 AP FULL CHARGE!', 'CRIT');
+      } else {
+        showArcadeCombatCallout('🎲 ROLLED ' + natRoll + ' (+' + speedBonus + ' SPD) = ' + newAp + ' AP POOL!', 'OVERDRIVE');
+      }
+
+      renderStadiumCombatUI();
+
+      const sideOwner = activeSlot === 1 ? 'LOGAN (P1)' : (stadiumBattleState.gameMode === 'HOTSEAT_2P' ? 'DAD (P2)' : 'OPPONENT');
+      if (logTitle) logTitle.innerText = '🎲 ' + sideOwner + ' ROLLED ' + natRoll + ' -> ' + newAp + ' / 25 AP AVAILABLE!';
+      if (logText) logText.innerText = 'Step 2: Click any glowing Move (5 / 9 / 12 / 18 AP) or Trainer Bag item, or click [⏭️ PASS & BANK AP] to save AP for next turn!';
+
+      return { natRoll, speedBonus, apGained, newAp };
+    }
+
+    function bankRemainingApAndEndTurn() {
+      if (stadiumBattleState.attackLock) return;
+      ensureSquadTeamsInitialized();
+      if (stadiumBattleState.faintedSlot !== 0) return;
+
+      const curSlot = stadiumBattleState.activeTurnSlot || 1;
+      const bankedAp = curSlot === 1 ? (stadiumBattleState.apPool1 || 0) : (stadiumBattleState.apPool2 || 0);
+      const nextSlot = curSlot === 1 ? 2 : 1;
+
+      stadiumBattleState.activeTurnSlot = nextSlot;
+      stadiumBattleState.hotseatTurn = nextSlot;
+      stadiumBattleState.turnRolled = false;
+      if (nextSlot === 1) {
+        stadiumBattleState.roundNumber = (stadiumBattleState.roundNumber || 1) + 1;
+      }
+
+      const headline = document.getElementById('cutinBannerHeadline');
+      const nextLabel = nextSlot === 1 ? 'LOGAN (P1)' : (stadiumBattleState.gameMode === 'HOTSEAT_2P' ? 'DAD (P2)' : 'BOSS AI');
+      if (headline) {
+        headline.innerText = 'ROUND ' + (stadiumBattleState.roundNumber || 1) + ' • TURN: ' + nextLabel;
+      }
+
+      const logTitle = document.getElementById('stadiumBattleLogTitle');
+      const logText = document.getElementById('stadiumBattleLogText');
+      const curLabel = curSlot === 1 ? 'Logan' : (stadiumBattleState.gameMode === 'HOTSEAT_2P' ? 'Dad' : 'Opponent');
+      if (logTitle) logTitle.innerText = '⏭️ ' + curLabel.toUpperCase() + ' BANKED +' + bankedAp + ' AP! TURN -> ' + nextLabel;
+      if (logText) logText.innerText = curLabel + ' carried ' + bankedAp + ' AP into next round! Now it is ' + nextLabel + '\'s turn to roll the D20 for AP!';
+
+      renderStadiumCombatUI();
+
+      // If playing 1P vs AI (Free Arena or Champion Gauntlet) and it's now Slot 2's turn, run AI AP Turn automatically!
+      if (nextSlot === 2 && stadiumBattleState.gameMode !== 'HOTSEAT_2P' && !stadiumBattleState.simRunning) {
+        setTimeout(() => {
+          runAiApTurn(2);
+        }, 550);
+      }
+    }
+
+    function runAiApTurn(aiSlot = 2) {
+      if (stadiumBattleState.attackLock || stadiumBattleState.faintedSlot !== 0) return;
+      if ((stadiumBattleState.activeTurnSlot || 1) !== aiSlot) return;
+
+      const aiFighter = syncActiveSquadMemberWithPartnerState(aiSlot);
+      if (!stadiumBattleState.turnRolled) {
+        rollD20ForTurnAp(aiSlot);
+      }
+
+      setTimeout(() => {
+        if (stadiumBattleState.faintedSlot !== 0 || (stadiumBattleState.activeTurnSlot || 1) !== aiSlot) return;
+        const curAp = aiSlot === 1 ? (stadiumBattleState.apPool1 || 0) : (stadiumBattleState.apPool2 || 0);
+        const bag = aiSlot === 1 ? stadiumBattleState.bag1 : stadiumBattleState.bag2;
+
+        // Smart AI Bag check: if HP < 40% and has Potion + >=5 AP, pop a Hyper Potion first!
+        if (aiFighter.hp > 0 && (aiFighter.hp / Math.max(1, aiFighter.maxHp)) < 0.38 && (bag?.potions || 0) > 0 && curAp >= 5) {
+          useTrainerItem(aiSlot, 'POTION');
+        }
+
+        const apAfterItem = aiSlot === 1 ? (stadiumBattleState.apPool1 || 0) : (stadiumBattleState.apPool2 || 0);
+        const moveIdx = pickSmartMoveForAi(aiSlot, aiFighter, apAfterItem);
+
+        if (moveIdx === -1) {
+          // AI banks AP for next turn (e.g., saving for 18 AP Ultimate or <5 AP left)
+          bankRemainingApAndEndTurn();
+          return;
+        }
+
+        executeStadiumMove(aiSlot, moveIdx, true);
+      }, 520);
     }
 
     function rollStadiumD20(attacker, defender, move) {
@@ -4362,84 +4807,56 @@
 
       let mult = 1.0;
       let label = 'SOLID HIT (1.0x)';
-      let colorCls = 'text-cyan-200 border-cyan-400/40 bg-cyan-500/20';
-      let bonusOd = 0;
+      let bonusOd = 15;
       let guaranteedStatus = false;
 
       if (natRoll === 20) {
-        mult = 2.0;
-        label = 'NAT 20 CRITICAL! (2.0x + STATUS!)';
-        colorCls = 'text-amber-200 border-amber-300 bg-amber-500/30 shadow-[0_0_14px_rgba(250,204,21,0.5)]';
+        mult = 1.65;
+        label = 'CRITICAL STRIKE! (1.65x + STATUS!)';
         bonusOd = 30;
         guaranteedStatus = true;
-      } else if (effectiveRoll <= 2) {
-        mult = 0.5;
-        label = 'GRAZE (0.5x)';
-        colorCls = 'text-slate-300 border-slate-500/40 bg-slate-800/70';
-      } else if (effectiveRoll <= 7) {
-        mult = 0.8;
-        label = 'GLANCING HIT (0.8x)';
-        colorCls = 'text-sky-200 border-sky-400/40 bg-sky-500/15';
-      } else if (effectiveRoll <= 14) {
-        mult = 1.0;
-        label = 'SOLID HIT (1.0x)';
-        colorCls = 'text-cyan-200 border-cyan-400/40 bg-cyan-500/20';
-      } else {
-        mult = 1.35;
-        label = 'SURGE STRIKE! (1.35x + OD)';
-        colorCls = 'text-emerald-200 border-emerald-400/60 bg-emerald-500/25 shadow-[0_0_12px_rgba(16,185,129,0.35)]';
-        bonusOd = 15;
-      }
-
-      const dieEl = document.getElementById('stadium-d20-die');
-      const numEl = document.getElementById('stadiumD20Number');
-      const formEl = document.getElementById('stadiumD20Formula');
-      const outEl = document.getElementById('stadiumD20Outcome');
-
-      if (dieEl) {
-        dieEl.classList.remove('anim-d20-roll');
-        void dieEl.offsetWidth;
-        dieEl.classList.add('anim-d20-roll');
-      }
-      if (numEl) {
-        numEl.textContent = String(natRoll);
-        numEl.className = 'relative z-10 text-xl font-mono-num font-black drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] ' +
-          (natRoll === 20 ? 'text-amber-300' : (effectiveRoll >= 15 ? 'text-emerald-300' : (effectiveRoll <= 2 ? 'text-rose-300' : 'text-white')));
-      }
-      if (formEl) {
-        const sign = statBonus >= 0 ? ('+' + statBonus) : String(statBonus);
-        formEl.textContent = 'D20 Roll: ' + natRoll + ' (' + sign + ' Stat = ' + effectiveRoll + ')';
-      }
-      if (outEl) {
-        outEl.textContent = label;
-        outEl.className = 'text-[9px] font-mono-num font-black uppercase px-2 py-0.5 rounded border mt-0.5 truncate ' + colorCls;
+      } else if (effectiveRoll <= 3) {
+        mult = 0.85;
+        label = 'GRAZE HIT (0.85x)';
+      } else if (effectiveRoll >= 16) {
+        mult = 1.25;
+        label = 'SURGE HIT! (1.25x)';
+        bonusOd = 20;
       }
 
       return { natRoll, statBonus, effectiveRoll, mult, label, bonusOd, guaranteedStatus };
     }
 
-    function pickSmartMoveForAi(attackerSlot, attacker) {
+    function pickSmartMoveForAi(attackerSlot, attacker, availableAp) {
       const moves = getFourMovesForPokemon(attacker);
       if (!Array.isArray(attacker.moveCooldowns) || attacker.moveCooldowns.length !== 4) {
         attacker.moveCooldowns = [0, 0, 0, 0];
       }
-      if (!Array.isArray(attacker.movePp) || attacker.movePp.length !== 4) {
-        attacker.movePp = moves.map(m => Number(m.maxPp || 15));
-      }
-      const odVal = attackerSlot === 1 ? (stadiumBattleState.overdrive1 || 0) : (stadiumBattleState.overdrive2 || 0);
-      const ultReady = odVal >= 100 || Boolean(attacker.ultUnlockedByD20) || Boolean(attacker.megaActive);
+      const curAp = typeof availableAp === 'number'
+        ? availableAp
+        : (attackerSlot === 1 ? (stadiumBattleState.apPool1 || 0) : (stadiumBattleState.apPool2 || 0));
 
-      if (ultReady && attacker.moveCooldowns[3] <= 0 && attacker.movePp[3] > 0) {
+      // 1. If AI can afford Move 4 (18 AP Ultimate Mega Finisher), unleash it immediately!
+      if (curAp >= 18 && (attacker.moveCooldowns[3] || 0) <= 0) {
         return 3;
       }
-      const legalIndices = [1, 2, 0].filter(idx => (attacker.moveCooldowns[idx] || 0) <= 0 && (attacker.movePp[idx] ?? 10) > 0);
-      if (legalIndices.length > 0) {
-        return legalIndices[Math.floor(Math.random() * legalIndices.length)];
+      // 2. If AI has 13–17 AP and healthy HP (>55%), 45% chance to BANK AP to unleash 18 AP Ultimate next turn!
+      if (curAp >= 13 && curAp < 18 && (attacker.hp / Math.max(1, attacker.maxHp)) > 0.55 && Math.random() < 0.45) {
+        return -1;
       }
-      return 0;
+      // 3. Pick strongest affordable move not on cooldown (Move 3 [12 AP] -> Move 2 [9 AP] -> Move 1 [5 AP])
+      const candidates = [2, 1, 0].filter(idx => {
+        const cost = Number(moves[idx]?.apCost || MOVE_AP_COSTS[idx] || 5);
+        const cd = Number(attacker.moveCooldowns[idx] || 0);
+        return curAp >= cost && cd <= 0;
+      });
+      if (candidates.length > 0) {
+        return candidates[0];
+      }
+      return -1;
     }
 
-    function executeStadiumMove(attackerSlot, moveIdx) {
+    function executeStadiumMove(attackerSlot, moveIdx, fromAiChain = false) {
       if (stadiumBattleState.attackLock) return;
       ensureSquadTeamsInitialized();
       if (stadiumBattleState.faintedSlot !== 0) {
@@ -4450,15 +4867,21 @@
       // Auto-hide the Squad & Deck Builder Drawer during active combat to eliminate clutter
       closeStadiumSquadDrawer();
 
-      if (stadiumBattleState.gameMode === 'HOTSEAT_2P' && !stadiumBattleState.simRunning) {
-        const expectedSlot = stadiumBattleState.hotseatTurn || 1;
+      const logTitle = document.getElementById('stadiumBattleLogTitle');
+      const logText = document.getElementById('stadiumBattleLogText');
+
+      if (!stadiumBattleState.simRunning) {
+        const expectedSlot = stadiumBattleState.activeTurnSlot || 1;
         if (attackerSlot !== expectedSlot) {
-          const logTitle = document.getElementById('stadiumBattleLogTitle');
-          const logText = document.getElementById('stadiumBattleLogText');
           if (logTitle) logTitle.innerText = 'WAIT YOUR TURN! (PLAYER ' + expectedSlot + ')';
-          if (logText) logText.innerText = 'In 2P Hotseat Mode, it is currently Player ' + expectedSlot + ' (' + (expectedSlot === 1 ? 'Logan' : 'Dad') + ')\'s turn to attack!';
+          if (logText) logText.innerText = 'It is currently Side ' + expectedSlot + '\'s turn! Finish or Bank AP on Side ' + expectedSlot + ' first.';
           return;
         }
+      }
+
+      // If the player clicked a move before clicking [ROLL D20 FOR AP], auto-roll D20 for their turn first!
+      if (!stadiumBattleState.turnRolled) {
+        rollD20ForTurnAp(attackerSlot);
       }
 
       const defenderSlot = attackerSlot === 1 ? 2 : 1;
@@ -4467,6 +4890,7 @@
       const specAtk = getEffectiveSlotSpectrum(attacker);
       const moves = getFourMovesForPokemon(attacker);
       const move = moves[moveIdx] || moves[0];
+      const apCost = Number(move.apCost || MOVE_AP_COSTS[moveIdx] || 5);
 
       if (!Array.isArray(attacker.movePp) || attacker.movePp.length !== 4) {
         attacker.movePp = moves.map(m => Number(m.maxPp || 15));
@@ -4475,28 +4899,27 @@
         attacker.moveCooldowns = [0, 0, 0, 0];
       }
 
-      const logTitle = document.getElementById('stadiumBattleLogTitle');
-      const logText = document.getElementById('stadiumBattleLogText');
-
-      // Enforce Move Cooldowns & Ultimate Requirements
+      // Enforce Move Cooldowns
       const cdLeft = Number(attacker.moveCooldowns[moveIdx] || 0);
       if (cdLeft > 0) {
         if (logTitle) logTitle.innerText = move.name.toUpperCase() + ' ON COOLDOWN (' + cdLeft + 'T)!';
-        if (logText) logText.innerText = 'Pick Move 1 (0T Fast Signature) or another ready move while ' + move.name + ' recharges!';
+        if (logText) logText.innerText = 'Pick Move 1 (5 AP • 0 Cooldown) or another unlocked move, or Bank AP for next turn!';
         return;
       }
 
-      const currentOd = attackerSlot === 1 ? (stadiumBattleState.overdrive1 || 0) : (stadiumBattleState.overdrive2 || 0);
-      const ultReady = currentOd >= 100 || Boolean(attacker.ultUnlockedByD20) || Boolean(attacker.megaActive);
-      if (moveIdx === 3 && !ultReady) {
-        if (logTitle) logTitle.innerText = 'ULTIMATE LOCKED! NEEDS 100% OVERDRIVE OR D20 >= 16!';
-        if (logText) logText.innerText = 'Use Move 1 (+25% Overdrive) or roll a 16+ on the Center D20 Die to unlock ' + move.name.toUpperCase() + '!';
+      // Enforce AP Pool Affordability (5 / 9 / 12 / 18 AP)
+      const currentAp = attackerSlot === 1 ? (stadiumBattleState.apPool1 || 0) : (stadiumBattleState.apPool2 || 0);
+      if (currentAp < apCost) {
+        if (logTitle) logTitle.innerText = '🔒 NEEDS ' + apCost + ' AP FOR ' + move.name.toUpperCase() + ' (HAVE ' + currentAp + ' AP)!';
+        if (logText) logText.innerText = 'Click a cheaper unlocked move (Move 1 costs 5 AP) OR click [⏭️ PASS & BANK +' + currentAp + ' AP] to save up for next turn!';
         return;
       }
 
-      if (attacker.movePp[moveIdx] <= 0) {
-        if (logText) logText.innerText = move.name.toUpperCase() + ' is out of PP! Choose another move or switch Pokémon!';
-        return;
+      // Deduct AP Cost from active player's AP Pool
+      if (attackerSlot === 1) {
+        stadiumBattleState.apPool1 = Math.max(0, currentAp - apCost);
+      } else {
+        stadiumBattleState.apPool2 = Math.max(0, currentAp - apCost);
       }
 
       // Check Pre-Attack Status Conditions (SLP / FRZ / PAR)
@@ -4504,7 +4927,7 @@
         if ((attacker.sleepTurns || 0) > 0) {
           attacker.sleepTurns--;
           if (logTitle) logTitle.innerText = attacker.name.toUpperCase() + ' IS FAST ASLEEP!';
-          if (logText) logText.innerText = attacker.name.toUpperCase() + ' is sleeping soundly and couldn\'t move this turn!';
+          if (logText) logText.innerText = attacker.name.toUpperCase() + ' is sleeping soundly and couldn\'t move!';
           renderStadiumCombatUI();
           return;
         } else {
@@ -4513,7 +4936,7 @@
       } else if (attacker.ailment === 'FRZ') {
         if (move.type !== 'fire' && Math.random() > 0.38) {
           if (logTitle) logTitle.innerText = attacker.name.toUpperCase() + ' IS FROZEN SOLID!';
-          if (logText) logText.innerText = attacker.name.toUpperCase() + ' is frozen in ice! Use a Fire move or wait to thaw!';
+          if (logText) logText.innerText = attacker.name.toUpperCase() + ' is frozen in ice! Use a Fire move or Hyper Potion!';
           renderStadiumCombatUI();
           return;
         } else {
@@ -4526,39 +4949,30 @@
         return;
       }
 
-      // Tick down existing cooldowns by 1 turn for this attacker, then apply new cooldown
-      attacker.moveCooldowns = attacker.moveCooldowns.map(c => Math.max(0, Number(c || 0) - 1));
-      if (moveIdx === 1 || moveIdx === 2) {
-        attacker.moveCooldowns[moveIdx] = Number(move.cooldownTurns || 2);
+      // Apply Move Cooldown (Move 1: 0T, Move 2: 1T, Move 3: 2T, Move 4: 0T)
+      const moveCd = Number(move.cooldownTurns ?? MOVE_COOLDOWN_TURNS[moveIdx] ?? 0);
+      if (moveCd > 0) {
+        attacker.moveCooldowns[moveIdx] = moveCd;
       }
 
       attacker.movePp[moveIdx] = Math.max(0, attacker.movePp[moveIdx] - 1);
       stadiumBattleState.attackLock = true;
-      stadiumBattleState.roundNumber = (stadiumBattleState.roundNumber || 1) + 1;
 
-      // Roll the Center 20-Sided Tactical Die
-      const d20 = rollStadiumD20(attacker, defender, move);
-      if (d20.natRoll >= 16 || d20.effectiveRoll >= 16) {
-        attacker.ultUnlockedByD20 = true;
+      // If Move 4 (18 AP ULTIMATE MEGA FINISHER), trigger Mega Evolution +35% stats & full-screen orbital finisher!
+      if (moveIdx === 3 && !attacker.megaActive) {
+        attacker.megaActive = true;
+        const oldMax = attacker.maxHp;
+        attacker.maxHp = calcMaxHpForSlot(attacker);
+        attacker.hp = Math.min(attacker.maxHp, attacker.hp + Math.max(25, attacker.maxHp - oldMax));
       }
 
+      const d20 = rollStadiumD20(attacker, defender, move);
       const typeMult = computeMoveEffectiveness(move.type, defender.types || [defender.type]);
-      const baseOdGain = moveIdx === 0 ? 25 : (typeMult > 1 ? 35 : 20);
-      const totalOdGain = baseOdGain + (d20.bonusOd || 0);
 
-      // Update Overdrive gauges (Move 4 Ultimate consumes Overdrive and resets to 0%)
-      if (moveIdx === 3) {
-        if (attackerSlot === 1) stadiumBattleState.overdrive1 = 0;
-        else stadiumBattleState.overdrive2 = 0;
-        attacker.ultUnlockedByD20 = false;
+      if (attackerSlot === 1) {
+        stadiumBattleState.overdrive1 = moveIdx === 3 ? 0 : Math.min(100, (stadiumBattleState.overdrive1 || 0) + 25);
       } else {
-        if (attackerSlot === 1) {
-          stadiumBattleState.overdrive1 = Math.min(100, (stadiumBattleState.overdrive1 || 0) + totalOdGain);
-          stadiumBattleState.overdrive2 = Math.min(100, (stadiumBattleState.overdrive2 || 0) + 15);
-        } else {
-          stadiumBattleState.overdrive2 = Math.min(100, (stadiumBattleState.overdrive2 || 0) + totalOdGain);
-          stadiumBattleState.overdrive1 = Math.min(100, (stadiumBattleState.overdrive1 || 0) + 15);
-        }
+        stadiumBattleState.overdrive2 = moveIdx === 3 ? 0 : Math.min(100, (stadiumBattleState.overdrive2 || 0) + 25);
       }
 
       const atkArt = document.getElementById('cutinArtSlot' + attackerSlot);
@@ -4571,8 +4985,12 @@
         atkArt.classList.add(attackerSlot === 1 ? 'anim-lunge-right' : 'anim-lunge-left');
       }
 
-      playBattleSynthSfx('whoosh');
+      playBattleSynthSfx(moveIdx === 3 ? 'victory' : 'whoosh');
       playPokemonCry(attacker.id);
+      if (moveIdx === 3) {
+        pulseScreenClashAura();
+        showArcadeCombatCallout('💥 18 AP ULTIMATE MEGA FINISHER: ' + move.name.toUpperCase() + '! (+35% MEGA STATS!)', 'OVERDRIVE');
+      }
       spawnElementalProjectile(
         attackerSlot,
         (ELEMENTAL_SPECTRUM[move.type] || specAtk).hex,
@@ -4590,29 +5008,35 @@
       const megaBoostD = defender.megaActive ? 1.35 : 1.0;
       const overclockMult = attacker.overclock2x ? 2.0 : 1.0;
       attacker.overclock2x = false;
-      const shieldDefMult = defender.ailment === 'SHD' ? 1.35 : 1.0;
-      const brnPenalty = (attacker.ailment === 'BRN' && move.cat === 'phys') ? 0.78 : 1.0;
 
+      // Elemental Shield reduces incoming hit by -50% and then consumes the shield!
+      const hadShield = Boolean(defender.shieldActive || defender.ailment === 'SHD');
+      const shieldDamageMult = hadShield ? 0.50 : 1.0;
+      if (hadShield) {
+        defender.shieldActive = false;
+        if (defender.ailment === 'SHD') defender.ailment = null;
+      }
+
+      const brnPenalty = (attacker.ailment === 'BRN' && move.cat === 'phys') ? 0.78 : 1.0;
       const offStat = (move.cat === 'phys' ? Number(stA.atk || 85) : Number(stA.spa || 85)) * megaBoostA * brnPenalty;
-      const defStat = (move.cat === 'phys' ? Number(stD.def || 80) : Number(stD.spd || 80)) * megaBoostD * shieldDefMult;
+      const defStat = (move.cat === 'phys' ? Number(stD.def || 80) : Number(stD.spd || 80)) * megaBoostD;
       const isCrit = d20.natRoll === 20;
       const d20Mult = d20.mult;
 
       const rawDmg = typeMult === 0
         ? 0
-        : (((22 * Number(move.power || 90) * (offStat / Math.max(25, defStat))) / 32 + 12) * typeMult * d20Mult * overclockMult);
-      const dmg = typeMult === 0 ? 0 : Math.max(12, Math.round(rawDmg));
+        : (((22 * Number(move.power || 90) * (offStat / Math.max(25, defStat))) / 32 + 12) * typeMult * d20Mult * overclockMult * shieldDamageMult);
+      const dmg = typeMult === 0 ? 0 : Math.max(10, Math.round(rawDmg));
 
       setTimeout(() => {
-        if (d20.natRoll === 20) {
+        if (moveIdx === 3) {
           playBattleSynthSfx('super_effective');
-          showArcadeCombatCallout('NAT 20 CRITICAL! (2.0x DAMAGE!)', 'CRIT');
+        } else if (d20.natRoll === 20) {
+          playBattleSynthSfx('super_effective');
+          showArcadeCombatCallout('CRITICAL HIT! (1.65x DAMAGE!)', 'CRIT');
         } else if (typeMult > 1) {
           playBattleSynthSfx('super_effective');
-          showArcadeCombatCallout('SUPER EFFECTIVE! (' + typeMult.toFixed(1) + 'x • D20 ' + d20.natRoll + ')', 'SUPER');
-        } else if (d20.effectiveRoll >= 15) {
-          playBattleSynthSfx('super_effective');
-          showArcadeCombatCallout('D20 SURGE STRIKE! (1.35x)', 'OVERDRIVE');
+          showArcadeCombatCallout('SUPER EFFECTIVE! (' + typeMult.toFixed(1) + 'x)', 'SUPER');
         } else if (typeMult < 1) {
           playBattleSynthSfx('impact');
           showArcadeCombatCallout(typeMult === 0 ? 'IMMUNE (0x)' : ('RESISTED (' + typeMult + 'x)'), 'RESIST');
@@ -4632,17 +5056,18 @@
         }
 
         defender.hp = Math.max(0, defender.hp - dmg);
-        let statusProcNote = '';
-        const statusChance = d20.guaranteedStatus ? 1.0 : Number(move.status?.chance || 0.30);
-        if (defender.hp > 0 && (move.status || d20.guaranteedStatus) && !defender.ailment && Math.random() <= statusChance) {
-          const code = move.status?.code || (move.type === 'fire' ? 'BRN' : (move.type === 'electric' ? 'PAR' : (move.type === 'ice' ? 'FRZ' : 'PAR')));
+        let statusProcNote = hadShield ? ' [🛡️ SHIELD -50% DMG!]' : '';
+        const statusChance = (moveIdx === 2 || d20.guaranteedStatus) ? 1.0 : Number(move.status?.chance || 0.35);
+        if (defender.hp > 0 && (move.status || moveIdx === 2 || d20.guaranteedStatus) && !defender.ailment && Math.random() <= statusChance) {
+          const code = move.status?.code || (move.type === 'fire' ? 'BRN' : (move.type === 'electric' ? 'PAR' : (move.type === 'ice' ? 'FRZ' : (move.type === 'poison' ? 'PSN' : 'PAR'))));
           if (code === 'SHD') {
+            attacker.shieldActive = true;
             attacker.ailment = 'SHD';
-            statusProcNote = ' [SHIELD ACTIVE!]';
+            statusProcNote += ' [🛡️ SHIELD ACTIVE!]';
           } else {
             defender.ailment = code;
             if (code === 'SLP') defender.sleepTurns = 1 + Math.floor(Math.random() * 2);
-            statusProcNote = ' [' + (STATUS_BADGE_STYLES[code]?.label || code) + '!]';
+            statusProcNote += ' [' + (STATUS_BADGE_STYLES[code]?.label || code) + '!]';
           }
         }
 
@@ -4653,7 +5078,7 @@
           drainNote = ' (+' + healAmt + ' HP DRAIN!)';
         }
 
-        // End-of-turn Burn / Poison chip damage on attacker
+        // End-of-action Burn / Poison chip damage on attacker
         let chipNote = '';
         if (attacker.hp > 0 && (attacker.ailment === 'BRN' || attacker.ailment === 'PSN')) {
           const chip = Math.max(8, Math.round(attacker.maxHp * 0.06));
@@ -4663,22 +5088,18 @@
 
         const floatEl = document.getElementById('dmgFloatSlot' + defenderSlot);
         if (floatEl) {
-          floatEl.innerText = (dmg === 0 ? 'IMMUNE (0 HP)' : ('-' + dmg + ' HP')) + (isCrit ? ' NAT 20!' : (' [D20:' + d20.natRoll + ']'));
+          floatEl.innerText = (dmg === 0 ? 'IMMUNE (0 HP)' : ('-' + dmg + ' HP')) + (hadShield ? ' (SHIELDED)' : '') + ' [-' + apCost + ' AP]';
           floatEl.classList.remove('show-dmg');
           void floatEl.offsetWidth;
           floatEl.classList.add('show-dmg');
         }
 
         const headline = document.getElementById('cutinBannerHeadline');
-        if (headline && defender.hp > 0) {
-          const nextTurnLabel = attackerSlot === 1 ? (stadiumBattleState.gameMode === 'HOTSEAT_2P' ? 'DAD (P2)' : 'CHALLENGER') : 'LOGAN (P1)';
-          headline.innerText = 'ROUND ' + (stadiumBattleState.roundNumber || 1) + ' • TURN: ' + nextTurnLabel;
-        }
+        const remainingAp = attackerSlot === 1 ? (stadiumBattleState.apPool1 || 0) : (stadiumBattleState.apPool2 || 0);
 
         renderStadiumCombatUI();
 
-        const effNote = typeMult > 1 ? " SUPER EFFECTIVE!" : (typeMult === 0 ? " No effect!" : (typeMult < 1 ? " Resisted..." : ''));
-        const d20Note = ' [D20: ' + d20.natRoll + ' -> ' + d20.mult + 'x]';
+        const effNote = typeMult > 1 ? ' SUPER EFFECTIVE!' : (typeMult === 0 ? ' No effect!' : (typeMult < 1 ? ' Resisted...' : ''));
 
         if (defender.hp <= 0) {
           const defTeam = defenderSlot === 1 ? stadiumBattleState.team1 : stadiumBattleState.team2;
@@ -4693,7 +5114,14 @@
             setTimeout(() => {
               stadiumBattleState.attackLock = false;
               switchSquadMember(defenderSlot, nextLivingIdx, true);
-              // If in Gauntlet Mode and P1 got knocked out & auto-sent-out next bench member, or P2 sent out next bench member, keep flow clean
+              if (attackerSlot === 2 && !stadiumBattleState.simRunning && stadiumBattleState.gameMode !== 'HOTSEAT_2P') {
+                // If AI still has >=5 AP, let it finish or bank
+                if ((stadiumBattleState.apPool2 || 0) >= 5) {
+                  setTimeout(() => runAiApTurn(2), 450);
+                } else {
+                  bankRemainingApAndEndTurn();
+                }
+              }
             }, 620);
             return;
           }
@@ -4712,55 +5140,76 @@
             const stageCfg = CHAMPION_GAUNTLET_STAGES[stadiumBattleState.gauntletStage - 1];
             if (stageCfg && !stadiumBattleState.badges.includes(stageCfg.badge)) {
               stadiumBattleState.badges.push(stageCfg.badge);
-              stadiumBattleState.masterBalls = (stadiumBattleState.masterBalls ?? 3) + 1;
-              saveTrophyLockerToStorage();
             }
+            awardVictoryMysteryReward('GAUNTLET STAGE ' + stadiumBattleState.gauntletStage + ' CLEAR');
             if (stadiumBattleState.gauntletStage < CHAMPION_GAUNTLET_STAGES.length) {
               const nextSt = stadiumBattleState.gauntletStage + 1;
-              if (headline) headline.innerText = '🏆 STAGE ' + stadiumBattleState.gauntletStage + ' CLEARED! (+1 MASTER BALL)';
+              if (headline) headline.innerText = '🏆 STAGE ' + stadiumBattleState.gauntletStage + ' CLEARED! (MYSTERY REWARD UNLOCKED)';
               if (logTitle) logTitle.innerText = 'GAUNTLET STAGE ' + stadiumBattleState.gauntletStage + ' CONQUERED!';
-              if (logText) logText.innerText = 'Earned [' + stageCfg.badge + '] + 1 Master Ball! Advancing to Stage ' + nextSt + ' in 2s...';
+              if (logText) logText.innerText = 'Earned [' + stageCfg.badge + '] + Mystery Reward! Advancing to Stage ' + nextSt + ' in 2.2s...';
               setTimeout(() => {
                 stadiumBattleState.attackLock = false;
                 loadGauntletStage(nextSt);
-              }, 1900);
+              }, 2200);
               return;
             } else {
               stadiumBattleState.gauntletStage = 0;
               if (headline) headline.innerText = '🏆 GRAND CHAMPION LOGAN! ALL 5 STAGES CONQUERED!';
               if (logTitle) logTitle.innerText = '⟦ CHAMPION GAUNTLET COMPLETE! ⟧';
-              if (logText) logText.innerText = 'Logan conquered all 5 Boss Squads (including Legend Master Red) and unlocked REDLEGEND in the Trophy Vault!';
+              if (logText) logText.innerText = 'Logan conquered all 5 Boss Squads and unlocked a Persistent Mystery Power-Up in localStorage!';
               renderStadiumCombatUI();
             }
           } else {
+            if (attackerSlot === 1) {
+              awardVictoryMysteryReward('3V3 VICTORY REWARD');
+            }
             if (headline) headline.innerText = '🏆 WINNER: ' + attacker.name.toUpperCase() + '!';
             if (logTitle) logTitle.innerText = '3v3 SQUAD WIPEOUT VICTORY!';
             if (logText) logText.innerText = attacker.name.toUpperCase() + ' used ' + move.name.toUpperCase() + ' (-' + dmg + ' HP) to win the 3v3 match!';
             renderStadiumCombatUI();
           }
-        } else {
-          if (stadiumBattleState.gameMode === 'HOTSEAT_2P') {
-            stadiumBattleState.hotseatTurn = attackerSlot === 1 ? 2 : 1;
-            const nextPlayer = stadiumBattleState.hotseatTurn === 1 ? 'PLAYER 1 (LOGAN)' : 'PLAYER 2 (DAD)';
-            if (logTitle) logTitle.innerText = '2P HOTSEAT • TURN: ' + nextPlayer;
-            if (logText) logText.innerText = attacker.name.toUpperCase() + ' hit for -' + dmg + ' HP!' + d20Note + effNote + ' Now ' + nextPlayer + ', pick a move!';
-          } else {
-            if (logTitle) logTitle.innerText = attacker.name.toUpperCase() + ' USED ' + move.name.toUpperCase() + '!';
-            if (logText) logText.innerText = attacker.name.toUpperCase() + ' hit for -' + dmg + ' HP!' + d20Note + effNote + statusProcNote + drainNote + chipNote;
-          }
+          stadiumBattleState.attackLock = false;
+          return;
+        }
+
+        // Defender survived: check if active player can keep chaining AP or should Bank & End Turn!
+        if (logTitle) {
+          logTitle.innerText = attacker.name.toUpperCase() + ' USED ' + move.name.toUpperCase() + ' (-' + apCost + ' AP • ' + remainingAp + ' AP LEFT)!';
+        }
+        if (logText) {
+          logText.innerText = 'Dealt -' + dmg + ' HP!' + effNote + statusProcNote + drainNote + chipNote +
+            (remainingAp >= 3
+              ? (' You still have ' + remainingAp + ' AP! Chain another Move/Item or click [⏭️ PASS & BANK +' + remainingAp + ' AP]!')
+              : (' (' + remainingAp + ' AP left — click [⏭️ PASS & BANK +' + remainingAp + ' AP] to end turn!)'));
         }
 
         setTimeout(() => {
           stadiumBattleState.attackLock = false;
-          // In Champion Gauntlet or Free 3v3 Arena (1P vs AI), AI Opponent automatically counter-attacks after Player 1's move!
-          if (attackerSlot === 1 && defender.hp > 0 && stadiumBattleState.gameMode !== 'HOTSEAT_2P' && !stadiumBattleState.simRunning) {
+          renderStadiumCombatUI();
+
+          if (stadiumBattleState.simRunning) return;
+
+          // If AI is playing Slot 2, let AI chain another move if it can afford one, or bank remaining AP & pass turn to Logan!
+          if (attackerSlot === 2 && stadiumBattleState.gameMode !== 'HOTSEAT_2P') {
             setTimeout(() => {
-              if (!stadiumBattleState.attackLock && stadiumBattleState.faintedSlot === 0) {
-                const aiFighter = syncActiveSquadMemberWithPartnerState(2);
-                const aiMoveIdx = pickSmartMoveForAi(2, aiFighter);
-                executeStadiumMove(2, aiMoveIdx);
+              if (stadiumBattleState.faintedSlot !== 0) return;
+              const nextAiMove = pickSmartMoveForAi(2, attacker, stadiumBattleState.apPool2 || 0);
+              if (nextAiMove !== -1) {
+                executeStadiumMove(2, nextAiMove, true);
+              } else {
+                bankRemainingApAndEndTurn();
               }
-            }, 620);
+            }, 520);
+          } else if (remainingAp < 3) {
+            // Auto-bank and pass turn after a brief beat if the human player has <3 AP (cannot afford any 3 AP ball, 4 AP item, or 5 AP move)
+            setTimeout(() => {
+              if (!stadiumBattleState.attackLock && stadiumBattleState.faintedSlot === 0 && (stadiumBattleState.activeTurnSlot || 1) === attackerSlot) {
+                const curApNow = attackerSlot === 1 ? (stadiumBattleState.apPool1 || 0) : (stadiumBattleState.apPool2 || 0);
+                if (curApNow < 3) {
+                  bankRemainingApAndEndTurn();
+                }
+              }
+            }, 650);
           }
         }, 220);
       }, 240);
@@ -4807,32 +5256,59 @@
       if (logText) logText.innerText = 'Loaded ' + newTeam.map(m => m.name).join(', ') + ' into Side ' + targetSide + '!';
     }
 
-    function attemptStadiumCatch(ballType) {
+    function attemptStadiumCatch(ballType, sideNum = 1) {
       if (stadiumBattleState.attackLock) return;
       ensureSquadTeamsInitialized();
-      const target = syncActiveSquadMemberWithPartnerState(2);
+      const activeSide = sideNum === 2 ? 2 : 1;
+      const targetSide = activeSide === 1 ? 2 : 1;
+      const target = syncActiveSquadMemberWithPartnerState(targetSide);
       const logTitle = document.getElementById('stadiumBattleLogTitle');
       const logText = document.getElementById('stadiumBattleLogText');
+
+      if (!stadiumBattleState.turnRolled) {
+        rollD20ForTurnAp(activeSide);
+      }
+
+      const bag = activeSide === 1
+        ? (stadiumBattleState.bag1 || (stadiumBattleState.bag1 = { potions: 2, xAttacks: 1, balls: 3 }))
+        : (stadiumBattleState.bag2 || (stadiumBattleState.bag2 = { potions: 2, xAttacks: 1, balls: 3 }));
+      const curAp = activeSide === 1 ? (stadiumBattleState.apPool1 || 0) : (stadiumBattleState.apPool2 || 0);
+
+      if (curAp < 3) {
+        if (logTitle) logTitle.innerText = 'NEEDS 3 AP TO THROW CAPTURE BALL!';
+        if (logText) logText.innerText = 'Roll D20 for AP or bank your turn so you have at least 3 AP to throw a Capture Ball!';
+        return;
+      }
 
       if (ballType === 'MASTER') {
         if ((stadiumBattleState.masterBalls ?? 3) <= 0) {
           if (logTitle) logTitle.innerText = 'NO MASTER BALLS LEFT!';
-          if (logText) logText.innerText = 'Win Champion Gauntlet stages to earn more Master Balls, or throw an Ultra Ball!';
+          if (logText) logText.innerText = 'Win matches or Gauntlet stages to earn Bonus Master Balls, or throw an Ultra Ball!';
           return;
         }
         stadiumBattleState.masterBalls--;
+      } else {
+        if ((bag.balls ?? 3) <= 0) {
+          if (logTitle) logTitle.innerText = 'NO CAPTURE BALLS LEFT IN BAG!';
+          if (logText) logText.innerText = 'You used all 3 Capture Balls in your Trainer Bag this match!';
+          return;
+        }
+        bag.balls = Math.max(0, (bag.balls ?? 3) - 1);
       }
+
+      if (activeSide === 1) stadiumBattleState.apPool1 = Math.max(0, curAp - 3);
+      else stadiumBattleState.apPool2 = Math.max(0, curAp - 3);
 
       const hpRatio = target.hp / Math.max(1, target.maxHp);
       let catchChance = (1.15 - hpRatio * 0.85);
       if (ballType === 'ULTRA') catchChance *= 1.85;
       if (target.ailment) catchChance += 0.20;
-      if (hpRatio <= 0.35 || target.shiny) catchChance = Math.max(catchChance, 0.82);
+      if (hpRatio <= 0.35 || target.shiny) catchChance = Math.max(catchChance, 0.88);
       if (target.hp <= 0) catchChance = 0.95;
       if (ballType === 'MASTER') catchChance = 1.0;
 
       stadiumBattleState.attackLock = true;
-      const defArt = document.getElementById('cutinArtSlot2');
+      const defArt = document.getElementById('cutinArtSlot' + targetSide);
       if (defArt) {
         defArt.classList.remove('anim-switch-beam');
         void defArt.offsetWidth;
@@ -4841,7 +5317,7 @@
 
       // 3-Shake Poké Ball Capture Sequence: Shake 1... Shake 2... Shake 3... GOTCHA!
       playBattleSynthSfx('catch_click');
-      if (logTitle) logTitle.innerText = 'THROWING ' + ballType + ' BALL...';
+      if (logTitle) logTitle.innerText = '🔴 THROWING ' + ballType + ' BALL (-3 AP)...';
       if (logText) logText.innerText = 'Shake 1...';
 
       setTimeout(() => {
@@ -4875,6 +5351,9 @@
           if (existsIdx === -1) stadiumBattleState.trophyLocker.unshift(entry);
           else stadiumBattleState.trophyLocker[existsIdx] = entry;
           saveTrophyLockerToStorage();
+          if (target.shiny) {
+            awardVictoryMysteryReward('SHINY CAPTURE REWARD');
+          }
           renderStadiumCombatUI();
 
           if (logTitle) logTitle.innerText = 'Shake 1... Shake 2... Shake 3... GOTCHA!';
@@ -4944,7 +5423,7 @@
       if (grid) {
         const list = stadiumBattleState.trophyLocker || [];
         if (list.length === 0) {
-          grid.innerHTML = '<div class="col-span-full text-center text-xs text-slate-400 py-8">No Pokémon caught yet! Throw a Poké Ball, Ultra Ball, or Master Ball in battle!</div>';
+          grid.innerHTML = '<div class="col-span-full text-center text-xs text-slate-400 py-8">No Pokémon caught yet! Throw a Capture Ball or Master Ball in battle!</div>';
           return;
         }
         grid.innerHTML = list.map((item, idx) => (
@@ -4982,12 +5461,6 @@
         btn.className = 'w-full py-1.5 px-2.5 rounded-xl bg-rose-500 hover:bg-rose-400 text-white font-black text-[10px] uppercase tracking-wider shadow-[0_0_18px_rgba(244,63,94,0.6)] transition active:scale-95';
       }
 
-      const s1 = syncActiveSquadMemberWithPartnerState(1);
-      const s2 = syncActiveSquadMemberWithPartnerState(2);
-      const spe1 = Number(s1.stats?.spe || HALL_OF_FAME_DEX[s1.id]?.stats?.spe || 80);
-      const spe2 = Number(s2.stats?.spe || HALL_OF_FAME_DEX[s2.id]?.stats?.spe || 80);
-      stadiumBattleState.simTurnSlot = spe1 >= spe2 ? 1 : 2;
-
       const stepSim = () => {
         if (!stadiumBattleState.simRunning || stadiumBattleState.faintedSlot !== 0) {
           stopAutoSimBattle();
@@ -4997,16 +5470,22 @@
           stadiumBattleState.simTimer = setTimeout(stepSim, 350);
           return;
         }
-        const atkSlot = stadiumBattleState.simTurnSlot;
-        const odVal = atkSlot === 1 ? (stadiumBattleState.overdrive1 || 0) : (stadiumBattleState.overdrive2 || 0);
-        const curFighter = syncActiveSquadMemberWithPartnerState(atkSlot);
-        if (odVal >= 100 && !curFighter.megaActive && Math.random() < 0.45) {
-          triggerMegaOverdrive(atkSlot);
+        const atkSlot = stadiumBattleState.activeTurnSlot || 1;
+        if (!stadiumBattleState.turnRolled) {
+          rollD20ForTurnAp(atkSlot);
+          stadiumBattleState.simTimer = setTimeout(stepSim, 620);
+          return;
         }
-        const moveIdx = pickSmartMoveForAi(atkSlot, curFighter);
-        executeStadiumMove(atkSlot, moveIdx);
-        stadiumBattleState.simTurnSlot = atkSlot === 1 ? 2 : 1;
-        stadiumBattleState.simTimer = setTimeout(stepSim, 1150);
+        const curFighter = syncActiveSquadMemberWithPartnerState(atkSlot);
+        const curAp = atkSlot === 1 ? (stadiumBattleState.apPool1 || 0) : (stadiumBattleState.apPool2 || 0);
+        const moveIdx = pickSmartMoveForAi(atkSlot, curFighter, curAp);
+        if (moveIdx === -1) {
+          bankRemainingApAndEndTurn();
+          stadiumBattleState.simTimer = setTimeout(stepSim, 750);
+          return;
+        }
+        executeStadiumMove(atkSlot, moveIdx, true);
+        stadiumBattleState.simTimer = setTimeout(stepSim, 1050);
       };
 
       stepSim();
@@ -6104,6 +6583,18 @@
     let activeBountyStoreFilter = '';
     let nearMissesList = [];
     let bestCurrentOffersMap = {};
+    let shelfSpreadData = {
+      underTriggerCount: 0,
+      nearMissesCount: 0,
+      underMarketCount: 0,
+      atRetailMsrpCount: 0,
+      offers: {
+        UNDER_TRIGGER: [],
+        NEAR_MISSES: [],
+        UNDER_MARKET: [],
+        AT_RETAIL_MSRP: []
+      }
+    };
 
     async function loadAllState() {
       try {
@@ -6143,6 +6634,9 @@
           }
           if (statData && statData.bestCurrentOffers) {
             bestCurrentOffersMap = statData.bestCurrentOffers;
+          }
+          if (statData && statData.shelfSpread) {
+            shelfSpreadData = statData.shelfSpread;
           }
         }
         if (engRes && engRes.ok) {
@@ -6682,6 +7176,21 @@
       const dfNeededWallBtn = document.getElementById('dfPill_NEEDED_WALL_ETBS');
       if (dfNeededWallBtn) dfNeededWallBtn.innerText = 'Needed Wall ETBs (' + neededEtbs.length + ')';
 
+      // Update Live Market Spread Distribution Quick-Bar Counts (91 Stores)
+      const spreadUnderTrigCnt = Math.max(underTriggerCount, Number(shelfSpreadData?.underTriggerCount || 0));
+      const spreadNearMissCnt = Math.max(dynamicNearMisses.length, Number(shelfSpreadData?.nearMissesCount || 0));
+      const spreadUnderMktCnt = Number(shelfSpreadData?.underMarketCount || 0) || allDealItems.filter(it => Number(it.discountPct || 0) >= 5 && Number(it.discountPct || 0) <= 20).length;
+      const spreadAtMsrpCnt = Number(shelfSpreadData?.atRetailMsrpCount || 0) || allDealItems.filter(it => Number(it.landedPrice || 0) <= Number(it.msrp || 54.99) * 1.03).length;
+
+      const spEl1 = document.getElementById('spreadCnt_UNDER_TRIGGER');
+      if (spEl1) spEl1.innerText = String(spreadUnderTrigCnt);
+      const spEl2 = document.getElementById('spreadCnt_NEAR_MISSES');
+      if (spEl2) spEl2.innerText = String(spreadNearMissCnt);
+      const spEl3 = document.getElementById('spreadCnt_UNDER_MARKET');
+      if (spEl3) spEl3.innerText = String(spreadUnderMktCnt);
+      const spEl4 = document.getElementById('spreadCnt_AT_RETAIL_MSRP');
+      if (spEl4) spEl4.innerText = String(spreadAtMsrpCnt);
+
       const radarPills = document.getElementById('kpiActiveRadarPills');
       if (radarPills) {
         const rows = [];
@@ -6772,7 +7281,74 @@
           b.className = 'px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-slate-200 border border-white/10 hover:text-white whitespace-nowrap transition';
         }
       });
+
+      const spreadStyles = {
+        UNDER_TRIGGER: {
+          active: 'px-2.5 py-1 rounded-lg text-[11px] font-mono-num font-black bg-emerald-400 text-slate-950 border border-emerald-200 shadow-[0_0_14px_rgba(16,185,129,0.5)] transition inline-flex items-center gap-1.5',
+          idle: 'px-2.5 py-1 rounded-lg text-[11px] font-mono-num font-extrabold bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/35 transition inline-flex items-center gap-1.5'
+        },
+        NEAR_MISSES: {
+          active: 'px-2.5 py-1 rounded-lg text-[11px] font-mono-num font-black bg-orange-400 text-slate-950 border border-orange-200 shadow-[0_0_14px_rgba(251,146,60,0.5)] transition inline-flex items-center gap-1.5',
+          idle: 'px-2.5 py-1 rounded-lg text-[11px] font-mono-num font-extrabold bg-orange-500/15 hover:bg-orange-500/25 text-orange-300 border border-orange-500/35 transition inline-flex items-center gap-1.5'
+        },
+        UNDER_MARKET: {
+          active: 'px-2.5 py-1 rounded-lg text-[11px] font-mono-num font-black bg-cyan-400 text-slate-950 border border-cyan-200 shadow-[0_0_14px_rgba(34,211,238,0.5)] transition inline-flex items-center gap-1.5',
+          idle: 'px-2.5 py-1 rounded-lg text-[11px] font-mono-num font-extrabold bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-200 border border-cyan-500/35 transition inline-flex items-center gap-1.5'
+        },
+        AT_RETAIL_MSRP: {
+          active: 'px-2.5 py-1 rounded-lg text-[11px] font-mono-num font-black bg-amber-400 text-slate-950 border border-amber-200 shadow-[0_0_14px_rgba(250,204,21,0.5)] transition inline-flex items-center gap-1.5',
+          idle: 'px-2.5 py-1 rounded-lg text-[11px] font-mono-num font-extrabold bg-amber-500/15 hover:bg-amber-500/25 text-amber-200 border border-amber-500/35 transition inline-flex items-center gap-1.5'
+        }
+      };
+      ['UNDER_TRIGGER', 'NEAR_MISSES', 'UNDER_MARKET', 'AT_RETAIL_MSRP'].forEach(k => {
+        const sb = document.getElementById('spreadBtn_' + k);
+        if (sb && spreadStyles[k]) {
+          sb.className = (k === activeDealFeedFilter) ? spreadStyles[k].active : spreadStyles[k].idle;
+        }
+      });
+
       renderLiveCommandView();
+    }
+
+    function mapShelfSpreadOffersToFeedItems(rawList, fallbackBadge) {
+      return (rawList || []).map(o => {
+        const pol = policies.find(p => p.id === o.skuId);
+        const landedVal = Number(o.landedPrice || o.price || 0);
+        const mktVal = Number(o.marketValue || (pol ? pol.estimatedMarketValue : landedVal));
+        const trigVal = Number(o.triggerPrice || (pol ? (pol.maxMarketBuyPrice || pol.msrpCeiling) : landedVal));
+        const msrpVal = Number(o.msrp || (pol ? pol.msrpCeiling : 54.99));
+        const packCnt = Number(o.packCount || (pol ? pol.packCount : 9));
+        const ppp = Number(o.pricePerPack || (packCnt > 0 ? Math.round((landedVal / packCnt) * 100) / 100 : 0));
+        return {
+          isLiveNow: true,
+          isNearMiss: Boolean(o.isNearMiss),
+          soldOut: false,
+          skuId: o.skuId,
+          title: o.title || (pol ? pol.name : o.skuId),
+          formFactor: o.formFactor || (pol ? pol.formFactor : 'ETB'),
+          owned: pol ? Boolean(pol.owned) : Boolean(o.owned),
+          retailer: o.retailer || 'Verified LGS',
+          price: Number(o.price || landedVal),
+          itemPrice: o.itemPrice !== undefined ? Number(o.itemPrice) : undefined,
+          shippingPrice: o.shippingPrice !== undefined ? Number(o.shippingPrice) : undefined,
+          freeShipNote: o.freeShipNote,
+          landedPrice: landedVal,
+          marketValue: mktVal,
+          triggerPrice: trigVal,
+          msrp: msrpVal,
+          gapDollars: o.gapDollars,
+          gapPct: o.gapPct,
+          recommendedTriggerBump: o.recommendedTriggerBump || Math.ceil(landedVal),
+          packCount: packCnt,
+          pricePerPack: ppp,
+          isRipValueLeader: Boolean(ppp > 0 && ppp <= 4.25),
+          isPreRelease: pol ? Boolean(pol.isPreRelease) : false,
+          url: o.url || o.productUrl,
+          cart1xUrl: o.cart1xUrl,
+          timeStr: o.timeStr || fallbackBadge || 'LIVE SHELF',
+          discountPct: Number(o.discountPct ?? (mktVal > landedVal ? Math.max(0, Math.round(((mktVal - landedVal) / mktVal) * 100)) : 0))
+        };
+      });
     }
 
     function renderLiveCommandView() {
@@ -6783,7 +7359,31 @@
 
       let filteredItems = [];
       if (activeDealFeedFilter === 'NEAR_MISSES') {
-        filteredItems = computeDynamicNearMissItems();
+        const dynNear = computeDynamicNearMissItems();
+        const cacheNear = mapShelfSpreadOffersToFeedItems(shelfSpreadData?.offers?.NEAR_MISSES, 'NEAR MISS');
+        const seen = new Set(dynNear.map(x => x.skuId + '__' + x.retailer));
+        cacheNear.forEach(c => {
+          const k = c.skuId + '__' + c.retailer;
+          if (!seen.has(k)) {
+            seen.add(k);
+            dynNear.push(c);
+          }
+        });
+        filteredItems = dynNear;
+      } else if (activeDealFeedFilter === 'UNDER_MARKET') {
+        const cacheUnderMkt = mapShelfSpreadOffersToFeedItems(shelfSpreadData?.offers?.UNDER_MARKET, 'UNDER MARKET');
+        if (cacheUnderMkt.length > 0) {
+          filteredItems = cacheUnderMkt;
+        } else {
+          filteredItems = items.filter(it => Number(it.discountPct || 0) >= 5 && Number(it.discountPct || 0) <= 20);
+        }
+      } else if (activeDealFeedFilter === 'AT_RETAIL_MSRP') {
+        const cacheAtMsrp = mapShelfSpreadOffersToFeedItems(shelfSpreadData?.offers?.AT_RETAIL_MSRP, 'AT RETAIL MSRP');
+        if (cacheAtMsrp.length > 0) {
+          filteredItems = cacheAtMsrp;
+        } else {
+          filteredItems = items.filter(it => Number(it.landedPrice || 0) <= Number(it.msrp || 54.99) * 1.03);
+        }
       } else {
         filteredItems = items.filter(it => {
           if (activeDealFeedFilter === 'UNDER_TRIGGER') {

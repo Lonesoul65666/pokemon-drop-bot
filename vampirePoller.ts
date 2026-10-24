@@ -566,13 +566,18 @@ export async function pollBigBoxAggregators(): Promise<void> {
 
 function extractOutboundRetailerUrl(text: string, fallbackUrl: string): string {
   const urlMatch = text.match(/https?:\/\/(?:www\.)?(?:target\.com|bestbuy\.com|pokemoncenter\.com|walmart\.com|amazon\.com|a\.co|gamestop\.com|costco\.com|samsclub\.com|barnesandnoble\.com)[^\s)"\]<>]*/i);
-  return urlMatch ? urlMatch[0] : fallbackUrl;
+  if (urlMatch) return urlMatch[0];
+  const anyExternalStoreMatch = text.match(/https?:\/\/(?!www\.reddit\.com|old\.reddit\.com|redd\.it|i\.redd\.it|v\.redd\.it|preview\.redd\.it)[a-z0-9.-]+\.[a-z]{2,}\/[^\s)"\]<>]*/i);
+  return anyExternalStoreMatch ? anyExternalStoreMatch[0] : fallbackUrl;
+}
+
+function hasVerifiedBigBoxOutboundUrl(url: string): boolean {
+  return /https?:\/\/(?:www\.)?(?:pokemoncenter\.com|target\.com|walmart\.com\/ip\/|bestbuy\.com\/site\/|costco\.com|samsclub\.com|gamestop\.com)/i.test(url);
 }
 
 const REDDIT_RSS_FEEDS = [
   'https://www.reddit.com/r/PKMNTCGDeals/new/.rss',
-  'https://www.reddit.com/r/PKMNTCGDeals/hot/.rss',
-  'https://www.reddit.com/r/PokemonTCG/new/.rss'
+  'https://www.reddit.com/r/PKMNTCGDeals/hot/.rss'
 ];
 let redditFeedCursor = 0;
 let isPollingReddit = false;
@@ -650,22 +655,36 @@ export async function pollRedditDeals(): Promise<void> {
       const selftext: string = post.selftext || '';
       if (/stockx/i.test(title)) continue;
 
+      // Reject self-discussion / question / personal story threads
+      if (/\b(?:question|help|should i|looking for|went to|found nothing|discussion|pull|pulls|rip|ripped|weekly|megathread|iso|advice)\b/i.test(title) || /\?$/.test(title.trim())) {
+        continue;
+      }
+
       const rawDest = post.url_overridden_by_dest || `https://www.reddit.com${post.permalink || ''}`;
       const dealUrl = extractOutboundRetailerUrl(`${rawDest} ${selftext}`, rawDest);
+      const isSelfRedditLinkOnly = /https?:\/\/(?:www\.|old\.)?reddit\.com|redd\.it/i.test(dealUrl);
 
       const storeMatch = title.match(/^\[([^\]]+)\]/);
       const rawStoreTag = storeMatch ? storeMatch[1] : '';
-      const detectedBigBox = detectBigBoxRetailer(`${rawStoreTag} ${title} ${selftext}`, dealUrl);
+      const detectedBigBox = detectBigBoxRetailer(`${rawStoreTag} ${title}`, dealUrl);
 
-      const priceMatch = `${title} ${selftext}`.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
-      let price: number | undefined = priceMatch ? parseFloat(priceMatch[1]) : undefined;
+      const titlePriceMatch = title.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
+      const bodyPriceMatch = selftext.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
+      let price: number | undefined = titlePriceMatch
+        ? parseFloat(titlePriceMatch[1])
+        : (bodyPriceMatch && !isSelfRedditLinkOnly ? parseFloat(bodyPriceMatch[1]) : undefined);
       let isBigBoxRestockRadar = false;
 
-      // If Reddit post omits a literal $XX.XX price (e.g. "[Pokemon Center] Prismatic Evolutions ETB Back In Stock" or "[Target] Restock"),
-      // do NOT drop it if it names or links to a supported Big-Box retailer and matches a tracked policy SKU!
-      if (!price && detectedBigBox) {
+      // Reject any post that lacks an outbound retailer URL AND lacks an explicit [Store] $XX.XX deal format
+      if (isSelfRedditLinkOnly && (!titlePriceMatch || !rawStoreTag)) {
+        continue;
+      }
+
+      // For a post without an explicit $XX.XX price in the title to trigger as a [BIG-BOX RESTOCK RADAR] hit,
+      // it MUST contain a real verified outbound URL pointing to pokemoncenter.com, target.com, walmart.com/ip/, bestbuy.com/site/, costco.com, samsclub.com, or gamestop.com!
+      if (!price && detectedBigBox && hasVerifiedBigBoxOutboundUrl(dealUrl)) {
         const matchedPolicy = WATCH_POLICIES.find(
-          (p) => p.active !== false && p.matchers.some((rx) => rx.test(`${title} ${selftext}`))
+          (p) => p.active !== false && p.matchers.some((rx) => rx.test(title))
         );
         if (matchedPolicy && matchedPolicy.msrpCeiling > 0) {
           price = matchedPolicy.msrpCeiling;
@@ -674,7 +693,7 @@ export async function pollRedditDeals(): Promise<void> {
         }
       }
 
-      if (!price || price < 18) continue;
+      if (!price || price < 18 || isSelfRedditLinkOnly) continue;
 
       const retailer = isBigBoxRestockRadar && detectedBigBox
         ? `${detectedBigBox} [BIG-BOX RESTOCK RADAR]`
