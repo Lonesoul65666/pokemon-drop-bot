@@ -18,6 +18,7 @@
     "lgsPoller.ts",
     "listener.ts",
     "marketTelemetry.ts",
+    "src/config/configManager.ts",
     "src/marketSync.ts",
     "vampirePoller.ts",
     "marketComps.ts",

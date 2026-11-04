@@ -17,6 +17,7 @@ const marketComps_1 = require("./marketComps");
 const evaluator_1 = require("./evaluator");
 const policies_1 = require("./policies");
 const marketTape_1 = require("./marketTape");
+const configManager_1 = require("./src/config/configManager");
 dotenv_1.default.config({ path: path_1.default.resolve(__dirname, '.env') });
 const DISCORD_MIN_INTERVAL_MS = 1250;
 const discordWebhookQueue = [];
@@ -493,15 +494,13 @@ function readDigestStateFromDisk() {
     }
     catch (e) { }
     try {
-        if (fs_1.default.existsSync(settingsPath)) {
-            const s = JSON.parse(fs_1.default.readFileSync(settingsPath, 'utf-8'));
-            if (s && typeof s.lastDigestSentAt === 'number')
-                diskLastAt = Math.max(diskLastAt, s.lastDigestSentAt);
-            if (s && typeof s.lastDigestHash === 'string' && !diskHash)
-                diskHash = s.lastDigestHash;
-            if (s && typeof s.liveDigestEnabled === 'boolean')
-                liveDigestEnabled = s.liveDigestEnabled;
-        }
+        const gs = (0, configManager_1.loadGlobalSettings)();
+        if (typeof gs.liveDigestEnabled === 'boolean')
+            liveDigestEnabled = gs.liveDigestEnabled;
+        if (typeof gs.lastDigestSentAt === 'number')
+            diskLastAt = Math.max(diskLastAt, gs.lastDigestSentAt);
+        if (typeof gs.lastDigestHash === 'string' && !diskHash)
+            diskHash = gs.lastDigestHash;
     }
     catch (e) { }
     return {
@@ -568,8 +567,7 @@ async function sendStockDigestCard(options) {
     }
     catch (e) { }
     try {
-        if (fs_1.default.existsSync(policiesPath))
-            policies = JSON.parse(fs_1.default.readFileSync(policiesPath, 'utf-8'));
+        policies = (0, configManager_1.loadMergedPoliciesRaw)();
     }
     catch (e) { }
     try {

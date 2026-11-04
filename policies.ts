@@ -349,61 +349,39 @@ export function isValidSkuForFormFactor(
   return true;
 }
 
-// Check root directory first, then fallback to one level up from dist/
-function resolvePoliciesPath(): string {
-  const rootPath = path.resolve(process.cwd(), 'policies.json');
-  if (fs.existsSync(rootPath)) {
-    return rootPath;
-  }
-  const parentPath = path.resolve(__dirname, '..', 'policies.json');
-  if (fs.existsSync(parentPath)) {
-    return parentPath;
-  }
-  return path.resolve(__dirname, 'policies.json');
-}
+import {
+  atomicWriteJson as cmAtomicWriteJson,
+  loadMergedPoliciesRaw,
+  watchConfigFiles
+} from './src/config/configManager';
 
 export function atomicWriteJson(filePath: string, data: any): void {
-  try {
-    const tmpPath = `${filePath}.tmp.${process.pid}.${Date.now()}`;
-    fs.writeFileSync(tmpPath, JSON.stringify(data, null, 2), 'utf-8');
-    fs.renameSync(tmpPath, filePath);
-  } catch (err: any) {
-    try {
-      const fallbackTmp = `${filePath}.tmp`;
-      fs.writeFileSync(fallbackTmp, JSON.stringify(data, null, 2), 'utf-8');
-      fs.renameSync(fallbackTmp, filePath);
-    } catch (e) {}
-  }
+  cmAtomicWriteJson(filePath, data);
 }
-
-const POLICIES_PATH = resolvePoliciesPath();
 
 export function loadPolicies(): PolicyRule[] {
   try {
-    if (!fs.existsSync(POLICIES_PATH)) {
-      console.error(`[POLICIES] policies.json not found at: ${POLICIES_PATH}`);
+    const parsed = loadMergedPoliciesRaw();
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      console.error('[POLICIES] Zero merged policies returned from configManager.');
       return [];
     }
-    const raw = fs.readFileSync(POLICIES_PATH, 'utf-8');
-    const parsed = JSON.parse(raw);
 
     return parsed.map((item: any) => ({
       ...item,
       packCount: item.packCount || getPackCountForSku(item.id, item.formFactor, item.name),
-      matchers: item.matchers.map((m: string) => new RegExp(m, 'i')),
+      matchers: (item.matchers || []).map((m: string) => new RegExp(m, 'i')),
       negativeMatchers: GLOBAL_JUNK_EXCLUSIONS,
     }));
   } catch (err: any) {
-    console.error(`Error reading policies.json: ${err.message}`);
+    console.error(`Error loading merged policies: ${err.message}`);
     return [];
   }
 }
 
 export let WATCH_POLICIES: PolicyRule[] = loadPolicies();
 
-if (fs.existsSync(POLICIES_PATH)) {
-  fs.watch(POLICIES_PATH, () => {
-    console.log('[WATCHER] policies.json changed on disk. Hot-reloading active rules...');
-    WATCH_POLICIES = loadPolicies();
-  });
-}
+watchConfigFiles(() => {
+  console.log('[WATCHER] Config/userPreferences changed on disk. Hot-reloading active rules...');
+  WATCH_POLICIES = loadPolicies();
+});

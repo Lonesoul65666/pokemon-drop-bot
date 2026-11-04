@@ -18,7 +18,9 @@
 1. **Ingestion (`lgsPoller.ts` & `vampirePoller.ts`):**
    - Pollers fetch raw listings and pass `RawRestockItem` objects into `processIncomingDrop()` (`listener.ts`).
    - Full 91-store Shopify sweep also prunes disappeared variant IDs via `pruneStoreMissingOffers()`.
-2. **Evaluation & Caching (`evaluator.ts` & `policies.ts`):**
+2. **Evaluation & Caching (`evaluator.ts`, `policies.ts`, & `src/config/configManager.ts`):**
+   - `src/config/configManager.ts` (`347` lines) merges `config/catalog.json` (`131` static SKU definitions), `config/userPreferences.json` (Scott's untouchable personal sliders, `owned`/`inVault` flags, and global toggles), and `marketCache.json` (`estimatedMarketValue` / `rollingAverage` baselines) in memory.
+   - `lgsPoller.ts` reads active stores and `evaluator.ts` resolves shipping rules from the single unified registry `config/stores.json` (`90` active healthy Shopify LGS stores + `9` Big-Box stores; dead 404 store `Lets Play TCG` disabled).
    - `evaluateItem()` checks `GLOBAL_JUNK_EXCLUSIONS`, matches against `WATCH_POLICIES` regexes, validates form factor via `isValidSkuForFormFactor()`, and checks price floors/ceilings.
    - Every valid matched in-stock offer (even above buy trigger) is cached into `storeOffersCache.json` (`upsertStoreOfferCache()`) and `liveStock.json.__bestOffers` (`upsertBestCurrentOffer()`).
    - Offers meeting or beating `effectiveCeiling` are written to `liveStock.json`, checked against Vault Mute / Wall Hunter Mode / `alertState.json` deduplication, and returned as `action: 'BUY'`.
@@ -40,5 +42,6 @@ Every architectural flaw uncovered in our V4 -> V5 Ground-Truth Audit (plus any 
 - **`[FAILED - V4 15-Minute TCGPlayer OOS Echo & Reddit Self-Post Leak]`:** Treating a single empty/timed-out TCGPlayer scrape as "Out of Stock" (causing repeat alerts every 15m) and polling general Reddit text discussions without requiring an outbound retailer URL.
 - **`[FAILED - V4 Duplicate 9,780-Line `dashboard.html` Clone]`:** Maintaining two identical 9,780-line HTML files in root (`dashboard.html`) and `public/index.html`, with 3,800+ lines of Logan's Battle Stadium tangled inside the Sniper UI file.
 - **`[FAILED - V4 Watchdog Single-Line `pm2 jlist` Regex (`scripts/watchdog.ps1`)]`:** Parsing multi-line `npx pm2 jlist` stdout with `^\[.*\]$` caused false-positive restarts every 5 minutes and spammed 15 boot digests to Discord.
+- **`[FAILED - V4 TCGPlayer Shipping Scam & Unverified Bait-and-Switch Trap]`:** Assuming `freeShipping: true` on TCGPlayer listings allowed a scam listing (`Prismatic Evolutions ETB Case` at `$499.00 + $199.99 Shipping` by unverified 1-qty seller `Crawford gaming` vs. `$1,252` market) to pass as a deal.
 
 <!-- NYX_UNDO_GRAVEYARD_ANCHOR -->

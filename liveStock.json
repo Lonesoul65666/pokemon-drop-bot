@@ -5,12 +5,6 @@
       "retailer": "Taps Games",
       "price": 102.16,
       "oosAt": 1793823425034
-    },
-    {
-      "ruleName": "Prismatic Evolutions ETB Sealed Case (10 ETBs)",
-      "retailer": "TCGPlayer Verified Seller ($1288.00)",
-      "price": 1288,
-      "oosAt": 1793813205206
     }
   ],
   "sv-journey-together-booster-box": {
@@ -50,7 +44,7 @@
       "freeShipNote": "+FREE Shipping",
       "triggerPrice": 193,
       "msrp": 161.64,
-      "marketValue": 228.17,
+      "marketValue": 226.46,
       "gapDollars": 1.99,
       "gapPct": 1,
       "rawGapDollars": 1.99,
@@ -66,8 +60,8 @@
       "cart1xUrl": "https://cardshq.com/cart/45614914863267:1",
       "cart2xUrl": "https://cardshq.com/cart/45614914863267:2",
       "itemId": "45614914863267",
-      "updatedAt": 1793825306283,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830845453,
+      "timeStr": "04:20 PM"
     },
     "me-delta-reign-booster-box": {
       "ruleId": "me-delta-reign-booster-box",
@@ -82,7 +76,7 @@
       "freeShipNote": "+FREE Shipping",
       "triggerPrice": 222,
       "msrp": 161.64,
-      "marketValue": 229.11,
+      "marketValue": 232.3,
       "gapDollars": -17,
       "gapPct": -7.7,
       "rawGapDollars": -17,
@@ -99,8 +93,8 @@
       "cart1xUrl": "https://tradingcardmarket.com/cart/48250019348532:1",
       "cart2xUrl": "https://tradingcardmarket.com/cart/48250019348532:2",
       "itemId": "48250019348532",
-      "updatedAt": 1793825282169,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830836843,
+      "timeStr": "04:20 PM"
     },
     "me-chaos-rising-booster-box": {
       "ruleId": "me-chaos-rising-booster-box",
@@ -115,7 +109,7 @@
       "freeShipNote": "+FREE Shipping",
       "triggerPrice": 161.64,
       "msrp": 161.64,
-      "marketValue": 190.85,
+      "marketValue": 189.61,
       "gapDollars": 18.35,
       "gapPct": 11.4,
       "rawGapDollars": 18.35,
@@ -131,8 +125,8 @@
       "cart1xUrl": "https://doubleinfinitygaming.com/cart/52948977746236:1",
       "cart2xUrl": "https://doubleinfinitygaming.com/cart/52948977746236:2",
       "itemId": "52948977746236",
-      "updatedAt": 1793825277312,
-      "timeStr": "02:47 PM"
+      "updatedAt": 1793830761748,
+      "timeStr": "04:19 PM"
     },
     "me-ascended-heroes-bundle": {
       "ruleId": "me-ascended-heroes-bundle",
@@ -163,8 +157,8 @@
       "cart1xUrl": "https://carddogtcg.com/cart/52171670061352:1",
       "cart2xUrl": "https://carddogtcg.com/cart/52171670061352:2",
       "itemId": "52171670061352",
-      "updatedAt": 1793825309258,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830790179,
+      "timeStr": "04:19 PM"
     },
     "me-perfect-order-booster-case": {
       "ruleId": "me-perfect-order-booster-case",
@@ -179,7 +173,7 @@
       "freeShipNote": "+FREE Shipping",
       "triggerPrice": 970,
       "msrp": 970,
-      "marketValue": 1334.89,
+      "marketValue": 1337.38,
       "gapDollars": 329.99,
       "gapPct": 34,
       "rawGapDollars": 329.99,
@@ -195,8 +189,8 @@
       "cart1xUrl": "https://carddogtcg.com/cart/51715438215464:1",
       "cart2xUrl": "https://carddogtcg.com/cart/51715438215464:2",
       "itemId": "51715438215464",
-      "updatedAt": 1793825309278,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830790197,
+      "timeStr": "04:19 PM"
     },
     "me-chaos-rising-booster-case": {
       "ruleId": "me-chaos-rising-booster-case",
@@ -227,8 +221,8 @@
       "cart1xUrl": "https://carddogtcg.com/cart/51949894959400:1",
       "cart2xUrl": "https://carddogtcg.com/cart/51949894959400:2",
       "itemId": "51949894959400",
-      "updatedAt": 1793825309280,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830790199,
+      "timeStr": "04:19 PM"
     },
     "me-pitch-black-booster-box": {
       "ruleId": "me-pitch-black-booster-box",
@@ -243,7 +237,7 @@
       "freeShipNote": "+FREE Shipping",
       "triggerPrice": 167,
       "msrp": 161.64,
-      "marketValue": 185.39,
+      "marketValue": 185.72,
       "gapDollars": 7.75,
       "gapPct": 4.6,
       "rawGapDollars": 7.75,
@@ -259,8 +253,8 @@
       "cart1xUrl": "https://theawesomecardshop.com/cart/51981024264513:1",
       "cart2xUrl": "https://theawesomecardshop.com/cart/51981024264513:2",
       "itemId": "51981024264513",
-      "updatedAt": 1793825184535,
-      "timeStr": "02:46 PM"
+      "updatedAt": 1793830842862,
+      "timeStr": "04:20 PM"
     },
     "me-perfect-order-booster-box": {
       "ruleId": "me-perfect-order-booster-box",
@@ -275,7 +269,7 @@
       "freeShipNote": "+FREE Shipping",
       "triggerPrice": 161.64,
       "msrp": 161.64,
-      "marketValue": 171.93,
+      "marketValue": 171.71,
       "gapDollars": 6.36,
       "gapPct": 3.9,
       "rawGapDollars": 6.36,
@@ -291,8 +285,8 @@
       "cart1xUrl": "https://tradingcardmarket.com/cart/47422202708020:1",
       "cart2xUrl": "https://tradingcardmarket.com/cart/47422202708020:2",
       "itemId": "47422202708020",
-      "updatedAt": 1793825282212,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830836903,
+      "timeStr": "04:20 PM"
     },
     "swsh-chilling-reign-shadow-etb": {
       "ruleId": "swsh-chilling-reign-shadow-etb",
@@ -324,8 +318,8 @@
       "cart2xUrl": "https://pkmncolosseum.com/cart/39491186130998:2",
       "cart3xUrl": "https://pkmncolosseum.com/cart/39491186130998:3",
       "itemId": "39491186130998",
-      "updatedAt": 1793825280043,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830823687,
+      "timeStr": "04:20 PM"
     },
     "swsh-chilling-reign-ice-etb": {
       "ruleId": "swsh-chilling-reign-ice-etb",
@@ -357,8 +351,8 @@
       "cart2xUrl": "https://pkmncolosseum.com/cart/39491187572790:2",
       "cart3xUrl": "https://pkmncolosseum.com/cart/39491187572790:3",
       "itemId": "39491187572790",
-      "updatedAt": 1793825280046,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830823689,
+      "timeStr": "04:20 PM"
     },
     "me-pitch-black-booster-case": {
       "ruleId": "me-pitch-black-booster-case",
@@ -389,8 +383,8 @@
       "cart1xUrl": "https://theawesomecardshop.com/cart/51981030457665:1",
       "cart2xUrl": "https://theawesomecardshop.com/cart/51981030457665:2",
       "itemId": "51981030457665",
-      "updatedAt": 1793825184582,
-      "timeStr": "02:46 PM"
+      "updatedAt": 1793830842881,
+      "timeStr": "04:20 PM"
     },
     "me-perfect-order-etb-case": {
       "ruleId": "me-perfect-order-etb-case",
@@ -421,8 +415,8 @@
       "cart1xUrl": "https://theawesomecardshop.com/cart/51407069086017:1",
       "cart2xUrl": "https://theawesomecardshop.com/cart/51407069086017:2",
       "itemId": "51407069086017",
-      "updatedAt": 1793825184590,
-      "timeStr": "02:46 PM"
+      "updatedAt": 1793830842890,
+      "timeStr": "04:20 PM"
     },
     "me-delta-reign-etb-case": {
       "ruleId": "me-delta-reign-etb-case",
@@ -437,7 +431,7 @@
       "freeShipNote": "+FREE Shipping",
       "triggerPrice": 855,
       "msrp": 549.9,
-      "marketValue": 1249.98,
+      "marketValue": 1218.72,
       "gapDollars": 144.95,
       "gapPct": 17,
       "rawGapDollars": 144.95,
@@ -454,8 +448,8 @@
       "cart1xUrl": "https://blackwolfcollectibles.com/cart/67654785204498:1",
       "cart2xUrl": "https://blackwolfcollectibles.com/cart/67654785204498:2",
       "itemId": "67654785204498",
-      "updatedAt": 1793825309779,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830847579,
+      "timeStr": "04:20 PM"
     },
     "sv-obsidian-flames-etb": {
       "ruleId": "sv-obsidian-flames-etb",
@@ -487,8 +481,8 @@
       "cart2xUrl": "https://www.epictradingcollectibles.com/cart/67724082774261:2",
       "cart3xUrl": "https://www.epictradingcollectibles.com/cart/67724082774261:3",
       "itemId": "67724082774261",
-      "updatedAt": 1793825313490,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830555396,
+      "timeStr": "04:15 PM"
     },
     "swsh-pokemon-go-etb": {
       "ruleId": "swsh-pokemon-go-etb",
@@ -504,7 +498,7 @@
       "freeShipNote": "$150.00 + $6.47 Ship ($156.47 Landed)",
       "triggerPrice": 144,
       "msrp": 49.99,
-      "marketValue": 185.78,
+      "marketValue": 187.49,
       "gapDollars": 12.47,
       "gapPct": 8.7,
       "rawGapDollars": 12.47,
@@ -517,8 +511,8 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/270708?Language=English",
       "itemId": "tcg_270708",
-      "updatedAt": 1793824620349,
-      "timeStr": "02:37 PM"
+      "updatedAt": 1793829903973,
+      "timeStr": "04:05 PM"
     },
     "me-pitch-black-etb-case": {
       "ruleId": "me-pitch-black-etb-case",
@@ -527,17 +521,17 @@
       "era": "Mega Evolution (2025-2026)",
       "title": "Pitch Black Elite Trainer Box Case ME05: Pitch Black",
       "retailer": "TCGPlayer Verified Seller ($729.93)",
-      "price": 729.93,
+      "price": 729.92,
       "itemPrice": 729.93,
       "shippingPrice": 0,
-      "landedPrice": 729.93,
+      "landedPrice": 729.92,
       "freeShipNote": "+FREE Shipping (Over $35 Threshold)",
       "triggerPrice": 677,
       "msrp": 549.9,
       "marketValue": 729.93,
-      "gapDollars": 52.93,
+      "gapDollars": 52.92,
       "gapPct": 7.8,
-      "rawGapDollars": 52.93,
+      "rawGapDollars": 52.92,
       "rawGapPct": 7.8,
       "packCount": 90,
       "pricePerPack": 8.11,
@@ -547,8 +541,8 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/692948?Language=English",
       "itemId": "tcg_692948",
-      "updatedAt": 1793825135666,
-      "timeStr": "02:45 PM"
+      "updatedAt": 1793830791762,
+      "timeStr": "04:19 PM"
     },
     "me-chaos-rising-etb-case": {
       "ruleId": "me-chaos-rising-etb-case",
@@ -577,8 +571,8 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/684451?Language=English",
       "itemId": "tcg_684451",
-      "updatedAt": 1793825232218,
-      "timeStr": "02:47 PM"
+      "updatedAt": 1793830412350,
+      "timeStr": "04:13 PM"
     },
     "sv-obsidian-flames-booster-case": {
       "ruleId": "sv-obsidian-flames-booster-case",
@@ -607,8 +601,8 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/501258?Language=English",
       "itemId": "tcg_501258",
-      "updatedAt": 1793824280044,
-      "timeStr": "02:31 PM"
+      "updatedAt": 1793830603299,
+      "timeStr": "04:16 PM"
     },
     "me-phantasmal-flames-etb-case": {
       "ruleId": "me-phantasmal-flames-etb-case",
@@ -616,15 +610,15 @@
       "formFactor": "ETB Case",
       "era": "Mega Evolution (2025-2026)",
       "title": "Phantasmal Flames Elite Trainer Box Case ME02: Phantasmal Flames",
-      "retailer": "TCGPlayer Verified Seller ($1520.00)",
+      "retailer": "TCGPlayer Verified Seller ($1542.99)",
       "price": 1542.99,
-      "itemPrice": 1520,
-      "shippingPrice": 22.99,
+      "itemPrice": 1542.99,
+      "shippingPrice": 0,
       "landedPrice": 1542.99,
-      "freeShipNote": "$1520.00 + $22.99 Ship ($1542.99 Landed)",
+      "freeShipNote": "+FREE Shipping (Over $35 Threshold)",
       "triggerPrice": 945,
       "msrp": 549.9,
-      "marketValue": 1680.33,
+      "marketValue": 1670.52,
       "gapDollars": 597.99,
       "gapPct": 63.3,
       "rawGapDollars": 597.99,
@@ -637,8 +631,8 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/654170?Language=English",
       "itemId": "tcg_654170",
-      "updatedAt": 1793825178965,
-      "timeStr": "02:46 PM"
+      "updatedAt": 1793830829260,
+      "timeStr": "04:20 PM"
     },
     "sv-temporal-forces-booster-case": {
       "ruleId": "sv-temporal-forces-booster-case",
@@ -667,8 +661,8 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/537417?Language=English",
       "itemId": "tcg_537417",
-      "updatedAt": 1793822990316,
-      "timeStr": "02:09 PM"
+      "updatedAt": 1793829408197,
+      "timeStr": "03:56 PM"
     },
     "sv-twilight-masquerade-booster-case": {
       "ruleId": "sv-twilight-masquerade-booster-case",
@@ -697,8 +691,8 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/544384?Language=English",
       "itemId": "tcg_544384",
-      "updatedAt": 1793823053563,
-      "timeStr": "02:10 PM"
+      "updatedAt": 1793829438168,
+      "timeStr": "03:57 PM"
     },
     "sv-shrouded-fable-etb": {
       "ruleId": "sv-shrouded-fable-etb",
@@ -757,8 +751,8 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/553099?Language=English",
       "itemId": "tcg_553099",
-      "updatedAt": 1793823121889,
-      "timeStr": "02:12 PM"
+      "updatedAt": 1793829504357,
+      "timeStr": "03:58 PM"
     },
     "sv-surging-sparks-etb-case": {
       "ruleId": "sv-surging-sparks-etb-case",
@@ -789,8 +783,8 @@
       "cart1xUrl": "https://blackwolfcollectibles.com/cart/51613596582162:1",
       "cart2xUrl": "https://blackwolfcollectibles.com/cart/51613596582162:2",
       "itemId": "51613596582162",
-      "updatedAt": 1793825309746,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830847545,
+      "timeStr": "04:20 PM"
     },
     "sv-journey-together-booster-case": {
       "ruleId": "sv-journey-together-booster-case",
@@ -821,8 +815,8 @@
       "cart1xUrl": "https://collectorscafe.com/cart/47981024444547:1",
       "cart2xUrl": "https://collectorscafe.com/cart/47981024444547:2",
       "itemId": "47981024444547",
-      "updatedAt": 1793825304409,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830845705,
+      "timeStr": "04:20 PM"
     },
     "sv-journey-together-etb-case": {
       "ruleId": "sv-journey-together-etb-case",
@@ -853,8 +847,8 @@
       "cart1xUrl": "https://blackwolfcollectibles.com/cart/51289578930450:1",
       "cart2xUrl": "https://blackwolfcollectibles.com/cart/51289578930450:2",
       "itemId": "51289578930450",
-      "updatedAt": 1793825309775,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830847574,
+      "timeStr": "04:20 PM"
     },
     "swsh-battle-styles-booster-case": {
       "ruleId": "swsh-battle-styles-booster-case",
@@ -883,40 +877,38 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/233335?Language=English",
       "itemId": "tcg_233335",
-      "updatedAt": 1793823290764,
-      "timeStr": "02:14 PM"
+      "updatedAt": 1793829676627,
+      "timeStr": "04:01 PM"
     },
     "swsh-chilling-reign-booster-box": {
       "ruleId": "swsh-chilling-reign-booster-box",
       "ruleName": "Chilling Reign Booster Box (36-Pack)",
       "formFactor": "Booster Box",
       "era": "Sword & Shield Vault (2021-2023)",
-      "title": "Pokemon: Sword & Shield - Chilling Reign Booster Box",
-      "retailer": "Double Infinity Gaming",
-      "price": 459.99,
+      "title": "Chilling Reign Booster Box SWSH06: Chilling Reign",
+      "retailer": "TCGPlayer Verified Seller ($443.99)",
+      "price": 443.99,
+      "itemPrice": 443.99,
       "shippingPrice": 0,
-      "landedPrice": 459.99,
-      "freeShipNote": "+FREE Shipping",
+      "landedPrice": 443.99,
+      "freeShipNote": "+FREE Shipping (Over $35 Threshold)",
       "triggerPrice": 414,
       "msrp": 143.64,
-      "marketValue": 480.26,
-      "gapDollars": 45.99,
-      "gapPct": 11.1,
-      "rawGapDollars": 45.99,
-      "rawGapPct": 11.1,
+      "marketValue": 482.11,
+      "gapDollars": 29.99,
+      "gapPct": 7.2,
+      "rawGapDollars": 29.99,
+      "rawGapPct": 7.2,
       "packCount": 36,
-      "pricePerPack": 12.78,
+      "pricePerPack": 12.33,
       "isRipValueLeader": false,
       "owned": false,
       "isPreOrder": false,
       "isPreRelease": false,
-      "url": "https://doubleinfinitygaming.com/cart/45179484176700:1",
-      "productUrl": "https://doubleinfinitygaming.com/products/pokemon-sword-shield-chilling-reign-booster-box",
-      "cart1xUrl": "https://doubleinfinitygaming.com/cart/45179484176700:1",
-      "cart2xUrl": "https://doubleinfinitygaming.com/cart/45179484176700:2",
-      "itemId": "45179484176700",
-      "updatedAt": 1793825277356,
-      "timeStr": "02:47 PM"
+      "url": "https://www.tcgplayer.com/product/236258?Language=English",
+      "itemId": "tcg_236258",
+      "updatedAt": 1793829714844,
+      "timeStr": "04:01 PM"
     },
     "swsh-brilliant-stars-etb-case": {
       "ruleId": "swsh-brilliant-stars-etb-case",
@@ -945,8 +937,8 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/264269?Language=English",
       "itemId": "tcg_264269",
-      "updatedAt": 1793824607655,
-      "timeStr": "02:36 PM"
+      "updatedAt": 1793829887335,
+      "timeStr": "04:04 PM"
     },
     "swsh-astral-radiance-etb-case": {
       "ruleId": "swsh-astral-radiance-etb-case",
@@ -975,8 +967,8 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/265545?Language=English",
       "itemId": "tcg_265545",
-      "updatedAt": 1793824617647,
-      "timeStr": "02:36 PM"
+      "updatedAt": 1793829901192,
+      "timeStr": "04:05 PM"
     },
     "swsh-pokemon-go-etb-case": {
       "ruleId": "swsh-pokemon-go-etb-case",
@@ -1005,8 +997,8 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/271513?Language=English",
       "itemId": "tcg_271513",
-      "updatedAt": 1793824622297,
-      "timeStr": "02:37 PM"
+      "updatedAt": 1793829907145,
+      "timeStr": "04:05 PM"
     },
     "swsh-silver-tempest-etb-case": {
       "ruleId": "swsh-silver-tempest-etb-case",
@@ -1035,8 +1027,8 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/285777?Language=English",
       "itemId": "tcg_285777",
-      "updatedAt": 1793824696589,
-      "timeStr": "02:38 PM"
+      "updatedAt": 1793829962803,
+      "timeStr": "04:06 PM"
     },
     "sv-stellar-crown-etb-case": {
       "ruleId": "sv-stellar-crown-etb-case",
@@ -1065,8 +1057,8 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/559102?Language=English",
       "itemId": "tcg_559102",
-      "updatedAt": 1793824741340,
-      "timeStr": "02:39 PM"
+      "updatedAt": 1793830002375,
+      "timeStr": "04:06 PM"
     },
     "swsh-lost-origin-etb-case": {
       "ruleId": "swsh-lost-origin-etb-case",
@@ -1095,8 +1087,8 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/278796?Language=English",
       "itemId": "tcg_278796",
-      "updatedAt": 1793824674707,
-      "timeStr": "02:37 PM"
+      "updatedAt": 1793829948946,
+      "timeStr": "04:05 PM"
     },
     "swsh-silver-tempest-etb": {
       "ruleId": "swsh-silver-tempest-etb",
@@ -1105,28 +1097,28 @@
       "era": "Sword & Shield Vault (2021-2023)",
       "title": "Silver Tempest Elite Trainer Box SWSH12: Silver Tempest",
       "retailer": "TCGPlayer Verified Seller ($144.99)",
-      "price": 154.98,
+      "price": 154,
       "itemPrice": 144.99,
-      "shippingPrice": 9.99,
-      "landedPrice": 154.98,
-      "freeShipNote": "$144.99 + $9.99 Ship ($154.98 Landed)",
+      "shippingPrice": 9.01,
+      "landedPrice": 154,
+      "freeShipNote": "$144.99 + $9.01 Ship ($154.00 Landed)",
       "triggerPrice": 144,
       "msrp": 49.99,
-      "marketValue": 179.65,
-      "gapDollars": 10.98,
-      "gapPct": 7.6,
-      "rawGapDollars": 10.98,
-      "rawGapPct": 7.6,
+      "marketValue": 179.66,
+      "gapDollars": 10,
+      "gapPct": 6.9,
+      "rawGapDollars": 10,
+      "rawGapPct": 6.9,
       "packCount": 9,
-      "pricePerPack": 17.22,
+      "pricePerPack": 17.11,
       "isRipValueLeader": false,
       "owned": false,
       "isPreOrder": false,
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/283401?Language=English",
       "itemId": "tcg_283401",
-      "updatedAt": 1793824692253,
-      "timeStr": "02:38 PM"
+      "updatedAt": 1793829961194,
+      "timeStr": "04:06 PM"
     },
     "swsh-lost-origin-etb": {
       "ruleId": "swsh-lost-origin-etb",
@@ -1155,42 +1147,39 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/277335?Language=English",
       "itemId": "tcg_277335",
-      "updatedAt": 1793825064813,
-      "timeStr": "02:44 PM"
+      "updatedAt": 1793829942169,
+      "timeStr": "04:05 PM"
     },
     "me-delta-reign-etb": {
       "ruleId": "me-delta-reign-etb",
       "ruleName": "Mega Evolution: Delta Rayquaza (Delta Reign) ETB",
       "formFactor": "ETB",
       "era": "Mega Evolution (2025-2026)",
-      "title": "[PREORDER] Mega Evolution: Delta Reign - Elite Trainer Box",
-      "retailer": "Stomping Grounds",
-      "price": 89,
-      "shippingPrice": 6.99,
-      "landedPrice": 95.99,
-      "freeShipNote": "$89.00 + $6.99 Est. Ship ($95.99 Landed)",
+      "title": "Delta Reign Elite Trainer Box ME06: Delta Reign",
+      "retailer": "TCGPlayer Verified Seller ($85.00)",
+      "price": 85,
+      "itemPrice": 85,
+      "shippingPrice": 0,
+      "landedPrice": 85,
+      "freeShipNote": "+FREE Shipping (Over $35 Threshold)",
       "triggerPrice": 93,
       "msrp": 54.99,
-      "marketValue": 97.56,
-      "gapDollars": 2.99,
-      "gapPct": 3.2,
-      "rawGapDollars": -4,
-      "rawGapPct": -4.3,
+      "marketValue": 98.4,
+      "gapDollars": -8,
+      "gapPct": -8.6,
+      "rawGapDollars": -8,
+      "rawGapPct": -8.6,
       "packCount": 9,
-      "pricePerPack": 10.67,
+      "pricePerPack": 9.44,
       "isRipValueLeader": false,
       "owned": false,
-      "isPreOrder": true,
+      "isPreOrder": false,
       "isPreRelease": true,
       "preReleaseStatusTag": "⏳ PRE-RELEASE BLEED (Wait for Launch Week)",
-      "url": "https://www.stompinggroundstcg.com/cart/67670366748832:1",
-      "productUrl": "https://www.stompinggroundstcg.com/products/mega-evolution-delta-reign-elite-trainer-box",
-      "cart1xUrl": "https://www.stompinggroundstcg.com/cart/67670366748832:1",
-      "cart2xUrl": "https://www.stompinggroundstcg.com/cart/67670366748832:2",
-      "cart3xUrl": "https://www.stompinggroundstcg.com/cart/67670366748832:3",
-      "itemId": "67670366748832",
-      "updatedAt": 1793825285735,
-      "timeStr": "02:48 PM"
+      "url": "https://www.tcgplayer.com/product/712102?Language=English",
+      "itemId": "tcg_712102",
+      "updatedAt": 1793830637856,
+      "timeStr": "04:17 PM"
     },
     "sv-twilight-masquerade-etb": {
       "ruleId": "sv-twilight-masquerade-etb",
@@ -1206,7 +1195,7 @@
       "freeShipNote": "+FREE Shipping (Over $35 Threshold)",
       "triggerPrice": 93,
       "msrp": 54.99,
-      "marketValue": 103.9,
+      "marketValue": 104.68,
       "gapDollars": 4,
       "gapPct": 4.3,
       "rawGapDollars": 4,
@@ -1219,8 +1208,8 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/543845?Language=English",
       "itemId": "tcg_543845",
-      "updatedAt": 1793824903263,
-      "timeStr": "02:41 PM"
+      "updatedAt": 1793830097645,
+      "timeStr": "04:08 PM"
     },
     "me-delta-reign-booster-case": {
       "ruleId": "me-delta-reign-booster-case",
@@ -1229,17 +1218,17 @@
       "era": "Mega Evolution (2025-2026)",
       "title": "Delta Reign Booster Box Case ME06: Delta Reign",
       "retailer": "TCGPlayer Verified Seller ($1329.98)",
-      "price": 1329.99,
+      "price": 1329.98,
       "itemPrice": 1329.98,
-      "shippingPrice": 0.01,
-      "landedPrice": 1329.99,
-      "freeShipNote": "$1329.98 + $0.01 Ship ($1329.99 Landed)",
+      "shippingPrice": 0,
+      "landedPrice": 1329.98,
+      "freeShipNote": "+FREE Shipping (Over $35 Threshold)",
       "triggerPrice": 1349,
       "msrp": 970,
-      "marketValue": 1479.2,
-      "gapDollars": -19.01,
+      "marketValue": 1473.39,
+      "gapDollars": -19.02,
       "gapPct": -1.4,
-      "rawGapDollars": -19.01,
+      "rawGapDollars": -19.02,
       "rawGapPct": -1.4,
       "packCount": 216,
       "pricePerPack": 6.16,
@@ -1250,8 +1239,8 @@
       "preReleaseStatusTag": "⏳ PRE-RELEASE BLEED (Wait for Launch Week)",
       "url": "https://www.tcgplayer.com/product/712096?Language=English",
       "itemId": "tcg_712096",
-      "updatedAt": 1793825251305,
-      "timeStr": "02:47 PM"
+      "updatedAt": 1793830429646,
+      "timeStr": "04:13 PM"
     },
     "sv-stellar-crown-booster-case": {
       "ruleId": "sv-stellar-crown-booster-case",
@@ -1280,8 +1269,8 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/557365?Language=English",
       "itemId": "tcg_557365",
-      "updatedAt": 1793823134958,
-      "timeStr": "02:12 PM"
+      "updatedAt": 1793829510652,
+      "timeStr": "03:58 PM"
     },
     "swsh-evolving-skies-etb": {
       "ruleId": "swsh-evolving-skies-etb",
@@ -1313,41 +1302,38 @@
       "cart2xUrl": "https://collectorstore.com/cart/55535610233000:2",
       "cart3xUrl": "https://collectorstore.com/cart/55535610233000:3",
       "itemId": "55535610233000",
-      "updatedAt": 1793825338278,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830830082,
+      "timeStr": "04:20 PM"
     },
     "swsh-celebrations-etb": {
       "ruleId": "swsh-celebrations-etb",
       "ruleName": "Celebrations 25th Anniversary ETB",
       "formFactor": "ETB",
       "era": "Sword & Shield Vault (2021-2023)",
-      "title": "Sealed Celebrations Elite Trainer Box",
-      "retailer": "PKMN Colosseum",
-      "price": 338.99,
-      "shippingPrice": 0,
-      "landedPrice": 338.99,
-      "freeShipNote": "+FREE Shipping",
+      "title": "Celebrations Elite Trainer Box Celebrations",
+      "retailer": "TCGPlayer Verified Seller ($299.00)",
+      "price": 310.97,
+      "itemPrice": 299,
+      "shippingPrice": 11.97,
+      "landedPrice": 310.97,
+      "freeShipNote": "$299.00 + $11.97 Ship ($310.97 Landed)",
       "triggerPrice": 315,
       "msrp": 49.99,
-      "marketValue": 376.49,
-      "gapDollars": 23.99,
-      "gapPct": 7.6,
-      "rawGapDollars": 23.99,
-      "rawGapPct": 7.6,
+      "marketValue": 378.09,
+      "gapDollars": -4.03,
+      "gapPct": -1.3,
+      "rawGapDollars": -4.03,
+      "rawGapPct": -1.3,
       "packCount": 9,
-      "pricePerPack": 37.67,
+      "pricePerPack": 34.55,
       "isRipValueLeader": false,
       "owned": false,
-      "isPreOrder": true,
+      "isPreOrder": false,
       "isPreRelease": false,
-      "url": "https://pkmncolosseum.com/cart/39709676503094:1",
-      "productUrl": "https://pkmncolosseum.com/products/sealed-celebrations-elite-trainer-box-limit-2-preorder-ships-10-8",
-      "cart1xUrl": "https://pkmncolosseum.com/cart/39709676503094:1",
-      "cart2xUrl": "https://pkmncolosseum.com/cart/39709676503094:2",
-      "cart3xUrl": "https://pkmncolosseum.com/cart/39709676503094:3",
-      "itemId": "39709676503094",
-      "updatedAt": 1793825280019,
-      "timeStr": "02:48 PM"
+      "url": "https://www.tcgplayer.com/product/242811?Language=English",
+      "itemId": "tcg_242811",
+      "updatedAt": 1793829791767,
+      "timeStr": "04:03 PM"
     },
     "sv-paradox-rift-booster-case": {
       "ruleId": "sv-paradox-rift-booster-case",
@@ -1376,8 +1362,8 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/512828?Language=English",
       "itemId": "tcg_512828",
-      "updatedAt": 1793822896327,
-      "timeStr": "02:08 PM"
+      "updatedAt": 1793830688757,
+      "timeStr": "04:18 PM"
     },
     "sv-prismatic-evolutions-etb": {
       "ruleId": "sv-prismatic-evolutions-etb",
@@ -1392,7 +1378,7 @@
       "freeShipNote": "$102.16 + $9.99 Est. Ship ($112.15 Landed)",
       "triggerPrice": 120,
       "msrp": 54.99,
-      "marketValue": 139.98,
+      "marketValue": 142.79,
       "gapDollars": -7.85,
       "gapPct": -6.5,
       "rawGapDollars": -17.84,
@@ -1409,8 +1395,8 @@
       "cart2xUrl": "https://lvlupgames.ca/cart/41326423212114:2",
       "cart3xUrl": "https://lvlupgames.ca/cart/41326423212114:3",
       "itemId": "41326423212114",
-      "updatedAt": 1793825311008,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830694016,
+      "timeStr": "04:18 PM"
     },
     "me-chaos-rising-etb": {
       "ruleId": "me-chaos-rising-etb",
@@ -1425,7 +1411,7 @@
       "freeShipNote": "$54.99 + $6.99 Est. Ship ($61.98 Landed)",
       "triggerPrice": 67,
       "msrp": 54.99,
-      "marketValue": 75.16,
+      "marketValue": 75.91,
       "gapDollars": -5.02,
       "gapPct": -7.5,
       "rawGapDollars": -12.01,
@@ -1442,8 +1428,8 @@
       "cart2xUrl": "https://jbemporium.com/cart/46198650863713:2",
       "cart3xUrl": "https://jbemporium.com/cart/46198650863713:3",
       "itemId": "46198650863713",
-      "updatedAt": 1793825309211,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830794635,
+      "timeStr": "04:19 PM"
     },
     "sv-twilight-masquerade-etb-case": {
       "ruleId": "sv-twilight-masquerade-etb-case",
@@ -1474,8 +1460,8 @@
       "cart1xUrl": "https://collectorscafe.com/cart/47980959924355:1",
       "cart2xUrl": "https://collectorscafe.com/cart/47980959924355:2",
       "itemId": "47980959924355",
-      "updatedAt": 1793825304407,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830845703,
+      "timeStr": "04:20 PM"
     },
     "sv-shrouded-fable-bundle": {
       "ruleId": "sv-shrouded-fable-bundle",
@@ -1490,7 +1476,7 @@
       "freeShipNote": "$57.99 + $6.99 Est. Ship ($64.98 Landed)",
       "triggerPrice": 54,
       "msrp": 32,
-      "marketValue": 61.37,
+      "marketValue": 60.93,
       "gapDollars": 10.98,
       "gapPct": 20.3,
       "rawGapDollars": 3.99,
@@ -1506,8 +1492,8 @@
       "cart1xUrl": "https://deriumandwifey.com/cart/51451802943797:1",
       "cart2xUrl": "https://deriumandwifey.com/cart/51451802943797:2",
       "itemId": "51451802943797",
-      "updatedAt": 1793825309355,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830847237,
+      "timeStr": "04:20 PM"
     },
     "me-perfect-order-etb": {
       "ruleId": "me-perfect-order-etb",
@@ -1523,7 +1509,7 @@
       "freeShipNote": "$49.99 + $10.01 Ship ($60.00 Landed)",
       "triggerPrice": 63,
       "msrp": 54.99,
-      "marketValue": 75.32,
+      "marketValue": 72.86,
       "gapDollars": -3,
       "gapPct": -4.8,
       "rawGapDollars": -3,
@@ -1536,8 +1522,8 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/672401?Language=English",
       "itemId": "tcg_672401",
-      "updatedAt": 1793825196060,
-      "timeStr": "02:46 PM"
+      "updatedAt": 1793830849127,
+      "timeStr": "04:20 PM"
     },
     "sv-paldea-evolved-etb-case": {
       "ruleId": "sv-paldea-evolved-etb-case",
@@ -1566,8 +1552,8 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/496911?Language=English",
       "itemId": "tcg_496911",
-      "updatedAt": 1793824244658,
-      "timeStr": "02:30 PM"
+      "updatedAt": 1793830578130,
+      "timeStr": "04:16 PM"
     },
     "swsh-fusion-strike-etb": {
       "ruleId": "swsh-fusion-strike-etb",
@@ -1583,7 +1569,7 @@
       "freeShipNote": "$325.00 + $4.94 Ship ($329.94 Landed)",
       "triggerPrice": 324,
       "msrp": 49.99,
-      "marketValue": 373.67,
+      "marketValue": 371.81,
       "gapDollars": 5.94,
       "gapPct": 1.8,
       "rawGapDollars": 5.94,
@@ -1596,8 +1582,8 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/247671?Language=English",
       "itemId": "tcg_247671",
-      "updatedAt": 1793824547658,
-      "timeStr": "02:35 PM"
+      "updatedAt": 1793829835875,
+      "timeStr": "04:03 PM"
     },
     "me-30th-celebration-bundle": {
       "ruleId": "me-30th-celebration-bundle",
@@ -1606,90 +1592,90 @@
       "era": "Mega Evolution (2025-2026)",
       "title": "30th Celebration Booster Bundle ME: 30th Celebration",
       "retailer": "TCGPlayer Verified Seller ($62.99)",
-      "price": 68,
+      "price": 69.44,
       "itemPrice": 62.99,
-      "shippingPrice": 5.01,
-      "landedPrice": 68,
-      "freeShipNote": "$62.99 + $5.01 Ship ($68.00 Landed)",
+      "shippingPrice": 6.45,
+      "landedPrice": 69.44,
+      "freeShipNote": "$62.99 + $6.45 Ship ($69.44 Landed)",
       "triggerPrice": 65,
       "msrp": 32,
-      "marketValue": 74.02,
-      "gapDollars": 3,
-      "gapPct": 4.6,
-      "rawGapDollars": 3,
-      "rawGapPct": 4.6,
+      "marketValue": 73.34,
+      "gapDollars": 4.44,
+      "gapPct": 6.8,
+      "rawGapDollars": 4.44,
+      "rawGapPct": 6.8,
       "packCount": 6,
-      "pricePerPack": 11.33,
+      "pricePerPack": 11.57,
       "isRipValueLeader": false,
       "owned": false,
       "isPreOrder": false,
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/704171?Language=English",
       "itemId": "tcg_704171",
-      "updatedAt": 1793825312779,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830481873,
+      "timeStr": "04:14 PM"
     },
     "swsh-battle-styles-booster-box": {
       "ruleId": "swsh-battle-styles-booster-box",
       "ruleName": "Battle Styles Booster Box (36-Pack)",
       "formFactor": "Booster Box",
       "era": "Sword & Shield Vault (2021-2023)",
-      "title": "Pokemon: Sword & Shield: Battle Styles Booster Box",
-      "retailer": "Collector Store",
-      "price": 299.99,
-      "shippingPrice": 0,
-      "landedPrice": 299.99,
-      "freeShipNote": "+FREE Shipping",
+      "title": "Battle Styles Booster Box SWSH05: Battle Styles",
+      "retailer": "TCGPlayer Verified Seller ($270.00)",
+      "price": 283.5,
+      "itemPrice": 270,
+      "shippingPrice": 13.5,
+      "landedPrice": 283.5,
+      "freeShipNote": "$270.00 + $13.50 Ship ($283.50 Landed)",
       "triggerPrice": 149,
       "msrp": 143.64,
-      "marketValue": 319.3,
-      "gapDollars": 150.99,
-      "gapPct": 101.3,
-      "rawGapDollars": 150.99,
-      "rawGapPct": 101.3,
+      "marketValue": 310.87,
+      "gapDollars": 134.5,
+      "gapPct": 90.3,
+      "rawGapDollars": 134.5,
+      "rawGapPct": 90.3,
       "packCount": 36,
-      "pricePerPack": 8.33,
+      "pricePerPack": 7.88,
       "isRipValueLeader": false,
       "owned": false,
       "isPreOrder": false,
       "isPreRelease": false,
-      "url": "https://collectorstore.com/cart/49566555340968:1",
-      "productUrl": "https://collectorstore.com/products/pokemonswordshieldbattlestylesboosterdisplaybox36packs",
-      "cart1xUrl": "https://collectorstore.com/cart/49566555340968:1",
-      "cart2xUrl": "https://collectorstore.com/cart/49566555340968:2",
-      "itemId": "49566555340968",
-      "updatedAt": 1793825337569,
-      "timeStr": "02:48 PM"
+      "url": "https://www.tcgplayer.com/product/229277?Language=English",
+      "itemId": "tcg_229277",
+      "updatedAt": 1793829659397,
+      "timeStr": "04:00 PM"
     },
     "swsh-fusion-strike-booster-box": {
       "ruleId": "swsh-fusion-strike-booster-box",
       "ruleName": "Fusion Strike Booster Box (36-Pack)",
       "formFactor": "Booster Box",
       "era": "Sword & Shield Vault (2021-2023)",
-      "title": "Fusion Strike Booster Box SWSH08: Fusion Strike",
-      "retailer": "TCGPlayer Verified Seller ($959.99)",
-      "price": 959.99,
-      "itemPrice": 959.99,
+      "title": "Sealed Fusion Strike Booster Box",
+      "retailer": "PKMN Colosseum",
+      "price": 965.99,
       "shippingPrice": 0,
-      "landedPrice": 959.99,
-      "freeShipNote": "+FREE Shipping (Over $35 Threshold)",
+      "landedPrice": 965.99,
+      "freeShipNote": "+FREE Shipping",
       "triggerPrice": 869,
       "msrp": 143.64,
       "marketValue": 965.8,
-      "gapDollars": 90.99,
-      "gapPct": 10.5,
-      "rawGapDollars": 90.99,
-      "rawGapPct": 10.5,
+      "gapDollars": 96.99,
+      "gapPct": 11.2,
+      "rawGapDollars": 96.99,
+      "rawGapPct": 11.2,
       "packCount": 36,
-      "pricePerPack": 26.67,
+      "pricePerPack": 26.83,
       "isRipValueLeader": false,
       "owned": false,
-      "isPreOrder": false,
+      "isPreOrder": true,
       "isPreRelease": false,
-      "url": "https://www.tcgplayer.com/product/247654?Language=English",
-      "itemId": "tcg_247654",
-      "updatedAt": 1793824544492,
-      "timeStr": "02:35 PM"
+      "url": "https://pkmncolosseum.com/cart/40392658190390:1",
+      "productUrl": "https://pkmncolosseum.com/products/sealed-fusion-strike-booster-box-preorder-ships-around-11-12-2021",
+      "cart1xUrl": "https://pkmncolosseum.com/cart/40392658190390:1",
+      "cart2xUrl": "https://pkmncolosseum.com/cart/40392658190390:2",
+      "itemId": "40392658190390",
+      "updatedAt": 1793830823677,
+      "timeStr": "04:20 PM"
     },
     "sv-destined-rivals-etb-case": {
       "ruleId": "sv-destined-rivals-etb-case",
@@ -1705,7 +1691,7 @@
       "freeShipNote": "+FREE Shipping (Over $35 Threshold)",
       "triggerPrice": 1170,
       "msrp": 549.9,
-      "marketValue": 1570.58,
+      "marketValue": 1511.83,
       "gapDollars": -40.01,
       "gapPct": -3.4,
       "rawGapDollars": -40.01,
@@ -1718,8 +1704,8 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/628398?Language=English",
       "itemId": "tcg_628398",
-      "updatedAt": 1793824558806,
-      "timeStr": "02:35 PM"
+      "updatedAt": 1793830649458,
+      "timeStr": "04:17 PM"
     },
     "sv-prismatic-evolutions-bundle": {
       "ruleId": "sv-prismatic-evolutions-bundle",
@@ -1734,7 +1720,7 @@
       "freeShipNote": "$69.99 + $6.99 Est. Ship ($76.98 Landed)",
       "triggerPrice": 72,
       "msrp": 32,
-      "marketValue": 74.68,
+      "marketValue": 74.71,
       "gapDollars": 4.98,
       "gapPct": 6.9,
       "rawGapDollars": -2.01,
@@ -1750,8 +1736,8 @@
       "cart1xUrl": "https://redraccoongames.com/cart/55100996976939:1",
       "cart2xUrl": "https://redraccoongames.com/cart/55100996976939:2",
       "itemId": "55100996976939",
-      "updatedAt": 1793825284979,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830836558,
+      "timeStr": "04:20 PM"
     },
     "me-30th-celebration-etb-case": {
       "ruleId": "me-30th-celebration-etb-case",
@@ -1767,7 +1753,7 @@
       "freeShipNote": "+FREE Shipping (Over $35 Threshold)",
       "triggerPrice": 1440,
       "msrp": 549.9,
-      "marketValue": 1779.32,
+      "marketValue": 1778.23,
       "gapDollars": -335,
       "gapPct": -23.3,
       "rawGapDollars": -335,
@@ -1780,8 +1766,8 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/709036?Language=English",
       "itemId": "tcg_709036",
-      "updatedAt": 1793825310226,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830475918,
+      "timeStr": "04:14 PM"
     },
     "sv-prismatic-evolutions-etb-case": {
       "ruleId": "sv-prismatic-evolutions-etb-case",
@@ -1796,7 +1782,7 @@
       "freeShipNote": "+FREE Shipping",
       "triggerPrice": 1800,
       "msrp": 549.9,
-      "marketValue": 1499.95,
+      "marketValue": 1468.67,
       "gapDollars": -300.05,
       "gapPct": -16.7,
       "rawGapDollars": -300.05,
@@ -1812,8 +1798,8 @@
       "cart1xUrl": "https://blackwolfcollectibles.com/cart/51559035797778:1",
       "cart2xUrl": "https://blackwolfcollectibles.com/cart/51559035797778:2",
       "itemId": "51559035797778",
-      "updatedAt": 1793825309719,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830847507,
+      "timeStr": "04:20 PM"
     },
     "me-pitch-black-etb": {
       "ruleId": "me-pitch-black-etb",
@@ -1828,7 +1814,7 @@
       "freeShipNote": "$57.99 + $6.99 Est. Ship ($64.98 Landed)",
       "triggerPrice": 64,
       "msrp": 54.99,
-      "marketValue": 74.86,
+      "marketValue": 73.25,
       "gapDollars": 0.98,
       "gapPct": 1.5,
       "rawGapDollars": -6.01,
@@ -1845,8 +1831,8 @@
       "cart2xUrl": "https://cardshoplive.com/cart/51494070026409:2",
       "cart3xUrl": "https://cardshoplive.com/cart/51494070026409:3",
       "itemId": "51494070026409",
-      "updatedAt": 1793825270545,
-      "timeStr": "02:47 PM"
+      "updatedAt": 1793830819191,
+      "timeStr": "04:20 PM"
     },
     "swsh-astral-radiance-etb": {
       "ruleId": "swsh-astral-radiance-etb",
@@ -1862,7 +1848,7 @@
       "freeShipNote": "+FREE Shipping (Over $35 Threshold)",
       "triggerPrice": 120,
       "msrp": 49.99,
-      "marketValue": 132.55,
+      "marketValue": 132.12,
       "gapDollars": -1,
       "gapPct": -0.8,
       "rawGapDollars": -1,
@@ -1875,38 +1861,40 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/265527?Language=English",
       "itemId": "tcg_265527",
-      "updatedAt": 1793824614033,
-      "timeStr": "02:36 PM"
+      "updatedAt": 1793829898865,
+      "timeStr": "04:04 PM"
     },
     "swsh-lost-origin-booster-box": {
       "ruleId": "swsh-lost-origin-booster-box",
       "ruleName": "Lost Origin Booster Box (36-Pack)",
       "formFactor": "Booster Box",
       "era": "Sword & Shield Vault (2021-2023)",
-      "title": "Lost Origin Booster Box SWSH11: Lost Origin",
-      "retailer": "TCGPlayer Verified Seller ($714.98)",
-      "price": 714.98,
-      "itemPrice": 714.98,
+      "title": "Sealed Lost Origin Booster Box",
+      "retailer": "PKMN Colosseum",
+      "price": 725.99,
       "shippingPrice": 0,
-      "landedPrice": 714.98,
-      "freeShipNote": "+FREE Shipping (Over $35 Threshold)",
+      "landedPrice": 725.99,
+      "freeShipNote": "+FREE Shipping",
       "triggerPrice": 675,
       "msrp": 143.64,
-      "marketValue": 914.61,
-      "gapDollars": 39.98,
-      "gapPct": 5.9,
-      "rawGapDollars": 39.98,
-      "rawGapPct": 5.9,
+      "marketValue": 881.81,
+      "gapDollars": 50.99,
+      "gapPct": 7.6,
+      "rawGapDollars": 50.99,
+      "rawGapPct": 7.6,
       "packCount": 36,
-      "pricePerPack": 19.86,
+      "pricePerPack": 20.17,
       "isRipValueLeader": false,
       "owned": false,
-      "isPreOrder": false,
+      "isPreOrder": true,
       "isPreRelease": false,
-      "url": "https://www.tcgplayer.com/product/277324?Language=English",
-      "itemId": "tcg_277324",
-      "updatedAt": 1793824625824,
-      "timeStr": "02:37 PM"
+      "url": "https://pkmncolosseum.com/cart/40225266761782:1",
+      "productUrl": "https://pkmncolosseum.com/products/sealed-lost-origin-booster-box-preorder-ships-by-september-9th",
+      "cart1xUrl": "https://pkmncolosseum.com/cart/40225266761782:1",
+      "cart2xUrl": "https://pkmncolosseum.com/cart/40225266761782:2",
+      "itemId": "40225266761782",
+      "updatedAt": 1793830823676,
+      "timeStr": "04:20 PM"
     },
     "me-ascended-heroes-etb-case": {
       "ruleId": "me-ascended-heroes-etb-case",
@@ -1922,7 +1910,7 @@
       "freeShipNote": "+FREE Shipping (Over $35 Threshold)",
       "triggerPrice": 580,
       "msrp": 549.9,
-      "marketValue": 1454.12,
+      "marketValue": 1322.13,
       "gapDollars": -81,
       "gapPct": -14,
       "rawGapDollars": -81,
@@ -1935,8 +1923,8 @@
       "isPreRelease": false,
       "url": "https://www.tcgplayer.com/product/679558?Language=English",
       "itemId": "tcg_679558",
-      "updatedAt": 1793825285062,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830451492,
+      "timeStr": "04:14 PM"
     },
     "swsh-brilliant-stars-booster-box": {
       "ruleId": "swsh-brilliant-stars-booster-box",
@@ -1951,7 +1939,7 @@
       "freeShipNote": "+FREE Shipping",
       "triggerPrice": 508,
       "msrp": 143.64,
-      "marketValue": 759.36,
+      "marketValue": 771.86,
       "gapDollars": 91.99,
       "gapPct": 18.1,
       "rawGapDollars": 91.99,
@@ -1967,38 +1955,8 @@
       "cart1xUrl": "https://deriumandwifey.com/cart/51451749237045:1",
       "cart2xUrl": "https://deriumandwifey.com/cart/51451749237045:2",
       "itemId": "51451749237045",
-      "updatedAt": 1793825309307,
-      "timeStr": "02:48 PM"
-    },
-    "sv-surging-sparks-etb": {
-      "ruleId": "sv-surging-sparks-etb",
-      "ruleName": "Surging Sparks ETB",
-      "formFactor": "ETB",
-      "era": "Scarlet & Violet (2023-2025)",
-      "title": "Surging Sparks Elite Trainer Box SV08: Surging Sparks",
-      "retailer": "TCGPlayer Verified Seller ($110.00)",
-      "price": 110,
-      "itemPrice": 110,
-      "shippingPrice": 0,
-      "landedPrice": 110,
-      "freeShipNote": "+FREE Shipping (Over $35 Threshold)",
-      "triggerPrice": 74,
-      "msrp": 54.99,
-      "marketValue": 110,
-      "gapDollars": 36,
-      "gapPct": 48.6,
-      "rawGapDollars": 36,
-      "rawGapPct": 48.6,
-      "packCount": 9,
-      "pricePerPack": 12.22,
-      "isRipValueLeader": false,
-      "owned": false,
-      "isPreOrder": false,
-      "isPreRelease": false,
-      "url": "https://www.tcgplayer.com/product/565630?Language=English",
-      "itemId": "tcg_565630",
-      "updatedAt": 1793824964822,
-      "timeStr": "02:42 PM"
+      "updatedAt": 1793830847199,
+      "timeStr": "04:20 PM"
     },
     "sv-destined-rivals-etb": {
       "ruleId": "sv-destined-rivals-etb",
@@ -2013,7 +1971,7 @@
       "freeShipNote": "$106.75 + $6.99 Est. Ship ($113.74 Landed)",
       "triggerPrice": 104,
       "msrp": 54.99,
-      "marketValue": 110.74,
+      "marketValue": 110.27,
       "gapDollars": 9.74,
       "gapPct": 9.4,
       "rawGapDollars": 2.75,
@@ -2030,38 +1988,8 @@
       "cart2xUrl": "https://elite4tcg.com/cart/44538482589872:2",
       "cart3xUrl": "https://elite4tcg.com/cart/44538482589872:3",
       "itemId": "44538482589872",
-      "updatedAt": 1793825309434,
-      "timeStr": "02:48 PM"
-    },
-    "me-30th-celebration-etb": {
-      "ruleId": "me-30th-celebration-etb",
-      "ruleName": "30th Celebration ETB",
-      "formFactor": "ETB",
-      "era": "Mega Evolution (2025-2026)",
-      "title": "30th Celebration Elite Trainer Box ME: 30th Celebration",
-      "retailer": "TCGPlayer Verified Seller ($89.00)",
-      "price": 113.49,
-      "itemPrice": 89,
-      "shippingPrice": 24.49,
-      "landedPrice": 113.49,
-      "freeShipNote": "$89.00 + $24.49 Ship ($113.49 Landed)",
-      "triggerPrice": 77,
-      "msrp": 54.99,
-      "marketValue": 110.65,
-      "gapDollars": 36.49,
-      "gapPct": 47.4,
-      "rawGapDollars": 36.49,
-      "rawGapPct": 47.4,
-      "packCount": 9,
-      "pricePerPack": 12.61,
-      "isRipValueLeader": false,
-      "owned": true,
-      "isPreOrder": false,
-      "isPreRelease": false,
-      "url": "https://www.tcgplayer.com/product/704143?Language=English",
-      "itemId": "tcg_704143",
-      "updatedAt": 1793825302510,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830797138,
+      "timeStr": "04:19 PM"
     },
     "swsh-silver-tempest-booster-box": {
       "ruleId": "swsh-silver-tempest-booster-box",
@@ -2076,7 +2004,7 @@
       "freeShipNote": "+FREE Shipping",
       "triggerPrice": 463,
       "msrp": 143.64,
-      "marketValue": 539.96,
+      "marketValue": 539.18,
       "gapDollars": 46.99,
       "gapPct": 10.1,
       "rawGapDollars": 46.99,
@@ -2092,8 +2020,38 @@
       "cart1xUrl": "https://collectorscafe.com/cart/47980339298435:1",
       "cart2xUrl": "https://collectorscafe.com/cart/47980339298435:2",
       "itemId": "47980339298435",
-      "updatedAt": 1793825304406,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830845701,
+      "timeStr": "04:20 PM"
+    },
+    "sv-destined-rivals-booster-case": {
+      "ruleId": "sv-destined-rivals-booster-case",
+      "ruleName": "Destined Rivals Sealed Booster Case (6 Boxes / 216 Packs)",
+      "formFactor": "Master Case",
+      "era": "Scarlet & Violet (2023-2025)",
+      "title": "Destined Rivals Booster Box Case SV10: Destined Rivals",
+      "retailer": "TCGPlayer Verified Seller ($2196.99)",
+      "price": 2200,
+      "itemPrice": 2196.99,
+      "shippingPrice": 3.01,
+      "landedPrice": 2200,
+      "freeShipNote": "$2196.99 + $3.01 Ship ($2200.00 Landed)",
+      "triggerPrice": 1323,
+      "msrp": 970,
+      "marketValue": 2440.26,
+      "gapDollars": 877,
+      "gapPct": 66.3,
+      "rawGapDollars": 877,
+      "rawGapPct": 66.3,
+      "packCount": 216,
+      "pricePerPack": 10.19,
+      "isRipValueLeader": false,
+      "owned": false,
+      "isPreOrder": false,
+      "isPreRelease": false,
+      "url": "https://www.tcgplayer.com/product/624678?Language=English",
+      "itemId": "tcg_624678",
+      "updatedAt": 1793829652216,
+      "timeStr": "04:00 PM"
     },
     "swsh-brilliant-stars-etb": {
       "ruleId": "swsh-brilliant-stars-etb",
@@ -2108,7 +2066,7 @@
       "freeShipNote": "+FREE Shipping",
       "triggerPrice": 61,
       "msrp": 49.99,
-      "marketValue": 188.59,
+      "marketValue": 189.5,
       "gapDollars": 114,
       "gapPct": 186.9,
       "rawGapDollars": 114,
@@ -2125,8 +2083,71 @@
       "cart2xUrl": "https://1steditioncollectibles.com/cart/49414717276327:2",
       "cart3xUrl": "https://1steditioncollectibles.com/cart/49414717276327:3",
       "itemId": "49414717276327",
-      "updatedAt": 1793825281976,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830834652,
+      "timeStr": "04:20 PM"
+    },
+    "me-30th-celebration-etb": {
+      "ruleId": "me-30th-celebration-etb",
+      "ruleName": "30th Celebration ETB",
+      "formFactor": "ETB",
+      "era": "Mega Evolution (2025-2026)",
+      "title": "30th Celebration Elite Trainer Box ME: 30th Celebration",
+      "retailer": "TCGPlayer Verified Seller ($89.00)",
+      "price": 112.75,
+      "itemPrice": 89,
+      "shippingPrice": 23.75,
+      "landedPrice": 112.75,
+      "freeShipNote": "$89.00 + $23.75 Ship ($112.75 Landed)",
+      "triggerPrice": 77,
+      "msrp": 54.99,
+      "marketValue": 111.15,
+      "gapDollars": 35.75,
+      "gapPct": 46.4,
+      "rawGapDollars": 35.75,
+      "rawGapPct": 46.4,
+      "packCount": 9,
+      "pricePerPack": 12.53,
+      "isRipValueLeader": false,
+      "owned": true,
+      "isPreOrder": false,
+      "isPreRelease": false,
+      "url": "https://www.tcgplayer.com/product/704143?Language=English",
+      "itemId": "tcg_704143",
+      "updatedAt": 1793830468186,
+      "timeStr": "04:14 PM"
+    },
+    "sv-surging-sparks-etb": {
+      "ruleId": "sv-surging-sparks-etb",
+      "ruleName": "Surging Sparks ETB",
+      "formFactor": "ETB",
+      "era": "Scarlet & Violet (2023-2025)",
+      "title": "Pokemon Scarlet and Violet 8 Surging Sparks Elite Trainer",
+      "retailer": "MinMaxGames",
+      "price": 110,
+      "shippingPrice": 6.99,
+      "landedPrice": 116.99,
+      "freeShipNote": "$110.00 + $6.99 Est. Ship ($116.99 Landed)",
+      "triggerPrice": 74,
+      "msrp": 54.99,
+      "marketValue": 110,
+      "gapDollars": 42.99,
+      "gapPct": 58.1,
+      "rawGapDollars": 36,
+      "rawGapPct": 48.6,
+      "packCount": 9,
+      "pricePerPack": 13,
+      "isRipValueLeader": false,
+      "owned": false,
+      "isPreOrder": false,
+      "isPreRelease": false,
+      "url": "https://minmaxgames.com/cart/45846515253422:1",
+      "productUrl": "https://minmaxgames.com/products/pokemon-scarlet-and-violet-8-surging-sparks-elite-trainer",
+      "cart1xUrl": "https://minmaxgames.com/cart/45846515253422:1",
+      "cart2xUrl": "https://minmaxgames.com/cart/45846515253422:2",
+      "cart3xUrl": "https://minmaxgames.com/cart/45846515253422:3",
+      "itemId": "45846515253422",
+      "updatedAt": 1793830819234,
+      "timeStr": "04:20 PM"
     },
     "swsh-astral-radiance-booster-box": {
       "ruleId": "swsh-astral-radiance-booster-box",
@@ -2141,7 +2162,7 @@
       "freeShipNote": "+FREE Shipping",
       "triggerPrice": 212,
       "msrp": 143.64,
-      "marketValue": 490.93,
+      "marketValue": 495.15,
       "gapDollars": 203,
       "gapPct": 95.8,
       "rawGapDollars": 203,
@@ -2157,8 +2178,8 @@
       "cart1xUrl": "https://tradingcardmarket.com/cart/43503981232180:1",
       "cart2xUrl": "https://tradingcardmarket.com/cart/43503981232180:2",
       "itemId": "43503981232180",
-      "updatedAt": 1793825282964,
-      "timeStr": "02:48 PM"
+      "updatedAt": 1793830665562,
+      "timeStr": "04:17 PM"
     }
   },
   "me-30th-celebration-etb": {
@@ -2206,8 +2227,8 @@
     "cart3xUrl": "https://jbemporium.com/cart/46198650863713:3",
     "itemId": "46198650863713",
     "inStock": true,
-    "updatedAt": 1793825309211,
-    "timeStr": "02:48 PM"
+    "updatedAt": 1793830794635,
+    "timeStr": "04:19 PM"
   },
   "me-perfect-order-booster-box": {
     "ruleId": "me-perfect-order-booster-box",
@@ -2256,8 +2277,8 @@
     "cart2xUrl": "https://tradingcardmarket.com/cart/48250019348532:2",
     "itemId": "48250019348532",
     "inStock": true,
-    "updatedAt": 1793825282169,
-    "timeStr": "02:48 PM"
+    "updatedAt": 1793830836843,
+    "timeStr": "04:20 PM"
   },
   "swsh-lost-origin-etb": {
     "ruleId": "swsh-lost-origin-etb",
@@ -2279,35 +2300,32 @@
     "url": "https://www.tcgplayer.com/product/277335?Language=English",
     "itemId": "tcg_277335",
     "inStock": true,
-    "updatedAt": 1793825064813,
-    "timeStr": "02:44 PM"
+    "updatedAt": 1793829942169,
+    "timeStr": "04:05 PM"
   },
   "me-delta-reign-etb": {
     "ruleId": "me-delta-reign-etb",
     "ruleName": "Mega Evolution: Delta Rayquaza (Delta Reign) ETB",
     "formFactor": "ETB",
-    "title": "WAVE 2 Pokemon: Mega Evolution Delta Reign (ME06) Elite Trainer Box - (WAVE 2 - Ships by January 31st)",
-    "retailer": "Double Infinity Gaming",
-    "price": 89.99,
-    "landedPrice": 96.98,
-    "freeShipNote": "Buy 2x to hit $150 Free Shipping -> $89.99/ea landed",
+    "title": "Delta Reign Elite Trainer Box ME06: Delta Reign",
+    "retailer": "TCGPlayer Verified Seller ($85.00)",
+    "price": 85,
+    "itemPrice": 85,
+    "landedPrice": 85,
+    "freeShipNote": "+FREE Shipping (Over $35 Threshold)",
     "packCount": 9,
-    "pricePerPack": 10.78,
+    "pricePerPack": 9.44,
     "isRipValueLeader": false,
     "isPreOrder": false,
     "isPreRelease": true,
     "preReleaseStatusTag": "⏳ PRE-RELEASE BLEED (Wait for Launch Week)",
     "releaseDate": "2026-11-06",
     "isMsrpUnicorn": false,
-    "url": "https://doubleinfinitygaming.com/cart/67607313973564:1",
-    "productUrl": "https://doubleinfinitygaming.com/products/pokemon-mega-evolution-delta-reign-me06-elite-trainer-box-wave-2-ships-by-january-31st",
-    "cart1xUrl": "https://doubleinfinitygaming.com/cart/67607313973564:1",
-    "cart2xUrl": "https://doubleinfinitygaming.com/cart/67607313973564:2",
-    "cart3xUrl": "https://doubleinfinitygaming.com/cart/67607313973564:3",
-    "itemId": "67607313973564",
+    "url": "https://www.tcgplayer.com/product/712102?Language=English",
+    "itemId": "tcg_712102",
     "inStock": true,
-    "updatedAt": 1793825277344,
-    "timeStr": "02:47 PM"
+    "updatedAt": 1793830637856,
+    "timeStr": "04:17 PM"
   },
   "me-delta-reign-booster-case": {
     "ruleId": "me-delta-reign-booster-case",
@@ -2315,11 +2333,10 @@
     "formFactor": "Master Case",
     "title": "Delta Reign Booster Box Case ME06: Delta Reign",
     "retailer": "TCGPlayer Verified Seller ($1329.98)",
-    "price": 1329.99,
+    "price": 1329.98,
     "itemPrice": 1329.98,
-    "shippingPrice": 0.01,
-    "landedPrice": 1329.99,
-    "freeShipNote": "$1329.98 + $0.01 Ship ($1329.99 Landed)",
+    "landedPrice": 1329.98,
+    "freeShipNote": "+FREE Shipping (Over $35 Threshold)",
     "packCount": 216,
     "pricePerPack": 6.16,
     "isRipValueLeader": false,
@@ -2331,20 +2348,20 @@
     "url": "https://www.tcgplayer.com/product/712096?Language=English",
     "itemId": "tcg_712096",
     "inStock": true,
-    "updatedAt": 1793825251305,
-    "timeStr": "02:47 PM"
+    "updatedAt": 1793830429646,
+    "timeStr": "04:13 PM"
   },
   "swsh-celebrations-etb": {
     "ruleId": "swsh-celebrations-etb",
     "ruleName": "Celebrations 25th Anniversary ETB",
     "formFactor": "ETB",
     "title": "Celebrations Elite Trainer Box Celebrations",
-    "retailer": "TCGPlayer Verified Seller ($295.99)",
-    "price": 310.96,
-    "itemPrice": 295.99,
-    "shippingPrice": 14.97,
-    "landedPrice": 310.96,
-    "freeShipNote": "$295.99 + $14.97 Ship ($310.96 Landed)",
+    "retailer": "TCGPlayer Verified Seller ($299.00)",
+    "price": 310.97,
+    "itemPrice": 299,
+    "shippingPrice": 11.97,
+    "landedPrice": 310.97,
+    "freeShipNote": "$299.00 + $11.97 Ship ($310.97 Landed)",
     "packCount": 9,
     "pricePerPack": 34.55,
     "isRipValueLeader": false,
@@ -2354,8 +2371,8 @@
     "url": "https://www.tcgplayer.com/product/242811?Language=English",
     "itemId": "tcg_242811",
     "inStock": true,
-    "updatedAt": 1793823394528,
-    "timeStr": "02:16 PM"
+    "updatedAt": 1793829791767,
+    "timeStr": "04:03 PM"
   },
   "me-pitch-black-etb": {
     "ruleId": "me-pitch-black-etb",
@@ -2379,8 +2396,8 @@
     "cart3xUrl": "https://cardshoplive.com/cart/51494070026409:3",
     "itemId": "51494070026409",
     "inStock": true,
-    "updatedAt": 1793825270545,
-    "timeStr": "02:47 PM"
+    "updatedAt": 1793830819191,
+    "timeStr": "04:20 PM"
   },
   "me-perfect-order-etb": {
     "ruleId": "me-perfect-order-etb",
@@ -2404,8 +2421,8 @@
     "cart3xUrl": "https://cardpopusa.com/cart/53330822725996:3",
     "itemId": "53330822725996",
     "inStock": true,
-    "updatedAt": 1793825307471,
-    "timeStr": "02:48 PM"
+    "updatedAt": 1793830846156,
+    "timeStr": "04:20 PM"
   },
   "sv-destined-rivals-etb-case": {
     "ruleId": "sv-destined-rivals-etb-case",
@@ -2426,8 +2443,8 @@
     "url": "https://www.tcgplayer.com/product/628398?Language=English",
     "itemId": "tcg_628398",
     "inStock": true,
-    "updatedAt": 1793824558806,
-    "timeStr": "02:35 PM"
+    "updatedAt": 1793830649458,
+    "timeStr": "04:17 PM"
   },
   "sv-prismatic-evolutions-bundle": {
     "ruleId": "sv-prismatic-evolutions-bundle",
@@ -2450,8 +2467,8 @@
     "cart2xUrl": "https://redraccoongames.com/cart/55100996976939:2",
     "itemId": "55100996976939",
     "inStock": true,
-    "updatedAt": 1793825284979,
-    "timeStr": "02:48 PM"
+    "updatedAt": 1793830836558,
+    "timeStr": "04:20 PM"
   },
   "me-30th-celebration-etb-case": {
     "ruleId": "me-30th-celebration-etb-case",
@@ -2472,8 +2489,8 @@
     "url": "https://www.tcgplayer.com/product/709036?Language=English",
     "itemId": "tcg_709036",
     "inStock": true,
-    "updatedAt": 1793825310226,
-    "timeStr": "02:48 PM"
+    "updatedAt": 1793830475918,
+    "timeStr": "04:14 PM"
   },
   "me-30th-celebration-bundle": {
     "ruleId": "me-30th-celebration-bundle",
@@ -2496,8 +2513,8 @@
     "cart2xUrl": "https://paladincards20.com/cart/49164774703363:2",
     "itemId": "49164774703363",
     "inStock": true,
-    "updatedAt": 1793825159652,
-    "timeStr": "02:45 PM"
+    "updatedAt": 1793830765630,
+    "timeStr": "04:19 PM"
   },
   "swsh-astral-radiance-etb": {
     "ruleId": "swsh-astral-radiance-etb",
@@ -2518,8 +2535,8 @@
     "url": "https://www.tcgplayer.com/product/265527?Language=English",
     "itemId": "tcg_265527",
     "inStock": true,
-    "updatedAt": 1793824614033,
-    "timeStr": "02:36 PM"
+    "updatedAt": 1793829898865,
+    "timeStr": "04:04 PM"
   },
   "sv-prismatic-evolutions-etb": {
     "ruleId": "sv-prismatic-evolutions-etb",
@@ -2543,31 +2560,32 @@
     "cart3xUrl": "https://tradingcardmarket.com/cart/45418617339956:3",
     "itemId": "45418617339956",
     "inStock": true,
-    "updatedAt": 1793825282601,
-    "timeStr": "02:48 PM"
+    "updatedAt": 1793830665176,
+    "timeStr": "04:17 PM"
   },
   "sv-prismatic-evolutions-etb-case": {
     "ruleId": "sv-prismatic-evolutions-etb-case",
     "ruleName": "Prismatic Evolutions ETB Sealed Case (10 ETBs)",
     "formFactor": "ETB Case",
-    "title": "Prismatic Evolutions: Elite Trainer Box (Case)",
-    "retailer": "Black Wolf Collectibles",
-    "price": 1499.95,
-    "landedPrice": 1499.95,
+    "title": "Prismatic Evolutions Elite Trainer Box Case SV: Prismatic Evolutions",
+    "retailer": "TCGPlayer Verified Seller ($499.00)",
+    "price": 499,
+    "itemPrice": 499,
+    "landedPrice": 499,
+    "freeShipNote": "+FREE Shipping (Over $35 Threshold)",
     "packCount": 90,
-    "pricePerPack": 16.67,
+    "pricePerPack": 5.54,
     "isRipValueLeader": false,
     "isPreOrder": false,
     "isPreRelease": false,
-    "isMsrpUnicorn": false,
-    "url": "https://blackwolfcollectibles.com/cart/51559035797778:1",
-    "productUrl": "https://blackwolfcollectibles.com/products/prismatic-evolutions-elite-trainer-box-case",
-    "cart1xUrl": "https://blackwolfcollectibles.com/cart/51559035797778:1",
-    "cart2xUrl": "https://blackwolfcollectibles.com/cart/51559035797778:2",
-    "itemId": "51559035797778",
+    "isMsrpUnicorn": true,
+    "bigBoxTier": "MSRP_TIER_A",
+    "bigBoxBadge": "🚨💎 UNICORN RETAIL MSRP HIT 💎🚨",
+    "url": "https://www.tcgplayer.com/product/598487?Language=English",
+    "itemId": "tcg_598487",
     "inStock": true,
-    "updatedAt": 1793825309719,
-    "timeStr": "02:48 PM"
+    "updatedAt": 1793829580554,
+    "timeStr": "03:59 PM"
   },
   "me-ascended-heroes-etb-case": {
     "ruleId": "me-ascended-heroes-etb-case",
@@ -2590,7 +2608,7 @@
     "url": "https://www.tcgplayer.com/product/679558?Language=English",
     "itemId": "tcg_679558",
     "inStock": true,
-    "updatedAt": 1793825285062,
-    "timeStr": "02:48 PM"
+    "updatedAt": 1793830451492,
+    "timeStr": "04:14 PM"
   }
 }

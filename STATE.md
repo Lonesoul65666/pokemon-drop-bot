@@ -111,6 +111,18 @@ All persistent JSON files are written via `atomicWriteJson()` (`.tmp` write + `f
 ## 6. Last Touch Log
 
 - **2026-11-04 | Agent: Gemini 4 Argon (via `agy`)**
+  - **Completed V5 Slice 1 ("Protect Personal Settings in `config/userPreferences.json`, Split Static Catalog to `config/catalog.json`, and Unify the Store + Shipping Registry in `config/stores.json`") (`config/userPreferences.json`, `config/catalog.json`, `config/stores.json`, `src/config/configManager.ts`, `policies.ts`, `src/marketSync.ts`, `lgsPoller.ts`, `evaluator.ts`, `notifier.ts`, `server.js`, `tsconfig.json`, `_nyx_state/01..06_*.md`):**
+    - **1. Locked 4-Slice V5 Roadmap & Updated Failure Graveyard (`_nyx_state/02` & `_nyx_state/04`):**
+      - Added `[FAILED - V4 TCGPlayer Shipping Scam & Unverified Bait-and-Switch Trap]` (`Prismatic Evolutions ETB Case` at `$499.00 + $199.99 Shipping` by unverified 1-qty seller `Crawford gaming` vs. `$1,252` market) to `_nyx_state/02_TECHNICAL_ARCHITECTURE_AND_PIPELINES.md`.
+      - Locked the 4-Slice sequence (`Slice 1` Config/Vault Split, `Slice 2` Battle Stadium 4-File Extraction & `dashboard.html` Clone Deletion, `Slice 3` Deal Brain & Scam Shield, `Slice 4` Shopify Collection Repair, 15s Tier-1 Fast Poller & Real Big-Box TCIN/SKU + Stealth Browser Polling) in `_nyx_state/04_NEXT_STEPS_AND_ROADMAP.md`.
+    - **2. Split the 3 Tangled Data Lifecycles into `C:\pokemon-drop-bot\config\` (`0` Data Loss across all `131` SKUs):**
+      - `config/userPreferences.json`: Migrated 100% of Scott's personal per-SKU settings (`maxMarketBuyPrice`, `owned`, `inVault`, `active`) for all `131` SKUs (`9` owned total / `8` Wall ETBs) plus global toggles (`muteVaulted`, `wallHunterMode`, `liveDigestEnabled`). Enforced Hard Law: background price syncs and pollers are strictly forbidden from touching this file.
+      - `config/catalog.json`: Extracted static SKU metadata (`id`, `name`, `era`, `formFactor`, `packCount`, `msrpCeiling`, `releaseDate`, `matchers`, `targetTcin`, `walmartItemId`, `bestBuySku`, `pcSlug`, `tcgProductId`) for all `131` SKUs.
+      - `config/stores.json`: Unified `LGS_STORES` (`lgsPoller.ts`) and `STORE_SHIPPING_RULES` (`evaluator.ts`) into a single JSON registry (`90` active healthy Shopify LGS stores + `9` Big-Box profiles, with dead 404 store `Lets Play TCG` disabled via `enabled: false`).
+    - **3. Built `src/config/configManager.ts` (`347` lines, `< 350` lines law) & Wired Clean Facades:**
+      - Wired `policies.ts`, `src/marketSync.ts`, `lgsPoller.ts`, `evaluator.ts`, `notifier.ts`, and `server.js` to `src/config/configManager.ts`, verified `0` TypeScript errors, restarted PM2 services, and verified `HTTP 200 OK` across `/api/status`, `/api/policies`, and `/api/engine-room`.
+
+- **2026-11-04 | Agent: Gemini 4 Argon (via `agy`)**
   - **Completed V5 Step 0 ("Initialize the `_nyx_state/` 6-File Continuity Engine, Failure Graveyard, and Portable `dropbot` PowerShell Save/Undo/Backup Pipeline") (`_nyx_state/01..06_*.md`, `scripts/dropbot-cli.ps1`, `scripts/install-dropbot-cli.ps1`, `GEMINI.md`, `CLAUDE.md`, `STATE.md`, `.gitignore`):**
     - **1. Initialized `_nyx_state/` 6-File Continuity Engine (`C:\pokemon-drop-bot\_nyx_state\`):**
       - `01_PROJECT_IDENTITY_AND_LAWS.md`: Project mission, NYX persona, critical process isolation rules, persistent JSON state rules, and Frozen Files registry.

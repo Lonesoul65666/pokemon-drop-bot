@@ -3,9 +3,8 @@ import path from 'path';
 import axios from 'axios';
 import { isValidCompTitle, applySyncSanityGuard } from '../marketComps';
 import { getNextProxy } from '../lgsPoller';
-import { atomicWriteJson } from '../policies';
+import { loadMergedPoliciesRaw, saveMarketBaselineSync } from './config/configManager';
 
-const POLICIES_PATH = path.resolve(process.cwd(), 'policies.json');
 const CACHE_PATH = path.resolve(process.cwd(), 'marketCache.json');
 const SYNC_INTERVAL_MS = 1000 * 60 * 60 * 6; // Refresh every 6 hours (4x daily)
 
@@ -30,8 +29,8 @@ export class MarketSyncService {
     this.isSyncing = true;
 
     try {
-      if (!fs.existsSync(POLICIES_PATH)) return;
-      const policies: any[] = JSON.parse(fs.readFileSync(POLICIES_PATH, 'utf-8'));
+      const policies: any[] = loadMergedPoliciesRaw();
+      if (!policies.length) return;
       let cache: Record<string, any> = {};
       if (fs.existsSync(CACHE_PATH)) {
         try { cache = JSON.parse(fs.readFileSync(CACHE_PATH, 'utf-8')); } catch (e) {}
@@ -149,19 +148,11 @@ export class MarketSyncService {
         }
       }
 
-      // Safely update estimatedMarketValue in policies.json while preserving live user slider changes!
-      const freshPoliciesOnDisk: any[] = JSON.parse(fs.readFileSync(POLICIES_PATH, 'utf-8'));
+      // HARD LAW: Route 6-hour baseline updates exclusively to marketCache.json (never touching userPreferences.json)
       const syncedMap = new Map(policies.map(x => [x.id, x.estimatedMarketValue]));
-      freshPoliciesOnDisk.forEach(fp => {
-        if (syncedMap.has(fp.id)) {
-          fp.estimatedMarketValue = syncedMap.get(fp.id);
-        }
-      });
+      saveMarketBaselineSync(syncedMap, cache);
 
-      atomicWriteJson(POLICIES_PATH, freshPoliciesOnDisk);
-      atomicWriteJson(CACHE_PATH, cache);
-
-      console.log(`[MarketSync] Automated baseline refresh complete (${updatedCount} SKUs synced to latest market value).`);
+      console.log(`[MarketSync] Automated baseline refresh complete (${updatedCount} SKUs synced to marketCache.json; userPreferences.json untouched).`);
     } catch (err: any) {
       console.error('[MarketSync] Refresh warning:', err.message);
     } finally {

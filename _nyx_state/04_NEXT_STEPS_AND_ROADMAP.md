@@ -10,36 +10,21 @@
 
 ---
 
-## Upcoming Bite-Sized Execution Slices
+## Locked 4-Slice V5 Execution Sequence
 
-### ➡️ NEXT UP: Step 1A — Frontend De-Bloat, Stadium Extraction & Clone Elimination
-- **Goal:** Cut frontend maintenance bloat in half and permanently isolate Logan's 3v3 Battle Stadium from the Sniper UI.
+### ➡️ Slice 1 (Current): Personal Data Vault (`config/userPreferences.json`), Static Catalog (`config/catalog.json`), and Unified 91-Store + Shipping Registry (`config/stores.json`)
+- **Goal:** Permanently decouple Scott's personal settings from static SKU metadata and background market syncs, and unify all store & shipping rules in one registry.
 - **Actions:**
-  1. Extract Logan's Battle Stadium JS (~3,800 lines: 18-Type Matrix, 1,025-Species Evolution Resolver, Dual Partner Engine, 3v3 D20 AP Pool Combat Engine, Audio Synth, Trophy Locker) out of `public/index.html` into `public/js/logan-stadium.js` and its stadium-specific CSS into `public/css/stadium.css`.
-  2. Update `server.js` so both `/` and `/dashboard.html` serve `public/index.html`, then **delete** the redundant 9,780-line root `dashboard.html` clone.
-  3. Verify HTTP 200 on `/`, `/dashboard.html`, `public/js/logan-stadium.js`, and `public/css/stadium.css`, confirm both the Sniper Dashboard and Logan's Battle Stadium work identically, and mark `logan-stadium.js` + `stadium.css` as **FROZEN** in `01_PROJECT_IDENTITY_AND_LAWS.md`.
+  1. Extract 100% of Scott's personal per-SKU settings (`maxMarketBuyPrice`, `owned`, `inVault`, `active`) for all 131 SKUs plus global toggles (`muteVaulted`, `wallHunterMode`, `liveDigestEnabled`) into `config/userPreferences.json` (strictly off-limits to background pollers/syncs).
+  2. Extract static SKU metadata for all 131 SKUs (`id`, `name`, `era`, `formFactor`, `packCount`, `msrpCeiling`, `releaseDate`, `matchers`, plus optional retailer ID fields `targetTcin`, `walmartItemId`, `bestBuySku`, `pcSlug`, `tcgProductId`) into `config/catalog.json`.
+  3. Merge `LGS_STORES` (`lgsPoller.ts`) and `STORE_SHIPPING_RULES` (`evaluator.ts`) into `config/stores.json`, and disable dead 404 store `Lets Play TCG`.
+  4. Build `src/config/configManager.ts` (`< 350 lines`) to merge `catalog.json` + `userPreferences.json` + `marketCache.json` seamlessly for `policies.ts`, `evaluator.ts`, `lgsPoller.ts`, `src/marketSync.ts`, and `server.js`.
 
-### Step 1B — Evaluator Math & Matcher Unblocking (Immediate Deal Unlocker)
-- **Goal:** Stop `evaluator.ts` and `policies.ts` from silently suppressing real MSRP hits and sub-trigger Shopify deals sitting on shelves right now.
-- **Actions:**
-  1. **Fix Pre-Order Ceiling Trap (`evaluator.ts:706`):** Honor `policy.maxMarketBuyPrice` on pre-orders (`effectiveCeiling = policyMaxBuy`) instead of slashing `effectiveCeiling` down to `Math.round(rule.msrpCeiling * 1.05)` (`$170` / `$58`) whenever `[PREORDER]` or `(Presell)` appears in the title.
-  2. **Fix MSRP Unicorn Shipping Check (`evaluator.ts:735`):** Check raw `dropPrice <= Math.round(rule.msrpCeiling * 1.08 * 100) / 100` (with `estimatedShipping <= 9.99`) for `isTierAMsrp` so a `$54.99` MSRP ETB + `$6.99` shipping (`$61.98` landed, e.g., `JBs Emporium` Chaos Rising ETB) triggers `isMsrpUnicorn = true` and bypasses `muteVaulted`.
-  3. **Fix Single-Unit Shipping Threshold Trap (`evaluator.ts:892`):** Allow items where `dropPrice <= effectiveCeiling` and `dropPrice <= msrpCeiling * 1.08` (or within `$6.99` shipping tolerance) to pass even when `stock` is `1` or `2` (limit-1/2 drops).
-  4. **Fix `"Booster Display"` Regexes & Price Ceilings (`policies.json` & `policies.ts`):** Update Booster Box matchers in `policies.json` to match `booster.*(box|display)` (unlocking `Zulus Games` `Journey Together: Booster Display`), and raise `getMaxPlausiblePriceCeiling()` in `policies.ts` (`ETB` -> `Math.max(350, policy.estimatedMarketValue * 1.35)`, `Booster Box` -> `Math.max(600, policy.estimatedMarketValue * 1.35)`, `SWSH Booster Box` -> `3200`) so real in-stock shelves (`Destined Rivals Box @ $398`, `Obsidian Flames ETB @ $269`, `Evolving Skies Box @ $2,499`) are never dropped from `storeOffersCache.json`.
+### Slice 2: Extract Logan's Battle Stadium into 4 Modular Files (`< 400 lines` each) & Delete Duplicate `dashboard.html` Clone
+- **Goal:** Extract Logan's Battle Stadium into 4 modular files (`< 400 lines` each) under `public/js/stadium/` + `public/css/stadium.css`, delete the duplicate 9,780-line `dashboard.html` clone, and Hard-Freeze Logan's game.
 
-### Step 1C — Shopify Collection Feed Repair & 15s Tier-1 Fast Delta Poller
-- **Goal:** Fix blind collection paths across the 91 stores and catch 30-second MSRP restocks before they sell out.
-- **Actions:**
-  1. Override/repair narrow `resolvedPath` entries in `lgsPoller.ts` & `storeHealth.json` (`Zulus Games`, `Safari Zone`, `Smoke & Mirrors`, `Kanzen Games`, `Poke-Collect`, `Card Cavern`, `Card N All Gaming`, `Sealed and Sleeved`) and remove/replace dead `Lets Play TCG` (HTTP 404).
-  2. Split Shopify polling into:
-     - **Tier-1 Fast Delta Poller (`15s` cadence):** Polls `/products.json?limit=50` (most recently updated products) on the Top 25 restock LGS stores using proxy-first rotation to avoid home-IP Cloudflare 429s.
-     - **Tier-2 Full Catalog Poller (`90s–180s` cadence):** Sweeps all 91 stores + deep pages for `storeOffersCache.json` and `Bounty Hunter`.
+### Slice 3: Fix Deal Brain & Scam Shield (`evaluator.ts`, `policies.ts`, `vampirePoller.ts`)
+- **Goal:** Kill the Pre-Order slider override bug, fix `$6.99` shipping blocking `$54.99` MSRP Unicorns and limit-1 drops, add `(box|display)` matcher normalization, raise `getMaxPlausiblePriceCeiling()`, and add the Marketplace BS Detector blocking `$35+` shipping traps and unverified deep-discount bait.
 
-### Step 1D — Config Split (`config/catalog.json`, `config/stores.json`, `config/userPreferences.json`)
-- **Goal:** Decouple static SKU metadata & retailer TCINs/SKUs from Scott's live slider/ownership preferences while keeping `/api/policies` 100% backward-compatible.
-
-### Step 2A — Honest Big-Box Engine (Target 1P TCINs, Best Buy SKUs & Costco Search API)
-- **Goal:** Rip out all `Math.max(..., 38/18/16/12)` fake telemetry in `vampirePoller.ts` and wire real Target 1P TCIN fulfillment checks, Best Buy SKU availability checks, and Costco's JSON search API.
-
-### Step 2B — Playwright Stealth Browser Worker for Pokémon Center & Walmart 1P
-- **Goal:** Add a lightweight headless stealth browser worker to solve Imperva (`pokemoncenter.com`) and PerimeterX (`walmart.com`) challenges and harvest session cookies/DOM for 1P MSRP restocks and Queue-It detection.
+### Slice 4: Fix Narrow Shopify Store Collection Paths, Launch 15-Second Tier-1 Fast Restock Poller & Wire Honest Big-Box SKU/TCIN + Stealth Browser Polling
+- **Goal:** Fix narrow Shopify store collection paths, launch the 15-Second Tier-1 Fast Restock Poller, and wire honest Big-Box SKU/TCIN & Stealth Browser polling.

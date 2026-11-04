@@ -115,9 +115,9 @@
   "swsh-celebrations-etb__TCGPlayer Verified Seller": {
     "lastPrice": 310.97,
     "lowestAlertedPrice": 280,
-    "timestamp": 1793738810470,
-    "timeStr": "02:46 PM",
-    "alertCount": 11,
+    "timestamp": 1793825905882,
+    "timeStr": "02:58 PM",
+    "alertCount": 12,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "tcg_242811"
   },
@@ -156,11 +156,11 @@
     "wasOutOfStockSinceLastAlert": false
   },
   "sv-destined-rivals-etb-case__TCGPlayer Verified Seller": {
-    "lastPrice": 1120,
+    "lastPrice": 1129.99,
     "lowestAlertedPrice": 1000,
-    "timestamp": 1793738724054,
-    "timeStr": "02:45 PM",
-    "alertCount": 28,
+    "timestamp": 1793825438381,
+    "timeStr": "02:50 PM",
+    "alertCount": 29,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "tcg_628398"
   },
@@ -300,11 +300,11 @@
     "itemId": "tcg_712094"
   },
   "me-delta-reign-etb__TCGPlayer Verified Seller": {
-    "lastPrice": 79.99,
+    "lastPrice": 85,
     "lowestAlertedPrice": 79.99,
-    "timestamp": 1793193798183,
-    "timeStr": "08:23 AM",
-    "alertCount": 1,
+    "timestamp": 1793827409512,
+    "timeStr": "03:23 PM",
+    "alertCount": 2,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "tcg_712102"
   },
@@ -356,9 +356,9 @@
   "me-delta-reign-etb__Card Shop Live": {
     "lastPrice": 89.99,
     "lowestAlertedPrice": 89.99,
-    "timestamp": 1793743962085,
-    "timeStr": "04:12 PM",
-    "alertCount": 4,
+    "timestamp": 1793830515221,
+    "timeStr": "04:15 PM",
+    "alertCount": 5,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "51482895548585"
   },

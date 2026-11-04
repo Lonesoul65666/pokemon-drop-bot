@@ -22,6 +22,7 @@ const path_1 = __importDefault(require("path"));
 const policies_1 = require("./policies");
 const marketTelemetry_1 = require("./marketTelemetry");
 const marketTape_1 = require("./marketTape");
+const configManager_1 = require("./src/config/configManager");
 const ALERT_STATE_PATH = path_1.default.resolve(process.cwd(), 'alertState.json');
 const LIVE_STOCK_PATH = path_1.default.resolve(process.cwd(), 'liveStock.json');
 const STORE_OFFERS_CACHE_PATH = path_1.default.resolve(process.cwd(), 'storeOffersCache.json');
@@ -179,125 +180,9 @@ function isPreReleaseDate(releaseDate, nowTs = Date.now()) {
     return nowTs < parsed;
 }
 exports.PRE_RELEASE_BLEED_TAG = '⏳ PRE-RELEASE BLEED (Wait for Launch Week)';
-exports.STORE_SHIPPING_RULES = {
-    // Big Box Retailers
-    'target': { freeShipThreshold: 35, flatShipping: 5.99 },
-    'walmart': { freeShipThreshold: 35, flatShipping: 5.99 },
-    'best buy': { freeShipThreshold: 35, flatShipping: 5.99 },
-    'amazon': { freeShipThreshold: 35, flatShipping: 5.99 },
-    'gamestop': { freeShipThreshold: 59, flatShipping: 6.99 },
-    'costco': { freeShipThreshold: 0, flatShipping: 0 },
-    "sam's club": { freeShipThreshold: 50, flatShipping: 4.99 },
-    'sams club': { freeShipThreshold: 50, flatShipping: 4.99 },
-    'barnes & noble': { freeShipThreshold: 40, flatShipping: 5.99 },
-    'pokemon center': { freeShipThreshold: 20, flatShipping: 6.99 },
-    // Existing 14 Verified USD Shopify LGS Stores
-    'smoke & mirrors': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'safari zone': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'zulus games': { freeShipThreshold: 100, flatShipping: 5.99 },
-    'gamers guild az': { freeShipThreshold: 99, flatShipping: 6.99 },
-    'minmaxgames': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'card shop live': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'joshs cards': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'flipside gaming': { freeShipThreshold: 100, flatShipping: 5.99 },
-    'over the brick': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'knight & day games': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'tcg stadium': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'rip n ship arena': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'collector store': { freeShipThreshold: 100, flatShipping: 6.99 },
-    'prodigy games': { freeShipThreshold: 150, flatShipping: 6.99 },
-    // Wave 1 Newly Onboarded Verified USD Shopify LGS Stores (17)
-    'double infinity gaming': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'paladin cards': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'pkmn colosseum': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'mystic tcg': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'top cut central': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'poke-collect': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'allpoketcg': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'the pokecave': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'game grid lehi': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'card cavern': { freeShipThreshold: 100, flatShipping: 5.99 },
-    'galactic toys': { freeShipThreshold: 125, flatShipping: 6.99 },
-    '1st edition collectibles': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'trading card market': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'the gaming goat': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'stomping grounds': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'red raccoon games': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'tabletop village': { freeShipThreshold: 150, flatShipping: 6.99 },
-    // Wave 2 Phase A Newly Onboarded Verified Shopify LGS Stores (5)
-    'card n all gaming': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'the poke court': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'awesome ccg': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'tanuki games': { freeShipThreshold: 100, flatShipping: 6.99 },
-    'hobbiesville': { freeShipThreshold: 175, flatShipping: 9.99 },
-    // Wave 2 Overnight Discovery Newly Onboarded Verified Shopify LGS Stores (4)
-    'pokebox usa': { freeShipThreshold: 150, flatShipping: 6.99 },
-    '401 games': { freeShipThreshold: 175, flatShipping: 9.99 },
-    'kanzen games': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'the card vault': { freeShipThreshold: 150, flatShipping: 6.99 },
-    // Wave 3 V4 Autopilot Regional & Mom-and-Pop Verified Shopify LGS Stores (11)
-    'level one game shop': { freeShipThreshold: 125, flatShipping: 6.99 },
-    'mox boarding house': { freeShipThreshold: 100, flatShipping: 6.99 },
-    'taps games': { freeShipThreshold: 175, flatShipping: 9.99 },
-    'sports card junction': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'gnome games': { freeShipThreshold: 125, flatShipping: 6.99 },
-    'silver goblin': { freeShipThreshold: 175, flatShipping: 9.99 },
-    'face to face games': { freeShipThreshold: 175, flatShipping: 9.99 },
-    'miraj trading': { freeShipThreshold: 175, flatShipping: 9.99 },
-    'untouchables': { freeShipThreshold: 175, flatShipping: 9.99 },
-    'a&c games': { freeShipThreshold: 175, flatShipping: 9.99 },
-    'tistaminis': { freeShipThreshold: 175, flatShipping: 9.99 },
-    // Wave 4 V4 Phase E Verified Shopify TCG & Hobby Expansion (40 -> 91 Total Verified Stores)
-    'spankys card shop': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'forge and fire': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'kanto cards': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'shinobi collectibles': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'the awesome card shop': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'pokegirl cc': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'moxie card shop': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'sealed and sleeved': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'pro collect shop': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'drpm collectors': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'gorge poke shop': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'squirtle squad card shop': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'cardshq': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'collectors cafe': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'poke unlimited': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'j&j gaming factory': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'victory road collections': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'puzzled gamer': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'cardpop usa': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'missingno games': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'common lands': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'ipoketcg': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'ava tcg': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'lets play tcg': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'moonshot games': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'stonebrook collectibles': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'carddog tcg': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'elite4 tcg': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'jbs emporium': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'derium and wifey': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'oaks poke box': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'nova break': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'epic trading collectibles': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'bam cards': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'boxed vinyl': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'mini collects': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'black wolf collectibles': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'pentix games': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'top shop collectibles': { freeShipThreshold: 150, flatShipping: 6.99 },
-    'lvl up games': { freeShipThreshold: 175, flatShipping: 9.99 }
-};
+exports.STORE_SHIPPING_RULES = (0, configManager_1.loadShippingRulesMap)();
 function getStoreShippingProfile(retailer) {
-    const key = (retailer || '').trim().toLowerCase();
-    if (exports.STORE_SHIPPING_RULES[key])
-        return exports.STORE_SHIPPING_RULES[key];
-    for (const [k, profile] of Object.entries(exports.STORE_SHIPPING_RULES)) {
-        if (key.includes(k))
-            return profile;
-    }
-    return { freeShipThreshold: 150, flatShipping: 6.99 };
+    return (0, configManager_1.getStoreShippingProfileFromRegistry)(retailer);
 }
 let bestOffersFlushTimer = null;
 const pendingBestOffers = new Map();
@@ -586,11 +471,9 @@ function evaluateItem(item) {
         let muteVaulted = false;
         let wallHunterMode = false;
         try {
-            if (fs_1.default.existsSync(SETTINGS_PATH)) {
-                const settings = JSON.parse(fs_1.default.readFileSync(SETTINGS_PATH, 'utf-8'));
-                muteVaulted = Boolean(settings?.muteVaulted);
-                wallHunterMode = Boolean(settings?.wallHunterMode);
-            }
+            const settings = (0, configManager_1.loadGlobalSettings)();
+            muteVaulted = Boolean(settings?.muteVaulted);
+            wallHunterMode = Boolean(settings?.wallHunterMode);
         }
         catch (e) { }
         const { packCount, pricePerPack, isRipValueLeader } = (0, policies_1.computeRipMetrics)(landedPrice, rule.id, rule.formFactor, `${rule.name} ${cleanTitle}`, rule.packCount);

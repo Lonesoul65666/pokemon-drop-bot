@@ -9,8 +9,7 @@ const path_1 = __importDefault(require("path"));
 const axios_1 = __importDefault(require("axios"));
 const marketComps_1 = require("../marketComps");
 const lgsPoller_1 = require("../lgsPoller");
-const policies_1 = require("../policies");
-const POLICIES_PATH = path_1.default.resolve(process.cwd(), 'policies.json');
+const configManager_1 = require("./config/configManager");
 const CACHE_PATH = path_1.default.resolve(process.cwd(), 'marketCache.json');
 const SYNC_INTERVAL_MS = 1000 * 60 * 60 * 6; // Refresh every 6 hours (4x daily)
 function cleanSearchQuery(name) {
@@ -32,9 +31,9 @@ class MarketSyncService {
             return;
         this.isSyncing = true;
         try {
-            if (!fs_1.default.existsSync(POLICIES_PATH))
+            const policies = (0, configManager_1.loadMergedPoliciesRaw)();
+            if (!policies.length)
                 return;
-            const policies = JSON.parse(fs_1.default.readFileSync(POLICIES_PATH, 'utf-8'));
             let cache = {};
             if (fs_1.default.existsSync(CACHE_PATH)) {
                 try {
@@ -146,17 +145,10 @@ class MarketSyncService {
                     updatedCount++;
                 }
             }
-            // Safely update estimatedMarketValue in policies.json while preserving live user slider changes!
-            const freshPoliciesOnDisk = JSON.parse(fs_1.default.readFileSync(POLICIES_PATH, 'utf-8'));
+            // HARD LAW: Route 6-hour baseline updates exclusively to marketCache.json (never touching userPreferences.json)
             const syncedMap = new Map(policies.map(x => [x.id, x.estimatedMarketValue]));
-            freshPoliciesOnDisk.forEach(fp => {
-                if (syncedMap.has(fp.id)) {
-                    fp.estimatedMarketValue = syncedMap.get(fp.id);
-                }
-            });
-            (0, policies_1.atomicWriteJson)(POLICIES_PATH, freshPoliciesOnDisk);
-            (0, policies_1.atomicWriteJson)(CACHE_PATH, cache);
-            console.log(`[MarketSync] Automated baseline refresh complete (${updatedCount} SKUs synced to latest market value).`);
+            (0, configManager_1.saveMarketBaselineSync)(syncedMap, cache);
+            console.log(`[MarketSync] Automated baseline refresh complete (${updatedCount} SKUs synced to marketCache.json; userPreferences.json untouched).`);
         }
         catch (err) {
             console.error('[MarketSync] Refresh warning:', err.message);

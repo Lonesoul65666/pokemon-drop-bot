@@ -6,6 +6,7 @@ import { getDualMarketComps } from './marketComps';
 import { markLiveStockOut } from './evaluator';
 import { atomicWriteJson, computeRipMetrics } from './policies';
 import { getFlashClearEscalation } from './marketTape';
+import { loadGlobalSettings, loadMergedPoliciesRaw } from './src/config/configManager';
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
@@ -583,12 +584,10 @@ function readDigestStateFromDisk(): { lastDigestSentAt: number; lastDigestHash: 
   } catch (e) {}
 
   try {
-    if (fs.existsSync(settingsPath)) {
-      const s = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
-      if (s && typeof s.lastDigestSentAt === 'number') diskLastAt = Math.max(diskLastAt, s.lastDigestSentAt);
-      if (s && typeof s.lastDigestHash === 'string' && !diskHash) diskHash = s.lastDigestHash;
-      if (s && typeof s.liveDigestEnabled === 'boolean') liveDigestEnabled = s.liveDigestEnabled;
-    }
+    const gs = loadGlobalSettings();
+    if (typeof gs.liveDigestEnabled === 'boolean') liveDigestEnabled = gs.liveDigestEnabled;
+    if (typeof gs.lastDigestSentAt === 'number') diskLastAt = Math.max(diskLastAt, gs.lastDigestSentAt);
+    if (typeof gs.lastDigestHash === 'string' && !diskHash) diskHash = gs.lastDigestHash;
   } catch (e) {}
 
   return {
@@ -663,7 +662,7 @@ export async function sendStockDigestCard(options?: { force?: boolean }): Promis
     if (fs.existsSync(liveStockPath)) liveMap = JSON.parse(fs.readFileSync(liveStockPath, 'utf-8'));
   } catch (e) {}
   try {
-    if (fs.existsSync(policiesPath)) policies = JSON.parse(fs.readFileSync(policiesPath, 'utf-8'));
+    policies = loadMergedPoliciesRaw();
   } catch (e) {}
   try {
     if (fs.existsSync(TELEMETRY_PATH)) cache = JSON.parse(fs.readFileSync(TELEMETRY_PATH, 'utf-8'));

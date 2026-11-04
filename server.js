@@ -27,6 +27,28 @@ const PUBLIC_INDEX_PATH = path.resolve(PUBLIC_DIR, 'index.html');
 const HTML_PATH = path.resolve(__dirname, 'dashboard.html');
 const ART_DIR = path.resolve(__dirname, 'art');
 
+const {
+  loadMergedPoliciesRaw,
+  saveUserPoliciesFromUi,
+  markSkuOwnedFromUi,
+  loadGlobalSettings,
+  saveGlobalSettingsFromUi,
+  loadActiveLgsStores
+} = require('./src/config/configManager');
+
+function getRuntimePolicies() {
+  try {
+    const merged = loadMergedPoliciesRaw();
+    if (Array.isArray(merged) && merged.length > 0) return merged;
+  } catch (e) {}
+  try {
+    if (fs.existsSync(POLICIES_PATH)) {
+      return JSON.parse(fs.readFileSync(POLICIES_PATH, 'utf-8')) || [];
+    }
+  } catch (e) {}
+  return [];
+}
+
 const PRE_RELEASE_BLEED_TAG = '⏳ PRE-RELEASE BLEED (Wait for Launch Week)';
 
 function atomicWriteJson(filePath, data) {
@@ -221,12 +243,7 @@ function loadConqueredVault() {
     } catch (e) {}
   }
 
-  let policies = [];
-  try {
-    if (fs.existsSync(POLICIES_PATH)) {
-      policies = JSON.parse(fs.readFileSync(POLICIES_PATH, 'utf-8'));
-    }
-  } catch (e) {}
+  const policies = getRuntimePolicies();
 
   const etbPolicies = policies.filter(p => p.formFactor === 'ETB');
   const ownedEtbs = etbPolicies.filter(p => Boolean(p.owned || p.inVault));
@@ -311,10 +328,7 @@ app.post('/api/conquered-vault/claim', (req, res) => {
     const vaultState = loadConqueredVault();
     const plaques = [...vaultState.trophies];
 
-    let policies = [];
-    if (fs.existsSync(POLICIES_PATH)) {
-      try { policies = JSON.parse(fs.readFileSync(POLICIES_PATH, 'utf-8')); } catch (e) {}
-    }
+    const policies = getRuntimePolicies();
     const matchedPol = policies.find(p => p.id === body.skuId || p.id === body.ruleId);
 
     const skuId = body.skuId || body.ruleId || (matchedPol ? matchedPol.id : 'custom-sku');
@@ -365,7 +379,7 @@ app.post('/api/conquered-vault/claim', (req, res) => {
 
     if (matchedPol) {
       matchedPol.owned = true;
-      try { atomicWriteJson(POLICIES_PATH, policies); } catch (e) {}
+      try { markSkuOwnedFromUi(matchedPol.id, true); } catch (e) {}
     }
 
     const updated = saveConqueredPlaques(plaques);
@@ -414,10 +428,7 @@ async function handleBountyRecon(req, res) {
     const storeFilter = (req.query?.store || req.body?.store || '').trim();
     const fetchLive = Boolean(req.query?.live === 'true' || req.body?.live === true);
 
-    let policies = [];
-    if (fs.existsSync(POLICIES_PATH)) {
-      try { policies = JSON.parse(fs.readFileSync(POLICIES_PATH, 'utf-8')); } catch (e) {}
-    }
+    const policies = getRuntimePolicies();
     let liveMap = {};
     if (fs.existsSync(LIVE_STOCK_PATH)) {
       try { liveMap = JSON.parse(fs.readFileSync(LIVE_STOCK_PATH, 'utf-8')); } catch (e) {}
@@ -435,11 +446,13 @@ async function handleBountyRecon(req, res) {
       try { salesHistory = JSON.parse(fs.readFileSync(SALES_HISTORY_PATH, 'utf-8')); } catch (e) {}
     }
 
-    let lgsStores = [];
-    try {
-      const lgsMod = require('./lgsPoller');
-      lgsStores = lgsMod.LGS_STORES || lgsMod.MONITORED_STORES || [];
-    } catch (e) {}
+    let lgsStores = loadActiveLgsStores();
+    if (!lgsStores.length) {
+      try {
+        const lgsMod = require('./lgsPoller');
+        lgsStores = lgsMod.LGS_STORES || lgsMod.MONITORED_STORES || [];
+      } catch (e) {}
+    }
 
     const findStoreMeta = (storeName) => {
       const clean = String(storeName || '').toLowerCase().trim();
@@ -812,12 +825,14 @@ app.get('/api/trophies', (req, res) => {
 });
 
 function getDynamicStoreTelemetry() {
-  let lgsStores = [];
+  let lgsStores = loadActiveLgsStores();
   let bigBoxStores = [];
-  try {
-    const lgsMod = require('./lgsPoller');
-    lgsStores = lgsMod.LGS_STORES || lgsMod.MONITORED_STORES || [];
-  } catch (e) {}
+  if (!lgsStores.length) {
+    try {
+      const lgsMod = require('./lgsPoller');
+      lgsStores = lgsMod.LGS_STORES || lgsMod.MONITORED_STORES || [];
+    } catch (e) {}
+  }
   try {
     const vpMod = require('./vampirePoller');
     bigBoxStores = vpMod.BIG_BOX_STORES || [];
@@ -888,10 +903,7 @@ function computeNearMissesAndBestOffers() {
   if (fs.existsSync(LIVE_STOCK_PATH)) {
     try { liveMap = JSON.parse(fs.readFileSync(LIVE_STOCK_PATH, 'utf-8')); } catch (e) { liveMap = {}; }
   }
-  let policies = [];
-  if (fs.existsSync(POLICIES_PATH)) {
-    try { policies = JSON.parse(fs.readFileSync(POLICIES_PATH, 'utf-8')); } catch (e) { policies = []; }
-  }
+  const policies = getRuntimePolicies();
   let cache = {};
   if (fs.existsSync(TELEMETRY_PATH)) {
     try { cache = JSON.parse(fs.readFileSync(TELEMETRY_PATH, 'utf-8')); } catch (e) { cache = {}; }
@@ -1107,10 +1119,7 @@ function loadMergedStoreOffersBySku() {
   if (fs.existsSync(STORE_OFFERS_CACHE_PATH)) {
     try { rawCache = JSON.parse(fs.readFileSync(STORE_OFFERS_CACHE_PATH, 'utf-8')) || {}; } catch (e) { rawCache = {}; }
   }
-  let policies = [];
-  if (fs.existsSync(POLICIES_PATH)) {
-    try { policies = JSON.parse(fs.readFileSync(POLICIES_PATH, 'utf-8')) || []; } catch (e) { policies = []; }
-  }
+  const policies = getRuntimePolicies();
   let liveMap = {};
   if (fs.existsSync(LIVE_STOCK_PATH)) {
     try { liveMap = JSON.parse(fs.readFileSync(LIVE_STOCK_PATH, 'utf-8')) || {}; } catch (e) { liveMap = {}; }
@@ -1541,10 +1550,7 @@ app.get('/api/engine-room', (req, res) => {
 app.get('/api/sku-history/:skuId', (req, res) => {
   try {
     const rawParam = String(req.params.skuId || '').trim().toLowerCase();
-    let policies = [];
-    if (fs.existsSync(POLICIES_PATH)) {
-      try { policies = JSON.parse(fs.readFileSync(POLICIES_PATH, 'utf-8')); } catch (e) {}
-    }
+    const policies = getRuntimePolicies();
     const ALIAS_MAP = {
       'sv-base-etb': 'sv-base-koraidon-etb',
       'scarlet-violet-base-etb': 'sv-base-koraidon-etb'
@@ -1976,14 +1982,7 @@ app.get('/api/live-stock', (req, res) => {
       }
     }
 
-    let policies = [];
-    if (fs.existsSync(POLICIES_PATH)) {
-      try {
-        policies = JSON.parse(fs.readFileSync(POLICIES_PATH, 'utf-8'));
-      } catch (e) {
-        policies = [];
-      }
-    }
+    const policies = getRuntimePolicies();
     const policyMap = new Map(policies.map(p => [p.id, p]));
 
     // Prune any item whose price exceeds current policy maxBuy (or pre-order ceiling) or is older than 6 hours
@@ -2032,24 +2031,15 @@ app.post('/api/send-digest', async (req, res) => {
 
 app.get('/api/settings', (req, res) => {
   try {
-    if (fs.existsSync(SETTINGS_PATH)) {
-      const parsed = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf-8')) || {};
-      return res.json({ muteVaulted: false, wallHunterMode: false, ...parsed });
-    }
-    res.json({ muteVaulted: false, wallHunterMode: false });
+    return res.json(loadGlobalSettings());
   } catch (e) {
-    res.json({ muteVaulted: false, wallHunterMode: false });
+    res.json({ muteVaulted: false, wallHunterMode: false, liveDigestEnabled: false });
   }
 });
 
 app.post('/api/settings', (req, res) => {
   try {
-    let existing = { muteVaulted: true, wallHunterMode: false, liveDigestEnabled: false };
-    if (fs.existsSync(SETTINGS_PATH)) {
-      try { existing = { ...existing, ...(JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf-8')) || {}) }; } catch (e) {}
-    }
-    const merged = { ...existing, ...(req.body || {}) };
-    atomicWriteJson(SETTINGS_PATH, merged);
+    const merged = saveGlobalSettingsFromUi(req.body || {});
     res.json({ ok: true, settings: merged });
   } catch (e) {
     res.status(500).json({ error: e.message });
@@ -2133,8 +2123,7 @@ app.post('/api/live-comp', async (req, res) => {
 
 app.get('/api/policies', (req, res) => {
   try {
-    const raw = fs.readFileSync(POLICIES_PATH, 'utf-8');
-    const parsed = JSON.parse(raw);
+    const parsed = getRuntimePolicies();
     let cache = {};
     if (fs.existsSync(TELEMETRY_PATH)) {
       try { cache = JSON.parse(fs.readFileSync(TELEMETRY_PATH, 'utf-8')); } catch (e) {}
@@ -2181,8 +2170,8 @@ app.get('/api/telemetry', (req, res) => {
 
 app.post('/api/policies', (req, res) => {
   try {
-    atomicWriteJson(POLICIES_PATH, req.body);
-    res.json({ status: 'Saved and hot-synced.' });
+    saveUserPoliciesFromUi(req.body);
+    res.json({ status: 'Saved to config/userPreferences.json and hot-synced.' });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

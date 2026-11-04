@@ -281,58 +281,31 @@ function isValidSkuForFormFactor(title, formFactor, price, options) {
     }
     return true;
 }
-// Check root directory first, then fallback to one level up from dist/
-function resolvePoliciesPath() {
-    const rootPath = path.resolve(process.cwd(), 'policies.json');
-    if (fs.existsSync(rootPath)) {
-        return rootPath;
-    }
-    const parentPath = path.resolve(__dirname, '..', 'policies.json');
-    if (fs.existsSync(parentPath)) {
-        return parentPath;
-    }
-    return path.resolve(__dirname, 'policies.json');
-}
+const configManager_1 = require("./src/config/configManager");
 function atomicWriteJson(filePath, data) {
-    try {
-        const tmpPath = `${filePath}.tmp.${process.pid}.${Date.now()}`;
-        fs.writeFileSync(tmpPath, JSON.stringify(data, null, 2), 'utf-8');
-        fs.renameSync(tmpPath, filePath);
-    }
-    catch (err) {
-        try {
-            const fallbackTmp = `${filePath}.tmp`;
-            fs.writeFileSync(fallbackTmp, JSON.stringify(data, null, 2), 'utf-8');
-            fs.renameSync(fallbackTmp, filePath);
-        }
-        catch (e) { }
-    }
+    (0, configManager_1.atomicWriteJson)(filePath, data);
 }
-const POLICIES_PATH = resolvePoliciesPath();
 function loadPolicies() {
     try {
-        if (!fs.existsSync(POLICIES_PATH)) {
-            console.error(`[POLICIES] policies.json not found at: ${POLICIES_PATH}`);
+        const parsed = (0, configManager_1.loadMergedPoliciesRaw)();
+        if (!Array.isArray(parsed) || parsed.length === 0) {
+            console.error('[POLICIES] Zero merged policies returned from configManager.');
             return [];
         }
-        const raw = fs.readFileSync(POLICIES_PATH, 'utf-8');
-        const parsed = JSON.parse(raw);
         return parsed.map((item) => ({
             ...item,
             packCount: item.packCount || getPackCountForSku(item.id, item.formFactor, item.name),
-            matchers: item.matchers.map((m) => new RegExp(m, 'i')),
+            matchers: (item.matchers || []).map((m) => new RegExp(m, 'i')),
             negativeMatchers: exports.GLOBAL_JUNK_EXCLUSIONS,
         }));
     }
     catch (err) {
-        console.error(`Error reading policies.json: ${err.message}`);
+        console.error(`Error loading merged policies: ${err.message}`);
         return [];
     }
 }
 exports.WATCH_POLICIES = loadPolicies();
-if (fs.existsSync(POLICIES_PATH)) {
-    fs.watch(POLICIES_PATH, () => {
-        console.log('[WATCHER] policies.json changed on disk. Hot-reloading active rules...');
-        exports.WATCH_POLICIES = loadPolicies();
-    });
-}
+(0, configManager_1.watchConfigFiles)(() => {
+    console.log('[WATCHER] Config/userPreferences changed on disk. Hot-reloading active rules...');
+    exports.WATCH_POLICIES = loadPolicies();
+});

@@ -32,8 +32,9 @@
    - **NEVER run `taskkill /F /IM node.exe` or `Stop-Process -Name node`!**
    - Both `pokemon-drop-bot` (PM2 / Port `3000`) and `Project Iris` (Port `5173` / `3001`) run on `node.exe` on this machine.
    - Only restart or stop processes by specific PM2 name (`npx pm2 restart pokemon-drop-bot`, `npx pm2 restart drop-bot-dashboard`) or specific port PID (`Get-NetTCPConnection -LocalPort 3000`).
-2. **Respect Persistent Runtime JSON State Files:**
-   - Never wipe, truncate, or corrupt live state files (`policies.json`, `conqueredVault.json`, `data/msrpTrophies.json`, `storeOffersCache.json`, `marketCache.json`, `salesHistory.json`, `dailySnapshots.json`, `weeklyCheckpoints.json`, `liveStock.json`, `dropsHistory.json`, `botSettings.json`, `alertState.json`, `storeHealth.json`).
+2. **Respect Persistent Runtime JSON State Files & `config/userPreferences.json` Vault Law:**
+   - **HARD LAW (`config/userPreferences.json`):** `config/userPreferences.json` holds Scott's untouchable personal state (`maxMarketBuyPrice` sliders, `owned` / `inVault` Wall Display checklist, `active` toggles, `muteVaulted`, `wallHunterMode`, `liveDigestEnabled`). Background pollers and `src/marketSync.ts` are **strictly forbidden** from writing to `config/userPreferences.json`. Only explicit dashboard UI actions via `saveUserPoliciesFromUi()` / `saveGlobalSettingsFromUi()` in `src/config/configManager.ts` may write to it.
+   - Never wipe, truncate, or corrupt live state files (`config/userPreferences.json`, `config/catalog.json`, `config/stores.json`, `policies.json`, `conqueredVault.json`, `data/msrpTrophies.json`, `storeOffersCache.json`, `marketCache.json`, `salesHistory.json`, `dailySnapshots.json`, `weeklyCheckpoints.json`, `liveStock.json`, `dropsHistory.json`, `botSettings.json`, `alertState.json`, `storeHealth.json`).
    - Always use `atomicWriteJson()` (`.tmp.${pid}.${ts}` write + `fs.renameSync` with cleanup of failed `.tmp` files) when modifying JSON on disk.
 3. **Compile & Syntax Verification:**
    - After modifying any `.ts` file, always run `npx tsc --noEmit` and `npx tsc` to update compiled `.js` runtime files and verify zero TypeScript regressions before restarting PM2 or committing.

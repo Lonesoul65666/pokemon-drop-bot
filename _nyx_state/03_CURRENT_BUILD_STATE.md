@@ -5,34 +5,36 @@
 ---
 
 ## 1. Live System Snapshot
-- **Current Phase:** **V5 Step 0 Complete** (6-File `_nyx_state/` Continuity Engine, Failure Graveyard & Portable `dropbot` PowerShell CLI Suite Initialized; Ready for **V5 Step 1A: Frontend De-Bloat & Battle Stadium Extraction**).
-- **Last Checkpoint Timestamp:** `2026-11-04 14:49 CST`
+- **Current Phase:** **V5 Slice 1 Complete** (Personal Data Vault `config/userPreferences.json`, Static Catalog `config/catalog.json`, Unified Store & Shipping Registry `config/stores.json`, and `src/config/configManager.ts` Facade Live; Ready for **V5 Slice 2: Battle Stadium 4-File Extraction & `dashboard.html` Clone Deletion**).
+- **Last Checkpoint Timestamp:** `2026-11-04 16:21 CST`
 - **Git Branch:** `main`
-- **Parent Baseline Commit:** `169c7b2` (`Initial V5 Step 0 baseline backup (_nyx_state 6-file engine + dropbot CLI)`)
+- **Parent Baseline Commit:** `acca670` (`V5 Slice 1: Lock personal sliders and Wall checklist in config/userPreferences.json and unify store shipping registry in config/stores.json`)
 - **PM2 Process Status:**
-  - `pokemon-drop-bot` (id `0`, `index.js`): **ONLINE** (Uptime `8D`, `0` restarts, ~480 MB RAM)
-  - `drop-bot-dashboard` (id `1`, `server.js` on `http://localhost:3000`): **ONLINE** (Uptime `8D`, `0` restarts, ~90 MB RAM)
+  - `pokemon-drop-bot` (id `0`, `index.js`): **ONLINE** (`0` crashes, all 90 active Shopify LGS stores healthy)
+  - `drop-bot-dashboard` (id `1`, `server.js` on `http://localhost:3000`): **ONLINE** (`HTTP 200 OK` across `/api/status`, `/api/policies`, `/api/engine-room`)
 - **Active Sensor & Cache Counts:**
-  - **Shopify LGS Pool:** `91` stores configured (`90` responding in latest sweep, `1` dead domain `Lets Play TCG` returning HTTP 404 in circuit cooldown; ~`40,096` listings scanned per ~61s cycle).
-  - **Big-Box Sensors:** `5` North Star retailers configured in `vampirePoller.ts` (*Note: Currently returning 0 1P MSRP items due to Imperva/PerimeterX/Stub/CSR issues documented in `02_TECHNICAL_ARCHITECTURE_AND_PIPELINES.md`; slated for V5 Step 2A/2B overhaul*).
+  - **Shopify LGS Pool (`config/stores.json`):** `90` active healthy stores (`100%` online, `0` blocked; dead 143h 404 store `Lets Play TCG` disabled with `enabled: false`).
+  - **Big-Box Sensors (`config/stores.json` & `vampirePoller.ts`):** `5` North Star retailers + `4` additional Big-Box shipping profiles unified in `config/stores.json` (*slated for V5 Slice 4 real TCIN/SKU + Stealth Browser overhaul*).
   - **Live Shelf Cache (`storeOffersCache.json`):** `497` matched in-stock offers across `66` unique SKUs (`248` Shopify LGS offers + `249` TCGPlayer Verified Seller offers).
-  - **Target Matrix (`policies.json` & `marketCache.json`):** `131` tracked sealed SKUs (`38` Wall Display ETBs: `8` Conquered / `30` Still Needed).
+  - **Target Matrix (`config/catalog.json` + `config/userPreferences.json` + `marketCache.json`):** `131` tracked sealed SKUs (`9` total owned SKUs; `38` Wall Display ETBs: `8` Conquered / `30` Still Needed).
 
 ---
 
-## 2. Module Status Prior to V5 Refactoring
+## 2. Module Status Across V5 Refactoring
 
 | Module / File | Lines | Status | V5 Target Action |
 | :--- | :---: | :--- | :--- |
 | `_nyx_state/01..06_*.md` | 6 files | **ACTIVE (V5 Step 0)** | Multi-agent continuity engine & Failure Graveyard |
-| `scripts/dropbot-cli.ps1` | ~195 | **ACTIVE (V5 Step 0)** | Portable `dropbot save / undo / backup / next` CLI |
-| `public/index.html` | 9,780 | **NEEDS SPLIT (Step 1A)** | Extract Logan's Stadium (~3,800 lines) to `public/js/logan-stadium.js` + `public/css/stadium.css` |
-| `dashboard.html` | 9,780 | **DEPRECATED CLONE (Step 1A)** | Delete root duplicate & route `/dashboard.html` to `public/index.html` in `server.js` |
-| `evaluator.ts` | 1,127 | **BUGS IDENTIFIED (Step 1B)** | Fix Pre-Order ceiling override (`L706`), `$54.99` MSRP shipping unicorn check (`L735`), and limit-1 shipping block (`L892`) |
-| `policies.ts` & `policies.json` | 410 / 131 SKUs | **NEEDS UNBLOCKING (Step 1B/1D)** | Add `(box\|display)` regex support, raise `$115/$275` price ceilings, and split `catalog.json` vs `userPreferences.json` in Step 1D |
-| `lgsPoller.ts` & `storeHealth.json` | 692 | **NEEDS SPEEDUP (Step 1C)** | Fix narrow `resolvedPath` feeds (`Zulus`, `Safari Zone`, `Kanzen`, `Poke-Collect`, etc.) and add `15s` Tier-1 Fast Delta Poller |
-| `vampirePoller.ts` | 996 | **NEEDS REAL BIG-BOX (Step 2A/2B)** | Remove fake `Math.max` telemetry; wire real Target 1P TCINs, Best Buy SKUs, Costco API, and Playwright Stealth worker |
-| `server.js` | 2,216 | **ONLINE (Port 3000)** | Serve unified `public/index.html` in Step 1A; modularize routes in V5 |
-| `notifier.ts` | 814 | **ONLINE & STABLE** | FIFO Discord queue + 4h digest lock working |
-| `marketTape.ts` & `marketComps.ts` | 772 / 457 | **ONLINE & STABLE** | 14-day NRT velocity tape & TCGPlayer/eBay comps working |
-| `src/marketSync.ts` | 178 | **ONLINE & STABLE** | 6-hour TCGPlayer baseline sync working |
+| `scripts/dropbot-cli.ps1` | 195 | **ACTIVE (V5 Step 0)** | Portable `dropbot save / undo / backup / next` CLI |
+| `src/config/configManager.ts` | 347 | **ACTIVE (V5 Slice 1)** | Merges `catalog.json` + `userPreferences.json` + `marketCache.json`; isolates UI writes from background syncs |
+| `config/userPreferences.json` | 800 | **LOCKED VAULT (V5 Slice 1)** | Scott's untouchable sliders (`maxMarketBuyPrice`), `owned`/`inVault` flags, and global toggles |
+| `config/catalog.json` | 3,096 | **ACTIVE (V5 Slice 1)** | Static SKU metadata (`131` SKUs) + optional retailer TCIN/SKU/Slug fields |
+| `config/stores.json` | 1,215 | **ACTIVE (V5 Slice 1)** | Unified store & shipping registry (`90` active LGS + `1` disabled 404 + `9` Big-Box) |
+| `public/index.html` | 9,780 | **NEXT UP (V5 Slice 2)** | Extract Logan's Battle Stadium into 4 modular files (`< 400 lines` each) under `public/js/stadium/` + `public/css/stadium.css` |
+| `dashboard.html` | 9,780 | **NEXT UP (V5 Slice 2)** | Delete duplicate root clone & route `/dashboard.html` to `public/index.html` |
+| `evaluator.ts` | 1,013 | **SLATED FOR SLICE 3** | Shipping registry unified (-114 lines); fix Pre-Order override, `$6.99` shipping unicorn trap, and limit-1 drops in Slice 3 |
+| `policies.ts` | 387 | **SLATED FOR SLICE 3** | Wired to `configManager.ts`; add `(box\|display)` normalization & raise price ceilings in Slice 3 |
+| `lgsPoller.ts` | 594 | **SLATED FOR SLICE 4** | Store list unified in `config/stores.json` (-98 lines); fix narrow `resolvedPath` feeds & launch 15s Tier-1 Fast Poller in Slice 4 |
+| `vampirePoller.ts` | 996 | **SLATED FOR SLICE 3/4** | Add Marketplace BS Detector in Slice 3; wire real Big-Box TCIN/SKU & Stealth Browser polling in Slice 4 |
+| `src/marketSync.ts` | 168 | **ACTIVE (V5 Slice 1)** | Routes 6-hour baseline updates exclusively to `marketCache.json` (never touches `userPreferences.json`) |
+| `server.js` | 2,213 | **ACTIVE (V5 Slice 1)** | Wired to `configManager.ts` for `/api/policies`, `/api/settings`, and `/api/conquered-vault/claim` |

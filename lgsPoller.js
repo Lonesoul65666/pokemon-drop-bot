@@ -17,6 +17,7 @@ const listener_1 = require("./listener");
 const notifier_1 = require("./notifier");
 const policies_1 = require("./policies");
 const evaluator_1 = require("./evaluator");
+const configManager_1 = require("./src/config/configManager");
 dotenv_1.default.config({ path: path_1.default.resolve(process.cwd(), '.env') });
 dns_1.default.setDefaultResultOrder('ipv4first');
 const WEBSHARE_PROXY_URL = process.env.WEBSHARE_PROXY_URL || '';
@@ -127,105 +128,7 @@ function flushStoreHealthToDisk() {
     out.__bigBoxHealth = bigBoxHealthTelemetry;
     (0, policies_1.atomicWriteJson)(STORE_HEALTH_PATH, out);
 }
-exports.LGS_STORES = [
-    // Existing Core Verified USD Shopify Stores (14)
-    { name: 'Smoke & Mirrors', baseUrl: 'https://smokeandmirrorshobby.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Safari Zone', baseUrl: 'https://safari-zone.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Zulus Games', baseUrl: 'https://zulusgames.com', freeShipThreshold: 100, flatShipping: 5.99, currency: 'USD' },
-    { name: 'Gamers Guild AZ', baseUrl: 'https://gamersguildaz.com', freeShipThreshold: 99, flatShipping: 6.99, currency: 'USD' },
-    { name: 'MinMaxGames', baseUrl: 'https://minmaxgames.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Card Shop Live', baseUrl: 'https://cardshoplive.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Joshs Cards', baseUrl: 'https://joshscards.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Flipside Gaming', baseUrl: 'https://www.flipsidegaming.com', freeShipThreshold: 100, flatShipping: 5.99, currency: 'USD' },
-    { name: 'Over The Brick', baseUrl: 'https://overthebrick.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Knight & Day Games', baseUrl: 'https://knightanddaygames.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'TCG Stadium', baseUrl: 'https://tcg-stadium.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Rip N Ship Arena', baseUrl: 'https://www.ripnshiparena.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Collector Store', baseUrl: 'https://collectorstore.com', freeShipThreshold: 100, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Prodigy Games', baseUrl: 'https://prodigygames.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    // Wave 1 Verified USD Shopify Stores (17)
-    { name: 'Double Infinity Gaming', baseUrl: 'https://doubleinfinitygaming.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Paladin Cards', baseUrl: 'https://paladincards20.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'PKMN Colosseum', baseUrl: 'https://pkmncolosseum.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Mystic TCG', baseUrl: 'https://mystictcg.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Top Cut Central', baseUrl: 'https://topcutcentral.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Poke-Collect', baseUrl: 'https://poke-collect.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'AllPokeTCG', baseUrl: 'https://allpoketcg.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'The Pokecave', baseUrl: 'https://thepokecave.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Game Grid Lehi', baseUrl: 'https://store.gglehi.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Card Cavern', baseUrl: 'https://cardcaverntradingcards.com', freeShipThreshold: 100, flatShipping: 5.99, currency: 'USD' },
-    { name: 'Galactic Toys', baseUrl: 'https://galactictoys.com', freeShipThreshold: 125, flatShipping: 6.99, currency: 'USD' },
-    { name: '1st Edition Collectibles', baseUrl: 'https://1steditioncollectibles.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Trading Card Market', baseUrl: 'https://tradingcardmarket.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'The Gaming Goat', baseUrl: 'https://tgg-games.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Stomping Grounds', baseUrl: 'https://www.stompinggroundstcg.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Red Raccoon Games', baseUrl: 'https://redraccoongames.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Tabletop Village', baseUrl: 'https://tabletopvillage.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    // Wave 2 Phase A Newly Onboarded Verified Shopify Stores (5)
-    { name: 'Card N All Gaming', baseUrl: 'https://cardnallgaming.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'The Poke Court', baseUrl: 'https://thepokecourt.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Awesome CCG', baseUrl: 'https://awesomeccg.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Tanuki Games', baseUrl: 'https://tanukigamesatx.com', freeShipThreshold: 100, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Hobbiesville', baseUrl: 'https://hobbiesville.com', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' },
-    // Wave 2 Overnight Discovery Newly Onboarded Verified Shopify Stores (4)
-    { name: 'PokeBox USA', baseUrl: 'https://pokeboxusa.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: '401 Games', baseUrl: 'https://store.401games.ca', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' },
-    { name: 'Kanzen Games', baseUrl: 'https://kanzengames.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'The Card Vault', baseUrl: 'https://thecardvault.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    // Wave 3 V4 Autopilot Regional & Mom-and-Pop Verified Shopify Stores (11)
-    { name: 'Level One Game Shop', baseUrl: 'https://levelonegameshop.com', freeShipThreshold: 125, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Mox Boarding House', baseUrl: 'https://moxboardinghouse.com', freeShipThreshold: 100, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Taps Games', baseUrl: 'https://tapsgames.com', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' },
-    { name: 'Sports Card Junction', baseUrl: 'https://sportscardjunction.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Gnome Games', baseUrl: 'https://gnomegames.com', freeShipThreshold: 125, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Silver Goblin', baseUrl: 'https://silvergoblin.cards', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' },
-    { name: 'Face to Face Games', baseUrl: 'https://facetofacegames.com', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' },
-    { name: 'Miraj Trading', baseUrl: 'https://mirajtrading.com', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' },
-    { name: 'Untouchables', baseUrl: 'https://untouchables.ca', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' },
-    { name: 'A&C Games', baseUrl: 'https://acgamesonline.com', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' },
-    { name: 'Tistaminis', baseUrl: 'https://tistaminis.com', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' },
-    // Wave 4 V4 Phase E Verified Shopify TCG & Hobby Expansion (40 -> 91 Total Verified Stores)
-    { name: 'Spankys Card Shop', baseUrl: 'https://spankyscardshop.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Forge and Fire', baseUrl: 'https://forgenfiregaming.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Kanto Cards', baseUrl: 'https://kantocards.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Shinobi Collectibles', baseUrl: 'https://shinobicollectibles.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'The Awesome Card Shop', baseUrl: 'https://theawesomecardshop.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'PokeGirl CC', baseUrl: 'https://pokegirlcc.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Moxie Card Shop', baseUrl: 'https://moxiecardshop.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Sealed and Sleeved', baseUrl: 'https://sealedandsleeved.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Pro Collect Shop', baseUrl: 'https://procollectshop.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'DRPM Collectors', baseUrl: 'https://drpmcollectorstcg.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Gorge Poke Shop', baseUrl: 'https://gorgepokeshop.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Squirtle Squad Card Shop', baseUrl: 'https://squirtlesquadcardshop.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'CardsHQ', baseUrl: 'https://cardshq.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Collectors Cafe', baseUrl: 'https://collectorscafe.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Poke Unlimited', baseUrl: 'https://pokeunlimited.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'J&J Gaming Factory', baseUrl: 'https://jandjgamingfactory.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Victory Road Collections', baseUrl: 'https://victoryroadcollections.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Puzzled Gamer', baseUrl: 'https://puzzledgamer.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'CardPop USA', baseUrl: 'https://cardpopusa.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'MissingNo Games', baseUrl: 'https://missingnogames.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Common Lands', baseUrl: 'https://common-lands.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'iPokeTCG', baseUrl: 'https://ipoketcg.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'AVA TCG', baseUrl: 'https://www.avatcg.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Lets Play TCG', baseUrl: 'https://letsplaytcg.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Moonshot Games', baseUrl: 'https://moonshotgamestore.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Stonebrook Collectibles', baseUrl: 'https://stonebrookcollectibles.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'CardDog TCG', baseUrl: 'https://carddogtcg.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Elite4 TCG', baseUrl: 'https://elite4tcg.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'JBs Emporium', baseUrl: 'https://jbemporium.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Derium and Wifey', baseUrl: 'https://deriumandwifey.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Oaks Poke Box', baseUrl: 'https://oakspokebox.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Nova Break', baseUrl: 'https://novabreak.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Epic Trading Collectibles', baseUrl: 'https://www.epictradingcollectibles.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'BAM Cards', baseUrl: 'https://bamcards.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Boxed Vinyl', baseUrl: 'https://boxedvinyl.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Mini Collects', baseUrl: 'https://minicollects.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Black Wolf Collectibles', baseUrl: 'https://blackwolfcollectibles.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Pentix Games', baseUrl: 'https://pentixgames.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Top Shop Collectibles', baseUrl: 'https://topshopcollectibles.com', freeShipThreshold: 150, flatShipping: 6.99, currency: 'USD' },
-    { name: 'Lvl Up Games', baseUrl: 'https://lvlupgames.ca', freeShipThreshold: 175, flatShipping: 9.99, currency: 'CAD' }
-];
+exports.LGS_STORES = (0, configManager_1.loadActiveLgsStores)();
 exports.MONITORED_STORES = exports.LGS_STORES;
 const INVALID_COLLECTION_SUBPATH_REGEX = /single|singles|graded|slab|slabs|psa|cgc|bgs|japanese|chinese|korean|event|local|lorcana|digimon|one-piece|magic|mtg|3d-cut|custom|break|bandai|indonesian|thai|spanish|french|german|italian|portuguese|figure|plush|toy|apparel|supply|sleeve|binder/i;
 // Ensure all active stores exist in storeHealthMap with HEALTHY status on boot
