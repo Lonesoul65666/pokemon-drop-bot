@@ -1,4 +1,4 @@
-# 03 — CURRENT BUILD STATE (`pokemon-drop-bot`)
+﻿# 03 — CURRENT BUILD STATE (`pokemon-drop-bot`)
 
 > **SINGLE SOURCE OF TRUTH (PART 3/6):** Snapshot of live git state, PM2 health, monitored store telemetry, and module readiness. Automatically updated on every `dropbot save` / `dropbot undo` / `dropbot backup`.
 
@@ -6,9 +6,9 @@
 
 ## 1. Live System Snapshot
 - **Current Phase:** **V5 Step 0 Complete** (6-File `_nyx_state/` Continuity Engine, Failure Graveyard & Portable `dropbot` PowerShell CLI Suite Initialized; Ready for **V5 Step 1A: Frontend De-Bloat & Battle Stadium Extraction**).
-- **Last Checkpoint Timestamp:** `2026-11-04 14:45 CST`
+- **Last Checkpoint Timestamp:** `2026-11-04 14:49 CST`
 - **Git Branch:** `main`
-- **Parent Baseline Commit:** `e3af0a7` (`feat(v4-phase-h): tactical D20 AP pool & banking stadium engine, separate bag strips, strict reddit outbound filter & live shelf spread bar`)
+- **Parent Baseline Commit:** `169c7b2` (`Initial V5 Step 0 baseline backup (_nyx_state 6-file engine + dropbot CLI)`)
 - **PM2 Process Status:**
   - `pokemon-drop-bot` (id `0`, `index.js`): **ONLINE** (Uptime `8D`, `0` restarts, ~480 MB RAM)
   - `drop-bot-dashboard` (id `1`, `server.js` on `http://localhost:3000`): **ONLINE** (Uptime `8D`, `0` restarts, ~90 MB RAM)
