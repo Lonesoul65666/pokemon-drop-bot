@@ -110,6 +110,19 @@ All persistent JSON files are written via `atomicWriteJson()` (`.tmp` write + `f
 
 ## 6. Last Touch Log
 
+- **2026-11-04 | Agent: Gemini 4 Argon (via `agy`)**
+  - **Completed V5 Step 0 ("Initialize the `_nyx_state/` 6-File Continuity Engine, Failure Graveyard, and Portable `dropbot` PowerShell Save/Undo/Backup Pipeline") (`_nyx_state/01..06_*.md`, `scripts/dropbot-cli.ps1`, `scripts/install-dropbot-cli.ps1`, `GEMINI.md`, `CLAUDE.md`, `STATE.md`, `.gitignore`):**
+    - **1. Initialized `_nyx_state/` 6-File Continuity Engine (`C:\pokemon-drop-bot\_nyx_state\`):**
+      - `01_PROJECT_IDENTITY_AND_LAWS.md`: Project mission, NYX persona, critical process isolation rules, persistent JSON state rules, and Frozen Files registry.
+      - `02_TECHNICAL_ARCHITECTURE_AND_PIPELINES.md`: Live runtime topology, evaluation pipeline, and the **Failure Graveyard** documenting all V4 missed-deal root causes (fake `Math.max` Big-Box telemetry, `isPreOrder` `$170/$58` ceiling override trap, `$6.99` shipping penalty stripping `isMsrpUnicorn` from `$54.99` ETBs and blocking limit-1 drops, narrow sub-collection lock-in in `storeHealth.json`, `"Booster Display"` regex miss, `$115/$275` price ceiling drops, 61s Shopify sweep cycle latency, and duplicate 9,780-line `dashboard.html` clone).
+      - `03_CURRENT_BUILD_STATE.md`: Live git commit, PM2 status, 91-store + 5 Big-Box telemetry, `497` cached offers across `66` SKUs, and per-module readiness table.
+      - `04_NEXT_STEPS_AND_ROADMAP.md`: Bite-sized single-turn V5 execution roadmap (`Step 1A` Frontend De-Bloat & Stadium Extraction, `Step 1B` Evaluator Math & Matcher Unblocking, `Step 1C` Shopify Feed Repair & 15s Fast Delta Poller, `Step 1D` Config Split, `Step 2A` Honest Big-Box TCIN/SKU Engine, `Step 2B` Playwright Stealth Browser Worker).
+      - `05_LAST_3_TURNS_AND_CHAT.md`: Rolling 3-turn engineering history and automated CLI checkpoint log.
+      - `06_ASSET_MANIFEST.md`: Complete inventory of source files, JSON state caches, 22 REST endpoints, and operational scripts.
+    - **2. Built & Installed Portable `dropbot` PowerShell CLI (`scripts/dropbot-cli.ps1` & `scripts/install-dropbot-cli.ps1`):**
+      - Registered `dropbot` in PowerShell `$PROFILE` supporting `dropbot save "reason"`, `dropbot undo "reason"` (automatically reverting `HEAD~1` while permanently appending the failure to `_nyx_state/02_TECHNICAL_ARCHITECTURE_AND_PIPELINES.md`), `dropbot backup "reason"` (creating `< 3s` timestamped zip archives in `C:\DropBot_Backups\` excluding `node_modules`/`.git` and syncing GitHub), and `dropbot next` (printing & copying the exact 6-file bootloader prompt).
+    - **3. Cleaned Stale `.tmp.*` Files & Updated `.gitignore`:** Added `*.tmp.*` to `.gitignore` and purged orphaned `.tmp` files in `dropbot-cli.ps1`.
+
 - **2026-10-24 | Agent: Gemini 4 Argon (via `agy`)**
   - **Completed V4 Phase H ("Tactical D20 Action-Point Pool & Banking Engine for Logan's Battle Stadium, Separate Logan vs. Dad Inventories, Victory Mystery Reward Cards, Strict Outbound-Link Reddit Big-Box Filter & Live Shelf Spread Distribution Quick-Bar") (`public/index.html`, `dashboard.html`, `vampirePoller.ts`, `server.js`):**
     - **1. Upgraded Battle Stadium to "Roll D20 for AP Pool ➔ Spend / Chain / Bank AP" Tabletop System (`public/index.html` & `dashboard.html`):**

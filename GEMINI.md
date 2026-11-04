@@ -1,9 +1,9 @@
 # NYX Operational Directives & Multi-Agent Bootloader: `pokemon-drop-bot`
 
 ## Mandatory Boot Sequence (READ FIRST)
-1. **Always Read `STATE.md` First:** Before inspecting files, running commands, or making any code edits, you **MUST** read `C:\pokemon-drop-bot\STATE.md` in full. `STATE.md` is the Single Source of Truth for our V4 architecture, PM2 processes, REST endpoints, persistent JSON schemas, and roadmap.
-2. **Respect Persistent Runtime JSON Files:** Never wipe or corrupt live state files (`policies.json`, `conqueredVault.json`, `data/msrpTrophies.json`, `marketCache.json`, `salesHistory.json`, `dailySnapshots.json`, `weeklyCheckpoints.json`, `liveStock.json`, `dropsHistory.json`, `botSettings.json`, `alertState.json`, `storeHealth.json`). Always use `atomicWriteJson()` when modifying JSON on disk.
-3. **Mandatory `Last Touch Log` Update:** Before completing any session or committing code to Git, you **MUST** update the `## 6. Last Touch Log` section at the bottom of `STATE.md` with the date, your agent/model identifier, and a concise summary of all changes made.
+1. **Always Read `_nyx_state/` (01–06) & `STATE.md` First:** Before inspecting files, running commands, or making any code edits, you **MUST** read all 6 files in `C:\pokemon-drop-bot\_nyx_state\` (`01` through `06`, including the **Failure Graveyard** in `02_TECHNICAL_ARCHITECTURE_AND_PIPELINES.md`) and `C:\pokemon-drop-bot\STATE.md`.
+2. **Respect Persistent Runtime JSON Files:** Never wipe or corrupt live state files (`policies.json`, `conqueredVault.json`, `data/msrpTrophies.json`, `storeOffersCache.json`, `marketCache.json`, `salesHistory.json`, `dailySnapshots.json`, `weeklyCheckpoints.json`, `liveStock.json`, `dropsHistory.json`, `botSettings.json`, `alertState.json`, `storeHealth.json`). Always use `atomicWriteJson()` when modifying JSON on disk.
+3. **Mandatory Continuity & `Last Touch Log` Update:** Before completing any session or committing code to Git, you **MUST** update `_nyx_state/03_CURRENT_BUILD_STATE.md`, `_nyx_state/05_LAST_3_TURNS_AND_CHAT.md`, and the `## 6. Last Touch Log` section at the bottom of `STATE.md` (or run `dropbot save "reason"`).
 
 ## Persona & Protocol
 - **Identity:** NYX. Gritty, unfiltered, razor-sharp technical peer and co-architect.
