@@ -36,7 +36,7 @@ function getPackCountForSku(skuId, formFactor, name) {
     if (ffLower === 'booster box' ||
         ffLower === 'booster-box' ||
         idLower.endsWith('-booster-box') ||
-        /\b36[- ]?pack\b|booster\s*box/i.test(combined)) {
+        /\b36[- ]?pack\b|booster\s*(box|display)/i.test(combined)) {
         return 36;
     }
     if (ffLower === 'booster bundle' ||
@@ -197,32 +197,47 @@ function getMinPlausiblePriceFloor(formFactor) {
         return 18;
     return exports.MIN_PLAUSIBLE_PRICE_FLOORS[formFactor] ?? 18;
 }
-function getMaxPlausiblePriceCeiling(formFactor, ruleId, targetName) {
+function getMaxPlausiblePriceCeiling(formFactor, ruleId, targetName, policyOverride) {
     const key = `${ruleId || ''} ${targetName || ''}`.toLowerCase();
     const isSpecialSet = /\b151\b|paldean[- ]fates|prismatic|crown[- ]zenith/i.test(key);
     const isSwsh = (/^swsh-|sword\s*&\s*shield|battle[- ]styles|chilling[- ]reign|evolving[- ]skies|celebrations|fusion[- ]strike|brilliant[- ]stars|astral[- ]radiance|pokemon[- ]go|lost[- ]origin|silver[- ]tempest|vivid[- ]voltage|darkness[- ]ablaze|rebel[- ]clash|shining[- ]fates|champions[- ]path|hidden[- ]fates/i.test(key)) && !/crown[- ]zenith/i.test(key);
+    const policy = policyOverride ||
+        (Array.isArray(exports.WATCH_POLICIES)
+            ? exports.WATCH_POLICIES.find(p => (ruleId && p.id === ruleId) || (targetName && p.name === targetName))
+            : undefined);
+    const dynamicCeiling = policy
+        ? Math.max((Number(policy.estimatedMarketValue) || 0) * 1.65, (Number(policy.maxMarketBuyPrice) || 0) * 1.65, (Number(policy.msrpCeiling) || 0) * 3.5)
+        : 0;
+    let baseCeiling = 2600;
     if (formFactor === 'ETB') {
         if (isSpecialSet)
-            return 210;
-        if (isSwsh)
-            return 450;
-        return 115;
+            baseCeiling = 285;
+        else if (isSwsh)
+            baseCeiling = 450;
+        else
+            baseCeiling = 285;
     }
-    if (formFactor === 'Booster Box') {
-        if (isSwsh)
-            return 1600;
-        return 275;
+    else if (formFactor === 'Booster Box') {
+        if (/evolving[- ]skies/i.test(key))
+            baseCeiling = 3200;
+        else if (isSwsh)
+            baseCeiling = 1600;
+        else
+            baseCeiling = 565;
     }
-    if (formFactor === 'Booster Bundle') {
-        return 80;
+    else if (formFactor === 'Booster Bundle') {
+        baseCeiling = 98;
     }
-    if (formFactor === 'ETB Case') {
-        return 2200;
+    else if (formFactor === 'ETB Case') {
+        baseCeiling = 2500;
     }
-    if (formFactor === 'Master Case') {
-        return 2600;
+    else if (formFactor === 'Master Case') {
+        if (/evolving[- ]skies/i.test(key))
+            baseCeiling = 18000;
+        else
+            baseCeiling = 3500;
     }
-    return 2600;
+    return Math.round(Math.max(baseCeiling, dynamicCeiling) * 100) / 100;
 }
 function isValidSkuForFormFactor(title, formFactor, price, options) {
     const combinedLower = ` ${title} ${options?.handle || ''} `.toLowerCase();
@@ -285,6 +300,14 @@ const configManager_1 = require("./src/config/configManager");
 function atomicWriteJson(filePath, data) {
     (0, configManager_1.atomicWriteJson)(filePath, data);
 }
+function normalizePolicyMatcher(m) {
+    if (!m)
+        return m;
+    return m
+        .replace(/(?<!\()mega evolution /gi, '(mega evolution )?')
+        .replace(/scarlet\s+violet/gi, 'scarlet.*violet')
+        .replace(/booster(\.\*|\s+)box/gi, 'booster.*(box|display)');
+}
 function loadPolicies() {
     try {
         const parsed = (0, configManager_1.loadMergedPoliciesRaw)();
@@ -295,7 +318,7 @@ function loadPolicies() {
         return parsed.map((item) => ({
             ...item,
             packCount: item.packCount || getPackCountForSku(item.id, item.formFactor, item.name),
-            matchers: (item.matchers || []).map((m) => new RegExp(m, 'i')),
+            matchers: (item.matchers || []).map((m) => new RegExp(normalizePolicyMatcher(m), 'i')),
             negativeMatchers: exports.GLOBAL_JUNK_EXCLUSIONS,
         }));
     }

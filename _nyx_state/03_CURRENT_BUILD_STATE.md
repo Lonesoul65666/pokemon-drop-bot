@@ -5,10 +5,10 @@
 ---
 
 ## 1. Live System Snapshot
-- **Current Phase:** **V5 Slice 2 Complete** (Deleted redundant 9,780-line `dashboard.html` clone, extracted Logan's Battle Stadium into `public/css/stadium.css` + 4 modular JS files under `public/js/stadium/`, trimmed `public/index.html` from `9,780` to `5,543` lines, and Hard-Froze Logan's Stadium; Ready for **V5 Slice 3: Fix Deal Brain & Scam Shield**).
-- **Last Checkpoint Timestamp:** `2026-11-04 16:32 CST`
+- **Current Phase:** **V5 Slice 3 Complete** (Unblocked Pre-Order sliders, fixed `$6.99` shipping blocking `$54.99` MSRP Unicorns and limit-1 drops, added the `+$5` ETB / `+$10` Box Close-Call Grace Cushion, normalized `booster.*(box|display)` matchers, raised `getMaxPlausiblePriceCeiling()`, scoped `alertState.json` cooldowns to `${storeName}::${skuId}`, added 4-tier plain-English shelf status badges across `storeOffersCache.json` and the UI, and wired the Marketplace Scam & Shipping Trap Shield; Ready for **V5 Slice 4: Fix Narrow Shopify Store Collection Paths, Launch 15-Second Tier-1 Fast Restock Poller & Wire Honest Big-Box SKU/TCIN + Stealth Browser Polling**).
+- **Last Checkpoint Timestamp:** `2026-11-04 17:04 CST`
 - **Git Branch:** `main`
-- **Parent Baseline Commit:** `89da145` (`V5 Slice 2: Extract Logan Battle Stadium into modular public/js/stadium/ files, delete duplicate 9780-line dashboard.html clone, and hard-freeze Stadium`)
+- **Parent Baseline Commit:** `51e0616` (`V5 Slice 3: Unblock pre-order sliders and MSRP shipping, add / Close-Call cushion, per-store cooldowns, and TCGPlayer scam shield`)
 - **PM2 Process Status:**
   - `pokemon-drop-bot` (id `0`, `index.js`): **ONLINE** (`0` crashes, all 90 active Shopify LGS stores healthy)
   - `drop-bot-dashboard` (id `1`, `server.js` on `http://localhost:3000`): **ONLINE** (`HTTP 200 OK` across `/`, `/dashboard.html`, `/css/stadium.css`, `/js/stadium/stadium-data.js`, `/js/stadium/stadium-audio.js`, `/js/stadium/stadium-combat.js`, `/js/stadium/stadium-ui.js`, and `/api/status`)
@@ -37,9 +37,9 @@
 | `public/js/stadium/stadium-ui.js` | 1,641 | **HARD-FROZEN (V5 Slice 2)** | Arena DOM Rendering, 4 Visual Attack Animations, Trophy/Squad Drawers & `window.*` Entrypoints (`git diff = 0 lines`) |
 | `public/index.html` | 5,543 | **ACTIVE (V5 Slice 2)** | Trimmed by `-4,237` lines (`9,780 -> 5,543`); serves `/`, `/index.html`, and `/dashboard.html` |
 | `dashboard.html` | 0 (Deleted) | **DELETED (V5 Slice 2)** | Removed redundant 9,780-line root clone via `git rm dashboard.html` |
-| `evaluator.ts` | 1,013 | **NEXT UP (V5 Slice 3)** | Fix Pre-Order override, `$6.99` shipping unicorn trap, and limit-1 drops in Slice 3 |
-| `policies.ts` | 387 | **NEXT UP (V5 Slice 3)** | Add `(box\|display)` normalization & raise `getMaxPlausiblePriceCeiling()` in Slice 3 |
-| `vampirePoller.ts` | 996 | **NEXT UP (V5 Slice 3/4)** | Add Marketplace BS Detector (`$35+` shipping traps & unverified deep-discount bait) in Slice 3; Big-Box TCIN/SKU in Slice 4 |
-| `lgsPoller.ts` | 594 | **SLATED FOR SLICE 4** | Fix narrow `resolvedPath` feeds & launch 15s Tier-1 Fast Poller in Slice 4 |
+| `evaluator.ts` | 1,290 | **ACTIVE (V5 Slice 3)** | Unblocked pre-order sliders, `$54.99` MSRP Unicorns w/ `$6.99` ship, `+$5/+$10` Close-Call Cushion, `${store}::${sku}` cooldowns, plain-English `statusTag`, and Scam Shield |
+| `policies.ts` | 412 | **ACTIVE (V5 Slice 3)** | Normalized `booster.*(box\|display)` matchers & dynamic `getMaxPlausiblePriceCeiling()` (`709` Destined Rivals, `285` SV ETBs, `4,207` Evolving Skies) |
+| `vampirePoller.ts` | 1,019 | **ACTIVE (V5 Slice 3 / Next Slice 4)** | Wired Marketplace Scam & Shipping Trap Shield (`shipping > $35` or `>20%`, unverified 1-qty `>35%` under market, real `freeShipping`); Big-Box TCIN/SKU in Slice 4 |
+| `lgsPoller.ts` | 594 | **NEXT UP (V5 Slice 4)** | Fix narrow `resolvedPath` feeds & launch 15s Tier-1 Fast Poller in Slice 4 |
 | `src/marketSync.ts` | 168 | **ACTIVE (V5 Slice 1)** | Routes 6-hour baseline updates exclusively to `marketCache.json` (never touches `userPreferences.json`) |
-| `server.js` | 2,200 | **ACTIVE (V5 Slice 2)** | Routes `/`, `/index.html`, `/dashboard.html` to `public/index.html` and serves `public/css/stadium.css` + `public/js/stadium/*.js` |
+| `server.js` | 2,352 | **ACTIVE (V5 Slice 3)** | Serves `public/index.html` + Stadium modules and enriches all shelf/bounty offers with plain-English `statusTag` & `statusTier` |

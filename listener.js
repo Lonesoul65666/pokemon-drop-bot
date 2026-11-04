@@ -65,7 +65,11 @@ async function processIncomingDrop(item) {
                 bigBoxTier: result.bigBoxTier,
                 bigBoxBadge: result.bigBoxBadge,
                 marketplaceWarning: result.marketplaceWarning,
-                priorityFront: result.priorityFront
+                priorityFront: result.priorityFront,
+                statusTier: result.statusTier,
+                statusTag: result.statusTag,
+                isCloseCall: result.isCloseCall,
+                closeCallDelta: result.closeCallDelta
             });
             await Promise.race([
                 alertPromise,

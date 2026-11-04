@@ -120,6 +120,10 @@ export interface DropPayload {
   bigBoxBadge?: string;
   marketplaceWarning?: string;
   priorityFront?: boolean;
+  statusTier?: string;
+  statusTag?: string;
+  isCloseCall?: boolean;
+  closeCallDelta?: number;
 }
 
 interface ActiveDiscordMessage {
@@ -260,6 +264,10 @@ function recordDropHistory(drop: DropPayload) {
       bigBoxTier: drop.bigBoxTier,
       bigBoxBadge: drop.bigBoxBadge,
       marketplaceWarning: drop.marketplaceWarning,
+      statusTier: drop.statusTier,
+      statusTag: drop.statusTag,
+      isCloseCall: Boolean(drop.isCloseCall),
+      closeCallDelta: drop.closeCallDelta,
       marketValue: drop.marketValue || 0,
       discountPct: drop.discountPct || 0,
       url: drop.url,

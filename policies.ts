@@ -57,7 +57,7 @@ export function getPackCountForSku(skuId?: string, formFactor?: string, name?: s
     ffLower === 'booster box' ||
     ffLower === 'booster-box' ||
     idLower.endsWith('-booster-box') ||
-    /\b36[- ]?pack\b|booster\s*box/i.test(combined)
+    /\b36[- ]?pack\b|booster\s*(box|display)/i.test(combined)
   ) {
     return 36;
   }
@@ -242,32 +242,51 @@ export function getMinPlausiblePriceFloor(formFactor?: string): number {
   return MIN_PLAUSIBLE_PRICE_FLOORS[formFactor] ?? 18;
 }
 
-export function getMaxPlausiblePriceCeiling(formFactor?: string, ruleId?: string, targetName?: string): number {
+export function getMaxPlausiblePriceCeiling(
+  formFactor?: string,
+  ruleId?: string,
+  targetName?: string,
+  policyOverride?: Partial<PolicyRule>
+): number {
   const key = `${ruleId || ''} ${targetName || ''}`.toLowerCase();
   const isSpecialSet = /\b151\b|paldean[- ]fates|prismatic|crown[- ]zenith/i.test(key);
   const isSwsh = (
     /^swsh-|sword\s*&\s*shield|battle[- ]styles|chilling[- ]reign|evolving[- ]skies|celebrations|fusion[- ]strike|brilliant[- ]stars|astral[- ]radiance|pokemon[- ]go|lost[- ]origin|silver[- ]tempest|vivid[- ]voltage|darkness[- ]ablaze|rebel[- ]clash|shining[- ]fates|champions[- ]path|hidden[- ]fates/i.test(key)
   ) && !/crown[- ]zenith/i.test(key);
 
+  const policy =
+    policyOverride ||
+    (Array.isArray(WATCH_POLICIES)
+      ? WATCH_POLICIES.find(p => (ruleId && p.id === ruleId) || (targetName && p.name === targetName))
+      : undefined);
+
+  const dynamicCeiling = policy
+    ? Math.max(
+        (Number(policy.estimatedMarketValue) || 0) * 1.65,
+        (Number(policy.maxMarketBuyPrice) || 0) * 1.65,
+        (Number(policy.msrpCeiling) || 0) * 3.5
+      )
+    : 0;
+
+  let baseCeiling = 2600;
   if (formFactor === 'ETB') {
-    if (isSpecialSet) return 210;
-    if (isSwsh) return 450;
-    return 115;
+    if (isSpecialSet) baseCeiling = 285;
+    else if (isSwsh) baseCeiling = 450;
+    else baseCeiling = 285;
+  } else if (formFactor === 'Booster Box') {
+    if (/evolving[- ]skies/i.test(key)) baseCeiling = 3200;
+    else if (isSwsh) baseCeiling = 1600;
+    else baseCeiling = 565;
+  } else if (formFactor === 'Booster Bundle') {
+    baseCeiling = 98;
+  } else if (formFactor === 'ETB Case') {
+    baseCeiling = 2500;
+  } else if (formFactor === 'Master Case') {
+    if (/evolving[- ]skies/i.test(key)) baseCeiling = 18000;
+    else baseCeiling = 3500;
   }
-  if (formFactor === 'Booster Box') {
-    if (isSwsh) return 1600;
-    return 275;
-  }
-  if (formFactor === 'Booster Bundle') {
-    return 80;
-  }
-  if (formFactor === 'ETB Case') {
-    return 2200;
-  }
-  if (formFactor === 'Master Case') {
-    return 2600;
-  }
-  return 2600;
+
+  return Math.round(Math.max(baseCeiling, dynamicCeiling) * 100) / 100;
 }
 
 export function isValidSkuForFormFactor(
@@ -359,6 +378,14 @@ export function atomicWriteJson(filePath: string, data: any): void {
   cmAtomicWriteJson(filePath, data);
 }
 
+function normalizePolicyMatcher(m: string): string {
+  if (!m) return m;
+  return m
+    .replace(/(?<!\()mega evolution /gi, '(mega evolution )?')
+    .replace(/scarlet\s+violet/gi, 'scarlet.*violet')
+    .replace(/booster(\.\*|\s+)box/gi, 'booster.*(box|display)');
+}
+
 export function loadPolicies(): PolicyRule[] {
   try {
     const parsed = loadMergedPoliciesRaw();
@@ -370,7 +397,7 @@ export function loadPolicies(): PolicyRule[] {
     return parsed.map((item: any) => ({
       ...item,
       packCount: item.packCount || getPackCountForSku(item.id, item.formFactor, item.name),
-      matchers: (item.matchers || []).map((m: string) => new RegExp(m, 'i')),
+      matchers: (item.matchers || []).map((m: string) => new RegExp(normalizePolicyMatcher(m), 'i')),
       negativeMatchers: GLOBAL_JUNK_EXCLUSIONS,
     }));
   } catch (err: any) {

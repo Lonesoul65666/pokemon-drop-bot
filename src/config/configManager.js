@@ -140,7 +140,10 @@ function loadMergedPoliciesRaw() {
         const owned = Boolean(pref.owned ?? pref.inVault ?? false);
         const inVault = Boolean(pref.inVault ?? pref.owned ?? false);
         const active = pref.active !== undefined ? Boolean(pref.active) : true;
-        const estimatedMarketValue = Number(mc.estimatedMarketValue || cat.defaultMarketBaseline || mc.rollingAverage || msrpCeiling);
+        const estimatedMarketValue = Number((Number(mc.rollingAverage) > 0 ? Number(mc.rollingAverage) : 0) ||
+            mc.estimatedMarketValue ||
+            cat.defaultMarketBaseline ||
+            msrpCeiling);
         const merged = {
             id: cat.id,
             name: cat.name,

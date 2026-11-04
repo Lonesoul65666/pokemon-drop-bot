@@ -184,7 +184,10 @@ export function loadMergedPoliciesRaw(): any[] {
     const inVault = Boolean(pref.inVault ?? pref.owned ?? false);
     const active = pref.active !== undefined ? Boolean(pref.active) : true;
     const estimatedMarketValue = Number(
-      mc.estimatedMarketValue || cat.defaultMarketBaseline || mc.rollingAverage || msrpCeiling
+      (Number(mc.rollingAverage) > 0 ? Number(mc.rollingAverage) : 0) ||
+      mc.estimatedMarketValue ||
+      cat.defaultMarketBaseline ||
+      msrpCeiling
     );
 
     const merged: Record<string, any> = {

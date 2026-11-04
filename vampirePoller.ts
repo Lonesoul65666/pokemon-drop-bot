@@ -38,12 +38,10 @@ export const BIG_BOX_STORES = [
   'Barnes & Noble'
 ];
 
-function isShippingScam(itemPrice: number, shippingPrice?: number, formFactor?: string): boolean {
+function isShippingScam(itemPrice: number, shippingPrice?: number, _formFactor?: string): boolean {
   if (shippingPrice === undefined || shippingPrice <= 0) return false;
-  const isCase = formFactor === 'ETB Case' || formFactor === 'Master Case';
-  const maxAbsShip = isCase ? 75 : 35;
-  if (shippingPrice > maxAbsShip) return true;
-  if (itemPrice > 0 && shippingPrice > itemPrice * 0.30) return true;
+  if (shippingPrice > 35.00) return true;
+  if (itemPrice > 0 && shippingPrice > itemPrice * 0.20) return true;
   return false;
 }
 
@@ -774,8 +772,18 @@ async function getBestVerifiedTcgSeller(
   prodId: number,
   minFloor: number,
   maxCeiling: number,
-  formFactor?: string
-): Promise<{ price: number; itemPrice: number; shipping: number; sellerName: string; rating: number; sales: number } | null> {
+  formFactor?: string,
+  marketValue = 0
+): Promise<{
+  price: number;
+  itemPrice: number;
+  shipping: number;
+  sellerName: string;
+  rating: number;
+  sales: number;
+  quantity: number;
+  sellerVerified: boolean;
+} | null> {
   try {
     const url = `https://mp-search-api.tcgplayer.com/v1/product/${prodId}/listings`;
     const body = {
@@ -792,12 +800,27 @@ async function getBestVerifiedTcgSeller(
     const res = await smartPost(url, body, { 'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0' }, 8000);
     const listings = res.data?.results?.[0]?.results || [];
     for (const l of listings) {
-      const rating = parseFloat(l.sellerRating || 100);
+      const rating = parseFloat(l.sellerRating || 0);
       if (rating < 95) continue;
       const itemPrice = parseFloat(l.price || 0);
-      const shipPrice = parseFloat(l.shippingPrice || 0);
+      const shipPrice = parseFloat(l.shippingPrice || l.sellerShippingPrice || 0);
       if (isShippingScam(itemPrice, shipPrice, formFactor)) continue;
       const total = Math.round((itemPrice + shipPrice) * 100) / 100;
+      const quantity = parseInt(l.quantity || '1', 10);
+      const sales = parseInt(l.completedSales || l.sellerSales || '0', 10);
+      const isVerifiedSeller = Boolean(
+        l.verifiedSeller ||
+        l.goldSeller ||
+        l.directProduct ||
+        l.certifiedHobbyShop ||
+        sales >= 50
+      );
+
+      // V5 Slice 3 Scam Shield: Reject unverified / non-certified 1-qty sellers pricing high-value items (market > $200) at >35% below market
+      if ((!isVerifiedSeller || quantity <= 1) && marketValue > 200 && total < marketValue * 0.65) {
+        continue;
+      }
+
       if (itemPrice > 0 && total >= minFloor && total <= maxCeiling) {
         return {
           price: total,
@@ -805,7 +828,9 @@ async function getBestVerifiedTcgSeller(
           shipping: shipPrice,
           sellerName: l.sellerName || 'Verified Shop',
           rating,
-          sales: parseInt(l.completedSales || l.sellerSales || '500', 10)
+          sales,
+          quantity,
+          sellerVerified: isVerifiedSeller
         };
       }
     }
@@ -844,13 +869,14 @@ export async function pollTcgPlayerUndercuts(): Promise<void> {
       tcgCursor = (tcgCursor + 1) % priorityRotation.length;
       const formFactor = policy.formFactor || 'Booster Box';
       const minFloor = getMinPlausiblePriceFloor(formFactor);
-      const maxCeiling = getMaxPlausiblePriceCeiling(formFactor, policy.id, policy.name);
+      const maxCeiling = getMaxPlausiblePriceCeiling(formFactor, policy.id, policy.name, policy);
       const effectiveCeiling = Math.max(policy.msrpCeiling || 0, policy.maxMarketBuyPrice || 0);
+      const marketVal = Number(policy.estimatedMarketValue || effectiveCeiling || 0);
 
       try {
         if ((policy as any).tcgProductId) {
           const prodId = (policy as any).tcgProductId;
-          const bestSeller = await getBestVerifiedTcgSeller(prodId, minFloor, maxCeiling, formFactor);
+          const bestSeller = await getBestVerifiedTcgSeller(prodId, minFloor, maxCeiling, formFactor, marketVal);
           if (bestSeller && bestSeller.price >= minFloor && bestSeller.price <= maxCeiling) {
             const isUnderTrigger = bestSeller.price <= effectiveCeiling;
             const prev = lowestTcgSeenMap.get(policy.id);
@@ -875,13 +901,16 @@ export async function pollTcgPlayerUndercuts(): Promise<void> {
                 title: policy.name,
                 retailer: `${bestSeller.sellerName} (TCGPlayer • ${bestSeller.rating}%)`,
                 url: `https://www.tcgplayer.com/product/${prodId}?Language=English`,
-                price: bestSeller.price,
+                price: bestSeller.itemPrice,
                 itemPrice: bestSeller.itemPrice,
                 shippingPrice: bestSeller.shipping,
                 shippingNoteOverride,
-                stock: undefined,
+                stock: bestSeller.quantity,
                 itemId: `tcg_${prodId}`,
-                freeShipping: true
+                freeShipping: (bestSeller.shipping ?? 0) === 0,
+                sellerVerified: bestSeller.sellerVerified,
+                sellerSales: bestSeller.sales,
+                isMarketplace3P: true
               });
             }
           }
@@ -918,26 +947,19 @@ export async function pollTcgPlayerUndercuts(): Promise<void> {
           if (!doesTcgResultMatchFormFactor(prodTitle, policy.name, formFactor, undefined, policy.id)) continue;
 
           const prodId = Math.floor(Number(item.productId));
-          const bestSeller = await getBestVerifiedTcgSeller(prodId, minFloor, maxCeiling, formFactor);
-          const rawItemPrice = parseFloat(item.lowestPrice || 0);
-          const rawWithShipping = parseFloat(item.lowestPriceWithShipping || item.lowestPrice || 0);
-          const rawShipDiff = rawWithShipping > rawItemPrice && rawItemPrice > 0
-            ? Math.round((rawWithShipping - rawItemPrice) * 100) / 100
-            : 0;
+          const bestSeller = await getBestVerifiedTcgSeller(prodId, minFloor, maxCeiling, formFactor, marketVal);
 
-          if (!bestSeller && isShippingScam(rawItemPrice, rawShipDiff, formFactor)) {
+          // V5 Slice 3 Scam Shield: Never fall back to unverified raw search-card listings if getBestVerifiedTcgSeller rejected them!
+          if (!bestSeller) {
             markLiveStockOut(`tcg_${prodId}`);
             break;
           }
 
-          const fallbackCandidate = rawWithShipping || rawItemPrice;
-          const lowestPrice = bestSeller ? bestSeller.price : fallbackCandidate;
+          const lowestPrice = bestSeller.price;
           if (!lowestPrice || lowestPrice < minFloor || lowestPrice > maxCeiling) continue;
 
-          const parsedItemPrice = bestSeller ? bestSeller.itemPrice : (rawItemPrice > 0 ? rawItemPrice : lowestPrice);
-          const parsedShipPrice = bestSeller
-            ? bestSeller.shipping
-            : (rawShipDiff > 0 ? rawShipDiff : undefined);
+          const parsedItemPrice = bestSeller.itemPrice;
+          const parsedShipPrice = bestSeller.shipping;
 
           if (isShippingScam(parsedItemPrice, parsedShipPrice, formFactor)) {
             markLiveStockOut(`tcg_${prodId}`);
@@ -950,9 +972,7 @@ export async function pollTcgPlayerUndercuts(): Promise<void> {
             lowestPrice
           );
 
-          const shopLabel = bestSeller
-            ? `${bestSeller.sellerName} (TCGPlayer • ${bestSeller.rating}%)`
-            : `TCGPlayer Verified Seller ($${parsedItemPrice.toFixed(2)})`;
+          const shopLabel = `${bestSeller.sellerName} (TCGPlayer • ${bestSeller.rating}%)`;
 
           const isUnderTrigger = lowestPrice <= effectiveCeiling;
           const prev = lowestTcgSeenMap.get(policy.id);
@@ -974,14 +994,17 @@ export async function pollTcgPlayerUndercuts(): Promise<void> {
               title: prodTitle,
               retailer: shopLabel,
               url: `https://www.tcgplayer.com/product/${prodId}?Language=English`,
-              price: lowestPrice,
+              price: parsedItemPrice,
               itemPrice: parsedItemPrice,
               shippingPrice: parsedShipPrice,
               shippingNoteOverride,
-              stock: undefined,
+              stock: bestSeller.quantity,
               itemId: `tcg_${prodId}`,
               isPreOrder,
-              freeShipping: true
+              freeShipping: (parsedShipPrice ?? 0) === 0,
+              sellerVerified: bestSeller.sellerVerified,
+              sellerSales: bestSeller.sales,
+              isMarketplace3P: true
             });
           }
           break;

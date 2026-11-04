@@ -504,10 +504,14 @@ async function handleBountyRecon(req, res) {
     const computeTriggerPrice = (pol, marketVal) => {
       if (!pol) return 0;
       const msrp = Number(pol.msrpCeiling || 0);
+      const maxBuy = Number(pol.maxMarketBuyPrice || 0);
+      if (maxBuy > 0) return Math.max(msrp, maxBuy);
       const disc = Number(pol.minDiscountPercent || 15);
       const mktTrigger = marketVal > 0 ? Math.round(marketVal * (1 - disc / 100) * 100) / 100 : msrp;
       return Math.max(msrp, mktTrigger);
     };
+
+    const muteVaultedSetting = Boolean(loadGlobalSettings()?.muteVaulted);
 
     const pushCandidate = (cand, polRef) => {
       if (!cand || !cand.landedPrice || cand.landedPrice <= 0) return;
@@ -526,6 +530,18 @@ async function handleBountyRecon(req, res) {
       const shipDiff = Math.max(0, Math.round((cand.landedPrice - (cand.price || cand.landedPrice)) * 100) / 100);
       const shippingNote = cand.shippingNote || (shipDiff > 0.05 ? `+ $${shipDiff.toFixed(2)} Ship` : '+ FREE Ship');
       const triggerPrice = computeTriggerPrice(polRef, cand.marketValue);
+      const shelfStatus = computeShelfStatusForOffer({
+        dropPrice: Number(cand.price || cand.landedPrice),
+        landedPrice: Number(cand.landedPrice),
+        estimatedShipping: shipDiff,
+        triggerPrice,
+        msrpCeiling: Number((polRef && polRef.msrpCeiling) || cand.msrp || 0),
+        marketValue: Number(cand.marketValue || 0),
+        formFactor: cand.formFactor || (polRef && polRef.formFactor),
+        owned: Boolean(polRef && (polRef.owned || polRef.inVault)),
+        muteVaulted: muteVaultedSetting,
+        storeName: cand.store
+      });
       candidates.push({
         ...cand,
         era: cand.era || (polRef && polRef.era) || 'Modern Era',
@@ -536,7 +552,11 @@ async function handleBountyRecon(req, res) {
         pricePerPack: rip.pricePerPack,
         isRipValueLeader: rip.isRipValueLeader,
         spreadDollars,
-        discountPct
+        discountPct,
+        statusTier: shelfStatus.statusTier,
+        statusTag: shelfStatus.statusTag,
+        isCloseCall: shelfStatus.isCloseCall,
+        closeCallDelta: shelfStatus.closeCallDelta
       });
     };
 
@@ -978,7 +998,19 @@ function computeNearMissesAndBestOffers() {
       isRipValueLeader: rip.isRipValueLeader,
       owned: Boolean(pol.owned || pol.inVault),
       isPreRelease,
-      preReleaseStatusTag: isPreRelease ? PRE_RELEASE_BLEED_TAG : undefined
+      preReleaseStatusTag: isPreRelease ? PRE_RELEASE_BLEED_TAG : undefined,
+      ...computeShelfStatusForOffer({
+        dropPrice: price,
+        landedPrice,
+        estimatedShipping: Math.max(0, landedPrice - price),
+        triggerPrice,
+        msrpCeiling: Number(pol.msrpCeiling || 0),
+        marketValue,
+        formFactor: pol.formFactor,
+        owned: Boolean(pol.owned || pol.inVault),
+        muteVaulted: Boolean(loadGlobalSettings()?.muteVaulted),
+        storeName: cand.retailer
+      })
     };
 
     bestCurrentOffers[ruleId] = enrichedOffer;
@@ -1008,6 +1040,82 @@ function computeNearMissesAndBestOffers() {
 
   nearMisses.sort((a, b) => a.effectiveGapPct - b.effectiveGapPct || a.effectiveGapDollars - b.effectiveGapDollars);
   return { bestCurrentOffers, nearMisses };
+}
+
+function getCloseCallGraceBuffer(formFactor) {
+  const ff = String(formFactor || '').toLowerCase();
+  if (ff === 'booster box' || ff === 'etb case' || ff === 'master case' || ff.includes('box') || ff.includes('case')) {
+    return 10.00;
+  }
+  return 5.00;
+}
+
+function computeShelfStatusForOffer(params) {
+  const dropPrice = Number(params.dropPrice || params.landedPrice || 0);
+  const landedPrice = Number(params.landedPrice || dropPrice || 0);
+  const estimatedShipping = Number(params.estimatedShipping ?? Math.max(0, landedPrice - dropPrice));
+  const triggerPrice = Number(params.triggerPrice || params.msrpCeiling || 54.99);
+  const msrpCeiling = Number(params.msrpCeiling || 54.99);
+  const marketValue = Number(params.marketValue || triggerPrice || msrpCeiling);
+  const formFactor = params.formFactor || 'ETB';
+  const owned = Boolean(params.owned);
+  const muteVaulted = Boolean(params.muteVaulted);
+  const isMarketplace3P = Boolean(params.isMarketplace3P || /tcgplayer|ebay|3p|marketplace/i.test(String(params.storeName || '')));
+  const isMsrpUnicorn = Boolean(msrpCeiling > 0 && dropPrice <= Math.round(msrpCeiling * 1.08 * 100) / 100 && estimatedShipping <= 10.00);
+
+  const graceBuffer = getCloseCallGraceBuffer(formFactor);
+  const canUseShelfPrice = !isMarketplace3P && estimatedShipping <= 10.00;
+  const comparePrice = (canUseShelfPrice && dropPrice <= triggerPrice + graceBuffer) ? dropPrice : landedPrice;
+
+  const isUnderOrAtTarget = comparePrice <= triggerPrice || landedPrice <= triggerPrice || isMsrpUnicorn;
+  const rawOver = Math.round((comparePrice - triggerPrice) * 100) / 100;
+  const withinGraceBuffer = rawOver > 0 && rawOver <= graceBuffer;
+  const withinMarketOrMsrpGuard =
+    (marketValue > 0 && comparePrice <= marketValue * 0.93) ||
+    (msrpCeiling > 0 && comparePrice <= msrpCeiling * 1.10);
+  const isCloseCall = !isUnderOrAtTarget && withinGraceBuffer && withinMarketOrMsrpGuard;
+  const closeCallDelta = isCloseCall ? rawOver : 0;
+
+  if (owned && muteVaulted && !isMsrpUnicorn) {
+    return {
+      statusTier: 'MUTED_OWNED',
+      statusTag: '⟦ MUTED: OWNED ON WALL ⟧',
+      isCloseCall,
+      closeCallDelta,
+      comparePrice
+    };
+  }
+
+  if (isUnderOrAtTarget) {
+    const refPrice = landedPrice <= triggerPrice ? landedPrice : dropPrice;
+    const underDollars = Math.max(0, Math.round((triggerPrice - refPrice) * 100) / 100);
+    return {
+      statusTier: 'UNDER_TARGET',
+      statusTag: `⟦ UNDER TARGET (-$${underDollars.toFixed(2)}) ⟧`,
+      isCloseCall: false,
+      closeCallDelta: 0,
+      comparePrice: refPrice
+    };
+  }
+
+  if (isCloseCall) {
+    return {
+      statusTier: 'CLOSE_CALL',
+      statusTag: `⟦ CLOSE CALL (+$${closeCallDelta.toFixed(2)} OVER TARGET — IN CUSHION) ⟧`,
+      isCloseCall: true,
+      closeCallDelta,
+      comparePrice
+    };
+  }
+
+  const overDollars = Math.max(0.01, Math.round((landedPrice - triggerPrice) * 100) / 100);
+  return {
+    statusTier: 'NEAR_MISS',
+    statusTag: `⟦ NEAR MISS (+$${overDollars.toFixed(2)} OVER TARGET) ⟧`,
+    isCloseCall: false,
+    closeCallDelta: 0,
+    comparePrice: landedPrice
+  };
 }
 
 const DAILY_SNAPSHOTS_PATH = path.resolve(__dirname, 'dailySnapshots.json');
@@ -1142,6 +1250,8 @@ function loadMergedStoreOffersBySku() {
     return merged[skuId];
   };
 
+  const muteVaultedSetting = Boolean(loadGlobalSettings()?.muteVaulted);
+
   // 1. Seed from storeOffersCache.json
   for (const [skuId, storeMap] of Object.entries(rawCache)) {
     if (!storeMap || typeof storeMap !== 'object') continue;
@@ -1153,18 +1263,37 @@ function loadMergedStoreOffersBySku() {
     for (const [storeKey, rec] of Object.entries(storeMap)) {
       if (!rec || !rec.landedPrice || rec.landedPrice <= 0) continue;
       const landed = Math.round(Number(rec.landedPrice) * 100) / 100;
+      const rawShip = Math.round(Number(rec.shipping || 0) * 100) / 100;
+      const rawPrice = (rawShip > 0 && Math.abs(Number(rec.price || landed) - landed) < 0.01 && landed > rawShip)
+        ? Math.round((landed - rawShip) * 100) / 100
+        : Math.round(Number(rec.price || landed) * 100) / 100;
+      if (rawShip > 35 || (/tcgplayer|ebay|3p/i.test(String(rec.storeName || storeKey)) && rawPrice > 0 && rawShip > rawPrice * 0.20)) {
+        continue;
+      }
       const rip = computeRipMetrics(landed, skuId, pol.formFactor, pol.name, pol.packCount);
       const discPct = mkt > 0 ? Math.round(((mkt - landed) / mkt) * 100) : 0;
       const firstSeen = Number(rec.firstSeenAt || rec.updatedAt || now);
       const pDelta = Number(rec.priceDelta || 0);
       const isFresh = Boolean(rec.isFreshRestock || (now - firstSeen) <= 6 * 3600 * 1000 || pDelta <= -0.50);
-      const underTrig = landed <= trig + 0.01;
+      const shelfStatus = computeShelfStatusForOffer({
+        dropPrice: rawPrice,
+        landedPrice: landed,
+        estimatedShipping: rawShip,
+        triggerPrice: trig,
+        msrpCeiling: Number(pol.msrpCeiling || 54.99),
+        marketValue: mkt,
+        formFactor: pol.formFactor,
+        owned: Boolean(pol.owned || pol.inVault),
+        muteVaulted: muteVaultedSetting,
+        storeName: rec.storeName || storeKey
+      });
+      const underTrig = shelfStatus.statusTier === 'UNDER_TARGET' || landed <= trig + 0.01;
       const gapDollars = Math.round((landed - trig) * 100) / 100;
       bucket[storeKey] = {
         skuId,
         productName: pol.name,
         skuName: pol.name,
-        listingTitle: String(rec.listingTitle || pol.name),
+        listingTitle: String(rec.listingTitle || rec.rawTitle || pol.name),
         formFactor: pol.formFactor || 'ETB',
         era: pol.era || 'Pokemon TCG',
         owned: Boolean(pol.owned || pol.inVault),
@@ -1172,10 +1301,14 @@ function loadMergedStoreOffersBySku() {
         triggerPrice: trig,
         marketValue: mkt,
         store: String(rec.storeName || storeKey).replace(/^[📡🚨💎🔥⚡🎯]+\s*/, '').trim(),
-        price: Math.round(Number(rec.price || landed) * 100) / 100,
-        shipping: Math.round(Number(rec.shipping || 0) * 100) / 100,
+        price: rawPrice,
+        shipping: rawShip,
         landedPrice: landed,
-        shippingNote: rec.freeShipNote || (Number(rec.shipping || 0) > 0 ? `+$${Number(rec.shipping).toFixed(2)} Ship` : '+FREE Shipping'),
+        shippingNote: rec.freeShipNote || (rawShip > 0 ? `+$${rawShip.toFixed(2)} Ship` : '+FREE Shipping'),
+        statusTier: shelfStatus.statusTier,
+        statusTag: shelfStatus.statusTag,
+        isCloseCall: shelfStatus.isCloseCall,
+        closeCallDelta: shelfStatus.closeCallDelta,
         packCount: rip.packCount,
         pricePerPack: rip.pricePerPack,
         isRipValueLeader: rip.isRipValueLeader,
@@ -1209,9 +1342,24 @@ function loadMergedStoreOffersBySku() {
     if (bucket[storeKey] && bucket[storeKey].landedPrice <= landed) return;
     const mkt = Number((telemetry[skuId]?.rollingAverage > 0) ? telemetry[skuId].rollingAverage : (pol.estimatedMarketValue || pol.msrpCeiling || 54.99));
     const trig = Math.max(Number(pol.maxMarketBuyPrice || 0), Number(pol.msrpCeiling || 0));
+    const rawPrice = Math.round(Number(item.price || landed) * 100) / 100;
+    const rawShip = Math.round(Number(item.shippingPrice || Math.max(0, landed - rawPrice)) * 100) / 100;
+    if (rawShip > 35 || (/tcgplayer|ebay|3p/i.test(cleanStore) && rawPrice > 0 && rawShip > rawPrice * 0.20)) return;
     const rip = computeRipMetrics(landed, skuId, pol.formFactor, pol.name, pol.packCount);
     const discPct = mkt > 0 ? Math.round(((mkt - landed) / mkt) * 100) : 0;
-    const underTrig = landed <= trig + 0.01;
+    const shelfStatus = computeShelfStatusForOffer({
+      dropPrice: rawPrice,
+      landedPrice: landed,
+      estimatedShipping: rawShip,
+      triggerPrice: trig,
+      msrpCeiling: Number(pol.msrpCeiling || 54.99),
+      marketValue: mkt,
+      formFactor: pol.formFactor,
+      owned: Boolean(pol.owned || pol.inVault),
+      muteVaulted: muteVaultedSetting,
+      storeName: cleanStore
+    });
+    const underTrig = shelfStatus.statusTier === 'UNDER_TARGET' || landed <= trig + 0.01;
     const gapDollars = Math.round((landed - trig) * 100) / 100;
     bucket[storeKey] = {
       skuId,
@@ -1225,10 +1373,14 @@ function loadMergedStoreOffersBySku() {
       triggerPrice: trig,
       marketValue: mkt,
       store: cleanStore,
-      price: Math.round(Number(item.price || landed) * 100) / 100,
-      shipping: Math.round(Number(item.shippingPrice || Math.max(0, landed - Number(item.price || landed))) * 100) / 100,
+      price: rawPrice,
+      shipping: rawShip,
       landedPrice: landed,
       shippingNote: item.freeShipNote || '+FREE Shipping',
+      statusTier: shelfStatus.statusTier,
+      statusTag: shelfStatus.statusTag,
+      isCloseCall: shelfStatus.isCloseCall,
+      closeCallDelta: shelfStatus.closeCallDelta,
       packCount: rip.packCount,
       pricePerPack: rip.pricePerPack,
       isRipValueLeader: rip.isRipValueLeader,

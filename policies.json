@@ -6,8 +6,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "mega evolution mega discovery.*booster box",
-      "booster box.*mega evolution mega discovery"
+      "(mega evolution )?mega discovery.*booster.*(box|display)",
+      "booster.*(box|display).*(mega evolution )?mega discovery"
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
@@ -27,8 +27,8 @@
     "formFactor": "Master Case",
     "image": "",
     "matchers": [
-      "case.*mega evolution mega discovery.*booster",
-      "mega evolution mega discovery.*booster.*case"
+      "case.*(mega evolution )?mega discovery.*booster",
+      "(mega evolution )?mega discovery.*booster.*case"
     ],
     "minStock": 1,
     "msrpCeiling": 970,
@@ -95,8 +95,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "mega evolution pitch black.*booster box",
-      "booster box.*mega evolution pitch black"
+      "(mega evolution )?pitch black.*booster.*(box|display)",
+      "booster.*(box|display).*(mega evolution )?pitch black"
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
@@ -116,8 +116,8 @@
     "formFactor": "Master Case",
     "image": "",
     "matchers": [
-      "case.*mega evolution pitch black.*booster",
-      "mega evolution pitch black.*booster.*case"
+      "case.*(mega evolution )?pitch black.*booster",
+      "(mega evolution )?pitch black.*booster.*case"
     ],
     "minStock": 1,
     "msrpCeiling": 970,
@@ -181,8 +181,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "mega evolution phantasmal flames.*booster box",
-      "booster box.*mega evolution phantasmal flames"
+      "(mega evolution )?phantasmal flames.*booster.*(box|display)",
+      "booster.*(box|display).*(mega evolution )?phantasmal flames"
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
@@ -202,8 +202,8 @@
     "formFactor": "Master Case",
     "image": "",
     "matchers": [
-      "case.*mega evolution phantasmal flames.*booster",
-      "mega evolution phantasmal flames.*booster.*case"
+      "case.*(mega evolution )?phantasmal flames.*booster",
+      "(mega evolution )?phantasmal flames.*booster.*case"
     ],
     "minStock": 1,
     "msrpCeiling": 970,
@@ -267,8 +267,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "mega evolution perfect order.*booster box",
-      "booster box.*mega evolution perfect order"
+      "(mega evolution )?perfect order.*booster.*(box|display)",
+      "booster.*(box|display).*(mega evolution )?perfect order"
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
@@ -288,8 +288,8 @@
     "formFactor": "Master Case",
     "image": "",
     "matchers": [
-      "case.*mega evolution perfect order.*booster",
-      "mega evolution perfect order.*booster.*case"
+      "case.*(mega evolution )?perfect order.*booster",
+      "(mega evolution )?perfect order.*booster.*case"
     ],
     "minStock": 1,
     "msrpCeiling": 970,
@@ -353,8 +353,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "mega evolution chaos rising.*booster box",
-      "booster box.*mega evolution chaos rising"
+      "(mega evolution )?chaos rising.*booster.*(box|display)",
+      "booster.*(box|display).*(mega evolution )?chaos rising"
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
@@ -374,8 +374,8 @@
     "formFactor": "Master Case",
     "image": "",
     "matchers": [
-      "case.*mega evolution chaos rising.*booster",
-      "mega evolution chaos rising.*booster.*case"
+      "case.*(mega evolution )?chaos rising.*booster",
+      "(mega evolution )?chaos rising.*booster.*case"
     ],
     "minStock": 1,
     "msrpCeiling": 970,
@@ -439,8 +439,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "delta.*(rayquaza|reign|ray).*booster.*box",
-      "booster.*box.*delta.*(rayquaza|reign|ray)"
+      "delta.*(rayquaza|reign|ray).*booster.*(box|display)",
+      "booster.*(box|display).*delta.*(rayquaza|reign|ray)"
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
@@ -573,8 +573,8 @@
     "formFactor": "Booster Bundle",
     "image": "",
     "matchers": [
-      "mega evolution ascended heroes.*booster bundle",
-      "booster bundle.*mega evolution ascended heroes"
+      "(mega evolution )?ascended heroes.*booster bundle",
+      "booster bundle.*(mega evolution )?ascended heroes"
     ],
     "minStock": 1,
     "msrpCeiling": 32,
@@ -659,8 +659,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "scarlet  violet base.*booster box",
-      "booster box.*scarlet  violet base"
+      "scarlet.*violet base.*booster.*(box|display)",
+      "booster.*(box|display).*scarlet.*violet base"
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
@@ -680,8 +680,8 @@
     "formFactor": "Master Case",
     "image": "",
     "matchers": [
-      "case.*scarlet  violet base.*booster",
-      "scarlet  violet base.*booster.*case"
+      "case.*scarlet.*violet base.*booster",
+      "scarlet.*violet base.*booster.*case"
     ],
     "minStock": 1,
     "msrpCeiling": 970,
@@ -789,8 +789,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "paldea evolved.*booster box",
-      "booster box.*paldea evolved"
+      "paldea evolved.*booster.*(box|display)",
+      "booster.*(box|display).*paldea evolved"
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
@@ -875,8 +875,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "obsidian flames.*booster box",
-      "booster box.*obsidian flames"
+      "obsidian flames.*booster.*(box|display)",
+      "booster.*(box|display).*obsidian flames"
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
@@ -1005,8 +1005,8 @@
     "formFactor": "Booster Bundle",
     "image": "",
     "matchers": [
-      "scarlet  violet 151.*booster bundle",
-      "booster bundle.*scarlet  violet 151"
+      "scarlet.*violet 151.*booster bundle",
+      "booster bundle.*scarlet.*violet 151"
     ],
     "minStock": 1,
     "msrpCeiling": 32,
@@ -1026,8 +1026,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "paradox rift.*booster box",
-      "booster box.*paradox rift"
+      "paradox rift.*booster.*(box|display)",
+      "booster.*(box|display).*paradox rift"
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
@@ -1221,8 +1221,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "temporal forces.*booster box",
-      "booster box.*temporal forces"
+      "temporal forces.*booster.*(box|display)",
+      "booster.*(box|display).*temporal forces"
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
@@ -1351,8 +1351,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "twilight masquerade.*booster box",
-      "booster box.*twilight masquerade"
+      "twilight masquerade.*booster.*(box|display)",
+      "booster.*(box|display).*twilight masquerade"
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
@@ -1502,8 +1502,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "stellar crown.*booster box",
-      "booster box.*stellar crown"
+      "stellar crown.*booster.*(box|display)",
+      "booster.*(box|display).*stellar crown"
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
@@ -1588,8 +1588,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "surging sparks.*booster box",
-      "booster box.*surging sparks"
+      "surging sparks.*booster.*(box|display)",
+      "booster.*(box|display).*surging sparks"
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
@@ -1739,8 +1739,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "journey together.*booster box",
-      "booster box.*journey together"
+      "journey together.*booster.*(box|display)",
+      "booster.*(box|display).*journey together"
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
@@ -1825,8 +1825,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "destined rivals.*booster box",
-      "booster box.*destined rivals"
+      "destined rivals.*booster.*(box|display)",
+      "booster.*(box|display).*destined rivals"
     ],
     "minStock": 1,
     "msrpCeiling": 161.64,
@@ -1911,8 +1911,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "battle styles.*booster box",
-      "booster box.*battle styles"
+      "battle styles.*booster.*(box|display)",
+      "booster.*(box|display).*battle styles"
     ],
     "minStock": 1,
     "msrpCeiling": 143.64,
@@ -2041,8 +2041,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "chilling reign.*booster box",
-      "booster box.*chilling reign"
+      "chilling reign.*booster.*(box|display)",
+      "booster.*(box|display).*chilling reign"
     ],
     "minStock": 1,
     "msrpCeiling": 143.64,
@@ -2171,8 +2171,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "evolving skies.*booster box",
-      "booster box.*evolving skies"
+      "evolving skies.*booster.*(box|display)",
+      "booster.*(box|display).*evolving skies"
     ],
     "minStock": 1,
     "msrpCeiling": 143.64,
@@ -2301,8 +2301,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "fusion strike.*booster box",
-      "booster box.*fusion strike"
+      "fusion strike.*booster.*(box|display)",
+      "booster.*(box|display).*fusion strike"
     ],
     "minStock": 1,
     "msrpCeiling": 143.64,
@@ -2387,8 +2387,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "brilliant stars.*booster box",
-      "booster box.*brilliant stars"
+      "brilliant stars.*booster.*(box|display)",
+      "booster.*(box|display).*brilliant stars"
     ],
     "minStock": 1,
     "msrpCeiling": 143.64,
@@ -2473,8 +2473,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "astral radiance.*booster box",
-      "booster box.*astral radiance"
+      "astral radiance.*booster.*(box|display)",
+      "booster.*(box|display).*astral radiance"
     ],
     "minStock": 1,
     "msrpCeiling": 143.64,
@@ -2603,8 +2603,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "lost origin.*booster box",
-      "booster box.*lost origin"
+      "lost origin.*booster.*(box|display)",
+      "booster.*(box|display).*lost origin"
     ],
     "minStock": 1,
     "msrpCeiling": 143.64,
@@ -2689,8 +2689,8 @@
     "formFactor": "Booster Box",
     "image": "",
     "matchers": [
-      "silver tempest.*booster box",
-      "booster box.*silver tempest"
+      "silver tempest.*booster.*(box|display)",
+      "booster.*(box|display).*silver tempest"
     ],
     "minStock": 1,
     "msrpCeiling": 143.64,

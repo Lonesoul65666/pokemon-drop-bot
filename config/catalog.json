@@ -8,8 +8,8 @@
     "msrpCeiling": 161.64,
     "releaseDate": null,
     "matchers": [
-      "mega evolution mega discovery.*booster box",
-      "booster box.*mega evolution mega discovery"
+      "(mega evolution )?mega discovery.*booster.*(box|display)",
+      "booster.*(box|display).*(mega evolution )?mega discovery"
     ],
     "image": "",
     "minStock": 1,
@@ -31,8 +31,8 @@
     "msrpCeiling": 970,
     "releaseDate": null,
     "matchers": [
-      "case.*mega evolution mega discovery.*booster",
-      "mega evolution mega discovery.*booster.*case"
+      "case.*(mega evolution )?mega discovery.*booster",
+      "(mega evolution )?mega discovery.*booster.*case"
     ],
     "image": "",
     "minStock": 1,
@@ -105,8 +105,8 @@
     "msrpCeiling": 161.64,
     "releaseDate": null,
     "matchers": [
-      "mega evolution pitch black.*booster box",
-      "booster box.*mega evolution pitch black"
+      "(mega evolution )?pitch black.*booster.*(box|display)",
+      "booster.*(box|display).*(mega evolution )?pitch black"
     ],
     "image": "",
     "minStock": 1,
@@ -128,8 +128,8 @@
     "msrpCeiling": 970,
     "releaseDate": null,
     "matchers": [
-      "case.*mega evolution pitch black.*booster",
-      "mega evolution pitch black.*booster.*case"
+      "case.*(mega evolution )?pitch black.*booster",
+      "(mega evolution )?pitch black.*booster.*case"
     ],
     "image": "",
     "minStock": 1,
@@ -199,8 +199,8 @@
     "msrpCeiling": 161.64,
     "releaseDate": null,
     "matchers": [
-      "mega evolution phantasmal flames.*booster box",
-      "booster box.*mega evolution phantasmal flames"
+      "(mega evolution )?phantasmal flames.*booster.*(box|display)",
+      "booster.*(box|display).*(mega evolution )?phantasmal flames"
     ],
     "image": "",
     "minStock": 1,
@@ -222,8 +222,8 @@
     "msrpCeiling": 970,
     "releaseDate": null,
     "matchers": [
-      "case.*mega evolution phantasmal flames.*booster",
-      "mega evolution phantasmal flames.*booster.*case"
+      "case.*(mega evolution )?phantasmal flames.*booster",
+      "(mega evolution )?phantasmal flames.*booster.*case"
     ],
     "image": "",
     "minStock": 1,
@@ -293,8 +293,8 @@
     "msrpCeiling": 161.64,
     "releaseDate": null,
     "matchers": [
-      "mega evolution perfect order.*booster box",
-      "booster box.*mega evolution perfect order"
+      "(mega evolution )?perfect order.*booster.*(box|display)",
+      "booster.*(box|display).*(mega evolution )?perfect order"
     ],
     "image": "",
     "minStock": 1,
@@ -316,8 +316,8 @@
     "msrpCeiling": 970,
     "releaseDate": null,
     "matchers": [
-      "case.*mega evolution perfect order.*booster",
-      "mega evolution perfect order.*booster.*case"
+      "case.*(mega evolution )?perfect order.*booster",
+      "(mega evolution )?perfect order.*booster.*case"
     ],
     "image": "",
     "minStock": 1,
@@ -387,8 +387,8 @@
     "msrpCeiling": 161.64,
     "releaseDate": null,
     "matchers": [
-      "mega evolution chaos rising.*booster box",
-      "booster box.*mega evolution chaos rising"
+      "(mega evolution )?chaos rising.*booster.*(box|display)",
+      "booster.*(box|display).*(mega evolution )?chaos rising"
     ],
     "image": "",
     "minStock": 1,
@@ -410,8 +410,8 @@
     "msrpCeiling": 970,
     "releaseDate": null,
     "matchers": [
-      "case.*mega evolution chaos rising.*booster",
-      "mega evolution chaos rising.*booster.*case"
+      "case.*(mega evolution )?chaos rising.*booster",
+      "(mega evolution )?chaos rising.*booster.*case"
     ],
     "image": "",
     "minStock": 1,
@@ -481,8 +481,8 @@
     "msrpCeiling": 161.64,
     "releaseDate": "2026-11-06",
     "matchers": [
-      "delta.*(rayquaza|reign|ray).*booster.*box",
-      "booster.*box.*delta.*(rayquaza|reign|ray)"
+      "delta.*(rayquaza|reign|ray).*booster.*(box|display)",
+      "booster.*(box|display).*delta.*(rayquaza|reign|ray)"
     ],
     "image": "",
     "minStock": 1,
@@ -622,8 +622,8 @@
     "msrpCeiling": 32,
     "releaseDate": null,
     "matchers": [
-      "mega evolution ascended heroes.*booster bundle",
-      "booster bundle.*mega evolution ascended heroes"
+      "(mega evolution )?ascended heroes.*booster bundle",
+      "booster bundle.*(mega evolution )?ascended heroes"
     ],
     "image": "",
     "minStock": 1,
@@ -716,8 +716,8 @@
     "msrpCeiling": 161.64,
     "releaseDate": null,
     "matchers": [
-      "scarlet  violet base.*booster box",
-      "booster box.*scarlet  violet base"
+      "scarlet.*violet base.*booster.*(box|display)",
+      "booster.*(box|display).*scarlet.*violet base"
     ],
     "image": "",
     "minStock": 1,
@@ -739,8 +739,8 @@
     "msrpCeiling": 970,
     "releaseDate": null,
     "matchers": [
-      "case.*scarlet  violet base.*booster",
-      "scarlet  violet base.*booster.*case"
+      "case.*scarlet.*violet base.*booster",
+      "scarlet.*violet base.*booster.*case"
     ],
     "image": "",
     "minStock": 1,
@@ -858,8 +858,8 @@
     "msrpCeiling": 161.64,
     "releaseDate": null,
     "matchers": [
-      "paldea evolved.*booster box",
-      "booster box.*paldea evolved"
+      "paldea evolved.*booster.*(box|display)",
+      "booster.*(box|display).*paldea evolved"
     ],
     "image": "",
     "minStock": 1,
@@ -952,8 +952,8 @@
     "msrpCeiling": 161.64,
     "releaseDate": null,
     "matchers": [
-      "obsidian flames.*booster box",
-      "booster box.*obsidian flames"
+      "obsidian flames.*booster.*(box|display)",
+      "booster.*(box|display).*obsidian flames"
     ],
     "image": "",
     "minStock": 1,
@@ -1094,8 +1094,8 @@
     "msrpCeiling": 32,
     "releaseDate": null,
     "matchers": [
-      "scarlet  violet 151.*booster bundle",
-      "booster bundle.*scarlet  violet 151"
+      "scarlet.*violet 151.*booster bundle",
+      "booster bundle.*scarlet.*violet 151"
     ],
     "image": "",
     "minStock": 1,
@@ -1117,8 +1117,8 @@
     "msrpCeiling": 161.64,
     "releaseDate": null,
     "matchers": [
-      "paradox rift.*booster box",
-      "booster box.*paradox rift"
+      "paradox rift.*booster.*(box|display)",
+      "booster.*(box|display).*paradox rift"
     ],
     "image": "",
     "minStock": 1,
@@ -1330,8 +1330,8 @@
     "msrpCeiling": 161.64,
     "releaseDate": null,
     "matchers": [
-      "temporal forces.*booster box",
-      "booster box.*temporal forces"
+      "temporal forces.*booster.*(box|display)",
+      "booster.*(box|display).*temporal forces"
     ],
     "image": "",
     "minStock": 1,
@@ -1472,8 +1472,8 @@
     "msrpCeiling": 161.64,
     "releaseDate": null,
     "matchers": [
-      "twilight masquerade.*booster box",
-      "booster box.*twilight masquerade"
+      "twilight masquerade.*booster.*(box|display)",
+      "booster.*(box|display).*twilight masquerade"
     ],
     "image": "",
     "minStock": 1,
@@ -1637,8 +1637,8 @@
     "msrpCeiling": 161.64,
     "releaseDate": null,
     "matchers": [
-      "stellar crown.*booster box",
-      "booster box.*stellar crown"
+      "stellar crown.*booster.*(box|display)",
+      "booster.*(box|display).*stellar crown"
     ],
     "image": "",
     "minStock": 1,
@@ -1731,8 +1731,8 @@
     "msrpCeiling": 161.64,
     "releaseDate": null,
     "matchers": [
-      "surging sparks.*booster box",
-      "booster box.*surging sparks"
+      "surging sparks.*booster.*(box|display)",
+      "booster.*(box|display).*surging sparks"
     ],
     "image": "",
     "minStock": 1,
@@ -1896,8 +1896,8 @@
     "msrpCeiling": 161.64,
     "releaseDate": null,
     "matchers": [
-      "journey together.*booster box",
-      "booster box.*journey together"
+      "journey together.*booster.*(box|display)",
+      "booster.*(box|display).*journey together"
     ],
     "image": "",
     "minStock": 1,
@@ -1990,8 +1990,8 @@
     "msrpCeiling": 161.64,
     "releaseDate": null,
     "matchers": [
-      "destined rivals.*booster box",
-      "booster box.*destined rivals"
+      "destined rivals.*booster.*(box|display)",
+      "booster.*(box|display).*destined rivals"
     ],
     "image": "",
     "minStock": 1,
@@ -2084,8 +2084,8 @@
     "msrpCeiling": 143.64,
     "releaseDate": null,
     "matchers": [
-      "battle styles.*booster box",
-      "booster box.*battle styles"
+      "battle styles.*booster.*(box|display)",
+      "booster.*(box|display).*battle styles"
     ],
     "image": "",
     "minStock": 1,
@@ -2226,8 +2226,8 @@
     "msrpCeiling": 143.64,
     "releaseDate": null,
     "matchers": [
-      "chilling reign.*booster box",
-      "booster box.*chilling reign"
+      "chilling reign.*booster.*(box|display)",
+      "booster.*(box|display).*chilling reign"
     ],
     "image": "",
     "minStock": 1,
@@ -2368,8 +2368,8 @@
     "msrpCeiling": 143.64,
     "releaseDate": null,
     "matchers": [
-      "evolving skies.*booster box",
-      "booster box.*evolving skies"
+      "evolving skies.*booster.*(box|display)",
+      "booster.*(box|display).*evolving skies"
     ],
     "image": "",
     "minStock": 1,
@@ -2510,8 +2510,8 @@
     "msrpCeiling": 143.64,
     "releaseDate": null,
     "matchers": [
-      "fusion strike.*booster box",
-      "booster box.*fusion strike"
+      "fusion strike.*booster.*(box|display)",
+      "booster.*(box|display).*fusion strike"
     ],
     "image": "",
     "minStock": 1,
@@ -2604,8 +2604,8 @@
     "msrpCeiling": 143.64,
     "releaseDate": null,
     "matchers": [
-      "brilliant stars.*booster box",
-      "booster box.*brilliant stars"
+      "brilliant stars.*booster.*(box|display)",
+      "booster.*(box|display).*brilliant stars"
     ],
     "image": "",
     "minStock": 1,
@@ -2698,8 +2698,8 @@
     "msrpCeiling": 143.64,
     "releaseDate": null,
     "matchers": [
-      "astral radiance.*booster box",
-      "booster box.*astral radiance"
+      "astral radiance.*booster.*(box|display)",
+      "booster.*(box|display).*astral radiance"
     ],
     "image": "",
     "minStock": 1,
@@ -2840,8 +2840,8 @@
     "msrpCeiling": 143.64,
     "releaseDate": null,
     "matchers": [
-      "lost origin.*booster box",
-      "booster box.*lost origin"
+      "lost origin.*booster.*(box|display)",
+      "booster.*(box|display).*lost origin"
     ],
     "image": "",
     "minStock": 1,
@@ -2934,8 +2934,8 @@
     "msrpCeiling": 143.64,
     "releaseDate": null,
     "matchers": [
-      "silver tempest.*booster box",
-      "booster box.*silver tempest"
+      "silver tempest.*booster.*(box|display)",
+      "booster.*(box|display).*silver tempest"
     ],
     "image": "",
     "minStock": 1,

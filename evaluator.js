@@ -4,10 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.STORE_SHIPPING_RULES = exports.PRE_RELEASE_BLEED_TAG = exports.MSRP_TROPHIES_PATH = void 0;
+exports.getCloseCallGraceBuffer = getCloseCallGraceBuffer;
+exports.computeOfferShelfStatus = computeOfferShelfStatus;
+exports.isMarketplaceScamOrShippingTrap = isMarketplaceScamOrShippingTrap;
 exports.upsertStoreOfferCache = upsertStoreOfferCache;
 exports.pruneStoreMissingOffers = pruneStoreMissingOffers;
 exports.normalizeAlertRetailerKey = normalizeAlertRetailerKey;
 exports.markAlertKeyOutOfStock = markAlertKeyOutOfStock;
+exports.refreshCachedStoreOffersStatus = refreshCachedStoreOffersStatus;
 exports.getMsrpTrophies = getMsrpTrophies;
 exports.recordMsrpTrophyCatch = recordMsrpTrophyCatch;
 exports.isPreReleaseDate = isPreReleaseDate;
@@ -23,6 +27,90 @@ const policies_1 = require("./policies");
 const marketTelemetry_1 = require("./marketTelemetry");
 const marketTape_1 = require("./marketTape");
 const configManager_1 = require("./src/config/configManager");
+function getCloseCallGraceBuffer(formFactor) {
+    const ff = String(formFactor || '').toLowerCase();
+    if (ff === 'booster box' || ff === 'etb case' || ff === 'master case' || ff.includes('box') || ff.includes('case')) {
+        return 10.00;
+    }
+    return 5.00;
+}
+function computeOfferShelfStatus(params) {
+    const { dropPrice, landedPrice, estimatedShipping, triggerPrice, msrpCeiling, marketValue, formFactor, owned = false, muteVaulted = false, isMsrpUnicorn = false, isMarketplace3P = false } = params;
+    const graceBuffer = getCloseCallGraceBuffer(formFactor);
+    // Standard LGS flat shipping (<= $10) does not penalize shelf comparison when evaluating target / close-call
+    const canUseShelfPrice = !isMarketplace3P && estimatedShipping <= 10.00;
+    const comparePrice = (canUseShelfPrice && dropPrice <= triggerPrice + graceBuffer) ? dropPrice : landedPrice;
+    const isUnderOrAtTarget = comparePrice <= triggerPrice || landedPrice <= triggerPrice || isMsrpUnicorn;
+    const rawOver = Math.round((comparePrice - triggerPrice) * 100) / 100;
+    const withinGraceBuffer = rawOver > 0 && rawOver <= graceBuffer;
+    const withinMarketOrMsrpGuard = (marketValue > 0 && comparePrice <= marketValue * 0.93) ||
+        (msrpCeiling > 0 && comparePrice <= msrpCeiling * 1.10);
+    const isCloseCall = !isUnderOrAtTarget && withinGraceBuffer && withinMarketOrMsrpGuard;
+    const closeCallDelta = isCloseCall ? rawOver : 0;
+    if (owned && muteVaulted && !isMsrpUnicorn) {
+        return {
+            statusTier: 'MUTED_OWNED',
+            statusTag: '⟦ MUTED: OWNED ON WALL ⟧',
+            isCloseCall,
+            closeCallDelta,
+            comparePrice
+        };
+    }
+    if (isUnderOrAtTarget) {
+        const refPrice = landedPrice <= triggerPrice ? landedPrice : dropPrice;
+        const underDollars = Math.max(0, Math.round((triggerPrice - refPrice) * 100) / 100);
+        return {
+            statusTier: 'UNDER_TARGET',
+            statusTag: `⟦ UNDER TARGET (-$${underDollars.toFixed(2)}) ⟧`,
+            isCloseCall: false,
+            closeCallDelta: 0,
+            comparePrice: refPrice
+        };
+    }
+    if (isCloseCall) {
+        return {
+            statusTier: 'CLOSE_CALL',
+            statusTag: `⟦ CLOSE CALL (+$${closeCallDelta.toFixed(2)} OVER TARGET — IN CUSHION) ⟧`,
+            isCloseCall: true,
+            closeCallDelta,
+            comparePrice
+        };
+    }
+    const overDollars = Math.max(0.01, Math.round((landedPrice - triggerPrice) * 100) / 100);
+    return {
+        statusTier: 'NEAR_MISS',
+        statusTag: `⟦ NEAR MISS (+$${overDollars.toFixed(2)} OVER TARGET) ⟧`,
+        isCloseCall: false,
+        closeCallDelta: 0,
+        comparePrice: landedPrice
+    };
+}
+function isMarketplaceScamOrShippingTrap(item, dropPrice, shippingPrice, marketValue) {
+    const combinedSource = `${item.retailer || ''} ${item.url || ''} ${item.productUrl || ''}`;
+    const isMarketplace3P = Boolean(item.isMarketplace3P ||
+        /tcgplayer|ebay|target\s*plus|walmart.*3p|3rd[-\s]*party|marketplace/i.test(combinedSource));
+    if (shippingPrice > 35.00) {
+        return {
+            blocked: true,
+            reason: `Blocked by Shipping Trap Shield: shipping ($${shippingPrice.toFixed(2)}) exceeds $35.00 max cap.`
+        };
+    }
+    if (isMarketplace3P && dropPrice > 0 && shippingPrice > dropPrice * 0.20) {
+        return {
+            blocked: true,
+            reason: `Blocked by Marketplace Shipping Inflation Shield: shipping ($${shippingPrice.toFixed(2)}) exceeds 20% of item price ($${dropPrice.toFixed(2)}).`
+        };
+    }
+    const landed = dropPrice + shippingPrice;
+    const isUnverifiedOr1Qty = item.sellerVerified === false || (item.stock !== undefined && item.stock <= 1) || /crawford/i.test(combinedSource);
+    if (isMarketplace3P && isUnverifiedOr1Qty && marketValue > 200 && landed < marketValue * 0.65) {
+        return {
+            blocked: true,
+            reason: `Blocked by Marketplace Bait-and-Switch Shield: unverified/1-qty listing ($${landed.toFixed(2)}) is >35% below $${marketValue.toFixed(2)} market value.`
+        };
+    }
+    return { blocked: false };
+}
 const ALERT_STATE_PATH = path_1.default.resolve(process.cwd(), 'alertState.json');
 const LIVE_STOCK_PATH = path_1.default.resolve(process.cwd(), 'liveStock.json');
 const STORE_OFFERS_CACHE_PATH = path_1.default.resolve(process.cwd(), 'storeOffersCache.json');
@@ -94,7 +182,33 @@ function pruneStoreMissingOffers(storeName, activeItemIds) {
 }
 try {
     if (fs_1.default.existsSync(ALERT_STATE_PATH)) {
-        alertMemory = JSON.parse(fs_1.default.readFileSync(ALERT_STATE_PATH, 'utf-8'));
+        const rawMem = JSON.parse(fs_1.default.readFileSync(ALERT_STATE_PATH, 'utf-8'));
+        if (rawMem && typeof rawMem === 'object') {
+            let migrated = false;
+            const nextMem = {};
+            for (const [k, v] of Object.entries(rawMem)) {
+                if (!v || typeof v !== 'object')
+                    continue;
+                if (k.includes('__')) {
+                    const [skuId, storePart] = k.split('__');
+                    if (/^TCGPlayer Verified Seller$/i.test(storePart || '')) {
+                        migrated = true;
+                        continue;
+                    }
+                    const normSt = normalizeAlertRetailerKey(storePart || '');
+                    const newKey = `${normSt}::${skuId}`;
+                    nextMem[newKey] = v;
+                    migrated = true;
+                }
+                else {
+                    nextMem[k] = v;
+                }
+            }
+            alertMemory = nextMem;
+            if (migrated) {
+                (0, policies_1.atomicWriteJson)(ALERT_STATE_PATH, alertMemory);
+            }
+        }
     }
 }
 catch (e) { }
@@ -104,7 +218,10 @@ function saveAlertMemory() {
 function normalizeAlertRetailerKey(retailer) {
     const r = (retailer || '').trim();
     if (/tcgplayer/i.test(r)) {
-        return 'TCGPlayer Verified Seller';
+        return r
+            .replace(/\s*\(TCGPlayer.*?\)$/i, ' (TCGPlayer)')
+            .replace(/\s*\(\$[\d.,]+\)$/i, '')
+            .trim();
     }
     return r;
 }
@@ -118,7 +235,12 @@ function markAlertKeyOutOfStock(ruleIdOrItemId, retailer) {
     let changed = false;
     if (retailer) {
         const normRet = normalizeAlertRetailerKey(retailer);
-        for (const candidateKey of [`${ruleIdOrItemId}__${normRet}`, `${ruleIdOrItemId}__${retailer}`]) {
+        for (const candidateKey of [
+            `${normRet}::${ruleIdOrItemId}`,
+            `${retailer}::${ruleIdOrItemId}`,
+            `${ruleIdOrItemId}__${normRet}`,
+            `${ruleIdOrItemId}__${retailer}`
+        ]) {
             const entry = alertMemory[candidateKey];
             if (entry && typeof entry === 'object' && !entry.wasOutOfStockSinceLastAlert) {
                 entry.wasOutOfStockSinceLastAlert = true;
@@ -140,6 +262,72 @@ function markAlertKeyOutOfStock(ruleIdOrItemId, retailer) {
         saveAlertMemory();
     }
 }
+function refreshCachedStoreOffersStatus() {
+    try {
+        let muteVaulted = false;
+        try {
+            const settings = (0, configManager_1.loadGlobalSettings)();
+            muteVaulted = Boolean(settings?.muteVaulted);
+        }
+        catch (e) { }
+        let mutated = false;
+        for (const [skuId, skuOffers] of Object.entries(storeOffersCacheMem)) {
+            if (!skuOffers || typeof skuOffers !== 'object')
+                continue;
+            const rule = policies_1.WATCH_POLICIES.find(r => r.id === skuId);
+            for (const [storeKey, rec] of Object.entries(skuOffers)) {
+                if (!rec || typeof rec !== 'object')
+                    continue;
+                const rawShip = Number(rec.shipping || 0);
+                // Fix legacy TCGPlayer records where price was saved as landedPrice
+                const rawItemPrice = (rawShip > 0 && Math.abs(rec.price - rec.landedPrice) < 0.01 && rec.price > rawShip)
+                    ? Math.round((rec.landedPrice - rawShip) * 100) / 100
+                    : Number(rec.price || 0);
+                const marketVal = Number(rule?.estimatedMarketValue || rec.marketValue || 0);
+                const scamCheck = isMarketplaceScamOrShippingTrap({ retailer: rec.storeName || storeKey, url: rec.url, stock: rec.stock }, rawItemPrice, rawShip, marketVal);
+                if (scamCheck.blocked || (/^TCGPlayer Verified Seller/i.test(rec.storeName || storeKey) && rawShip > 0)) {
+                    delete skuOffers[storeKey];
+                    mutated = true;
+                    continue;
+                }
+                const msrp = Number(rule?.msrpCeiling || rec.msrp || 0);
+                const triggerPrice = rule
+                    ? Math.max(rule.msrpCeiling, rule.maxMarketBuyPrice)
+                    : Number(rec.triggerPrice || msrp);
+                const owned = rule ? Boolean(rule.inVault ?? rule.owned) : Boolean(rec.owned);
+                const isMsrpUnicorn = Boolean(msrp > 0 && rawItemPrice <= Math.round(msrp * 1.08 * 100) / 100 && rawShip <= 10.00);
+                const status = computeOfferShelfStatus({
+                    dropPrice: rawItemPrice,
+                    landedPrice: Number(rec.landedPrice || rawItemPrice + rawShip),
+                    estimatedShipping: rawShip,
+                    triggerPrice,
+                    msrpCeiling: msrp,
+                    marketValue: marketVal,
+                    formFactor: rule?.formFactor || rec.formFactor,
+                    owned,
+                    muteVaulted,
+                    isMsrpUnicorn,
+                    isMarketplace3P: /tcgplayer|ebay|3p/i.test(rec.storeName || storeKey)
+                });
+                rec.price = rawItemPrice;
+                rec.triggerPrice = triggerPrice;
+                rec.msrp = msrp;
+                rec.marketValue = marketVal || rec.marketValue;
+                rec.owned = owned;
+                rec.statusTier = status.statusTier;
+                rec.statusTag = status.statusTag;
+                rec.isCloseCall = status.isCloseCall;
+                rec.closeCallDelta = status.closeCallDelta;
+                mutated = true;
+            }
+        }
+        if (mutated) {
+            scheduleStoreOffersFlush();
+        }
+    }
+    catch (e) { }
+}
+refreshCachedStoreOffersStatus();
 function getMsrpTrophies() {
     try {
         if (fs_1.default.existsSync(exports.MSRP_TROPHIES_PATH)) {
@@ -375,7 +563,7 @@ function evaluateItem(item) {
             continue;
         }
         const minFloor = Math.max((0, policies_1.getMinPlausiblePriceFloor)(rule.formFactor), Math.round((rule.msrpCeiling || 0) * 0.40 * 100) / 100);
-        const maxCeiling = (0, policies_1.getMaxPlausiblePriceCeiling)(rule.formFactor, rule.id, rule.name);
+        const maxCeiling = (0, policies_1.getMaxPlausiblePriceCeiling)(rule.formFactor, rule.id, rule.name, rule);
         if (item.price !== undefined && (item.price < minFloor || item.price > maxCeiling)) {
             continue;
         }
@@ -387,10 +575,36 @@ function evaluateItem(item) {
         const currentMarketRef = (liveTelPre && liveTelPre.rollingAverage > 0)
             ? Math.min(maxCeiling, liveTelPre.rollingAverage)
             : Math.min(maxCeiling, rule.estimatedMarketValue || rule.msrpCeiling);
-        // Only record into standard SKU telemetry/snapshots if it is NOT a PC Exclusive variant
-        if (!hasPcTerm && !isPcSource && item.price && item.price >= minFloor && item.price <= maxCeiling) {
-            (0, marketTelemetry_1.recordObservation)(rule.id, item.price, item.retailer, item.productUrl || item.url, rule.msrpCeiling);
-            (0, marketTape_1.recordDailySnapshot)(rule.id, item.price, item.retailer, currentMarketRef);
+        const policyMaxBuy = Math.max(rule.msrpCeiling, rule.maxMarketBuyPrice);
+        // V5 Slice 3: Never lower Scott's explicit maxMarketBuyPrice slider down to msrpCeiling * 1.05 on pre-orders!
+        let effectiveCeiling = policyMaxBuy;
+        if (isPcExclusiveRetailDrop) {
+            effectiveCeiling = Math.max(effectiveCeiling, 69.99);
+        }
+        const dropPrice = (item.itemPrice !== undefined && item.itemPrice > 0)
+            ? item.itemPrice
+            : (item.price ?? effectiveCeiling);
+        const shipProfile = getStoreShippingProfile(item.retailer);
+        const hasExplicitShipping = item.shippingPrice !== undefined && Number.isFinite(Number(item.shippingPrice));
+        const isBigBoxMsrp = Boolean(bigBoxName && dropPrice <= rule.msrpCeiling * 1.08);
+        // Tier A (True Retail MSRP) and PC Exclusive Retail Drops force $0 shipping on Big Box
+        const isFreeShip = Boolean(isPcExclusiveRetailDrop ||
+            isBigBoxMsrp ||
+            (hasExplicitShipping ? Number(item.shippingPrice) === 0 : item.freeShipping) ||
+            (!hasExplicitShipping && dropPrice >= shipProfile.freeShipThreshold));
+        const estimatedShipping = isFreeShip
+            ? 0
+            : (hasExplicitShipping ? Number(item.shippingPrice) : shipProfile.flatShipping);
+        const landedPrice = Math.round((dropPrice + estimatedShipping) * 100) / 100;
+        // V5 Slice 3: Marketplace Scam & Shipping Trap Shield
+        const scamCheck = isMarketplaceScamOrShippingTrap(item, dropPrice, estimatedShipping, currentMarketRef);
+        if (scamCheck.blocked) {
+            return { action: 'IGNORE', reason: scamCheck.reason || 'Blocked by Marketplace Scam & Shipping Trap Shield.', rule };
+        }
+        // Only record into standard SKU telemetry/snapshots if it is NOT a PC Exclusive variant and passed scam checks
+        if (!hasPcTerm && !isPcSource && dropPrice >= minFloor && dropPrice <= maxCeiling) {
+            (0, marketTelemetry_1.recordObservation)(rule.id, dropPrice, item.retailer, item.productUrl || item.url, rule.msrpCeiling);
+            (0, marketTape_1.recordDailySnapshot)(rule.id, dropPrice, item.retailer, currentMarketRef);
         }
         if (rule.active === false) {
             return { action: 'IGNORE', reason: `Rule "${rule.name}" is toggled OFF on dashboard.`, rule };
@@ -398,32 +612,14 @@ function evaluateItem(item) {
         if (item.stock !== undefined && item.stock < rule.minStock) {
             return { action: 'IGNORE', reason: `Stock (${item.stock}) below minStock (${rule.minStock}).`, rule };
         }
-        const policyMaxBuy = Math.max(rule.msrpCeiling, rule.maxMarketBuyPrice);
-        // Pre-order strict ceiling: Math.min(policy.maxBuy, Math.round(policy.msrp * 1.05)), except PC Exclusive retail drops up to $69.99
-        let effectiveCeiling = isPreOrder
-            ? Math.min(policyMaxBuy, Math.round(rule.msrpCeiling * 1.05))
-            : policyMaxBuy;
-        if (isPcExclusiveRetailDrop) {
-            effectiveCeiling = Math.max(effectiveCeiling, 69.99);
-        }
-        const dropPrice = item.price ?? effectiveCeiling;
-        const shipProfile = getStoreShippingProfile(item.retailer);
         let bigBoxTier = undefined;
         let bigBoxBadge = undefined;
         let marketplaceWarning = undefined;
         let priorityFront = false;
-        const isBigBoxMsrp = Boolean(bigBoxName && dropPrice <= rule.msrpCeiling * 1.08);
-        // Tier A (True Retail MSRP) and PC Exclusive Retail Drops force $0 shipping on Big Box
-        const isFreeShip = Boolean(isPcExclusiveRetailDrop ||
-            isBigBoxMsrp ||
-            item.freeShipping ||
-            dropPrice >= shipProfile.freeShipThreshold);
-        const estimatedShipping = isFreeShip ? 0 : shipProfile.flatShipping;
-        const landedPrice = Math.round((dropPrice + estimatedShipping) * 100) / 100;
-        // Tier-A True Retail MSRP: landed price <= MSRP * 1.08 with free/nominal shipping (<= $6.99)
+        // V5 Slice 3: Evaluate Tier-A True Retail MSRP against raw shelf price (dropPrice <= msrpCeiling * 1.08) when shipping <= $10.00
         const isTierAMsrp = Boolean(rule.msrpCeiling > 0 &&
-            landedPrice <= Math.round(rule.msrpCeiling * 1.08 * 100) / 100 &&
-            estimatedShipping <= 6.99);
+            dropPrice <= Math.round(rule.msrpCeiling * 1.08 * 100) / 100 &&
+            estimatedShipping <= 10.00);
         if (item.isBigBoxRestockRadar) {
             bigBoxTier = 'BIG_BOX_RESTOCK_RADAR';
             bigBoxBadge = '📡🚨 BIG-BOX RESTOCK RADAR (MSRP ASSUMED) 🚨📡';
@@ -476,6 +672,22 @@ function evaluateItem(item) {
             wallHunterMode = Boolean(settings?.wallHunterMode);
         }
         catch (e) { }
+        const isMarketplace3P = Boolean(item.isMarketplace3P ||
+            /tcgplayer|ebay|target\s*plus|walmart.*3p|3rd[-\s]*party|marketplace/i.test(`${item.retailer} ${handleAndUrl}`));
+        const shelfStatus = computeOfferShelfStatus({
+            dropPrice,
+            landedPrice,
+            estimatedShipping,
+            triggerPrice: effectiveCeiling,
+            msrpCeiling: rule.msrpCeiling,
+            marketValue: currentMarketRef,
+            formFactor: rule.formFactor,
+            owned: isInVault,
+            muteVaulted,
+            isMsrpUnicorn,
+            isMarketplace3P
+        });
+        const { statusTier, statusTag, isCloseCall, closeCallDelta } = shelfStatus;
         const { packCount, pricePerPack, isRipValueLeader } = (0, policies_1.computeRipMetrics)(landedPrice, rule.id, rule.formFactor, `${rule.name} ${cleanTitle}`, rule.packCount);
         const now = Date.now();
         const nowTimeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -486,7 +698,7 @@ function evaluateItem(item) {
             const gapPct = Math.round(((landedPrice - policyMaxBuy) / policyMaxBuy) * 1000) / 10;
             const rawGapDollars = Math.round((dropPrice - policyMaxBuy) * 100) / 100;
             const rawGapPct = Math.round(((dropPrice - policyMaxBuy) / policyMaxBuy) * 1000) / 10;
-            const resolvedShipNote = freeShipNote || (estimatedShipping > 0 ? `$${dropPrice.toFixed(2)} + $${estimatedShipping.toFixed(2)} Est. Ship ($${landedPrice.toFixed(2)} Landed)` : '+FREE Shipping');
+            const resolvedShipNote = freeShipNote || (estimatedShipping > 0 ? `$${dropPrice.toFixed(2)} Shelf + $${estimatedShipping.toFixed(2)} Est. Ship ($${landedPrice.toFixed(2)} Landed)` : '+FREE Shipping');
             upsertStoreOfferCache({
                 skuId: rule.id,
                 productName: rule.name,
@@ -502,6 +714,10 @@ function evaluateItem(item) {
                 shipping: item.shippingPrice ?? estimatedShipping,
                 landedPrice,
                 freeShipNote: resolvedShipNote,
+                statusTier,
+                statusTag,
+                isCloseCall,
+                closeCallDelta,
                 url: item.productUrl || item.url,
                 productUrl: item.productUrl || item.url,
                 cart1xUrl,
@@ -540,6 +756,10 @@ function evaluateItem(item) {
                 isPreOrder,
                 isPreRelease,
                 preReleaseStatusTag,
+                statusTier,
+                statusTag,
+                isCloseCall,
+                closeCallDelta,
                 url: item.url,
                 productUrl: item.productUrl,
                 cart1xUrl,
@@ -550,38 +770,64 @@ function evaluateItem(item) {
                 timeStr: nowTimeStr
             });
         }
-        if (dropPrice > effectiveCeiling) {
-            return {
-                action: 'IGNORE',
-                reason: `${isPreOrder ? '[PRE-ORDER] ' : ''}${isPreRelease ? `[${exports.PRE_RELEASE_BLEED_TAG}] ` : ''}Price ($${dropPrice.toFixed(2)}) exceeds allowable buy threshold ($${effectiveCeiling.toFixed(2)}).`,
-                rule,
-                packCount,
-                pricePerPack,
-                isRipValueLeader,
-                isPreRelease,
-                preReleaseStatusTag,
-                releaseDate: rule.releaseDate
-            };
-        }
-        if (landedPrice > effectiveCeiling) {
-            const qtyForFreeShip = Math.ceil(shipProfile.freeShipThreshold / dropPrice);
-            const hasEnoughStock = item.stock === undefined || item.stock >= qtyForFreeShip;
-            if (qtyForFreeShip <= 4 && hasEnoughStock) {
-                freeShipNote = `Buy ${qtyForFreeShip}x to hit $${shipProfile.freeShipThreshold} Free Shipping -> $${dropPrice.toFixed(2)}/ea landed`;
+        // V5 Slice 3: Allow UNDER_TARGET, MSRP Unicorns, and Close-Call Grace Cushion (+$5 ETB / +$10 Box) to pass!
+        const qualifiesOnShelfPrice = (dropPrice <= effectiveCeiling || isMsrpUnicorn) && !isMarketplace3P && estimatedShipping <= 10.00;
+        const qualifiesOnLandedPrice = landedPrice <= effectiveCeiling;
+        if (!qualifiesOnShelfPrice && !qualifiesOnLandedPrice && !isCloseCall) {
+            if (dropPrice <= effectiveCeiling && landedPrice > effectiveCeiling) {
+                const qtyForFreeShip = Math.ceil(shipProfile.freeShipThreshold / dropPrice);
+                const hasEnoughStock = item.stock === undefined || item.stock >= qtyForFreeShip;
+                if (qtyForFreeShip <= 4 && hasEnoughStock && !isMarketplace3P) {
+                    freeShipNote = `Buy ${qtyForFreeShip}x to hit $${shipProfile.freeShipThreshold} Free Shipping -> $${dropPrice.toFixed(2)}/ea landed`;
+                }
+                else {
+                    return {
+                        action: 'IGNORE',
+                        reason: `[${statusTag}] Landed price ($${landedPrice.toFixed(2)} w/ $${estimatedShipping.toFixed(2)} ship) exceeds buy threshold ($${effectiveCeiling.toFixed(2)}).`,
+                        rule,
+                        packCount,
+                        pricePerPack,
+                        isRipValueLeader,
+                        isPreRelease,
+                        preReleaseStatusTag,
+                        releaseDate: rule.releaseDate,
+                        statusTier,
+                        statusTag,
+                        isCloseCall,
+                        closeCallDelta
+                    };
+                }
             }
             else {
                 return {
                     action: 'IGNORE',
-                    reason: `Landed price ($${landedPrice.toFixed(2)} w/ $${estimatedShipping.toFixed(2)} ship) exceeds buy threshold ($${effectiveCeiling.toFixed(2)}) and qtyForFreeShip (${qtyForFreeShip}x) > 4.`,
+                    reason: `[${statusTag}] ${isPreOrder ? '[PRE-ORDER] ' : ''}${isPreRelease ? `[${exports.PRE_RELEASE_BLEED_TAG}] ` : ''}Price ($${dropPrice.toFixed(2)} shelf / $${landedPrice.toFixed(2)} landed) exceeds target ($${effectiveCeiling.toFixed(2)}) and Close-Call Cushion.`,
                     rule,
                     packCount,
                     pricePerPack,
                     isRipValueLeader,
                     isPreRelease,
                     preReleaseStatusTag,
-                    releaseDate: rule.releaseDate
+                    releaseDate: rule.releaseDate,
+                    statusTier,
+                    statusTag,
+                    isCloseCall,
+                    closeCallDelta
                 };
             }
+        }
+        if (estimatedShipping > 0 && !freeShipNote) {
+            const qtyForFreeShip = Math.ceil(shipProfile.freeShipThreshold / dropPrice);
+            const hasEnoughStock = item.stock === undefined || item.stock >= qtyForFreeShip;
+            if (qtyForFreeShip <= 4 && hasEnoughStock && shipProfile.freeShipThreshold < 900 && !isMarketplace3P) {
+                freeShipNote = `$${dropPrice.toFixed(2)} Shelf + $${estimatedShipping.toFixed(2)} Est. Ship ($${landedPrice.toFixed(2)} Landed • Buy ${qtyForFreeShip}x for $${shipProfile.freeShipThreshold} Free Ship)`;
+            }
+            else {
+                freeShipNote = `$${dropPrice.toFixed(2)} Shelf + $${estimatedShipping.toFixed(2)} Est. Ship ($${landedPrice.toFixed(2)} Landed)`;
+            }
+        }
+        if (isCloseCall && !bigBoxBadge) {
+            bigBoxBadge = `🎯 CLOSE CALL (WITHIN +$${closeCallDelta.toFixed(2)} OF TARGET)`;
         }
         const currentPrice = dropPrice;
         (0, marketTape_1.recordTapeRestock)({
@@ -596,7 +842,7 @@ function evaluateItem(item) {
             bigBoxTier: bigBoxTier === 'BIG_BOX_RESTOCK_RADAR' ? 'MSRP_TIER_A' : bigBoxTier,
             bigBoxBadge
         });
-        // Valid drop (<= maxBuy): sync immediately to liveStock.json so "In Stock Now" dashboard view stays accurate even if deduplicated for Discord!
+        // Valid drop (<= maxBuy or in Close-Call Cushion): sync immediately to liveStock.json so "In Stock Now" dashboard view stays accurate even if deduplicated for Discord!
         upsertLiveStock({
             ruleId: rule.id,
             ruleName: rule.name,
@@ -619,6 +865,10 @@ function evaluateItem(item) {
             bigBoxTier,
             bigBoxBadge,
             marketplaceWarning,
+            statusTier,
+            statusTag,
+            isCloseCall,
+            closeCallDelta,
             url: item.url,
             productUrl: item.productUrl,
             cart1xUrl,
@@ -634,14 +884,18 @@ function evaluateItem(item) {
         if (isInVault && muteVaulted && !isMsrpUnicorn) {
             return {
                 action: 'IGNORE',
-                reason: `Suppressed by Vault Mute (inVault=true and above MSRP Tier-A ceiling).`,
+                reason: `[${statusTag}] Suppressed by Vault Mute (inVault=true and above MSRP Tier-A ceiling).`,
                 rule,
                 packCount,
                 pricePerPack,
                 isRipValueLeader,
                 isPreRelease,
                 preReleaseStatusTag,
-                releaseDate: rule.releaseDate
+                releaseDate: rule.releaseDate,
+                statusTier,
+                statusTag,
+                isCloseCall,
+                closeCallDelta
             };
         }
         // Wall Hunter Mode: strictly filter active Discord alerts to unowned Single Wall ETBs (formFactor === 'etb' && !isInVault)
@@ -656,7 +910,11 @@ function evaluateItem(item) {
                 isRipValueLeader,
                 isPreRelease,
                 preReleaseStatusTag,
-                releaseDate: rule.releaseDate
+                releaseDate: rule.releaseDate,
+                statusTier,
+                statusTag,
+                isCloseCall,
+                closeCallDelta
             };
         }
         // Reload alertState from disk if reset via dashboard
@@ -669,10 +927,13 @@ function evaluateItem(item) {
             }
         }
         catch (e) { }
-        // Persistent Deduplication per (Rule + Normalized Retailer)
+        // V5 Slice 3: Strict Per-Store Alert Deduplication scoped to `${storeName}::${skuId}`
         const normRetailer = normalizeAlertRetailerKey(item.retailer);
-        const stateKey = `${rule.id}__${normRetailer}`;
-        const prev = alertMemory[stateKey] || alertMemory[`${rule.id}__${item.retailer}`];
+        const stateKey = `${normRetailer}::${rule.id}`;
+        const prev = alertMemory[stateKey] ||
+            alertMemory[`${item.retailer}::${rule.id}`] ||
+            alertMemory[`${rule.id}__${normRetailer}`] ||
+            alertMemory[`${rule.id}__${item.retailer}`];
         let alertType = 'NEW_DROP';
         let previousPrice = undefined;
         let previousTimeStr = undefined;
@@ -692,15 +953,15 @@ function evaluateItem(item) {
                     isRipValueLeader,
                     isPreRelease,
                     preReleaseStatusTag,
-                    releaseDate: rule.releaseDate
+                    releaseDate: rule.releaseDate,
+                    statusTier,
+                    statusTag,
+                    isCloseCall,
+                    closeCallDelta
                 };
             }
             const isTrueRestock = Boolean(prev.wasOutOfStockSinceLastAlert) && elapsedHours >= 0.25;
             const isDailyReminder = elapsedHours >= 24;
-            // Once an alert has fired for a SKU + Store, ONLY fire a subsequent alert if:
-            // 1. True Restock (wasOutOfStockSinceLastAlert === true), OR
-            // 2. Meaningful Price Drop (<= lowestAlertedPrice - $3.00 or <= lowestAlertedPrice * 0.98), OR
-            // 3. 24-Hour Daily Reminder (elapsedHours >= 24 if still under trigger)
             if (!isTrueRestock && !isSignificantPriceDrop && !isDailyReminder) {
                 return {
                     action: 'IGNORE',
@@ -711,7 +972,11 @@ function evaluateItem(item) {
                     isRipValueLeader,
                     isPreRelease,
                     preReleaseStatusTag,
-                    releaseDate: rule.releaseDate
+                    releaseDate: rule.releaseDate,
+                    statusTier,
+                    statusTag,
+                    isCloseCall,
+                    closeCallDelta
                 };
             }
             previousPrice = prev.lastPrice;
@@ -749,7 +1014,7 @@ function evaluateItem(item) {
         const discountPct = marketVal > 0 ? Math.round(((marketVal - effectiveComparePrice) / marketVal) * 100) : 0;
         return {
             action: 'BUY',
-            reason: `[${alertType}]${bigBoxBadge ? ` [${bigBoxBadge}]` : ''}${isPreRelease ? ` [${exports.PRE_RELEASE_BLEED_TAG}]` : ''}${isPreOrder ? ' [⏳ PRE-ORDER]' : ''} Matched "${rule.name}" at $${currentPrice.toFixed(2)} (Landed: $${landedPrice.toFixed(2)} • $${pricePerPack.toFixed(2)}/pk • ${discountPct}% under market)`,
+            reason: `[${alertType}]${bigBoxBadge ? ` [${bigBoxBadge}]` : ''} [${statusTag}]${isPreRelease ? ` [${exports.PRE_RELEASE_BLEED_TAG}]` : ''}${isPreOrder ? ' [⏳ PRE-ORDER]' : ''} Matched "${rule.name}" at $${currentPrice.toFixed(2)} (Landed: $${landedPrice.toFixed(2)} • $${pricePerPack.toFixed(2)}/pk • ${discountPct}% under market)`,
             rule,
             discountPct,
             savingsDollars,
@@ -776,7 +1041,11 @@ function evaluateItem(item) {
             bigBoxTier,
             bigBoxBadge,
             marketplaceWarning,
-            priorityFront
+            priorityFront,
+            statusTier,
+            statusTag,
+            isCloseCall,
+            closeCallDelta
         };
     }
     return { action: 'IGNORE', reason: 'No matching policy rule found.' };

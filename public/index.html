@@ -2606,6 +2606,84 @@
       }
     }
 
+    function computeClientShelfStatus(item) {
+      const ff = String(item.formFactor || 'ETB').toLowerCase();
+      const graceBuffer = (ff.includes('box') || ff.includes('case')) ? 10.00 : 5.00;
+      const dropPrice = Number(item.price || item.landedPrice || 0);
+      const landed = Number(item.landedPrice || dropPrice || 0);
+      const ship = Number(item.shippingPrice ?? item.shipping ?? Math.max(0, landed - dropPrice));
+      const trig = Number(item.triggerPrice || item.msrp || 54.99);
+      const msrpVal = Number(item.msrp || 54.99);
+      const mktVal = Number(item.marketValue || trig || msrpVal);
+      const is3P = /tcgplayer|ebay|3p|marketplace/i.test(String(item.retailer || item.store || ''));
+      const canUseShelf = !is3P && ship <= 10.00;
+      const comparePrice = (canUseShelf && dropPrice <= trig + graceBuffer) ? dropPrice : landed;
+      const isMsrpUnicorn = Boolean(msrpVal > 0 && dropPrice <= msrpVal * 1.08 && ship <= 10.00);
+      const isUnder = comparePrice <= trig + 0.01 || landed <= trig + 0.01 || isMsrpUnicorn;
+      const rawOver = Math.round((comparePrice - trig) * 100) / 100;
+      const isCloseCall = Boolean(
+        item.isCloseCall ||
+        (!isUnder && rawOver > 0 && rawOver <= graceBuffer && ((mktVal > 0 && comparePrice <= mktVal * 0.93) || (msrpVal > 0 && comparePrice <= msrpVal * 1.10)))
+      );
+      const closeCallDelta = Number(item.closeCallDelta || (isCloseCall ? rawOver : 0));
+      const muteVaulted = Boolean(botSettings && botSettings.muteVaulted);
+      const owned = Boolean(item.owned);
+
+      if (owned && muteVaulted && !isMsrpUnicorn) {
+        return {
+          statusTier: 'MUTED_OWNED',
+          statusTag: '⟦ MUTED: OWNED ON WALL ⟧',
+          isCloseCall,
+          closeCallDelta,
+          isUnderTarget: isUnder
+        };
+      }
+      if (isUnder) {
+        const refPrice = landed <= trig ? landed : dropPrice;
+        const underDiff = Math.max(0, Math.round((trig - refPrice) * 100) / 100);
+        return {
+          statusTier: 'UNDER_TARGET',
+          statusTag: '⟦ UNDER TARGET (-$' + underDiff.toFixed(2) + ') ⟧',
+          isCloseCall: false,
+          closeCallDelta: 0,
+          isUnderTarget: true
+        };
+      }
+      if (isCloseCall) {
+        return {
+          statusTier: 'CLOSE_CALL',
+          statusTag: '⟦ CLOSE CALL (+$' + closeCallDelta.toFixed(2) + ' OVER TARGET — IN CUSHION) ⟧',
+          isCloseCall: true,
+          closeCallDelta,
+          isUnderTarget: false
+        };
+      }
+      const overDiff = Math.max(0.01, Math.round((landed - trig) * 100) / 100);
+      return {
+        statusTier: 'NEAR_MISS',
+        statusTag: '⟦ NEAR MISS (+$' + overDiff.toFixed(2) + ' OVER TARGET) ⟧',
+        isCloseCall: false,
+        closeCallDelta: 0,
+        isUnderTarget: false
+      };
+    }
+
+    function renderShelfStatusPillHtml(item) {
+      const st = computeClientShelfStatus(item);
+      const tag = item.statusTag || st.statusTag;
+      const tier = item.statusTier || st.statusTier;
+      if (tier === 'MUTED_OWNED') {
+        return '<span class="font-mono-num text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-purple-500/25 text-purple-200 border border-purple-400/50 whitespace-nowrap">' + tag + '</span>';
+      }
+      if (tier === 'UNDER_TARGET') {
+        return '<span class="font-mono-num text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-400/50 whitespace-nowrap">' + tag + '</span>';
+      }
+      if (tier === 'CLOSE_CALL') {
+        return '<span class="font-mono-num text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-amber-500/25 text-amber-200 border border-amber-400/50 shadow-[0_0_10px_rgba(245,158,11,0.25)] whitespace-nowrap">' + tag + '</span>';
+      }
+      return '<span class="font-mono-num text-[10px] font-bold px-2 py-0.5 rounded-md bg-cyan-500/15 text-cyan-200 border border-cyan-400/35 whitespace-nowrap">' + tag + '</span>';
+    }
+
     // Shared Canonical Deal Feed Builder (Used by BOTH KPI Card #2 and Live Deal Feed so counts NEVER diverge!)
     function buildUnifiedDealFeedItems() {
       const items = [];
@@ -2642,6 +2720,10 @@
           isRipValueLeader: ls.isRipValueLeader || pol.isRipValueLeader || (ppp > 0 && ppp <= 4.25),
           isPreRelease: ls.isPreRelease || pol.isPreRelease,
           preReleaseStatusTag: ls.preReleaseStatusTag || pol.preReleaseStatusTag,
+          statusTier: ls.statusTier,
+          statusTag: ls.statusTag,
+          isCloseCall: ls.isCloseCall,
+          closeCallDelta: ls.closeCallDelta,
           url: ls.productUrl || ls.url,
           cart1xUrl: ls.cart1xUrl,
           cart2xUrl: ls.cart2xUrl,
@@ -2685,6 +2767,10 @@
           isRipValueLeader: d.isRipValueLeader || (ppp > 0 && ppp <= 4.25),
           isPreRelease: pol ? pol.isPreRelease : false,
           preReleaseStatusTag: pol ? pol.preReleaseStatusTag : undefined,
+          statusTier: d.statusTier,
+          statusTag: d.statusTag,
+          isCloseCall: d.isCloseCall,
+          closeCallDelta: d.closeCallDelta,
           url: d.productUrl || d.url,
           cart1xUrl: d.cart1xUrl,
           cart2xUrl: d.cart2xUrl,
@@ -2907,8 +2993,8 @@
       // Card 2: Active Sniper Radar — Derived from the EXACT SAME canonical array as Under Trigger (X) pill!
       const allDealItems = buildUnifiedDealFeedItems();
       const underTriggerItems = allDealItems.filter(it => {
-        const isUnder = it.landedPrice <= (it.triggerPrice || it.msrp || it.marketValue);
-        if (!isUnder) return false;
+        const st = computeClientShelfStatus(it);
+        if (!st.isUnderTarget && !st.isCloseCall) return false;
         if (botSettings && botSettings.wallHunterMode) {
           return String(it.formFactor || '').toLowerCase() === 'etb' && !it.owned;
         }
@@ -3151,8 +3237,8 @@
       } else {
         filteredItems = items.filter(it => {
           if (activeDealFeedFilter === 'UNDER_TRIGGER') {
-            const under = it.landedPrice <= (it.triggerPrice || it.msrp || it.marketValue);
-            if (!under) return false;
+            const st = computeClientShelfStatus(it);
+            if (!st.isUnderTarget && !st.isCloseCall) return false;
             if (botSettings && botSettings.wallHunterMode) {
               return String(it.formFactor || '').toLowerCase() === 'etb' && !it.owned;
             }
@@ -3240,6 +3326,7 @@
           ? '<span class="font-mono-num text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/35">-' + discPct + '% Under Mkt (Save $' + saveDollars.toFixed(0) + ')</span>'
           : '<span class="font-mono-num text-[10px] font-bold px-2 py-0.5 rounded-md bg-white/10 text-slate-300 border border-white/15">At Mkt ($' + mktVal.toFixed(0) + ')</span>';
 
+        const statusPill = renderShelfStatusPillHtml(item);
         const triggerPill = isNearMiss
           ? '<span class="font-mono-num text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-200 border border-orange-400/40">Trigger: $' + trigVal.toFixed(0) + ' (+$' + Number(item.gapDollars || (landed - trigVal)).toFixed(2) + ' / +' + Number(item.gapPct || 0).toFixed(1) + '%)</span>'
           : '<span class="font-mono-num text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-200 border border-purple-400/30">Trigger: $' + trigVal.toFixed(0) + '</span>';
@@ -3329,6 +3416,7 @@
                   '</div>' +
                   shipNoteLineHtml +
                   '<div class="mt-1.5 flex items-center gap-1.5 flex-wrap">' +
+                    statusPill +
                     spreadPill +
                     packPill +
                     triggerPill +
@@ -3640,11 +3728,11 @@
               const shipSubLabel = opt.shippingNote || (opt.landedPrice > opt.price + 0.05 ? ('+ $' + (opt.landedPrice - opt.price).toFixed(2) + ' Ship') : '+ FREE Ship');
               const pol = policies.find(p => p.id === opt.skuId);
               const trigPrice = Number(opt.triggerPrice || (pol ? (pol.maxMarketBuyPrice || pol.msrpCeiling) : opt.msrp) || 54.99);
-              const isUnderTrigger = Number(opt.landedPrice) <= trigPrice + 0.01;
-              const aboveDiff = Math.max(0, Number(opt.landedPrice) - trigPrice);
-              const verdictColHtml = isUnderTrigger
-                ? '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 font-pokedex text-[11px] font-extrabold shadow-[0_0_12px_rgba(16,185,129,0.25)]">UNDER TRIGGER ($' + trigPrice.toFixed(0) + ')</span>'
-                : '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-300 font-mono-num text-[11px] font-bold">$' + aboveDiff.toFixed(0) + ' Above Trigger ($' + trigPrice.toFixed(0) + ')</span>';
+              const verdictColHtml = renderShelfStatusPillHtml({
+                ...opt,
+                triggerPrice: trigPrice,
+                owned: pol ? Boolean(pol.owned) : Boolean(opt.owned)
+              });
               const spreadBadgeHtml = Number(opt.discountPct || 0) > 0
                 ? '<span class="px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/35 text-emerald-300 font-mono-num text-[10px] font-extrabold">-' + opt.discountPct + '% Spread</span>'
                 : '<span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-400 font-mono-num text-[10px] font-bold">At Market</span>';
