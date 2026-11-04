@@ -111,6 +111,22 @@ All persistent JSON files are written via `atomicWriteJson()` (`.tmp` write + `f
 ## 6. Last Touch Log
 
 - **2026-11-04 | Agent: Gemini 4 Argon (via `agy`)**
+  - **Completed V5 Slice 2 ("Delete the Redundant 9,780-Line `dashboard.html` Clone, Extract Logan's Battle Stadium into Clean Modular Files Under `public/js/stadium/` + `public/css/stadium.css`, and Hard-Freeze Logan's Game") (`server.js`, `public/index.html`, `public/css/stadium.css`, `public/js/stadium/stadium-data.js`, `public/js/stadium/stadium-audio.js`, `public/js/stadium/stadium-combat.js`, `public/js/stadium/stadium-ui.js`, `_nyx_state/01..06_*.md`):**
+    - **1. Deleted Duplicate `dashboard.html` Clone & Routed Cleanly in `server.js`:**
+      - Updated `server.js` (`2,200` lines) so `GET /`, `GET /index.html`, and `GET /dashboard.html` all serve `public/index.html`.
+      - Deleted the redundant 9,780-line root `C:\pokemon-drop-bot\dashboard.html` file from disk (`git rm dashboard.html`).
+    - **2. Extracted Logan's Battle Stadium Out of `public/index.html` into Cohesive Modules (`-4,237` lines trimmed from `public/index.html`, now `5,543` lines):**
+      - `public/css/stadium.css` (`353` lines): All Battle Stadium CSS rules, animations, D20 die styles, bench cards, and drawers.
+      - `public/js/stadium/stadium-data.js` (`819` lines): 18-type effectiveness matrix, iconic signature moves, 3v3 preset decks, Champion Gauntlet boss roster, and 1,025 Pokédex/evolution lookup helpers.
+      - `public/js/stadium/stadium-audio.js` (`121` lines): WebAudio API battle synthesizer + official PokeAPI cry audio player and mute toggle state.
+      - `public/js/stadium/stadium-combat.js` (`1,376` lines): 3v3 squad state, D20 Action Point (AP) pool & banking rules, turn step tracker, AI turn controller, status effects, and stat-weighted damage calculations.
+      - `public/js/stadium/stadium-ui.js` (`1,641` lines): Arena DOM rendering, 4 distinct visual attack animations, Trophy Vault drawer, Squad & Deck Builder drawer, and global `window.*` entrypoints (`openBattleStadium`, `closeBattleStadium`, roll/move/item/switch handlers).
+    - **3. Syntax-Checked, Hard-Froze & Verified Live:**
+      - Verified `0` syntax errors across all extracted `.js` files and inline `<script>` in `public/index.html`.
+      - Restarted `drop-bot-dashboard` in PM2 and verified `HTTP 200 OK` across `/`, `/dashboard.html`, `/css/stadium.css`, `/js/stadium/stadium-data.js`, `/js/stadium/stadium-audio.js`, `/js/stadium/stadium-combat.js`, `/js/stadium/stadium-ui.js`, and `/api/status`.
+      - Registered `public/css/stadium.css` and `public/js/stadium/*.js` in the **HARD-FROZEN FILES REGISTRY (`git diff = 0 lines`)** inside `_nyx_state/01_PROJECT_IDENTITY_AND_LAWS.md` and `_nyx_state/02_TECHNICAL_ARCHITECTURE_AND_PIPELINES.md`.
+
+- **2026-11-04 | Agent: Gemini 4 Argon (via `agy`)**
   - **Completed V5 Slice 1 ("Protect Personal Settings in `config/userPreferences.json`, Split Static Catalog to `config/catalog.json`, and Unify the Store + Shipping Registry in `config/stores.json`") (`config/userPreferences.json`, `config/catalog.json`, `config/stores.json`, `src/config/configManager.ts`, `policies.ts`, `src/marketSync.ts`, `lgsPoller.ts`, `evaluator.ts`, `notifier.ts`, `server.js`, `tsconfig.json`, `_nyx_state/01..06_*.md`):**
     - **1. Locked 4-Slice V5 Roadmap & Updated Failure Graveyard (`_nyx_state/02` & `_nyx_state/04`):**
       - Added `[FAILED - V4 TCGPlayer Shipping Scam & Unverified Bait-and-Switch Trap]` (`Prismatic Evolutions ETB Case` at `$499.00 + $199.99 Shipping` by unverified 1-qty seller `Crawford gaming` vs. `$1,252` market) to `_nyx_state/02_TECHNICAL_ARCHITECTURE_AND_PIPELINES.md`.

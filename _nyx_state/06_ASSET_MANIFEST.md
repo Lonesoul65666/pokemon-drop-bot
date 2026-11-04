@@ -20,8 +20,13 @@
 | `marketTape.ts` (`marketTape.js`) | 772 | 14-day NRT rolling sales velocity tracker, absorption ratio, 48h distributor wave detector, honey-hole store rankings, and weekly checkpoints. |
 | `marketTelemetry.ts` (`marketTelemetry.js`) | 106 | Rolling price observation tracker for `marketCache.json`. |
 | `src/marketSync.ts` (`src/marketSync.js`) | 168 | 6-hour background TCGPlayer market baseline synchronizer writing exclusively to `marketCache.json` (never touching `config/userPreferences.json`). |
-| `server.js` | 2,213 | Express HTTP server (`Port 3000`) serving the web UI and all 22 REST API endpoints via `configManager.ts`. |
-| `public/index.html` | 9,780 | Executive Sniper Command Center UI + Logan's 3v3 Pokédex Battle Stadium (`dashboard.html` is a 9,780-line root clone slated for removal in V5 Slice 2). |
+| `server.js` | 2,200 | Express HTTP server (`Port 3000`) serving `public/index.html` (`/` & `/dashboard.html`), static Stadium modules, and all 22 REST API endpoints via `configManager.ts`. |
+| `public/index.html` | 5,543 | Executive Sniper Command Center UI (trimmed down from `9,780` lines; `dashboard.html` root clone permanently deleted). |
+| `public/css/stadium.css` | 353 | **HARD-FROZEN (`git diff = 0`)** — Logan's Battle Stadium stylesheet, animations, D20 die styles, bench cards, and drawers. |
+| `public/js/stadium/stadium-data.js` | 819 | **HARD-FROZEN (`git diff = 0`)** — 18-type effectiveness matrix, signature moves, 3v3 preset decks, Champion Gauntlet boss roster, and 1,025 Pokédex/evolution lookup helpers. |
+| `public/js/stadium/stadium-audio.js` | 121 | **HARD-FROZEN (`git diff = 0`)** — WebAudio API battle synthesizer + official PokeAPI cry audio player and mute toggle state. |
+| `public/js/stadium/stadium-combat.js` | 1,376 | **HARD-FROZEN (`git diff = 0`)** — 3v3 squad state, D20 Action Point (AP) pool & banking rules, turn step tracker, AI turn controller, status effects, and stat-weighted damage calculations. |
+| `public/js/stadium/stadium-ui.js` | 1,641 | **HARD-FROZEN (`git diff = 0`)** — Arena DOM rendering, 4 distinct visual attack animations, Trophy Vault drawer, Squad & Deck Builder drawer, and global `window.*` entrypoints. |
 
 ---
 

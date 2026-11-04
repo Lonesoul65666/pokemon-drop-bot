@@ -24,7 +24,6 @@ const MSRP_TROPHIES_PATH = path.resolve(__dirname, 'data', 'msrpTrophies.json');
 const CONQUERED_VAULT_PATH = path.resolve(__dirname, 'conqueredVault.json');
 const PUBLIC_DIR = path.resolve(__dirname, 'public');
 const PUBLIC_INDEX_PATH = path.resolve(PUBLIC_DIR, 'index.html');
-const HTML_PATH = path.resolve(__dirname, 'dashboard.html');
 const ART_DIR = path.resolve(__dirname, 'art');
 
 const {
@@ -307,11 +306,8 @@ loadConqueredVault();
 app.use(express.json({ limit: '10mb' }));
 app.use(express.static(PUBLIC_DIR, { index: false }));
 
-app.get('/', (req, res) => {
-  if (fs.existsSync(PUBLIC_INDEX_PATH)) {
-    return res.sendFile(PUBLIC_INDEX_PATH);
-  }
-  res.sendFile(HTML_PATH);
+app.get(['/', '/index.html', '/dashboard.html'], (req, res) => {
+  res.sendFile(PUBLIC_INDEX_PATH);
 });
 
 app.get('/api/conquered-vault', (req, res) => {

@@ -8,7 +8,14 @@
 - **OS & Runtime:** Windows Native, Node.js `v26.4.0`, TypeScript compiled to CommonJS (`.js`), Express (`Port 3000`), PM2 (`fork` mode, `max_memory_restart: '1024M'`).
 - **Active PM2 Processes (`ecosystem.config.js`):**
   1. `pokemon-drop-bot` (`index.js` / `index.ts`): Runs the 91-store Shopify LGS poller (`lgsPoller.ts`), Big-Box & Reddit & TCGPlayer undercut pollers (`vampirePoller.ts`), 6-hour TCGPlayer MarketSync worker (`src/marketSync.ts`), 14-day Market Tape NRT velocity engine (`marketTape.ts`), and 4-hour Live Shelf Digest scheduler (`notifier.ts`).
-  2. `drop-bot-dashboard` (`server.js` on `http://localhost:3000`): Serves the Web Command Center (`public/index.html`) and 22 REST API endpoints.
+  2. `drop-bot-dashboard` (`server.js` on `http://localhost:3000`): Serves the Web Command Center (`public/index.html` at `/`, `/index.html`, and `/dashboard.html`), modular Battle Stadium static assets (`public/css/stadium.css` and `public/js/stadium/*.js`), and 22 REST API endpoints. The redundant 9,780-line root `dashboard.html` clone has been permanently deleted (`git rm dashboard.html`).
+- **HARD-FROZEN FILES REGISTRY (`git diff = 0 lines`):**
+  - `public/css/stadium.css` (`353` lines)
+  - `public/js/stadium/stadium-data.js` (`819` lines)
+  - `public/js/stadium/stadium-audio.js` (`121` lines)
+  - `public/js/stadium/stadium-combat.js` (`1,376` lines)
+  - `public/js/stadium/stadium-ui.js` (`1,641` lines)
+  - `scripts/watchdog.vbs` & `scripts/watchdog.ps1`
 - **Auto-Heal Watchdog:** Windows Scheduled Task `DropBot-PM2-Watchdog` runs `scripts/watchdog.vbs` -> `scripts/watchdog.ps1` every 5 minutes (hidden window `0`), checking `http://localhost:3000/api/status` and WMI `Win32_Process` for `index.js`/`server.js`.
 - **Proxy Routing:** Direct-first HTTP via `axios` (`AbortController` hard socket timeout `<= 8000ms`, `dns.setDefaultResultOrder('ipv4first')`) with automatic fallback to `WEBSHARE_PROXY_URL` (`HttpsProxyAgent`).
 

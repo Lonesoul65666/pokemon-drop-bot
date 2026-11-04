@@ -1,0 +1,352 @@
+/* =========================================================================
+ * LOGAN'S POKÉMON BATTLE STADIUM STYLESHEET (public/css/stadium.css)
+ * Extracted 1:1 from public/index.html (V5 Slice 2 — Hard-Frozen)
+ * ========================================================================= */
+/* ===================================================================== */
+/* V4 PHASE STUDIO-STADIUM-CLEANUP: 100% OPAQUE ARENA & 4 CONSOLE ZONES  */
+/* ===================================================================== */
+#clash-cutin-overlay,
+#battle-stadium-modal {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 99999 !important;
+  background-color: #060811 !important;
+  opacity: 0;
+  visibility: hidden;
+  cursor: default;
+  user-select: none;
+  display: grid;
+  grid-template-rows: 56px auto 1fr;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+#clash-cutin-overlay.active,
+#battle-stadium-modal.active {
+  pointer-events: auto;
+  background-color: #060811 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  z-index: 99999 !important;
+}
+
+/* Strictly hide background watermark headers & underlying dashboard while Full-Screen Stadium is open */
+body.stadium-modal-open #premierBattleStage,
+body.stadium-modal-open #arena-watermark,
+body.stadium-modal-open #bgWatermarkSlot1,
+body.stadium-modal-open #bgWatermarkSlot2,
+body.stadium-modal-open #slot1Name,
+body.stadium-modal-open #slot2Name,
+body.stadium-modal-open #slot1InlineStats,
+body.stadium-modal-open #slot2InlineStats,
+body.stadium-modal-open .ambient-left-polygon,
+body.stadium-modal-open .ambient-right-polygon,
+body.stadium-modal-open .ambient-seam-svg {
+  display: none !important;
+}
+
+body.stadium-modal-open #mainDashboardShell {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* 0.75s Cartoon Shutter Wipe Overlay for Sidebar Tab Transitions */
+#sidebar-wipe-overlay {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 99985;
+  visibility: hidden;
+}
+
+#sidebar-wipe-overlay.active {
+  visibility: visible;
+}
+
+#sidebar-wipe-overlay .wipe-left-shutter {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0 0, var(--seam-x1) 0, var(--seam-x2) 100%, 0 100%);
+  background:
+    radial-gradient(circle at 28% 40%, rgba(var(--slot1-primary-rgb), 0.85) 0%, rgba(10, 9, 20, 0.98) 85%),
+    linear-gradient(125deg, rgba(var(--slot1-primary-rgb), 0.65) 0%, #090812 100%);
+  transform: translate3d(-105%, -5%, 0);
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#sidebar-wipe-overlay .wipe-right-shutter {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(var(--seam-x1) 0, 100% 0, 100% 100%, var(--seam-x2) 100%);
+  background:
+    radial-gradient(circle at 72% 60%, rgba(var(--slot2-primary-rgb), 0.85) 0%, rgba(10, 9, 20, 0.98) 85%),
+    linear-gradient(125deg, #090812 0%, rgba(var(--slot2-primary-rgb), 0.65) 100%);
+  transform: translate3d(105%, 5%, 0);
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#sidebar-wipe-overlay .wipe-center-ball {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0) rotate(-180deg);
+  transition: transform 0.30s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 5;
+}
+
+#sidebar-wipe-overlay.wipe-closed .wipe-left-shutter,
+#sidebar-wipe-overlay.wipe-closed .wipe-right-shutter {
+  transform: translate3d(0, 0, 0);
+}
+
+#sidebar-wipe-overlay.wipe-closed .wipe-center-ball {
+  transform: translate(-50%, -50%) scale(1) rotate(0deg);
+}
+
+.cutin-cartoon-iris {
+  position: absolute;
+  inset: 0;
+  background-color: #060811;
+  opacity: 1;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Left & Right Elemental Color Gradients at subtle 0.28 opacity OVER solid #060811 base */
+.cutin-left-slash {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  clip-path: polygon(0 0, var(--seam-x1) 0, var(--seam-x2) 100%, 0 100%);
+  background-color: #060811;
+  background-image:
+    radial-gradient(circle at 22% 42%, rgba(var(--slot1-primary-rgb), 0.28) 0%, rgba(var(--slot1-primary-rgb), 0.10) 52%, #060811 92%),
+    linear-gradient(125deg, rgba(var(--slot1-primary-rgb), 0.24) 0%, #060811 100%);
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+  transition: clip-path 0.45s ease;
+}
+
+.cutin-right-slash {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  clip-path: polygon(var(--seam-x1) 0, 100% 0, 100% 100%, var(--seam-x2) 100%);
+  background-color: #060811;
+  background-image:
+    radial-gradient(circle at 78% 58%, rgba(var(--slot2-primary-rgb), 0.28) 0%, rgba(var(--slot2-primary-rgb), 0.10) 52%, #060811 92%),
+    linear-gradient(125deg, #060811 0%, rgba(var(--slot2-primary-rgb), 0.24) 100%);
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+  transition: clip-path 0.45s ease;
+}
+
+/* Collinear SVG Seam Beam Overlay */
+.cutin-seam-svg {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.65;
+}
+
+/* ROW 1: Single Clean 56px Top Arcade Header Bar */
+.stadium-row1-header {
+  position: relative;
+  z-index: 30;
+  height: 56px;
+  padding: 0 18px;
+  background: #080B18;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.85);
+}
+
+/* ROW 2: Collapsible Squad & Deck Builder Drawer */
+.stadium-row2-drawer {
+  position: relative;
+  z-index: 28;
+  background: #0A0E1F;
+  border-bottom: 2px solid rgba(0, 240, 255, 0.45);
+  padding: 10px 22px;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.95);
+}
+
+/* ROW 3: Clean 3-Column Combat Stage (Left Fighter | Center D20 Core | Right Fighter) */
+.stadium-row3-stage {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: minmax(340px, 1fr) 292px minmax(340px, 1fr);
+  gap: 18px;
+  align-items: stretch;
+  padding: 12px 22px 16px;
+  width: 100%;
+  max-width: 1820px;
+  margin: 0 auto;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.stadium-fighter-col {
+  background: rgba(10, 14, 28, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 0;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85);
+}
+
+.stadium-center-col {
+  background: rgba(9, 12, 24, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  min-height: 0;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9);
+}
+
+.cutin-art-380 {
+  width: clamp(135px, 18vh, 210px);
+  height: clamp(135px, 18vh, 210px);
+  object-fit: contain;
+  transition: transform 0.35s ease, filter 0.35s ease, opacity 0.35s ease;
+}
+
+.cutin-art-380.fainted-pokemon {
+  filter: grayscale(0.95) brightness(0.45) drop-shadow(0 0 12px #EF4444) !important;
+  transform: translateY(14px) scale(0.88) !important;
+  opacity: 0.65;
+}
+
+/* Battle Lunge, Recoil, Shake, D20 Spin & 4 Attack Animations */
+@keyframes lungeAttackLeftToRight {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  35%  { transform: translate3d(110px, -14px, 0) scale(1.24); filter: brightness(1.55) drop-shadow(0 0 42px #FFFFFF); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes lungeAttackRightToLeft {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  35%  { transform: translate3d(-110px, -14px, 0) scale(1.24); filter: brightness(1.55) drop-shadow(0 0 42px #FFFFFF); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes hitRecoilFlash {
+  0%   { transform: translate3d(0, 0, 0); filter: brightness(1); }
+  20%  { transform: translate3d(18px, -8px, 0) scale(0.90); filter: brightness(5) saturate(0) drop-shadow(0 0 40px #EF4444); }
+  45%  { transform: translate3d(-14px, 6px, 0) scale(0.95); filter: brightness(2.5) drop-shadow(0 0 32px #EF4444); }
+  70%  { transform: translate3d(10px, -4px, 0); filter: brightness(1.8); }
+  100% { transform: translate3d(0, 0, 0); filter: brightness(1); }
+}
+
+@keyframes battleShake {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  15% { transform: translate3d(-9px, 5px, 0); }
+  35% { transform: translate3d(9px, -5px, 0); }
+  55% { transform: translate3d(-6px, -4px, 0); }
+  75% { transform: translate3d(6px, 4px, 0); }
+}
+
+@keyframes ultimateHeavyShake {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  10% { transform: translate3d(-18px, 12px, 0) rotate(-0.8deg); }
+  25% { transform: translate3d(18px, -12px, 0) rotate(0.8deg); }
+  40% { transform: translate3d(-15px, -10px, 0) rotate(-0.6deg); }
+  55% { transform: translate3d(15px, 10px, 0) rotate(0.6deg); }
+  70% { transform: translate3d(-10px, 6px, 0); }
+  85% { transform: translate3d(10px, -6px, 0); }
+}
+
+@keyframes d20TumbleSpin {
+  0%   { transform: rotate(0deg) scale(1); }
+  30%  { transform: rotate(190deg) scale(1.22); filter: drop-shadow(0 0 28px #00F0FF); }
+  65%  { transform: rotate(340deg) scale(1.16); filter: drop-shadow(0 0 32px #FACC15); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+.anim-lunge-right    { animation: lungeAttackLeftToRight 0.46s cubic-bezier(0.22, 1, 0.36, 1); }
+.anim-lunge-left     { animation: lungeAttackRightToLeft 0.46s cubic-bezier(0.22, 1, 0.36, 1); }
+.anim-hit-recoil     { animation: hitRecoilFlash 0.52s ease-out; }
+.anim-arena-shake    { animation: battleShake 0.42s ease-in-out; }
+.anim-ultimate-shake { animation: ultimateHeavyShake 0.68s ease-in-out; }
+.anim-d20-roll       { animation: d20TumbleSpin 0.34s cubic-bezier(0.22, 1, 0.36, 1); }
+
+@keyframes switchRecallBeam {
+  0%   { transform: scale(1); filter: brightness(1); opacity: 1; }
+  40%  { transform: scale(0.18) translateY(20px); filter: brightness(3.5) hue-rotate(45deg) drop-shadow(0 0 40px #00F0FF); opacity: 0.35; }
+  100% { transform: scale(1); filter: brightness(1); opacity: 1; }
+}
+.anim-switch-beam {
+  animation: switchRecallBeam 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes megaAuraPulse {
+  0%, 100% { filter: drop-shadow(0 0 28px #FACC15) drop-shadow(0 0 54px #A855F7); }
+  50%      { filter: drop-shadow(0 0 46px #00F0FF) drop-shadow(0 0 80px #FACC15); }
+}
+.mega-overdrive-art {
+  animation: megaAuraPulse 1.8s infinite ease-in-out !important;
+}
+
+.squad-slot-pill {
+  transition: all 0.18s ease;
+  background-color: #0D1224 !important;
+}
+.squad-slot-pill:hover:not(.squad-slot-fainted) {
+  transform: translateY(-2px);
+  border-color: rgba(0, 240, 255, 0.75);
+}
+.squad-slot-active {
+  border-color: #00F0FF !important;
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.24), rgba(168, 85, 247, 0.24)) !important;
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
+}
+.squad-slot-fainted {
+  opacity: 0.42;
+  filter: grayscale(0.95);
+}
+
+@keyframes dmgPopupFloat {
+  0%   { opacity: 0; transform: translate(-50%, 10px) scale(0.7); }
+  20%  { opacity: 1; transform: translate(-50%, -8px) scale(1.15); }
+  80%  { opacity: 1; transform: translate(-50%, -26px) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -40px) scale(0.9); }
+}
+
+.dmg-float-badge {
+  position: absolute;
+  top: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 30;
+  opacity: 0;
+}
+
+.dmg-float-badge.show-dmg {
+  animation: dmgPopupFloat 1.05s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}

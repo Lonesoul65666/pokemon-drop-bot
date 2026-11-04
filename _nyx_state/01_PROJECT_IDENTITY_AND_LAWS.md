@@ -45,7 +45,12 @@
 
 ---
 
-## 4. Frozen Files Registry (Do Not Modify Without Explicit User Unlock)
-- `scripts/watchdog.vbs` & `scripts/watchdog.ps1` — **FROZEN** (Invisible Windows Task Scheduler 5-minute PM2 health check & WMI auto-resurrection).
+## 4. HARD-FROZEN FILES REGISTRY (`git diff = 0 lines` — Do Not Modify Without Explicit User Unlock)
+- `public/css/stadium.css` (`353` lines) — **HARD-FROZEN (`git diff = 0 lines`)** (Logan's Battle Stadium stylesheet, animations, D20 die styles, bench cards, and drawers).
+- `public/js/stadium/stadium-data.js` (`819` lines) — **HARD-FROZEN (`git diff = 0 lines`)** (18-type effectiveness matrix, iconic signature moves, 3v3 preset decks, Champion Gauntlet boss roster, and 1,025 Pokédex/evolution lookup helpers).
+- `public/js/stadium/stadium-audio.js` (`121` lines) — **HARD-FROZEN (`git diff = 0 lines`)** (WebAudio API battle synthesizer + official PokeAPI cry audio player and mute toggle state).
+- `public/js/stadium/stadium-combat.js` (`1,376` lines) — **HARD-FROZEN (`git diff = 0 lines`)** (3v3 squad state, D20 Action Point pool & banking rules, turn step tracker, AI turn controller, status effects, and stat-weighted damage calculations).
+- `public/js/stadium/stadium-ui.js` (`1,641` lines) — **HARD-FROZEN (`git diff = 0 lines`)** (Arena DOM rendering, 4 visual attack animations, Trophy Vault drawer, Squad & Deck Builder drawer, and global `window.*` entrypoints).
+- `config/userPreferences.json` (`800` lines) — **HARD-FROZEN TO BACKGROUND PROCESSES** (Only explicit UI actions may write here; background pollers and `marketSync.ts` are strictly forbidden).
+- `scripts/watchdog.vbs` & `scripts/watchdog.ps1` — **HARD-FROZEN (`git diff = 0 lines`)** (Invisible Windows Task Scheduler 5-minute PM2 health check & WMI auto-resurrection).
 - `conqueredVault.json` & `data/msrpTrophies.json` — **FROZEN SCHEMA / SEED DATA** (Never delete or overwrite Scott's claimed trophies).
-- *(Upcoming in V5 Step 1A)*: Once Logan's 3v3 Battle Stadium is extracted into `public/js/logan-stadium.js` and `public/css/stadium.css`, those two files will be marked **FROZEN** so sniper backend/UI work never touches Logan's game.
