@@ -3,9 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MONITORED_STORES = exports.LGS_STORES = void 0;
+exports.variantStateMap = exports.MONITORED_STORES = exports.LGS_STORES = void 0;
 exports.getNextProxy = getNextProxy;
 exports.recordBigBoxCheckTelemetry = recordBigBoxCheckTelemetry;
+exports.recordFastTier1Telemetry = recordFastTier1Telemetry;
+exports.getFastTier1Telemetry = getFastTier1Telemetry;
 exports.pollShopifyStores = pollShopifyStores;
 const axios_1 = __importDefault(require("axios"));
 const https_proxy_agent_1 = require("https-proxy-agent");
@@ -117,6 +119,42 @@ function recordBigBoxCheckTelemetry(patch) {
     }
     catch (e) { }
 }
+let fastTier1Telemetry = {
+    status: 'ACTIVE_15S_DELTA',
+    intervalMs: 15000,
+    tier1StoreCount: 25,
+    storesPolledLastCycle: 0,
+    notModified304Count: 0,
+    variantsCheckedLastCycle: 0,
+    newOrRestockedHits: 0,
+    totalCyclesRun: 0,
+    lastSweepAt: Date.now(),
+    lastDurationMs: 0
+};
+function recordFastTier1Telemetry(patch, perStorePatch) {
+    fastTier1Telemetry = {
+        ...fastTier1Telemetry,
+        ...patch,
+        lastSweepAt: Date.now()
+    };
+    if (perStorePatch) {
+        for (const [storeName, meta] of perStorePatch.entries()) {
+            const rec = storeHealthMap.get(storeName);
+            if (rec) {
+                rec.lastFastPollAt = meta.lastFastPollAt;
+                rec.lastFastLatencyMs = meta.lastFastLatencyMs;
+                storeHealthMap.set(storeName, rec);
+            }
+        }
+    }
+    try {
+        flushStoreHealthToDisk();
+    }
+    catch (e) { }
+}
+function getFastTier1Telemetry() {
+    return fastTier1Telemetry;
+}
 function flushStoreHealthToDisk() {
     const activeNames = new Set(exports.MONITORED_STORES.map(s => s.name));
     const out = {};
@@ -126,21 +164,29 @@ function flushStoreHealthToDisk() {
         }
     }
     out.__bigBoxHealth = bigBoxHealthTelemetry;
+    out.__fastTier1Telemetry = fastTier1Telemetry;
     (0, policies_1.atomicWriteJson)(STORE_HEALTH_PATH, out);
 }
 exports.LGS_STORES = (0, configManager_1.loadActiveLgsStores)();
 exports.MONITORED_STORES = exports.LGS_STORES;
-const INVALID_COLLECTION_SUBPATH_REGEX = /single|singles|graded|slab|slabs|psa|cgc|bgs|japanese|chinese|korean|event|local|lorcana|digimon|one-piece|magic|mtg|3d-cut|custom|break|bandai|indonesian|thai|spanish|french|german|italian|portuguese|figure|plush|toy|apparel|supply|sleeve|binder/i;
-// Ensure all active stores exist in storeHealthMap with HEALTHY status on boot
+const INVALID_COLLECTION_SUBPATH_REGEX = /single|singles|graded|slab|slabs|psa|cgc|bgs|japanese|chinese|korean|event|local|lorcana|digimon|one-piece|magic|mtg|3d-cut|custom|break|bandai|indonesian|thai|spanish|french|german|italian|portuguese|figure|plush|toy|apparel|supply|sleeve|binder|accessories|codes|ptcgo|ptcgl/i;
+const NARROW_SUBCOLLECTION_HANDLE_REGEX = /booster-box|blister|elite-trainer|etb|pre-?order|sealed-cases|30th-pokemon|mega-evolution|a-great-place-to-begin|karls-krazy|modern-sealed/i;
+const BROAD_PARENT_COLLECTION_HANDLE_REGEX = /^(pokemon|pokemon-tcg|pokemon-sealed|all-pokemon|all-pokemon-sealed|all-pokemon-sealed-products|all-pokemon-sealed-product|pokemon-sealed-products|pokemon-sealed-product|pokemon-trading-card-game|games-pokemon|pokemon-cards|pokemon-english|sealed-pokemon-collection)$/i;
+// Ensure all active stores exist in storeHealthMap with HEALTHY status on boot and sync authoritative config/stores.json paths
 for (const store of exports.MONITORED_STORES) {
     const existing = storeHealthMap.get(store.name);
     if (existing) {
-        if (existing.resolvedPath && INVALID_COLLECTION_SUBPATH_REGEX.test(existing.resolvedPath)) {
+        if (existing.resolvedPath && (INVALID_COLLECTION_SUBPATH_REGEX.test(existing.resolvedPath) || NARROW_SUBCOLLECTION_HANDLE_REGEX.test(existing.resolvedPath))) {
             existing.resolvedPath = undefined;
         }
-        if (existing.resolvedPath && !store.resolvedPath) {
+        if (store.resolvedPath) {
+            existing.resolvedPath = store.resolvedPath;
+        }
+        else if (existing.resolvedPath) {
             store.resolvedPath = existing.resolvedPath;
         }
+        existing.additionalPaths = store.additionalPaths;
+        existing.tier = store.tier || 'TIER2_STANDARD';
         existing.status = 'HEALTHY';
         existing.consecutiveFailures = 0;
         existing.cooldownUntil = 0;
@@ -153,7 +199,10 @@ for (const store of exports.MONITORED_STORES) {
             consecutiveFailures: 0,
             cooldownUntil: 0,
             lastSuccessAt: Date.now(),
-            lastProductsCount: 250
+            lastProductsCount: 250,
+            resolvedPath: store.resolvedPath,
+            additionalPaths: store.additionalPaths,
+            tier: store.tier || 'TIER2_STANDARD'
         });
     }
 }
@@ -161,7 +210,7 @@ try {
     flushStoreHealthToDisk();
 }
 catch (e) { }
-const variantStateMap = new Map();
+exports.variantStateMap = new Map();
 const oosVariantStagingMap = new Map();
 const seededOosStores = new Set();
 const stagingAlertCooldownMap = new Map();
@@ -229,16 +278,34 @@ async function smartGetJson(url) {
         }
     }
 }
+function scorePokemonCollectionCandidate(col) {
+    const handle = String(col.handle || '').toLowerCase();
+    const title = String(col.title || '').toLowerCase();
+    const hay = `${handle} ${title}`;
+    if (INVALID_COLLECTION_SUBPATH_REGEX.test(hay))
+        return -100;
+    if (BROAD_PARENT_COLLECTION_HANDLE_REGEX.test(handle))
+        return 100;
+    if (NARROW_SUBCOLLECTION_HANDLE_REGEX.test(handle))
+        return 10;
+    if (/sealed|pokemon-tcg|all-pokemon|^pokemon/i.test(handle))
+        return 75;
+    if (/pokemon|pkmn/i.test(handle))
+        return 45;
+    return 20;
+}
 // Automatically finds the best Pokemon collection feed on each Shopify store and caches resolvedPath to disk
 async function resolveBestPokemonFeed(store, health) {
     if (store.resolvedPath && INVALID_COLLECTION_SUBPATH_REGEX.test(store.resolvedPath)) {
         store.resolvedPath = undefined;
     }
-    if (health.resolvedPath && INVALID_COLLECTION_SUBPATH_REGEX.test(health.resolvedPath)) {
+    if (health.resolvedPath && (INVALID_COLLECTION_SUBPATH_REGEX.test(health.resolvedPath) || (!store.resolvedPath && NARROW_SUBCOLLECTION_HANDLE_REGEX.test(health.resolvedPath)))) {
         health.resolvedPath = undefined;
     }
-    if (store.resolvedPath)
+    if (store.resolvedPath) {
+        health.resolvedPath = store.resolvedPath;
         return { feedPath: store.resolvedPath };
+    }
     if (health.resolvedPath) {
         store.resolvedPath = health.resolvedPath;
         return { feedPath: health.resolvedPath };
@@ -252,16 +319,27 @@ async function resolveBestPokemonFeed(store, health) {
                 !INVALID_COLLECTION_SUBPATH_REGEX.test(hay));
         });
         pkmnCols.sort((a, b) => {
-            const aSealed = /sealed|booster|box|tcg|in-stock|^pokemon$/i.test(a.handle) ? 1 : 0;
-            const bSealed = /sealed|booster|box|tcg|in-stock|^pokemon$/i.test(b.handle) ? 1 : 0;
-            return bSealed - aSealed;
+            const scoreDiff = scorePokemonCollectionCandidate(b) - scorePokemonCollectionCandidate(a);
+            if (scoreDiff !== 0)
+                return scoreDiff;
+            return Number(b.products_count || 0) - Number(a.products_count || 0);
         });
-        for (const col of pkmnCols.slice(0, 2)) {
+        for (const col of pkmnCols.slice(0, 3)) {
             const testPath = `/collections/${col.handle}/products.json?limit=250`;
             const { data: prodData } = await smartGetJson(`${store.baseUrl}${testPath}`);
             if (prodData?.products && Array.isArray(prodData.products) && prodData.products.length >= 5) {
                 store.resolvedPath = testPath;
                 health.resolvedPath = testPath;
+                if (NARROW_SUBCOLLECTION_HANDLE_REGEX.test(col.handle) && !store.additionalPaths) {
+                    const companionPaths = pkmnCols
+                        .filter((c) => c.handle !== col.handle && /booster-box|elite-trainer|etb|sealed|bundle/i.test(c.handle))
+                        .slice(0, 2)
+                        .map((c) => `/collections/${c.handle}/products.json?limit=250`);
+                    if (companionPaths.length > 0) {
+                        store.additionalPaths = companionPaths;
+                        health.additionalPaths = companionPaths;
+                    }
+                }
                 return { feedPath: testPath, initialProducts: prodData.products };
             }
         }
@@ -316,6 +394,24 @@ async function pollSingleStore(store) {
             }
             storeHealthMap.set(store.name, health);
             return { hit: false, productsScanned: 0, skippedByCircuit: false };
+        }
+        // Multi-Endpoint Sub-Collection Polling (for stores whose ETBs and Booster Boxes span multiple collections):
+        if (Array.isArray(store.additionalPaths) && store.additionalPaths.length > 0) {
+            const seenIds = new Set(products.map((p) => p.id));
+            for (const extraPath of store.additionalPaths) {
+                if (!extraPath || extraPath === resolved.feedPath)
+                    continue;
+                const extraRes = await smartGetJson(`${store.baseUrl}${extraPath}`);
+                const extraItems = extraRes.data?.products;
+                if (Array.isArray(extraItems)) {
+                    for (const ep of extraItems) {
+                        if (ep && ep.id && !seenIds.has(ep.id)) {
+                            seenIds.add(ep.id);
+                            products.push(ep);
+                        }
+                    }
+                }
+            }
         }
         // Tier 2 (Staggered 10-Minute Deep Shelf Sweep — Pages 2 to 4):
         // When Page 1 returns a full 250 items, fetch pages 2..4 once every 10 minutes (staggered max 10 stores/sweep)
@@ -381,10 +477,10 @@ async function pollSingleStore(store) {
                     const tagsStr = Array.isArray(prod.tags) ? prod.tags.join(' ') : String(prod.tags || '');
                     if (!(0, policies_1.isValidSkuForFormFactor)(fullTitle, undefined, priceNum, { handle: `${prod.handle || ''} ${tagsStr}` }))
                         continue;
-                    const prev = variantStateMap.get(variant.id);
+                    const prev = exports.variantStateMap.get(variant.id);
                     const minsSinceCheck = prev ? (checkNow - prev.lastCheckedAt) / (1000 * 60) : 999;
                     if (!prev || priceNum !== prev.price || minsSinceCheck >= 3) {
-                        variantStateMap.set(variant.id, { price: priceNum, lastCheckedAt: checkNow, oosStrikes: 0 });
+                        exports.variantStateMap.set(variant.id, { price: priceNum, lastCheckedAt: checkNow, oosStrikes: 0 });
                         const realQty = typeof variant.inventory_quantity === 'number' && variant.inventory_quantity > 0
                             ? variant.inventory_quantity
                             : undefined;
@@ -412,11 +508,11 @@ async function pollSingleStore(store) {
                     }
                 }
                 else {
-                    const prev = variantStateMap.get(variant.id);
+                    const prev = exports.variantStateMap.get(variant.id);
                     if (prev) {
                         prev.oosStrikes += 1;
                         if (prev.oosStrikes >= 2) {
-                            variantStateMap.delete(variant.id);
+                            exports.variantStateMap.delete(variant.id);
                             await (0, notifier_1.markAlertSoldOut)(String(variant.id));
                         }
                     }

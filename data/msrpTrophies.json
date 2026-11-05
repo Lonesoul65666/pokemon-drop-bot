@@ -1,6 +1,17 @@
 {
-  "totalMsrpHits": 34,
+  "totalMsrpHits": 35,
   "catches": [
+    {
+      "productName": "Prismatic Evolutions ETB",
+      "ruleId": "sv-prismatic-evolutions-etb",
+      "store": "Kanzen Games",
+      "price": 50,
+      "landedPrice": 56.99,
+      "msrp": 54.99,
+      "url": "https://kanzengames.com/products/psa-9-eevee-prismatic-evolutions-etb-173-118133755",
+      "timestamp": 1793853955237,
+      "timeStr": "2026-11-05T04:45:55.237Z"
+    },
     {
       "productName": "Mega Evolution: Perfect Order Booster Box (36-Pack)",
       "ruleId": "me-perfect-order-booster-box",
@@ -209,17 +220,6 @@
       "url": "https://www.tcgplayer.com/product/672401?Language=English",
       "timestamp": 1793713513694,
       "timeStr": "2026-11-03T13:45:13.694Z"
-    },
-    {
-      "productName": "Mega Evolution: Perfect Order ETB",
-      "ruleId": "me-perfect-order-etb",
-      "store": "TCGPlayer Verified Seller ($59.00)",
-      "price": 59.25,
-      "landedPrice": 59.25,
-      "msrp": 54.99,
-      "url": "https://www.tcgplayer.com/product/672401?Language=English",
-      "timestamp": 1793582877563,
-      "timeStr": "2026-11-02T01:27:57.563Z"
     }
   ]
 }

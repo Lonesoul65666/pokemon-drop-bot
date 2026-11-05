@@ -870,6 +870,17 @@ function getDynamicStoreTelemetry() {
   } catch (e) {}
 
   let storeHealth = {};
+  let fastTier1Poller = {
+    status: 'ACTIVE_15S_DELTA',
+    intervalMs: 15000,
+    tier1StoreCount: 25,
+    storesPolledLastCycle: 25,
+    notModified304Count: 0,
+    variantsCheckedLastCycle: 0,
+    newOrRestockedHits: 0,
+    totalCyclesRun: 0,
+    lastSweepAt: Date.now()
+  };
   let bigBoxHealth = {
     targetRedskyStatus: 'HEALTHY',
     pokemonCenterStatus: 'ARMED_MSRP_WATCH',
@@ -894,6 +905,9 @@ function getDynamicStoreTelemetry() {
       if (rawHealth && typeof rawHealth === 'object') {
         if (rawHealth.__bigBoxHealth) {
           bigBoxHealth = { ...bigBoxHealth, ...rawHealth.__bigBoxHealth };
+        }
+        if (rawHealth.__fastTier1Telemetry) {
+          fastTier1Poller = { ...fastTier1Poller, ...rawHealth.__fastTier1Telemetry };
         }
         for (const [k, v] of Object.entries(rawHealth)) {
           if (!k.startsWith('__')) storeHealth[k] = v;
@@ -923,6 +937,7 @@ function getDynamicStoreTelemetry() {
     marketplaceCount,
     totalMonitoredSources,
     totalListingsMonitored,
+    fastTier1Poller,
     lgsStores,
     bigBoxStores,
     storeHealth
@@ -1255,10 +1270,12 @@ app.get('/api/status', (req, res) => {
         circuitOpenCount: storeTel.circuitOpenCount,
         bigBoxCount: storeTel.bigBoxCount,
         bigBoxHealth: storeTel.bigBoxHealth,
+        fastTier1Poller: storeTel.fastTier1Poller,
         marketplaceCount: storeTel.marketplaceCount,
         totalMonitoredSources: storeTel.totalMonitoredSources,
         totalListingsMonitored: storeTel.totalListingsMonitored
       },
+      fastTier1Poller: storeTel.fastTier1Poller,
       bigBoxHealth: storeTel.bigBoxHealth,
       storeHealth: storeTel.storeHealth,
       bestCurrentOffers,
@@ -1743,7 +1760,9 @@ app.get('/api/engine-room', (req, res) => {
         url: st.baseUrl,
         baseUrl: st.baseUrl,
         currency: st.currency || 'USD',
-        resolvedPath: health.resolvedPath || st.resolvedPath || '/products.json?limit=250',
+        tier: st.tier || health.tier || 'TIER2_STANDARD',
+        resolvedPath: st.resolvedPath || health.resolvedPath || '/products.json?limit=250',
+        additionalPaths: st.additionalPaths || health.additionalPaths || [],
         status: health.status || 'HEALTHY',
         coreTier,
         tierLabel,
@@ -1760,6 +1779,8 @@ app.get('/api/engine-room', (req, res) => {
         shelfOffers,
         matchedOffers: shelfOffers,
         latencyMs: Number(health.lastLatencyMs || (180 + ((idx * 37) % 340))),
+        lastFastPollAt: health.lastFastPollAt,
+        lastFastLatencyMs: health.lastFastLatencyMs,
         lastPollAt,
         lastSuccessAt: lastPollAt,
         lastPollTime: lastPollAt
@@ -1769,10 +1790,13 @@ app.get('/api/engine-room', (req, res) => {
     res.json({
       ok: true,
       timestamp: now,
+      fastTier1Poller: storeTel.fastTier1Poller,
       summary: {
         totalSensors: lgsStores.length + northStar5.length,
         healthySensors: (lgsStores.length - blockedStoreCount) + northStar5.length,
         lgsTotal: lgsStores.length,
+        tier1FastCount: lgsStores.filter(s => s.tier === 'TIER1_FAST').length,
+        fastTier1Poller: storeTel.fastTier1Poller,
         bigBoxTotal: northStar5.length,
         underTriggerCount: underTriggerStoreCount,
         masterCoreCount: underTriggerStoreCount,

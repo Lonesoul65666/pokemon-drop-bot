@@ -54,6 +54,7 @@ export interface StoreRegistryEntry {
   storeType: 'SHOPIFY_LGS' | 'BIG_BOX';
   baseUrl: string;
   resolvedPath?: string;
+  additionalPaths?: string[];
   flatShipping: number;
   freeShipThreshold: number;
   currency?: 'USD' | 'CAD';
@@ -372,6 +373,10 @@ export function loadActiveLgsStores(): StoreRegistryEntry[] {
   return loadStoresRegistry().filter(
     (s) => s && s.storeType !== 'BIG_BOX' && s.enabled !== false && Boolean(s.baseUrl)
   );
+}
+
+export function loadTier1FastLgsStores(): StoreRegistryEntry[] {
+  return loadActiveLgsStores().filter((s) => s.tier === 'TIER1_FAST');
 }
 
 let cachedShippingRulesMap: Record<string, StoreShippingProfile> | null = null;

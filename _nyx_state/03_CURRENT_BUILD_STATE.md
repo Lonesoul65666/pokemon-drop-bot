@@ -6,9 +6,9 @@
 
 ## 1. Live System Snapshot
 - **Current Phase:** **V5 Slice 3.5 Complete** (Extracted standalone `src/engine/trendAdvisor.ts` (`312` lines, `< 350` lines), killed the blind Pre-Release calendar bleed warning in favor of data-driven `◈ ⟦ BEATS $100 MARKET FLOOR (-13%) // SOLID PRE-LAUNCH GRAB ⟧` verdicts, wired 14d/30d/60d/90d rolling market analytics with the `60D ELASTIC DIP` and `MARKET CLIMBING` sniper signals, enforced Zero Stock Emojis on Close-Call tags, and surfaced `trendVerdictLabel` across `storeOffersCache.json`, `/api/status`, `/api/sku-history/:skuId`, and `public/index.html`; Ready for **V5 Slice 4: Fix Narrow Shopify Store Collection Paths, Launch 15-Second Tier-1 Fast Restock Poller & Wire Honest Big-Box SKU/TCIN + Stealth Browser Polling**).
-- **Last Checkpoint Timestamp:** `2026-11-04 18:13 CST`
+- **Last Checkpoint Timestamp:** `2026-11-05 00:16 CST`
 - **Git Branch:** `main`
-- **Parent Baseline Commit:** `6dc0947` (`V5 Slice 3.5: Extract src/engine/trendAdvisor.ts with 30/60/90d Elastic Dip sniper and replace blind pre-release calendar warnings`)
+- **Parent Baseline Commit:** `12fac76` (`Manual dropbot save checkpoint`)
 - **PM2 Process Status:**
   - `pokemon-drop-bot` (id `0`, `index.js`): **ONLINE** (`0` crashes, all 90 active Shopify LGS stores healthy)
   - `drop-bot-dashboard` (id `1`, `server.js` on `http://localhost:3000`): **ONLINE** (`HTTP 200 OK` across `/`, `/dashboard.html`, `/css/stadium.css`, `/js/stadium/stadium-data.js`, `/js/stadium/stadium-audio.js`, `/js/stadium/stadium-combat.js`, `/js/stadium/stadium-ui.js`, and `/api/status`)

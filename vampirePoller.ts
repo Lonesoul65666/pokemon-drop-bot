@@ -9,10 +9,10 @@ import {
   detectBigBoxRetailer
 } from './policies';
 import { isValidCompTitle } from './marketComps';
-import { markLiveStockOut, markAlertKeyOutOfStock } from './evaluator';
+import { markLiveStockOut, markAlertKeyOutOfStock, clearTcgOosStrikes } from './evaluator';
 
 const seenRedditIds = new Set<string>();
-const lowestTcgSeenMap = new Map<string, { lowestPrice: number; timestamp: number; inStockUnderTrigger: boolean }>();
+const lowestTcgSeenMap = new Map<string, { lowestPrice: number; timestamp: number; inStockUnderTrigger: boolean; oosStrikes: number }>();
 const seenBigBoxOffers = new Map<string, { price: number; timestamp: number }>();
 
 const TARGET_REDSKY_QUERIES = [
@@ -614,6 +614,17 @@ export async function pollRedditDeals(): Promise<void> {
       const updatedMatch = block.match(/<(?:updated|published)>([^<]+)<\/(?:updated|published)>/i);
       if (idMatch && titleMatch) {
         const parsedUtc = updatedMatch ? Math.floor(Date.parse(updatedMatch[1]) / 1000) : 0;
+        const decodedSelftext = contentMatch
+          ? contentMatch[1]
+              .replace(/&amp;/g, '&')
+              .replace(/&#39;/g, "'")
+              .replace(/&quot;/g, '"')
+              .replace(/&lt;/g, '<')
+              .replace(/&gt;/g, '>')
+          : '';
+        const rawHref = linkMatch ? linkMatch[1] : '';
+        const extractedUrl = extractOutboundRetailerUrl(`${rawHref} ${decodedSelftext}`, rawHref);
+        const isSelfNoExternalLink = /https?:\/\/(?:www\.|old\.)?reddit\.com|redd\.it/i.test(extractedUrl) || !/^https?:\/\//i.test(extractedUrl);
         posts.push({
           id: idMatch[1],
           title: titleMatch[1]
@@ -622,15 +633,9 @@ export async function pollRedditDeals(): Promise<void> {
             .replace(/&quot;/g, '"')
             .replace(/&lt;/g, '<')
             .replace(/&gt;/g, '>'),
-          url_overridden_by_dest: linkMatch ? linkMatch[1] : '',
-          selftext: contentMatch
-            ? contentMatch[1]
-                .replace(/&amp;/g, '&')
-                .replace(/&#39;/g, "'")
-                .replace(/&quot;/g, '"')
-                .replace(/&lt;/g, '<')
-                .replace(/&gt;/g, '>')
-            : '',
+          url_overridden_by_dest: rawHref,
+          selftext: decodedSelftext,
+          is_self: isSelfNoExternalLink,
           created_utc: parsedUtc > 0 ? parsedUtc : Math.floor(Date.now() / 1000) - 60
         });
       }
@@ -660,7 +665,12 @@ export async function pollRedditDeals(): Promise<void> {
 
       const rawDest = post.url_overridden_by_dest || `https://www.reddit.com${post.permalink || ''}`;
       const dealUrl = extractOutboundRetailerUrl(`${rawDest} ${selftext}`, rawDest);
-      const isSelfRedditLinkOnly = /https?:\/\/(?:www\.|old\.)?reddit\.com|redd\.it/i.test(dealUrl);
+      const isSelfRedditLinkOnly = Boolean(post.is_self === true || /https?:\/\/(?:www\.|old\.)?reddit\.com|redd\.it/i.test(dealUrl));
+
+      // Hard Outbound Link Filter: Ignore all Reddit self-posts / discussion threads without an external retailer link!
+      if (isSelfRedditLinkOnly) {
+        continue;
+      }
 
       const storeMatch = title.match(/^\[([^\]]+)\]/);
       const rawStoreTag = storeMatch ? storeMatch[1] : '';
@@ -670,13 +680,8 @@ export async function pollRedditDeals(): Promise<void> {
       const bodyPriceMatch = selftext.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
       let price: number | undefined = titlePriceMatch
         ? parseFloat(titlePriceMatch[1])
-        : (bodyPriceMatch && !isSelfRedditLinkOnly ? parseFloat(bodyPriceMatch[1]) : undefined);
+        : (bodyPriceMatch ? parseFloat(bodyPriceMatch[1]) : undefined);
       let isBigBoxRestockRadar = false;
-
-      // Reject any post that lacks an outbound retailer URL AND lacks an explicit [Store] $XX.XX deal format
-      if (isSelfRedditLinkOnly && (!titlePriceMatch || !rawStoreTag)) {
-        continue;
-      }
 
       // For a post without an explicit $XX.XX price in the title to trigger as a [BIG-BOX RESTOCK RADAR] hit,
       // it MUST contain a real verified outbound URL pointing to pokemoncenter.com, target.com, walmart.com/ip/, bestbuy.com/site/, costco.com, samsclub.com, or gamestop.com!
@@ -768,13 +773,7 @@ function formatTransparentMarketplaceShipping(itemPrice: number, shippingPrice?:
   return '+FREE Shipping (Over $35 Threshold)';
 }
 
-async function getBestVerifiedTcgSeller(
-  prodId: number,
-  minFloor: number,
-  maxCeiling: number,
-  formFactor?: string,
-  marketValue = 0
-): Promise<{
+interface VerifiedTcgSellerOffer {
   price: number;
   itemPrice: number;
   shipping: number;
@@ -783,7 +782,15 @@ async function getBestVerifiedTcgSeller(
   sales: number;
   quantity: number;
   sellerVerified: boolean;
-} | null> {
+}
+
+async function getBestVerifiedTcgSeller(
+  prodId: number,
+  minFloor: number,
+  maxCeiling: number,
+  formFactor?: string,
+  marketValue = 0
+): Promise<{ seller: VerifiedTcgSellerOffer | null; networkError: boolean }> {
   try {
     const url = `https://mp-search-api.tcgplayer.com/v1/product/${prodId}/listings`;
     const body = {
@@ -823,19 +830,37 @@ async function getBestVerifiedTcgSeller(
 
       if (itemPrice > 0 && total >= minFloor && total <= maxCeiling) {
         return {
-          price: total,
-          itemPrice,
-          shipping: shipPrice,
-          sellerName: l.sellerName || 'Verified Shop',
-          rating,
-          sales,
-          quantity,
-          sellerVerified: isVerifiedSeller
+          seller: {
+            price: total,
+            itemPrice,
+            shipping: shipPrice,
+            sellerName: l.sellerName || 'Verified Shop',
+            rating,
+            sales,
+            quantity,
+            sellerVerified: isVerifiedSeller
+          },
+          networkError: false
         };
       }
     }
-  } catch (e) {}
-  return null;
+    return { seller: null, networkError: false };
+  } catch (e) {
+    return { seller: null, networkError: true };
+  }
+}
+
+function recordConfirmedTcgOosStrike(policyId: string, prodId: number): void {
+  const prev = lowestTcgSeenMap.get(policyId);
+  if (!prev) return;
+  prev.oosStrikes = (prev.oosStrikes || 0) + 1;
+  if (prev.oosStrikes >= 3) {
+    prev.inStockUnderTrigger = false;
+    lowestTcgSeenMap.set(policyId, prev);
+    markLiveStockOut(`tcg_${prodId}`, { confirmedTcgThreeStrikes: true });
+  } else {
+    lowestTcgSeenMap.set(policyId, prev);
+  }
 }
 
 let tcgCursor = 0;
@@ -876,21 +901,29 @@ export async function pollTcgPlayerUndercuts(): Promise<void> {
       try {
         if ((policy as any).tcgProductId) {
           const prodId = (policy as any).tcgProductId;
-          const bestSeller = await getBestVerifiedTcgSeller(prodId, minFloor, maxCeiling, formFactor, marketVal);
+          const { seller: bestSeller, networkError } = await getBestVerifiedTcgSeller(prodId, minFloor, maxCeiling, formFactor, marketVal);
+          if (networkError) continue;
+          if (!bestSeller) {
+            recordConfirmedTcgOosStrike(policy.id, prodId);
+            continue;
+          }
           if (bestSeller && bestSeller.price >= minFloor && bestSeller.price <= maxCeiling) {
             const isUnderTrigger = bestSeller.price <= effectiveCeiling;
             const prev = lowestTcgSeenMap.get(policy.id);
             const minsSinceLast = prev ? (Date.now() - prev.timestamp) / (1000 * 60) : 999;
 
-            if (!isUnderTrigger && prev?.inStockUnderTrigger) {
-              markLiveStockOut(`tcg_${prodId}`);
+            if (!isUnderTrigger) {
+              recordConfirmedTcgOosStrike(policy.id, prodId);
+            } else {
+              clearTcgOosStrikes(`tcg_${prodId}`);
             }
 
             if (!prev || bestSeller.price <= prev.lowestPrice - 2 || (!prev.inStockUnderTrigger && isUnderTrigger) || minsSinceLast >= 15) {
               lowestTcgSeenMap.set(policy.id, {
                 lowestPrice: bestSeller.price,
                 timestamp: Date.now(),
-                inStockUnderTrigger: isUnderTrigger
+                inStockUnderTrigger: isUnderTrigger ? true : Boolean(prev?.inStockUnderTrigger && (prev?.oosStrikes || 0) < 3),
+                oosStrikes: isUnderTrigger ? 0 : (prev?.oosStrikes || 1)
               });
               const shippingNoteOverride = formatTransparentMarketplaceShipping(
                 bestSeller.itemPrice,
@@ -947,11 +980,14 @@ export async function pollTcgPlayerUndercuts(): Promise<void> {
           if (!doesTcgResultMatchFormFactor(prodTitle, policy.name, formFactor, undefined, policy.id)) continue;
 
           const prodId = Math.floor(Number(item.productId));
-          const bestSeller = await getBestVerifiedTcgSeller(prodId, minFloor, maxCeiling, formFactor, marketVal);
+          const { seller: bestSeller, networkError } = await getBestVerifiedTcgSeller(prodId, minFloor, maxCeiling, formFactor, marketVal);
 
-          // V5 Slice 3 Scam Shield: Never fall back to unverified raw search-card listings if getBestVerifiedTcgSeller rejected them!
+          // Ignore transient network timeouts completely; require 3 consecutive confirmed OOS sweeps before clearing!
+          if (networkError) {
+            break;
+          }
           if (!bestSeller) {
-            markLiveStockOut(`tcg_${prodId}`);
+            recordConfirmedTcgOosStrike(policy.id, prodId);
             break;
           }
 
@@ -962,7 +998,7 @@ export async function pollTcgPlayerUndercuts(): Promise<void> {
           const parsedShipPrice = bestSeller.shipping;
 
           if (isShippingScam(parsedItemPrice, parsedShipPrice, formFactor)) {
-            markLiveStockOut(`tcg_${prodId}`);
+            recordConfirmedTcgOosStrike(policy.id, prodId);
             break;
           }
 
@@ -978,8 +1014,10 @@ export async function pollTcgPlayerUndercuts(): Promise<void> {
           const prev = lowestTcgSeenMap.get(policy.id);
           const minsSinceLast = prev ? (Date.now() - prev.timestamp) / (1000 * 60) : 999;
 
-          if (!isUnderTrigger && prev?.inStockUnderTrigger) {
-            markLiveStockOut(`tcg_${prodId}`);
+          if (!isUnderTrigger) {
+            recordConfirmedTcgOosStrike(policy.id, prodId);
+          } else {
+            clearTcgOosStrikes(`tcg_${prodId}`);
           }
 
           // Pass to processIncomingDrop when newly seen, price drops, flips into trigger, or every 15m so bestCurrentOffers / Near Misses stay fresh
@@ -987,7 +1025,8 @@ export async function pollTcgPlayerUndercuts(): Promise<void> {
             lowestTcgSeenMap.set(policy.id, {
               lowestPrice,
               timestamp: Date.now(),
-              inStockUnderTrigger: isUnderTrigger
+              inStockUnderTrigger: isUnderTrigger ? true : Boolean(prev?.inStockUnderTrigger && (prev?.oosStrikes || 0) < 3),
+              oosStrikes: isUnderTrigger ? 0 : (prev?.oosStrikes || 1)
             });
             const isPreOrder = /pre-?order|pre-?sale/i.test(prodTitle);
             await processIncomingDrop({

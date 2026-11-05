@@ -17,6 +17,7 @@ exports.saveGlobalSettingsFromUi = saveGlobalSettingsFromUi;
 exports.saveMarketBaselineSync = saveMarketBaselineSync;
 exports.loadStoresRegistry = loadStoresRegistry;
 exports.loadActiveLgsStores = loadActiveLgsStores;
+exports.loadTier1FastLgsStores = loadTier1FastLgsStores;
 exports.loadShippingRulesMap = loadShippingRulesMap;
 exports.getStoreShippingProfileFromRegistry = getStoreShippingProfileFromRegistry;
 exports.watchConfigFiles = watchConfigFiles;
@@ -320,6 +321,9 @@ function loadStoresRegistry() {
 }
 function loadActiveLgsStores() {
     return loadStoresRegistry().filter((s) => s && s.storeType !== 'BIG_BOX' && s.enabled !== false && Boolean(s.baseUrl));
+}
+function loadTier1FastLgsStores() {
+    return loadActiveLgsStores().filter((s) => s.tier === 'TIER1_FAST');
 }
 let cachedShippingRulesMap = null;
 function loadShippingRulesMap(forceReload = false) {

@@ -18,6 +18,7 @@ exports.getStoreShippingProfile = getStoreShippingProfile;
 exports.upsertBestCurrentOffer = upsertBestCurrentOffer;
 exports.matchTargetRuleForStaging = matchTargetRuleForStaging;
 exports.upsertLiveStock = upsertLiveStock;
+exports.clearTcgOosStrikes = clearTcgOosStrikes;
 exports.markLiveStockOut = markLiveStockOut;
 exports.evaluateItem = evaluateItem;
 const fs_1 = __importDefault(require("fs"));
@@ -645,25 +646,38 @@ function upsertLiveStock(entry) {
     }
     catch (e) { }
 }
-function markLiveStockOut(itemId) {
+const tcgOosStrikesByItem = new Map();
+function clearTcgOosStrikes(itemId) {
+    if (!itemId)
+        return;
+    tcgOosStrikesByItem.delete(String(itemId));
+}
+function markLiveStockOut(itemId, options) {
+    const strId = String(itemId);
+    const isTcgItem = strId.startsWith('tcg_');
+    if (isTcgItem) {
+        const strikes = (tcgOosStrikesByItem.get(strId) || 0) + 1;
+        tcgOosStrikesByItem.set(strId, strikes);
+        if (!options?.confirmedTcgThreeStrikes && strikes < 3) {
+            return;
+        }
+        tcgOosStrikesByItem.delete(strId);
+    }
     try {
-        (0, marketTape_1.recordTapeSoldOut)(String(itemId));
+        (0, marketTape_1.recordTapeSoldOut)(strId);
     }
     catch (e) { }
-    // Never flip wasOutOfStockSinceLastAlert on a single TCGPlayer scrape or timeout!
-    if (!String(itemId).startsWith('tcg_')) {
-        try {
-            markAlertKeyOutOfStock(String(itemId));
-        }
-        catch (e) { }
+    try {
+        markAlertKeyOutOfStock(strId);
     }
+    catch (e) { }
     try {
         let offersMutated = false;
         for (const skuOffers of Object.values(storeOffersCacheMem)) {
             if (!skuOffers || typeof skuOffers !== 'object')
                 continue;
             for (const [stKey, rec] of Object.entries(skuOffers)) {
-                if (rec && String(rec.itemId) === String(itemId)) {
+                if (rec && String(rec.itemId) === strId) {
                     delete skuOffers[stKey];
                     offersMutated = true;
                 }
@@ -685,9 +699,9 @@ function markLiveStockOut(itemId) {
         for (const key of Object.keys(map)) {
             if (key === '__recentOos' || key === '__bestOffers')
                 continue;
-            if (map[key]?.itemId === String(itemId)) {
+            if (map[key]?.itemId === strId) {
                 const matchedEntry = map[key];
-                if (matchedEntry.retailer && !String(itemId).startsWith('tcg_')) {
+                if (matchedEntry.retailer) {
                     markAlertKeyOutOfStock(key, matchedEntry.retailer);
                 }
                 recentOos.unshift({
@@ -864,6 +878,9 @@ function evaluateItem(item) {
             isMarketplace3P
         });
         const { statusTier, statusTag, isCloseCall, closeCallDelta } = shelfStatus;
+        if (item.itemId && String(item.itemId).startsWith('tcg_')) {
+            clearTcgOosStrikes(String(item.itemId));
+        }
         const now = Date.now();
         // V5 Slice 3.5: Data-Driven Pre-Release & 30/60/90d Rolling Trend Evaluation via src/engine/trendAdvisor.ts
         const trendEval = (0, trendAdvisor_1.evaluateSkuTrendAndTiming)({

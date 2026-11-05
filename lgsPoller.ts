@@ -25,12 +25,15 @@ export function getNextProxy(): HttpsProxyAgent<string> {
 }
 
 export interface MonitoredStore {
+  id?: string;
   name: string;
   baseUrl: string;
   freeShipThreshold: number;
   flatShipping: number;
   currency?: 'USD' | 'CAD';
   resolvedPath?: string;
+  additionalPaths?: string[];
+  tier?: 'TIER1_FAST' | 'TIER2_STANDARD';
 }
 
 export interface StoreHealthRecord {
@@ -45,6 +48,10 @@ export interface StoreHealthRecord {
   lastPagesScanned?: number;
   lastLatencyMs?: number;
   resolvedPath?: string;
+  additionalPaths?: string[];
+  tier?: 'TIER1_FAST' | 'TIER2_STANDARD';
+  lastFastPollAt?: number;
+  lastFastLatencyMs?: number;
 }
 
 const storeHealthMap = new Map<string, StoreHealthRecord>();
@@ -93,6 +100,18 @@ let bigBoxHealthTelemetry: Record<string, any> = {
   }
 };
 let isPolling = false;
+let fastTier1Telemetry: Record<string, any> = {
+  status: 'ACTIVE_15S_DELTA',
+  intervalMs: 15000,
+  tier1StoreCount: 25,
+  storesPolledLastCycle: 25,
+  notModified304Count: 0,
+  variantsCheckedLastCycle: 0,
+  newOrRestockedHits: 0,
+  totalCyclesRun: 0,
+  lastSweepAt: Date.now(),
+  lastDurationMs: 0
+};
 
 try {
   if (fs.existsSync(STORE_HEALTH_PATH)) {
@@ -100,6 +119,9 @@ try {
     if (raw && typeof raw === 'object') {
       if (raw.__bigBoxHealth && typeof raw.__bigBoxHealth === 'object') {
         bigBoxHealthTelemetry = { ...bigBoxHealthTelemetry, ...raw.__bigBoxHealth };
+      }
+      if (raw.__fastTier1Telemetry && typeof raw.__fastTier1Telemetry === 'object') {
+        fastTier1Telemetry = { ...fastTier1Telemetry, ...raw.__fastTier1Telemetry };
       }
       for (const [k, v] of Object.entries(raw)) {
         if (k.startsWith('__')) continue;
@@ -138,6 +160,31 @@ export function recordBigBoxCheckTelemetry(patch: Record<string, any>) {
   } catch (e) {}
 }
 
+export function recordFastTier1Telemetry(patch: Record<string, any>, perStorePatch?: Map<string, { lastFastPollAt: number; lastFastLatencyMs: number }>) {
+  fastTier1Telemetry = {
+    ...fastTier1Telemetry,
+    ...patch,
+    lastSweepAt: Date.now()
+  };
+  if (perStorePatch) {
+    for (const [storeName, meta] of perStorePatch.entries()) {
+      const rec = storeHealthMap.get(storeName);
+      if (rec) {
+        rec.lastFastPollAt = meta.lastFastPollAt;
+        rec.lastFastLatencyMs = meta.lastFastLatencyMs;
+        storeHealthMap.set(storeName, rec);
+      }
+    }
+  }
+  try {
+    flushStoreHealthToDisk();
+  } catch (e) {}
+}
+
+export function getFastTier1Telemetry() {
+  return fastTier1Telemetry;
+}
+
 function flushStoreHealthToDisk() {
   const activeNames = new Set(MONITORED_STORES.map(s => s.name));
   const out: Record<string, any> = {};
@@ -147,6 +194,7 @@ function flushStoreHealthToDisk() {
     }
   }
   out.__bigBoxHealth = bigBoxHealthTelemetry;
+  out.__fastTier1Telemetry = fastTier1Telemetry;
   atomicWriteJson(STORE_HEALTH_PATH, out);
 }
 
@@ -154,18 +202,24 @@ export const LGS_STORES: MonitoredStore[] = loadActiveLgsStores();
 
 export const MONITORED_STORES: MonitoredStore[] = LGS_STORES;
 
-const INVALID_COLLECTION_SUBPATH_REGEX = /single|singles|graded|slab|slabs|psa|cgc|bgs|japanese|chinese|korean|event|local|lorcana|digimon|one-piece|magic|mtg|3d-cut|custom|break|bandai|indonesian|thai|spanish|french|german|italian|portuguese|figure|plush|toy|apparel|supply|sleeve|binder/i;
+const INVALID_COLLECTION_SUBPATH_REGEX = /single|singles|graded|slab|slabs|psa|cgc|bgs|japanese|chinese|korean|event|local|lorcana|digimon|one-piece|magic|mtg|3d-cut|custom|break|bandai|indonesian|thai|spanish|french|german|italian|portuguese|figure|plush|toy|apparel|supply|sleeve|binder|accessories|codes|ptcgo|ptcgl/i;
+const NARROW_SUBCOLLECTION_HANDLE_REGEX = /booster-box|blister|elite-trainer|etb|pre-?order|sealed-cases|30th-pokemon|mega-evolution|a-great-place-to-begin|karls-krazy|modern-sealed/i;
+const BROAD_PARENT_COLLECTION_HANDLE_REGEX = /^(pokemon|pokemon-tcg|pokemon-sealed|all-pokemon|all-pokemon-sealed|all-pokemon-sealed-products|all-pokemon-sealed-product|pokemon-sealed-products|pokemon-sealed-product|pokemon-trading-card-game|games-pokemon|pokemon-cards|pokemon-english|sealed-pokemon-collection)$/i;
 
-// Ensure all active stores exist in storeHealthMap with HEALTHY status on boot
+// Ensure all active stores exist in storeHealthMap with HEALTHY status on boot and sync authoritative config/stores.json paths
 for (const store of MONITORED_STORES) {
   const existing = storeHealthMap.get(store.name);
   if (existing) {
-    if (existing.resolvedPath && INVALID_COLLECTION_SUBPATH_REGEX.test(existing.resolvedPath)) {
+    if (existing.resolvedPath && (INVALID_COLLECTION_SUBPATH_REGEX.test(existing.resolvedPath) || NARROW_SUBCOLLECTION_HANDLE_REGEX.test(existing.resolvedPath))) {
       existing.resolvedPath = undefined;
     }
-    if (existing.resolvedPath && !store.resolvedPath) {
+    if (store.resolvedPath) {
+      existing.resolvedPath = store.resolvedPath;
+    } else if (existing.resolvedPath) {
       store.resolvedPath = existing.resolvedPath;
     }
+    existing.additionalPaths = store.additionalPaths;
+    existing.tier = store.tier || 'TIER2_STANDARD';
     existing.status = 'HEALTHY';
     existing.consecutiveFailures = 0;
     existing.cooldownUntil = 0;
@@ -177,7 +231,10 @@ for (const store of MONITORED_STORES) {
       consecutiveFailures: 0,
       cooldownUntil: 0,
       lastSuccessAt: Date.now(),
-      lastProductsCount: 250
+      lastProductsCount: 250,
+      resolvedPath: store.resolvedPath,
+      additionalPaths: store.additionalPaths,
+      tier: store.tier || 'TIER2_STANDARD'
     });
   }
 }
@@ -185,7 +242,7 @@ try {
   flushStoreHealthToDisk();
 } catch (e) {}
 
-const variantStateMap = new Map<number, { price: number; lastCheckedAt: number; oosStrikes: number }>();
+export const variantStateMap = new Map<number, { price: number; lastCheckedAt: number; oosStrikes: number }>();
 const oosVariantStagingMap = new Map<number, { price: number; seenAt: number }>();
 const seededOosStores = new Set<string>();
 const stagingAlertCooldownMap = new Map<string, number>();
@@ -262,6 +319,18 @@ async function smartGetJson(url: string): Promise<{ data: any; error?: string }>
   }
 }
 
+function scorePokemonCollectionCandidate(col: any): number {
+  const handle = String(col.handle || '').toLowerCase();
+  const title = String(col.title || '').toLowerCase();
+  const hay = `${handle} ${title}`;
+  if (INVALID_COLLECTION_SUBPATH_REGEX.test(hay)) return -100;
+  if (BROAD_PARENT_COLLECTION_HANDLE_REGEX.test(handle)) return 100;
+  if (NARROW_SUBCOLLECTION_HANDLE_REGEX.test(handle)) return 10;
+  if (/sealed|pokemon-tcg|all-pokemon|^pokemon/i.test(handle)) return 75;
+  if (/pokemon|pkmn/i.test(handle)) return 45;
+  return 20;
+}
+
 // Automatically finds the best Pokemon collection feed on each Shopify store and caches resolvedPath to disk
 async function resolveBestPokemonFeed(
   store: MonitoredStore,
@@ -270,10 +339,13 @@ async function resolveBestPokemonFeed(
   if (store.resolvedPath && INVALID_COLLECTION_SUBPATH_REGEX.test(store.resolvedPath)) {
     store.resolvedPath = undefined;
   }
-  if (health.resolvedPath && INVALID_COLLECTION_SUBPATH_REGEX.test(health.resolvedPath)) {
+  if (health.resolvedPath && (INVALID_COLLECTION_SUBPATH_REGEX.test(health.resolvedPath) || (!store.resolvedPath && NARROW_SUBCOLLECTION_HANDLE_REGEX.test(health.resolvedPath)))) {
     health.resolvedPath = undefined;
   }
-  if (store.resolvedPath) return { feedPath: store.resolvedPath };
+  if (store.resolvedPath) {
+    health.resolvedPath = store.resolvedPath;
+    return { feedPath: store.resolvedPath };
+  }
   if (health.resolvedPath) {
     store.resolvedPath = health.resolvedPath;
     return { feedPath: health.resolvedPath };
@@ -290,17 +362,27 @@ async function resolveBestPokemonFeed(
       );
     });
     pkmnCols.sort((a: any, b: any) => {
-      const aSealed = /sealed|booster|box|tcg|in-stock|^pokemon$/i.test(a.handle) ? 1 : 0;
-      const bSealed = /sealed|booster|box|tcg|in-stock|^pokemon$/i.test(b.handle) ? 1 : 0;
-      return bSealed - aSealed;
+      const scoreDiff = scorePokemonCollectionCandidate(b) - scorePokemonCollectionCandidate(a);
+      if (scoreDiff !== 0) return scoreDiff;
+      return Number(b.products_count || 0) - Number(a.products_count || 0);
     });
 
-    for (const col of pkmnCols.slice(0, 2)) {
+    for (const col of pkmnCols.slice(0, 3)) {
       const testPath = `/collections/${col.handle}/products.json?limit=250`;
       const { data: prodData } = await smartGetJson(`${store.baseUrl}${testPath}`);
       if (prodData?.products && Array.isArray(prodData.products) && prodData.products.length >= 5) {
         store.resolvedPath = testPath;
         health.resolvedPath = testPath;
+        if (NARROW_SUBCOLLECTION_HANDLE_REGEX.test(col.handle) && !store.additionalPaths) {
+          const companionPaths = pkmnCols
+            .filter((c: any) => c.handle !== col.handle && /booster-box|elite-trainer|etb|sealed|bundle/i.test(c.handle))
+            .slice(0, 2)
+            .map((c: any) => `/collections/${c.handle}/products.json?limit=250`);
+          if (companionPaths.length > 0) {
+            store.additionalPaths = companionPaths;
+            health.additionalPaths = companionPaths;
+          }
+        }
         return { feedPath: testPath, initialProducts: prodData.products };
       }
     }
@@ -361,6 +443,24 @@ async function pollSingleStore(store: MonitoredStore): Promise<{ hit: boolean; p
       }
       storeHealthMap.set(store.name, health);
       return { hit: false, productsScanned: 0, skippedByCircuit: false };
+    }
+
+    // Multi-Endpoint Sub-Collection Polling (for stores whose ETBs and Booster Boxes span multiple collections):
+    if (Array.isArray(store.additionalPaths) && store.additionalPaths.length > 0) {
+      const seenIds = new Set<any>(products.map((p: any) => p.id));
+      for (const extraPath of store.additionalPaths) {
+        if (!extraPath || extraPath === resolved.feedPath) continue;
+        const extraRes = await smartGetJson(`${store.baseUrl}${extraPath}`);
+        const extraItems = extraRes.data?.products;
+        if (Array.isArray(extraItems)) {
+          for (const ep of extraItems) {
+            if (ep && ep.id && !seenIds.has(ep.id)) {
+              seenIds.add(ep.id);
+              products.push(ep);
+            }
+          }
+        }
+      }
     }
 
     // Tier 2 (Staggered 10-Minute Deep Shelf Sweep — Pages 2 to 4):

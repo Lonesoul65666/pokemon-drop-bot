@@ -54,9 +54,9 @@
   "Paladin Cards::me-30th-celebration-bundle": {
     "lastPrice": 65,
     "lowestAlertedPrice": 59.99,
-    "timestamp": 1793765931866,
-    "timeStr": "10:18 PM",
-    "alertCount": 7,
+    "timestamp": 1793852425886,
+    "timeStr": "10:20 PM",
+    "alertCount": 8,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "49164774703363"
   },
@@ -135,9 +135,9 @@
   "Black Wolf Collectibles::sv-prismatic-evolutions-etb-case": {
     "lastPrice": 1499.95,
     "lowestAlertedPrice": 1499.95,
-    "timestamp": 1793755258755,
-    "timeStr": "07:20 PM",
-    "alertCount": 5,
+    "timestamp": 1793841790019,
+    "timeStr": "07:23 PM",
+    "alertCount": 6,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "51559035797778"
   },
@@ -509,5 +509,77 @@
     "alertCount": 1,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "47992561008867"
+  },
+  "Epic Trading Collectibles::sv-obsidian-flames-etb": {
+    "lastPrice": 100,
+    "lowestAlertedPrice": 100,
+    "timestamp": 1793837710462,
+    "timeStr": "06:15 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "67724082774261"
+  },
+  "PKMN Colosseum::sv-shrouded-fable-bundle": {
+    "lastPrice": 57.99,
+    "lowestAlertedPrice": 57.99,
+    "timestamp": 1793841996910,
+    "timeStr": "07:26 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "43105614037046"
+  },
+  "Derium and Wifey::sv-shrouded-fable-bundle": {
+    "lastPrice": 57.99,
+    "lowestAlertedPrice": 57.99,
+    "timestamp": 1793844259357,
+    "timeStr": "08:04 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "51451802943797"
+  },
+  "PokeGirl CC::me-delta-reign-etb": {
+    "lastPrice": 74.99,
+    "lowestAlertedPrice": 74.99,
+    "timestamp": 1793848034777,
+    "timeStr": "09:07 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "51060807073931"
+  },
+  "Stomping Grounds::sv-shrouded-fable-bundle": {
+    "lastPrice": 59,
+    "lowestAlertedPrice": 59,
+    "timestamp": 1793852499554,
+    "timeStr": "10:21 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "50406669156512"
+  },
+  "Kanzen Games::sv-prismatic-evolutions-etb": {
+    "lastPrice": 50,
+    "lowestAlertedPrice": 50,
+    "timestamp": 1793853955237,
+    "timeStr": "10:45 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "67961138118871"
+  },
+  "Kanzen Games::sv-151-etb": {
+    "lastPrice": 75,
+    "lowestAlertedPrice": 75,
+    "timestamp": 1793853959791,
+    "timeStr": "10:45 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "67960413913303"
+  },
+  "Kanzen Games::sv-paldean-fates-etb": {
+    "lastPrice": 60,
+    "lowestAlertedPrice": 60,
+    "timestamp": 1793853973285,
+    "timeStr": "10:46 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "67960422957271"
   }
 }

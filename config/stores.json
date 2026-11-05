@@ -9,31 +9,48 @@
     "freeShipThreshold": 150,
     "currency": "USD",
     "tier": "TIER1_FAST",
-    "enabled": true
+    "enabled": true,
+    "aliases": [
+      "Smoke and Mirrors Hobby",
+      "Smoke & Mirrors Hobby"
+    ]
   },
   {
     "id": "safari-zone",
     "name": "Safari Zone",
     "storeType": "SHOPIFY_LGS",
     "baseUrl": "https://safari-zone.com",
-    "resolvedPath": "/products.json?limit=250",
+    "resolvedPath": "/collections/pokemon/products.json?limit=250",
     "flatShipping": 6.99,
     "freeShipThreshold": 150,
     "currency": "USD",
     "tier": "TIER1_FAST",
-    "enabled": true
+    "enabled": true,
+    "aliases": [
+      "Safari Zone Collectibles"
+    ],
+    "additionalPaths": [
+      "/products.json?limit=250",
+      "/collections/preorders/products.json?limit=250"
+    ]
   },
   {
     "id": "zulus-games",
     "name": "Zulus Games",
     "storeType": "SHOPIFY_LGS",
     "baseUrl": "https://zulusgames.com",
-    "resolvedPath": "/collections/pokemon-booster-boxes-1/products.json?limit=250",
+    "resolvedPath": "/collections/pokemon/products.json?limit=250",
     "flatShipping": 5.99,
     "freeShipThreshold": 100,
     "currency": "USD",
     "tier": "TIER1_FAST",
-    "enabled": true
+    "enabled": true,
+    "additionalPaths": [
+      "/collections/pokemon-booster-boxes-1/products.json?limit=250",
+      "/collections/pokemon-elite-trainer-box/products.json?limit=250",
+      "/collections/booster-bundle/products.json?limit=250",
+      "/collections/in-stock-pokemon/products.json?limit=250"
+    ]
   },
   {
     "id": "gamers-guild-az",
@@ -100,12 +117,15 @@
     "name": "Over The Brick",
     "storeType": "SHOPIFY_LGS",
     "baseUrl": "https://overthebrick.com",
-    "resolvedPath": "/collections/pokemon/products.json?limit=250",
+    "resolvedPath": "/collections/sealed-products/products.json?limit=250",
     "flatShipping": 6.99,
     "freeShipThreshold": 150,
     "currency": "USD",
     "tier": "TIER1_FAST",
-    "enabled": true
+    "enabled": true,
+    "additionalPaths": [
+      "/collections/pokemon/products.json?limit=250"
+    ]
   },
   {
     "id": "knight-day-games",
@@ -128,7 +148,7 @@
     "flatShipping": 6.99,
     "freeShipThreshold": 150,
     "currency": "USD",
-    "tier": "TIER1_FAST",
+    "tier": "TIER2_STANDARD",
     "enabled": true
   },
   {
@@ -140,7 +160,7 @@
     "flatShipping": 6.99,
     "freeShipThreshold": 150,
     "currency": "USD",
-    "tier": "TIER1_FAST",
+    "tier": "TIER2_STANDARD",
     "enabled": true
   },
   {
@@ -164,8 +184,12 @@
     "flatShipping": 6.99,
     "freeShipThreshold": 150,
     "currency": "USD",
-    "tier": "TIER1_FAST",
-    "enabled": true
+    "tier": "TIER2_STANDARD",
+    "enabled": true,
+    "additionalPaths": [
+      "/products.json?limit=250",
+      "/collections/pokemon-boxes/products.json?limit=250"
+    ]
   },
   {
     "id": "double-infinity-gaming",
@@ -188,8 +212,11 @@
     "flatShipping": 6.99,
     "freeShipThreshold": 150,
     "currency": "USD",
-    "tier": "TIER2_STANDARD",
-    "enabled": true
+    "tier": "TIER1_FAST",
+    "enabled": true,
+    "aliases": [
+      "paladin cards"
+    ]
   },
   {
     "id": "pkmn-colosseum",
@@ -212,7 +239,7 @@
     "flatShipping": 6.99,
     "freeShipThreshold": 150,
     "currency": "USD",
-    "tier": "TIER1_FAST",
+    "tier": "TIER2_STANDARD",
     "enabled": true
   },
   {
@@ -237,7 +264,12 @@
     "freeShipThreshold": 150,
     "currency": "USD",
     "tier": "TIER1_FAST",
-    "enabled": true
+    "enabled": true,
+    "additionalPaths": [
+      "/collections/pokemon-sealed-products/products.json?limit=250",
+      "/collections/booster-boxes/products.json?limit=250",
+      "/collections/pokemon-pre-order/products.json?limit=250"
+    ]
   },
   {
     "id": "allpoketcg",
@@ -272,7 +304,7 @@
     "flatShipping": 6.99,
     "freeShipThreshold": 150,
     "currency": "USD",
-    "tier": "TIER2_STANDARD",
+    "tier": "TIER1_FAST",
     "enabled": true
   },
   {
@@ -280,12 +312,16 @@
     "name": "Card Cavern",
     "storeType": "SHOPIFY_LGS",
     "baseUrl": "https://cardcaverntradingcards.com",
-    "resolvedPath": "/collections/pokemon-sealed/products.json?limit=250",
+    "resolvedPath": "/collections/all-pokemon-sealed-products/products.json?limit=250",
     "flatShipping": 5.99,
     "freeShipThreshold": 100,
     "currency": "USD",
     "tier": "TIER1_FAST",
-    "enabled": true
+    "enabled": true,
+    "additionalPaths": [
+      "/collections/pokemon-booster-boxes/products.json?limit=250",
+      "/collections/pokemon-elite-trainer-boxes/products.json?limit=250"
+    ]
   },
   {
     "id": "galactic-toys",
@@ -380,7 +416,7 @@
     "flatShipping": 6.99,
     "freeShipThreshold": 150,
     "currency": "USD",
-    "tier": "TIER1_FAST",
+    "tier": "TIER2_STANDARD",
     "enabled": true
   },
   {
@@ -388,12 +424,16 @@
     "name": "The Poke Court",
     "storeType": "SHOPIFY_LGS",
     "baseUrl": "https://thepokecourt.com",
-    "resolvedPath": "/collections/pokemon-booster-boxes/products.json?limit=250",
+    "resolvedPath": "/collections/pokemon-sealed-product/products.json?limit=250",
     "flatShipping": 6.99,
     "freeShipThreshold": 150,
     "currency": "USD",
     "tier": "TIER2_STANDARD",
-    "enabled": true
+    "enabled": true,
+    "additionalPaths": [
+      "/collections/pokemon-booster-boxes/products.json?limit=250",
+      "/collections/elite-trainer-boxes-etbs/products.json?limit=250"
+    ]
   },
   {
     "id": "awesome-ccg",
@@ -448,24 +488,30 @@
     "name": "401 Games",
     "storeType": "SHOPIFY_LGS",
     "baseUrl": "https://store.401games.ca",
-    "resolvedPath": "/collections/a-great-place-to-begin-pokemon/products.json?limit=250",
+    "resolvedPath": "/collections/all-pokemon/products.json?limit=250",
     "flatShipping": 9.99,
     "freeShipThreshold": 175,
     "currency": "CAD",
     "tier": "TIER2_STANDARD",
-    "enabled": true
+    "enabled": true,
+    "additionalPaths": [
+      "/collections/all-pokemon-pre-orders/products.json?limit=250"
+    ]
   },
   {
     "id": "kanzen-games",
     "name": "Kanzen Games",
     "storeType": "SHOPIFY_LGS",
     "baseUrl": "https://kanzengames.com",
-    "resolvedPath": "/collections/pokemon-tcg-mega-evolution/products.json?limit=250",
+    "resolvedPath": "/products.json?limit=250",
     "flatShipping": 6.99,
     "freeShipThreshold": 150,
     "currency": "USD",
     "tier": "TIER1_FAST",
-    "enabled": true
+    "enabled": true,
+    "additionalPaths": [
+      "/collections/pokemon-tcg-mega-evolution/products.json?limit=250"
+    ]
   },
   {
     "id": "the-card-vault",
@@ -544,12 +590,16 @@
     "name": "Silver Goblin",
     "storeType": "SHOPIFY_LGS",
     "baseUrl": "https://silvergoblin.cards",
-    "resolvedPath": "/collections/pokemon-tcg-blister-packs/products.json?limit=250",
+    "resolvedPath": "/collections/pokemon-tcg-booster-boxes/products.json?limit=250",
     "flatShipping": 9.99,
     "freeShipThreshold": 175,
     "currency": "CAD",
     "tier": "TIER2_STANDARD",
-    "enabled": true
+    "enabled": true,
+    "additionalPaths": [
+      "/collections/pokemon-tcg-elite-trainer-boxes/products.json?limit=250",
+      "/collections/pokemon-tcg-collections/products.json?limit=250"
+    ]
   },
   {
     "id": "face-to-face-games",
@@ -616,7 +666,7 @@
     "name": "Spankys Card Shop",
     "storeType": "SHOPIFY_LGS",
     "baseUrl": "https://spankyscardshop.com",
-    "resolvedPath": "/collections/30th-pokemon-sealed/products.json?limit=250",
+    "resolvedPath": "/collections/pokemon-sealed-product/products.json?limit=250",
     "flatShipping": 6.99,
     "freeShipThreshold": 150,
     "currency": "USD",
@@ -633,7 +683,11 @@
     "freeShipThreshold": 150,
     "currency": "USD",
     "tier": "TIER1_FAST",
-    "enabled": true
+    "enabled": true,
+    "aliases": [
+      "Forge and Fire Gaming",
+      "Forge & Fire Gaming"
+    ]
   },
   {
     "id": "kanto-cards",
@@ -644,7 +698,7 @@
     "flatShipping": 6.99,
     "freeShipThreshold": 150,
     "currency": "USD",
-    "tier": "TIER2_STANDARD",
+    "tier": "TIER1_FAST",
     "enabled": true
   },
   {
@@ -712,24 +766,32 @@
     "name": "Pro Collect Shop",
     "storeType": "SHOPIFY_LGS",
     "baseUrl": "https://procollectshop.com",
-    "resolvedPath": "/products.json?limit=250",
+    "resolvedPath": "/collections/pokemon-tcg/products.json?limit=250",
     "flatShipping": 6.99,
     "freeShipThreshold": 150,
     "currency": "USD",
     "tier": "TIER2_STANDARD",
-    "enabled": true
+    "enabled": true,
+    "additionalPaths": [
+      "/collections/pokemon-booster-boxes/products.json?limit=250",
+      "/collections/elite-trainer-boxes-etb/products.json?limit=250"
+    ]
   },
   {
     "id": "drpm-collectors",
     "name": "DRPM Collectors",
     "storeType": "SHOPIFY_LGS",
     "baseUrl": "https://drpmcollectorstcg.com",
-    "resolvedPath": "/collections/pokemon-booster-boxes/products.json?limit=250",
+    "resolvedPath": "/collections/pokemon-sealed-products/products.json?limit=250",
     "flatShipping": 6.99,
     "freeShipThreshold": 150,
     "currency": "USD",
     "tier": "TIER2_STANDARD",
-    "enabled": true
+    "enabled": true,
+    "additionalPaths": [
+      "/collections/pokemon-booster-boxes/products.json?limit=250",
+      "/collections/elite-trainer-boxes/products.json?limit=250"
+    ]
   },
   {
     "id": "gorge-poke-shop",
@@ -765,7 +827,10 @@
     "freeShipThreshold": 150,
     "currency": "USD",
     "tier": "TIER1_FAST",
-    "enabled": true
+    "enabled": true,
+    "additionalPaths": [
+      "/collections/shop-other-pokemon/products.json?limit=250"
+    ]
   },
   {
     "id": "collectors-cafe",
@@ -844,12 +909,17 @@
     "name": "MissingNo Games",
     "storeType": "SHOPIFY_LGS",
     "baseUrl": "https://missingnogames.com",
-    "resolvedPath": "/collections/pokemon/products.json?limit=250",
+    "resolvedPath": "/collections/elite-trainer-boxes/products.json?limit=250",
     "flatShipping": 6.99,
     "freeShipThreshold": 150,
     "currency": "USD",
     "tier": "TIER2_STANDARD",
-    "enabled": true
+    "enabled": true,
+    "additionalPaths": [
+      "/collections/pokemon/products.json?limit=250",
+      "/collections/booster-boxes/products.json?limit=250",
+      "/collections/booster-bundles/products.json?limit=250"
+    ]
   },
   {
     "id": "common-lands",
@@ -916,12 +986,15 @@
     "name": "Stonebrook Collectibles",
     "storeType": "SHOPIFY_LGS",
     "baseUrl": "https://stonebrookcollectibles.com",
-    "resolvedPath": "/collections/pokemon-elite-trainer-boxes/products.json?limit=250",
+    "resolvedPath": "/collections/all-pokemon-copy/products.json?limit=250",
     "flatShipping": 6.99,
     "freeShipThreshold": 150,
     "currency": "USD",
     "tier": "TIER2_STANDARD",
-    "enabled": true
+    "enabled": true,
+    "additionalPaths": [
+      "/collections/pokemon-elite-trainer-boxes/products.json?limit=250"
+    ]
   },
   {
     "id": "carddog-tcg",
@@ -956,7 +1029,7 @@
     "flatShipping": 6.99,
     "freeShipThreshold": 150,
     "currency": "USD",
-    "tier": "TIER1_FAST",
+    "tier": "TIER2_STANDARD",
     "enabled": true
   },
   {
@@ -968,8 +1041,12 @@
     "flatShipping": 6.99,
     "freeShipThreshold": 150,
     "currency": "USD",
-    "tier": "TIER2_STANDARD",
-    "enabled": true
+    "tier": "TIER1_FAST",
+    "enabled": true,
+    "aliases": [
+      "Deriums",
+      "Derium & Wifey"
+    ]
   },
   {
     "id": "oaks-poke-box",
@@ -1024,36 +1101,47 @@
     "name": "Boxed Vinyl",
     "storeType": "SHOPIFY_LGS",
     "baseUrl": "https://boxedvinyl.com",
-    "resolvedPath": "/collections/pokemon-booster-boxes/products.json?limit=250",
+    "resolvedPath": "/collections/pokemon-tcg/products.json?limit=250",
     "flatShipping": 6.99,
     "freeShipThreshold": 150,
     "currency": "USD",
     "tier": "TIER2_STANDARD",
-    "enabled": true
+    "enabled": true,
+    "additionalPaths": [
+      "/collections/pokemon-booster-boxes/products.json?limit=250"
+    ]
   },
   {
     "id": "mini-collects",
     "name": "Mini Collects",
     "storeType": "SHOPIFY_LGS",
     "baseUrl": "https://minicollects.com",
-    "resolvedPath": "/collections/pokemon-sealed-english/products.json?limit=250",
+    "resolvedPath": "/collections/pokemon-english/products.json?limit=250",
     "flatShipping": 6.99,
     "freeShipThreshold": 150,
     "currency": "USD",
     "tier": "TIER2_STANDARD",
-    "enabled": true
+    "enabled": true,
+    "additionalPaths": [
+      "/collections/pokemon-sealed-english/products.json?limit=250"
+    ]
   },
   {
     "id": "black-wolf-collectibles",
     "name": "Black Wolf Collectibles",
     "storeType": "SHOPIFY_LGS",
     "baseUrl": "https://blackwolfcollectibles.com",
-    "resolvedPath": "/collections/sealed-cases-pokemon/products.json?limit=250",
+    "resolvedPath": "/collections/all-pokemon/products.json?limit=250",
     "flatShipping": 6.99,
     "freeShipThreshold": 150,
     "currency": "USD",
     "tier": "TIER2_STANDARD",
-    "enabled": true
+    "enabled": true,
+    "additionalPaths": [
+      "/collections/elite-trainer-box/products.json?limit=250",
+      "/collections/english-booster-boxes/products.json?limit=250",
+      "/collections/sealed-cases-pokemon/products.json?limit=250"
+    ]
   },
   {
     "id": "pentix-games",
