@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.STORE_SHIPPING_RULES = exports.PRE_RELEASE_BLEED_TAG = exports.MSRP_TROPHIES_PATH = void 0;
+exports.STORE_SHIPPING_RULES = exports.MSRP_TROPHIES_PATH = exports.isPreReleaseDate = void 0;
 exports.getCloseCallGraceBuffer = getCloseCallGraceBuffer;
 exports.computeOfferShelfStatus = computeOfferShelfStatus;
 exports.isMarketplaceScamOrShippingTrap = isMarketplaceScamOrShippingTrap;
@@ -14,7 +14,6 @@ exports.markAlertKeyOutOfStock = markAlertKeyOutOfStock;
 exports.refreshCachedStoreOffersStatus = refreshCachedStoreOffersStatus;
 exports.getMsrpTrophies = getMsrpTrophies;
 exports.recordMsrpTrophyCatch = recordMsrpTrophyCatch;
-exports.isPreReleaseDate = isPreReleaseDate;
 exports.getStoreShippingProfile = getStoreShippingProfile;
 exports.upsertBestCurrentOffer = upsertBestCurrentOffer;
 exports.matchTargetRuleForStaging = matchTargetRuleForStaging;
@@ -27,6 +26,8 @@ const policies_1 = require("./policies");
 const marketTelemetry_1 = require("./marketTelemetry");
 const marketTape_1 = require("./marketTape");
 const configManager_1 = require("./src/config/configManager");
+const trendAdvisor_1 = require("./src/engine/trendAdvisor");
+Object.defineProperty(exports, "isPreReleaseDate", { enumerable: true, get: function () { return trendAdvisor_1.isPreReleaseDate; } });
 function getCloseCallGraceBuffer(formFactor) {
     const ff = String(formFactor || '').toLowerCase();
     if (ff === 'booster box' || ff === 'etb case' || ff === 'master case' || ff.includes('box') || ff.includes('case')) {
@@ -270,6 +271,62 @@ function refreshCachedStoreOffersStatus() {
             muteVaulted = Boolean(settings?.muteVaulted);
         }
         catch (e) { }
+        const now = Date.now();
+        // Backfill recent ACTIVE salesHistory records (last 48h) into storeOffersCacheMem so lowest active comps (e.g. Game Grid Lehi $79.99) stay indexed
+        try {
+            if (fs_1.default.existsSync(marketTape_1.SALES_HISTORY_PATH)) {
+                const salesArr = JSON.parse(fs_1.default.readFileSync(marketTape_1.SALES_HISTORY_PATH, 'utf-8'));
+                if (Array.isArray(salesArr)) {
+                    for (const ev of salesArr) {
+                        if (!ev || !ev.targetId || ev.status !== 'ACTIVE' || !ev.store || !ev.price)
+                            continue;
+                        const seenTs = Number(ev.lastSeenAt || ev.restockedAt || 0);
+                        if (now - seenTs > 48 * 3600 * 1000)
+                            continue;
+                        const rule = policies_1.WATCH_POLICIES.find(r => r.id === ev.targetId);
+                        if (!rule)
+                            continue;
+                        const cleanStoreKey = String(ev.store).replace(/\s*\(TCGPlayer.*?\)$/i, ' (TCGPlayer)').trim();
+                        const skuMap = storeOffersCacheMem[rule.id] || {};
+                        if (!skuMap[cleanStoreKey]) {
+                            const p = Number(ev.price);
+                            const l = Number(ev.landedPrice || p);
+                            const sh = Math.max(0, Math.round((l - p) * 100) / 100);
+                            const rip = (0, policies_1.computeRipMetrics)(l, rule.id, rule.formFactor, rule.name, rule.packCount);
+                            skuMap[cleanStoreKey] = {
+                                skuId: rule.id,
+                                productName: rule.name,
+                                rawTitle: ev.targetName || rule.name,
+                                formFactor: rule.formFactor || 'ETB',
+                                era: rule.era,
+                                owned: Boolean(rule.inVault ?? rule.owned),
+                                msrp: rule.msrpCeiling,
+                                triggerPrice: Math.max(rule.msrpCeiling, rule.maxMarketBuyPrice),
+                                marketValue: Number(ev.marketPrice || rule.estimatedMarketValue || rule.msrpCeiling),
+                                storeName: ev.store,
+                                price: p,
+                                shipping: sh,
+                                landedPrice: l,
+                                freeShipNote: sh > 0 ? `$${p.toFixed(2)} Shelf + $${sh.toFixed(2)} Est. Ship ($${l.toFixed(2)} Landed)` : '+FREE Shipping',
+                                url: ev.url,
+                                productUrl: ev.url,
+                                itemId: ev.itemId,
+                                packCount: rip.packCount,
+                                pricePerPack: rip.pricePerPack,
+                                isRipValueLeader: rip.isRipValueLeader,
+                                firstSeenAt: Number(ev.restockedAt || seenTs),
+                                updatedAt: seenTs,
+                                previousPrice: l,
+                                priceDelta: 0,
+                                isFreshRestock: false
+                            };
+                            storeOffersCacheMem[rule.id] = skuMap;
+                        }
+                    }
+                }
+            }
+        }
+        catch (e) { }
         let mutated = false;
         for (const [skuId, skuOffers] of Object.entries(storeOffersCacheMem)) {
             if (!skuOffers || typeof skuOffers !== 'object')
@@ -279,7 +336,6 @@ function refreshCachedStoreOffersStatus() {
                 if (!rec || typeof rec !== 'object')
                     continue;
                 const rawShip = Number(rec.shipping || 0);
-                // Fix legacy TCGPlayer records where price was saved as landedPrice
                 const rawItemPrice = (rawShip > 0 && Math.abs(rec.price - rec.landedPrice) < 0.01 && rec.price > rawShip)
                     ? Math.round((rec.landedPrice - rawShip) * 100) / 100
                     : Number(rec.price || 0);
@@ -296,9 +352,11 @@ function refreshCachedStoreOffersStatus() {
                     : Number(rec.triggerPrice || msrp);
                 const owned = rule ? Boolean(rule.inVault ?? rule.owned) : Boolean(rec.owned);
                 const isMsrpUnicorn = Boolean(msrp > 0 && rawItemPrice <= Math.round(msrp * 1.08 * 100) / 100 && rawShip <= 10.00);
+                const is3P = /tcgplayer|ebay|3p/i.test(rec.storeName || storeKey);
+                const landedVal = Number(rec.landedPrice || rawItemPrice + rawShip);
                 const status = computeOfferShelfStatus({
                     dropPrice: rawItemPrice,
-                    landedPrice: Number(rec.landedPrice || rawItemPrice + rawShip),
+                    landedPrice: landedVal,
                     estimatedShipping: rawShip,
                     triggerPrice,
                     msrpCeiling: msrp,
@@ -307,7 +365,22 @@ function refreshCachedStoreOffersStatus() {
                     owned,
                     muteVaulted,
                     isMsrpUnicorn,
-                    isMarketplace3P: /tcgplayer|ebay|3p/i.test(rec.storeName || storeKey)
+                    isMarketplace3P: is3P
+                });
+                const trend = (0, trendAdvisor_1.evaluateSkuTrendAndTiming)({
+                    skuId,
+                    formFactor: rule?.formFactor || rec.formFactor,
+                    dropPrice: rawItemPrice,
+                    landedPrice: landedVal,
+                    estimatedShipping: rawShip,
+                    policyMaxBuy: triggerPrice,
+                    msrpCeiling: msrp,
+                    marketBaseline: marketVal,
+                    releaseDate: rule?.releaseDate,
+                    owned,
+                    isCloseCall: status.isCloseCall,
+                    isMarketplace3P: is3P,
+                    nowTs: now
                 });
                 rec.price = rawItemPrice;
                 rec.triggerPrice = triggerPrice;
@@ -318,11 +391,126 @@ function refreshCachedStoreOffersStatus() {
                 rec.statusTag = status.statusTag;
                 rec.isCloseCall = status.isCloseCall;
                 rec.closeCallDelta = status.closeCallDelta;
+                rec.trendSignal = trend.trendSignal;
+                rec.trendVerdictLabel = trend.trendVerdictLabel;
+                rec.isElasticDip = trend.isElasticDip;
                 mutated = true;
             }
         }
         if (mutated) {
-            scheduleStoreOffersFlush();
+            try {
+                (0, policies_1.atomicWriteJson)(STORE_OFFERS_CACHE_PATH, storeOffersCacheMem);
+            }
+            catch (e) { }
+        }
+        // Sync liveStock.json & __bestOffers with lowest storeOffersCacheMem offers & data-driven trendVerdictLabel
+        if (fs_1.default.existsSync(LIVE_STOCK_PATH)) {
+            try {
+                const liveMap = JSON.parse(fs_1.default.readFileSync(LIVE_STOCK_PATH, 'utf-8')) || {};
+                const bestOffers = (liveMap.__bestOffers && typeof liveMap.__bestOffers === 'object') ? liveMap.__bestOffers : {};
+                let liveMutated = false;
+                for (const [skuId, skuOffers] of Object.entries(storeOffersCacheMem)) {
+                    const offersList = Object.values(skuOffers || {}).filter(o => o && o.landedPrice > 0);
+                    if (offersList.length === 0)
+                        continue;
+                    offersList.sort((a, b) => a.landedPrice - b.landedPrice);
+                    const cheapest = offersList[0];
+                    const rule = policies_1.WATCH_POLICIES.find(r => r.id === skuId);
+                    if (!rule)
+                        continue;
+                    const trig = Math.max(rule.msrpCeiling, rule.maxMarketBuyPrice);
+                    const trend = (0, trendAdvisor_1.evaluateSkuTrendAndTiming)({
+                        skuId,
+                        formFactor: rule.formFactor,
+                        dropPrice: cheapest.price,
+                        landedPrice: cheapest.landedPrice,
+                        estimatedShipping: cheapest.shipping,
+                        policyMaxBuy: trig,
+                        msrpCeiling: rule.msrpCeiling,
+                        marketBaseline: cheapest.marketValue || rule.estimatedMarketValue,
+                        releaseDate: rule.releaseDate,
+                        owned: cheapest.owned,
+                        isCloseCall: cheapest.isCloseCall,
+                        nowTs: now
+                    });
+                    const curBest = bestOffers[skuId];
+                    if (!curBest || cheapest.landedPrice <= Number(curBest.landedPrice || 999999) || curBest.preReleaseStatusTag?.includes('BLEED')) {
+                        bestOffers[skuId] = {
+                            ...(curBest || {}),
+                            ruleId: skuId,
+                            ruleName: rule.name,
+                            formFactor: rule.formFactor || 'ETB',
+                            era: rule.era,
+                            title: cheapest.rawTitle || rule.name,
+                            retailer: cheapest.storeName,
+                            price: cheapest.price,
+                            shippingPrice: cheapest.shipping,
+                            landedPrice: cheapest.landedPrice,
+                            freeShipNote: cheapest.freeShipNote,
+                            triggerPrice: trig,
+                            msrp: rule.msrpCeiling,
+                            marketValue: cheapest.marketValue,
+                            gapDollars: Math.round((cheapest.landedPrice - trig) * 100) / 100,
+                            gapPct: trig > 0 ? Math.round(((cheapest.landedPrice - trig) / trig) * 1000) / 10 : 0,
+                            rawGapDollars: Math.round((cheapest.price - trig) * 100) / 100,
+                            rawGapPct: trig > 0 ? Math.round(((cheapest.price - trig) / trig) * 1000) / 10 : 0,
+                            packCount: cheapest.packCount,
+                            pricePerPack: cheapest.pricePerPack,
+                            isRipValueLeader: cheapest.isRipValueLeader,
+                            owned: cheapest.owned,
+                            isPreOrder: Boolean(curBest?.isPreOrder),
+                            isPreRelease: trend.isPreRelease,
+                            preReleaseStatusTag: trend.preReleaseStatusTag,
+                            statusTier: cheapest.statusTier,
+                            statusTag: cheapest.statusTag,
+                            isCloseCall: cheapest.isCloseCall,
+                            closeCallDelta: cheapest.closeCallDelta,
+                            trendSignal: trend.trendSignal,
+                            trendVerdictLabel: trend.trendVerdictLabel,
+                            isElasticDip: trend.isElasticDip,
+                            url: cheapest.url,
+                            productUrl: cheapest.productUrl || cheapest.url,
+                            cart1xUrl: cheapest.cart1xUrl,
+                            cart2xUrl: cheapest.cart2xUrl,
+                            cart3xUrl: cheapest.cart3xUrl,
+                            itemId: cheapest.itemId,
+                            updatedAt: cheapest.updatedAt || now,
+                            timeStr: curBest?.timeStr || 'Live Radar'
+                        };
+                        liveMutated = true;
+                    }
+                    if (liveMap[skuId] && typeof liveMap[skuId] === 'object') {
+                        const ls = liveMap[skuId];
+                        const lsTrend = (0, trendAdvisor_1.evaluateSkuTrendAndTiming)({
+                            skuId,
+                            formFactor: rule.formFactor,
+                            dropPrice: Number(ls.price || cheapest.price),
+                            landedPrice: Number(ls.landedPrice || ls.price || cheapest.landedPrice),
+                            estimatedShipping: Math.max(0, Number(ls.landedPrice || ls.price) - Number(ls.price)),
+                            policyMaxBuy: trig,
+                            msrpCeiling: rule.msrpCeiling,
+                            marketBaseline: cheapest.marketValue || rule.estimatedMarketValue,
+                            releaseDate: rule.releaseDate,
+                            owned: cheapest.owned,
+                            isCloseCall: ls.isCloseCall,
+                            nowTs: now
+                        });
+                        ls.preReleaseStatusTag = lsTrend.preReleaseStatusTag;
+                        ls.trendSignal = lsTrend.trendSignal;
+                        ls.trendVerdictLabel = lsTrend.trendVerdictLabel;
+                        ls.isElasticDip = lsTrend.isElasticDip;
+                        if (ls.bigBoxBadge && ls.bigBoxBadge.includes('🎯')) {
+                            ls.bigBoxBadge = ls.bigBoxBadge.replace('🎯 CLOSE CALL (', '◈ ⟦ CLOSE CALL: ').replace(/\)$/, ' ⟧');
+                        }
+                        liveMutated = true;
+                    }
+                }
+                if (liveMutated) {
+                    liveMap.__bestOffers = bestOffers;
+                    (0, policies_1.atomicWriteJson)(LIVE_STOCK_PATH, liveMap);
+                }
+            }
+            catch (e) { }
         }
     }
     catch (e) { }
@@ -359,15 +547,6 @@ function recordMsrpTrophyCatch(entry) {
         return getMsrpTrophies();
     }
 }
-function isPreReleaseDate(releaseDate, nowTs = Date.now()) {
-    if (!releaseDate)
-        return false;
-    const parsed = Date.parse(`${releaseDate}T00:00:00`);
-    if (Number.isNaN(parsed))
-        return false;
-    return nowTs < parsed;
-}
-exports.PRE_RELEASE_BLEED_TAG = '⏳ PRE-RELEASE BLEED (Wait for Launch Week)';
 exports.STORE_SHIPPING_RULES = (0, configManager_1.loadShippingRulesMap)();
 function getStoreShippingProfile(retailer) {
     return (0, configManager_1.getStoreShippingProfileFromRegistry)(retailer);
@@ -642,9 +821,6 @@ function evaluateItem(item) {
                 marketplaceWarning = '⚠️ 3P MARKETPLACE CHECK: Price is above MSRP — verify Sold & Shipped by 1st-Party Retailer before buying';
             }
         }
-        // Pre-Release Bleed Tagging
-        const isPreRelease = isPreReleaseDate(rule.releaseDate);
-        const preReleaseStatusTag = isPreRelease ? exports.PRE_RELEASE_BLEED_TAG : undefined;
         // Rule of 3 Family Pack Instant-Cart Links for Shopify LGS drops on ETBs
         const baseCartUrl = item.cart1xUrl || (item.url && item.url.includes('/cart/') ? item.url : undefined);
         let cart1xUrl = item.cart1xUrl;
@@ -688,8 +864,25 @@ function evaluateItem(item) {
             isMarketplace3P
         });
         const { statusTier, statusTag, isCloseCall, closeCallDelta } = shelfStatus;
-        const { packCount, pricePerPack, isRipValueLeader } = (0, policies_1.computeRipMetrics)(landedPrice, rule.id, rule.formFactor, `${rule.name} ${cleanTitle}`, rule.packCount);
         const now = Date.now();
+        // V5 Slice 3.5: Data-Driven Pre-Release & 30/60/90d Rolling Trend Evaluation via src/engine/trendAdvisor.ts
+        const trendEval = (0, trendAdvisor_1.evaluateSkuTrendAndTiming)({
+            skuId: rule.id,
+            formFactor: rule.formFactor,
+            dropPrice,
+            landedPrice,
+            estimatedShipping,
+            policyMaxBuy: effectiveCeiling,
+            msrpCeiling: rule.msrpCeiling,
+            marketBaseline: currentMarketRef,
+            releaseDate: rule.releaseDate,
+            owned: isInVault,
+            isCloseCall,
+            isMarketplace3P,
+            nowTs: now
+        });
+        const { trendSignal, trendVerdictLabel, isElasticDip, qualifiesForElasticDipAlert, isPreRelease, preReleaseStatusTag } = trendEval;
+        const { packCount, pricePerPack, isRipValueLeader } = (0, policies_1.computeRipMetrics)(landedPrice, rule.id, rule.formFactor, `${rule.name} ${cleanTitle}`, rule.packCount);
         const nowTimeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         let freeShipNote = item.shippingNoteOverride;
         // Record ALL matched in-stock store offers (even above trigger) into storeOffersCache.json & bestCurrentOffers!
@@ -718,6 +911,9 @@ function evaluateItem(item) {
                 statusTag,
                 isCloseCall,
                 closeCallDelta,
+                trendSignal,
+                trendVerdictLabel,
+                isElasticDip,
                 url: item.productUrl || item.url,
                 productUrl: item.productUrl || item.url,
                 cart1xUrl,
@@ -760,6 +956,9 @@ function evaluateItem(item) {
                 statusTag,
                 isCloseCall,
                 closeCallDelta,
+                trendSignal,
+                trendVerdictLabel,
+                isElasticDip,
                 url: item.url,
                 productUrl: item.productUrl,
                 cart1xUrl,
@@ -770,10 +969,14 @@ function evaluateItem(item) {
                 timeStr: nowTimeStr
             });
         }
-        // V5 Slice 3: Allow UNDER_TARGET, MSRP Unicorns, and Close-Call Grace Cushion (+$5 ETB / +$10 Box) to pass!
+        // V5 Slice 3 & 3.5: Allow UNDER_TARGET, MSRP Unicorns, Close-Call Grace Cushion (+$5 ETB / +$10 Box), and verified 60D Elastic Dips to pass!
         const qualifiesOnShelfPrice = (dropPrice <= effectiveCeiling || isMsrpUnicorn) && !isMarketplace3P && estimatedShipping <= 10.00;
         const qualifiesOnLandedPrice = landedPrice <= effectiveCeiling;
-        if (!qualifiesOnShelfPrice && !qualifiesOnLandedPrice && !isCloseCall) {
+        const qualifiesByElasticDip = Boolean(!isInVault &&
+            isElasticDip &&
+            qualifiesForElasticDipAlert &&
+            item.sellerVerified !== false);
+        if (!qualifiesOnShelfPrice && !qualifiesOnLandedPrice && !isCloseCall && !qualifiesByElasticDip) {
             if (dropPrice <= effectiveCeiling && landedPrice > effectiveCeiling) {
                 const qtyForFreeShip = Math.ceil(shipProfile.freeShipThreshold / dropPrice);
                 const hasEnoughStock = item.stock === undefined || item.stock >= qtyForFreeShip;
@@ -794,14 +997,17 @@ function evaluateItem(item) {
                         statusTier,
                         statusTag,
                         isCloseCall,
-                        closeCallDelta
+                        closeCallDelta,
+                        trendSignal,
+                        trendVerdictLabel,
+                        isElasticDip
                     };
                 }
             }
             else {
                 return {
                     action: 'IGNORE',
-                    reason: `[${statusTag}] ${isPreOrder ? '[PRE-ORDER] ' : ''}${isPreRelease ? `[${exports.PRE_RELEASE_BLEED_TAG}] ` : ''}Price ($${dropPrice.toFixed(2)} shelf / $${landedPrice.toFixed(2)} landed) exceeds target ($${effectiveCeiling.toFixed(2)}) and Close-Call Cushion.`,
+                    reason: `[${statusTag}] ${isPreOrder ? '[PRE-ORDER] ' : ''}${trendVerdictLabel ? `[${trendVerdictLabel}] ` : ''}Price ($${dropPrice.toFixed(2)} shelf / $${landedPrice.toFixed(2)} landed) exceeds target ($${effectiveCeiling.toFixed(2)}) and Close-Call Cushion.`,
                     rule,
                     packCount,
                     pricePerPack,
@@ -812,7 +1018,10 @@ function evaluateItem(item) {
                     statusTier,
                     statusTag,
                     isCloseCall,
-                    closeCallDelta
+                    closeCallDelta,
+                    trendSignal,
+                    trendVerdictLabel,
+                    isElasticDip
                 };
             }
         }
@@ -827,7 +1036,10 @@ function evaluateItem(item) {
             }
         }
         if (isCloseCall && !bigBoxBadge) {
-            bigBoxBadge = `🎯 CLOSE CALL (WITHIN +$${closeCallDelta.toFixed(2)} OF TARGET)`;
+            bigBoxBadge = `◈ ⟦ CLOSE CALL: WITHIN +$${closeCallDelta.toFixed(2)} OF TARGET ⟧`;
+        }
+        else if (qualifiesByElasticDip && !qualifiesOnShelfPrice && !qualifiesOnLandedPrice && !bigBoxBadge) {
+            bigBoxBadge = '◈ ⟦ ELASTIC DIP OPPORTUNITY ⟧';
         }
         const currentPrice = dropPrice;
         (0, marketTape_1.recordTapeRestock)({
@@ -842,7 +1054,7 @@ function evaluateItem(item) {
             bigBoxTier: bigBoxTier === 'BIG_BOX_RESTOCK_RADAR' ? 'MSRP_TIER_A' : bigBoxTier,
             bigBoxBadge
         });
-        // Valid drop (<= maxBuy or in Close-Call Cushion): sync immediately to liveStock.json so "In Stock Now" dashboard view stays accurate even if deduplicated for Discord!
+        // Valid drop (<= maxBuy, Close-Call Cushion, or 60D Elastic Dip): sync immediately to liveStock.json!
         upsertLiveStock({
             ruleId: rule.id,
             ruleName: rule.name,
@@ -869,6 +1081,9 @@ function evaluateItem(item) {
             statusTag,
             isCloseCall,
             closeCallDelta,
+            trendSignal,
+            trendVerdictLabel,
+            isElasticDip,
             url: item.url,
             productUrl: item.productUrl,
             cart1xUrl,
@@ -895,7 +1110,10 @@ function evaluateItem(item) {
                 statusTier,
                 statusTag,
                 isCloseCall,
-                closeCallDelta
+                closeCallDelta,
+                trendSignal,
+                trendVerdictLabel,
+                isElasticDip
             };
         }
         // Wall Hunter Mode: strictly filter active Discord alerts to unowned Single Wall ETBs (formFactor === 'etb' && !isInVault)
@@ -914,7 +1132,10 @@ function evaluateItem(item) {
                 statusTier,
                 statusTag,
                 isCloseCall,
-                closeCallDelta
+                closeCallDelta,
+                trendSignal,
+                trendVerdictLabel,
+                isElasticDip
             };
         }
         // Reload alertState from disk if reset via dashboard
@@ -957,7 +1178,10 @@ function evaluateItem(item) {
                     statusTier,
                     statusTag,
                     isCloseCall,
-                    closeCallDelta
+                    closeCallDelta,
+                    trendSignal,
+                    trendVerdictLabel,
+                    isElasticDip
                 };
             }
             const isTrueRestock = Boolean(prev.wasOutOfStockSinceLastAlert) && elapsedHours >= 0.25;
@@ -976,7 +1200,10 @@ function evaluateItem(item) {
                     statusTier,
                     statusTag,
                     isCloseCall,
-                    closeCallDelta
+                    closeCallDelta,
+                    trendSignal,
+                    trendVerdictLabel,
+                    isElasticDip
                 };
             }
             previousPrice = prev.lastPrice;
@@ -1014,7 +1241,7 @@ function evaluateItem(item) {
         const discountPct = marketVal > 0 ? Math.round(((marketVal - effectiveComparePrice) / marketVal) * 100) : 0;
         return {
             action: 'BUY',
-            reason: `[${alertType}]${bigBoxBadge ? ` [${bigBoxBadge}]` : ''} [${statusTag}]${isPreRelease ? ` [${exports.PRE_RELEASE_BLEED_TAG}]` : ''}${isPreOrder ? ' [⏳ PRE-ORDER]' : ''} Matched "${rule.name}" at $${currentPrice.toFixed(2)} (Landed: $${landedPrice.toFixed(2)} • $${pricePerPack.toFixed(2)}/pk • ${discountPct}% under market)`,
+            reason: `[${alertType}]${bigBoxBadge ? ` [${bigBoxBadge}]` : ''} [${statusTag}] [${trendVerdictLabel}]${isPreOrder ? ' [◈ PRE-ORDER]' : ''} Matched "${rule.name}" at $${currentPrice.toFixed(2)} (Landed: $${landedPrice.toFixed(2)} • $${pricePerPack.toFixed(2)}/pk • ${discountPct}% under market)`,
             rule,
             discountPct,
             savingsDollars,
@@ -1045,7 +1272,10 @@ function evaluateItem(item) {
             statusTier,
             statusTag,
             isCloseCall,
-            closeCallDelta
+            closeCallDelta,
+            trendSignal,
+            trendVerdictLabel,
+            isElasticDip
         };
     }
     return { action: 'IGNORE', reason: 'No matching policy rule found.' };

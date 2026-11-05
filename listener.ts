@@ -24,7 +24,7 @@ export async function processIncomingDrop(item: RawRestockItem): Promise<void> {
 
     if (result.action === 'BUY' && result.rule) {
       const r: any = result.rule;
-      console.log(`🎯 [BUY ALERT] "${item.title}" ($${item.price?.toFixed(2)}) at ${item.retailer} -> [${result.alertType}] ${result.reason}`);
+      console.log(`◈ [BUY ALERT] "${item.title}" ($${item.price?.toFixed(2)}) at ${item.retailer} -> [${result.alertType}] ${result.reason}`);
 
       const alertPromise = sendAlert({
         title: item.title,
@@ -71,7 +71,10 @@ export async function processIncomingDrop(item: RawRestockItem): Promise<void> {
         statusTier: result.statusTier,
         statusTag: result.statusTag,
         isCloseCall: result.isCloseCall,
-        closeCallDelta: result.closeCallDelta
+        closeCallDelta: result.closeCallDelta,
+        trendSignal: result.trendSignal,
+        trendVerdictLabel: result.trendVerdictLabel,
+        isElasticDip: result.isElasticDip
       });
 
       await Promise.race([

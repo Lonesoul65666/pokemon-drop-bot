@@ -5,11 +5,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833427038,
+    "lastSuccessAt": 1793837600164,
     "lastProductsCount": 73,
     "resolvedPath": "/collections/pokemon/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 6269
+    "lastLatencyMs": 386
   },
   "Card Shop Live": {
     "name": "Card Shop Live",
@@ -17,11 +17,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833421112,
+    "lastSuccessAt": 1793837600106,
     "lastProductsCount": 37,
     "resolvedPath": "/collections/pokemon/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 343
+    "lastLatencyMs": 328
   },
   "Zulus Games": {
     "name": "Zulus Games",
@@ -29,11 +29,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833421012,
+    "lastSuccessAt": 1793837600042,
     "lastProductsCount": 20,
     "resolvedPath": "/collections/pokemon-booster-boxes-1/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 243
+    "lastLatencyMs": 264
   },
   "Gamers Guild AZ": {
     "name": "Gamers Guild AZ",
@@ -41,11 +41,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833427767,
+    "lastSuccessAt": 1793837600723,
     "lastProductsCount": 1000,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 4,
-    "lastLatencyMs": 6998
+    "lastLatencyMs": 945
   },
   "Smoke & Mirrors": {
     "name": "Smoke & Mirrors",
@@ -53,11 +53,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833421160,
+    "lastSuccessAt": 1793837602835,
     "lastProductsCount": 1000,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 4,
-    "lastLatencyMs": 391
+    "lastLatencyMs": 3057
   },
   "Joshs Cards": {
     "name": "Joshs Cards",
@@ -65,11 +65,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833427107,
-    "lastProductsCount": 1000,
+    "lastSuccessAt": 1793837601727,
+    "lastProductsCount": 750,
     "resolvedPath": "/products.json?limit=250",
-    "lastPagesScanned": 4,
-    "lastLatencyMs": 6338
+    "lastPagesScanned": 3,
+    "lastLatencyMs": 1949
   },
   "Flipside Gaming": {
     "name": "Flipside Gaming",
@@ -77,11 +77,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833426481,
+    "lastSuccessAt": 1793837600194,
     "lastProductsCount": 750,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 3,
-    "lastLatencyMs": 5712
+    "lastLatencyMs": 416
   },
   "Safari Zone": {
     "name": "Safari Zone",
@@ -89,11 +89,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833420943,
+    "lastSuccessAt": 1793837599944,
     "lastProductsCount": 28,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 174
+    "lastLatencyMs": 166
   },
   "Over The Brick": {
     "name": "Over The Brick",
@@ -101,11 +101,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833421097,
+    "lastSuccessAt": 1793837600149,
     "lastProductsCount": 12,
     "resolvedPath": "/collections/pokemon/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 328
+    "lastLatencyMs": 371
   },
   "Knight & Day Games": {
     "name": "Knight & Day Games",
@@ -113,11 +113,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833430672,
+    "lastSuccessAt": 1793837601794,
     "lastProductsCount": 478,
     "resolvedPath": "/collections/pokemon/products.json?limit=250",
     "lastPagesScanned": 2,
-    "lastLatencyMs": 9903
+    "lastLatencyMs": 2016
   },
   "Collector Store": {
     "name": "Collector Store",
@@ -125,11 +125,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833432862,
-    "lastProductsCount": 880,
+    "lastSuccessAt": 1793837607846,
+    "lastProductsCount": 250,
     "resolvedPath": "/collections/games-pokemon/products.json?limit=250",
-    "lastPagesScanned": 4,
-    "lastLatencyMs": 6442
+    "lastPagesScanned": 1,
+    "lastLatencyMs": 7144
   },
   "Prodigy Games": {
     "name": "Prodigy Games",
@@ -137,23 +137,24 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833427172,
-    "lastProductsCount": 1,
+    "lastSuccessAt": 1793837602822,
+    "lastProductsCount": 2,
     "resolvedPath": "/collections/pokemon/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 751
+    "lastLatencyMs": 2118
   },
   "Rip N Ship Arena": {
     "name": "Rip N Ship Arena",
     "baseUrl": "https://www.ripnshiparena.com",
-    "status": "HEALTHY",
-    "consecutiveFailures": 0,
+    "status": "DEGRADED",
+    "consecutiveFailures": 2,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833430635,
-    "lastProductsCount": 168,
+    "lastSuccessAt": 1793837487293,
+    "lastProductsCount": 173,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 4217
+    "lastLatencyMs": 1806,
+    "lastError": "ERR_CANCELED"
   },
   "TCG Stadium": {
     "name": "TCG Stadium",
@@ -161,23 +162,24 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833427180,
+    "lastSuccessAt": 1793837602676,
     "lastProductsCount": 99,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 6094
+    "lastLatencyMs": 2572
   },
   "PKMN Colosseum": {
     "name": "PKMN Colosseum",
     "baseUrl": "https://pkmncolosseum.com",
-    "status": "HEALTHY",
-    "consecutiveFailures": 0,
+    "status": "DEGRADED",
+    "consecutiveFailures": 2,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833427683,
+    "lastSuccessAt": 1793837487874,
     "lastProductsCount": 177,
     "resolvedPath": "/collections/all-pokemon-sealed/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 353
+    "lastLatencyMs": 673,
+    "lastError": "HTTP 429"
   },
   "Paladin Cards": {
     "name": "Paladin Cards",
@@ -185,11 +187,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833428865,
+    "lastSuccessAt": 1793837608692,
     "lastProductsCount": 498,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 2,
-    "lastLatencyMs": 1537
+    "lastLatencyMs": 6980
   },
   "Double Infinity Gaming": {
     "name": "Double Infinity Gaming",
@@ -197,11 +199,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833427381,
+    "lastSuccessAt": 1793837607800,
     "lastProductsCount": 186,
     "resolvedPath": "/collections/pokemon-sealed/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 364
+    "lastLatencyMs": 7094
   },
   "Top Cut Central": {
     "name": "Top Cut Central",
@@ -209,11 +211,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833436400,
-    "lastProductsCount": 1000,
+    "lastSuccessAt": 1793837610221,
+    "lastProductsCount": 500,
     "resolvedPath": "/products.json?limit=250",
-    "lastPagesScanned": 4,
-    "lastLatencyMs": 9064
+    "lastPagesScanned": 2,
+    "lastLatencyMs": 7416
   },
   "Poke-Collect": {
     "name": "Poke-Collect",
@@ -221,11 +223,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833438896,
+    "lastSuccessAt": 1793837610464,
     "lastProductsCount": 1000,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 4,
-    "lastLatencyMs": 11395
+    "lastLatencyMs": 2706
   },
   "Game Grid Lehi": {
     "name": "Game Grid Lehi",
@@ -233,11 +235,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833452454,
+    "lastSuccessAt": 1793837611809,
     "lastProductsCount": 1000,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 4,
-    "lastLatencyMs": 23634
+    "lastLatencyMs": 3775
   },
   "Mystic TCG": {
     "name": "Mystic TCG",
@@ -245,23 +247,24 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833427618,
+    "lastSuccessAt": 1793837608046,
     "lastProductsCount": 250,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 287
+    "lastLatencyMs": 5377
   },
   "Galactic Toys": {
     "name": "Galactic Toys",
     "baseUrl": "https://galactictoys.com",
-    "status": "HEALTHY",
-    "consecutiveFailures": 0,
+    "status": "DEGRADED",
+    "consecutiveFailures": 1,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833455615,
+    "lastSuccessAt": 1793837554466,
     "lastProductsCount": 1000,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 4,
-    "lastLatencyMs": 23997
+    "lastLatencyMs": 9302,
+    "lastError": "ERR_CANCELED"
   },
   "Card Cavern": {
     "name": "Card Cavern",
@@ -269,23 +272,24 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833432856,
+    "lastSuccessAt": 1793837614133,
     "lastProductsCount": 0,
     "resolvedPath": "/collections/pokemon-sealed/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 2286
+    "lastLatencyMs": 5461
   },
   "Trading Card Market": {
     "name": "Trading Card Market",
     "baseUrl": "https://tradingcardmarket.com",
-    "status": "HEALTHY",
-    "consecutiveFailures": 0,
+    "status": "DEGRADED",
+    "consecutiveFailures": 4,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833434674,
-    "lastProductsCount": 250,
+    "lastSuccessAt": 1793836027651,
+    "lastProductsCount": 640,
     "resolvedPath": "/collections/pokemon/products.json?limit=250",
-    "lastPagesScanned": 1,
-    "lastLatencyMs": 2367
+    "lastPagesScanned": 3,
+    "lastLatencyMs": 3033,
+    "lastError": "HTTP 429"
   },
   "AllPokeTCG": {
     "name": "AllPokeTCG",
@@ -293,11 +297,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833431688,
+    "lastSuccessAt": 1793837608095,
     "lastProductsCount": 250,
     "resolvedPath": "/collections/pokemon/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 4031
+    "lastLatencyMs": 336
   },
   "The Pokecave": {
     "name": "The Pokecave",
@@ -305,35 +309,37 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833434306,
+    "lastSuccessAt": 1793837611502,
     "lastProductsCount": 128,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 5487
+    "lastLatencyMs": 3478
   },
   "The Gaming Goat": {
     "name": "The Gaming Goat",
     "baseUrl": "https://tgg-games.com",
-    "status": "HEALTHY",
-    "consecutiveFailures": 0,
+    "status": "DEGRADED",
+    "consecutiveFailures": 2,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833437981,
+    "lastSuccessAt": 1793837494487,
     "lastProductsCount": 478,
     "resolvedPath": "/collections/pokemon/products.json?limit=250",
     "lastPagesScanned": 2,
-    "lastLatencyMs": 5536
+    "lastLatencyMs": 3167,
+    "lastError": "HTTP 429"
   },
   "Stomping Grounds": {
     "name": "Stomping Grounds",
     "baseUrl": "https://www.stompinggroundstcg.com",
-    "status": "HEALTHY",
-    "consecutiveFailures": 0,
+    "status": "DEGRADED",
+    "consecutiveFailures": 2,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833437016,
+    "lastSuccessAt": 1793837492637,
     "lastProductsCount": 358,
     "resolvedPath": "/collections/pokemon-trading-card-game/products.json?limit=250",
     "lastPagesScanned": 2,
-    "lastLatencyMs": 2740
+    "lastLatencyMs": 509,
+    "lastError": "HTTP 429"
   },
   "Red Raccoon Games": {
     "name": "Red Raccoon Games",
@@ -341,11 +347,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833440529,
+    "lastSuccessAt": 1793837617317,
     "lastProductsCount": 802,
     "resolvedPath": "/collections/pokemon/products.json?limit=250",
     "lastPagesScanned": 4,
-    "lastLatencyMs": 6252
+    "lastLatencyMs": 5522
   },
   "Tabletop Village": {
     "name": "Tabletop Village",
@@ -353,11 +359,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833436212,
-    "lastProductsCount": 48,
+    "lastSuccessAt": 1793837617093,
+    "lastProductsCount": 49,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 1586
+    "lastLatencyMs": 5297
   },
   "1st Edition Collectibles": {
     "name": "1st Edition Collectibles",
@@ -365,11 +371,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833432543,
+    "lastSuccessAt": 1793837614149,
     "lastProductsCount": 648,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 3,
-    "lastLatencyMs": 921
+    "lastLatencyMs": 3958
   },
   "The Poke Court": {
     "name": "The Poke Court",
@@ -377,11 +383,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833437838,
+    "lastSuccessAt": 1793837556021,
     "lastProductsCount": 83,
     "resolvedPath": "/collections/pokemon-booster-boxes/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 1669
+    "lastLatencyMs": 6328
   },
   "Card N All Gaming": {
     "name": "Card N All Gaming",
@@ -389,11 +395,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833435204,
-    "lastProductsCount": 500,
+    "lastSuccessAt": 1793837614758,
+    "lastProductsCount": 1000,
     "resolvedPath": "/products.json?limit=250",
-    "lastPagesScanned": 2,
-    "lastLatencyMs": 180
+    "lastPagesScanned": 4,
+    "lastLatencyMs": 643
   },
   "Awesome CCG": {
     "name": "Awesome CCG",
@@ -401,11 +407,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833439902,
-    "lastProductsCount": 250,
+    "lastSuccessAt": 1793837619007,
+    "lastProductsCount": 930,
     "resolvedPath": "/collections/pokemon-tcg/products.json?limit=250",
-    "lastPagesScanned": 1,
-    "lastLatencyMs": 2901
+    "lastPagesScanned": 4,
+    "lastLatencyMs": 4563
   },
   "Hobbiesville": {
     "name": "Hobbiesville",
@@ -413,11 +419,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833442422,
-    "lastProductsCount": 250,
+    "lastSuccessAt": 1793837558614,
+    "lastProductsCount": 1000,
     "resolvedPath": "/products.json?limit=250",
-    "lastPagesScanned": 1,
-    "lastLatencyMs": 4595
+    "lastPagesScanned": 4,
+    "lastLatencyMs": 6723
   },
   "Tanuki Games": {
     "name": "Tanuki Games",
@@ -425,35 +431,37 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833440289,
+    "lastSuccessAt": 1793837556163,
     "lastProductsCount": 1000,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 4,
-    "lastLatencyMs": 3287
+    "lastLatencyMs": 4510
   },
   "401 Games": {
     "name": "401 Games",
     "baseUrl": "https://store.401games.ca",
-    "status": "HEALTHY",
-    "consecutiveFailures": 0,
+    "status": "DEGRADED",
+    "consecutiveFailures": 1,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833442617,
+    "lastSuccessAt": 1793837495501,
     "lastProductsCount": 5,
     "resolvedPath": "/collections/a-great-place-to-begin-pokemon/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 3763
+    "lastLatencyMs": 167,
+    "lastError": "HTTP 429"
   },
   "Kanzen Games": {
     "name": "Kanzen Games",
     "baseUrl": "https://kanzengames.com",
-    "status": "HEALTHY",
-    "consecutiveFailures": 0,
+    "status": "DEGRADED",
+    "consecutiveFailures": 1,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833444807,
+    "lastSuccessAt": 1793837497362,
     "lastProductsCount": 250,
     "resolvedPath": "/collections/pokemon-tcg-mega-evolution/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 4967
+    "lastLatencyMs": 1863,
+    "lastError": "HTTP 429"
   },
   "The Card Vault": {
     "name": "The Card Vault",
@@ -461,11 +469,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833442638,
+    "lastSuccessAt": 1793837556697,
     "lastProductsCount": 67,
     "resolvedPath": "/collections/pokemon-cards/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 2371
+    "lastLatencyMs": 2255
   },
   "PokeBox USA": {
     "name": "PokeBox USA",
@@ -473,11 +481,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833442381,
-    "lastProductsCount": 250,
+    "lastSuccessAt": 1793837558040,
+    "lastProductsCount": 1000,
     "resolvedPath": "/products.json?limit=250",
-    "lastPagesScanned": 1,
-    "lastLatencyMs": 3529
+    "lastPagesScanned": 4,
+    "lastLatencyMs": 6148
   },
   "Level One Game Shop": {
     "name": "Level One Game Shop",
@@ -485,11 +493,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833442575,
+    "lastSuccessAt": 1793837556644,
     "lastProductsCount": 46,
     "resolvedPath": "/collections/pokemon/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 2057
+    "lastLatencyMs": 647
   },
   "Gnome Games": {
     "name": "Gnome Games",
@@ -497,11 +505,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833443243,
+    "lastSuccessAt": 1793837557130,
     "lastProductsCount": 17,
     "resolvedPath": "/collections/pokemon/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 236
+    "lastLatencyMs": 549
   },
   "Taps Games": {
     "name": "Taps Games",
@@ -509,11 +517,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833443897,
-    "lastProductsCount": 250,
+    "lastSuccessAt": 1793837559339,
+    "lastProductsCount": 1000,
     "resolvedPath": "/products.json?limit=250",
-    "lastPagesScanned": 1,
-    "lastLatencyMs": 1288
+    "lastPagesScanned": 4,
+    "lastLatencyMs": 2909
   },
   "Silver Goblin": {
     "name": "Silver Goblin",
@@ -521,35 +529,37 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833443286,
+    "lastSuccessAt": 1793837557349,
     "lastProductsCount": 31,
     "resolvedPath": "/collections/pokemon-tcg-blister-packs/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 278
+    "lastLatencyMs": 238
   },
   "Untouchables": {
     "name": "Untouchables",
     "baseUrl": "https://untouchables.ca",
-    "status": "HEALTHY",
-    "consecutiveFailures": 0,
+    "status": "DEGRADED",
+    "consecutiveFailures": 1,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833444372,
+    "lastSuccessAt": 1793837499572,
     "lastProductsCount": 250,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 663
+    "lastLatencyMs": 530,
+    "lastError": "ERR_CANCELED"
   },
   "Face to Face Games": {
     "name": "Face to Face Games",
     "baseUrl": "https://facetofacegames.com",
-    "status": "HEALTHY",
-    "consecutiveFailures": 0,
+    "status": "DEGRADED",
+    "consecutiveFailures": 1,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833443729,
+    "lastSuccessAt": 1793837504062,
     "lastProductsCount": 250,
     "resolvedPath": "/collections/pokemon/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 719
+    "lastLatencyMs": 5284,
+    "lastError": "ERR_CANCELED"
   },
   "Mox Boarding House": {
     "name": "Mox Boarding House",
@@ -557,35 +567,37 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833443028,
-    "lastProductsCount": 250,
+    "lastSuccessAt": 1793837558124,
+    "lastProductsCount": 1000,
     "resolvedPath": "/products.json?limit=250",
-    "lastPagesScanned": 1,
-    "lastLatencyMs": 687
+    "lastPagesScanned": 4,
+    "lastLatencyMs": 2124
   },
   "A&C Games": {
     "name": "A&C Games",
     "baseUrl": "https://acgamesonline.com",
-    "status": "HEALTHY",
-    "consecutiveFailures": 0,
+    "status": "DEGRADED",
+    "consecutiveFailures": 1,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833445071,
+    "lastSuccessAt": 1793837499447,
     "lastProductsCount": 250,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 1359
+    "lastLatencyMs": 391,
+    "lastError": "ERR_CANCELED"
   },
   "Miraj Trading": {
     "name": "Miraj Trading",
     "baseUrl": "https://mirajtrading.com",
-    "status": "HEALTHY",
-    "consecutiveFailures": 0,
+    "status": "DEGRADED",
+    "consecutiveFailures": 1,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833444237,
+    "lastSuccessAt": 1793837504270,
     "lastProductsCount": 250,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 997
+    "lastLatencyMs": 5432,
+    "lastError": "ERR_CANCELED"
   },
   "Sports Card Junction": {
     "name": "Sports Card Junction",
@@ -593,11 +605,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833443346,
-    "lastProductsCount": 250,
+    "lastSuccessAt": 1793837574352,
+    "lastProductsCount": 1000,
     "resolvedPath": "/products.json?limit=250",
-    "lastPagesScanned": 1,
-    "lastLatencyMs": 340
+    "lastPagesScanned": 4,
+    "lastLatencyMs": 17921
   },
   "Tistaminis": {
     "name": "Tistaminis",
@@ -605,11 +617,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833444977,
-    "lastProductsCount": 250,
+    "lastSuccessAt": 1793837572744,
+    "lastProductsCount": 1000,
     "resolvedPath": "/products.json?limit=250",
-    "lastPagesScanned": 1,
-    "lastLatencyMs": 1263
+    "lastPagesScanned": 4,
+    "lastLatencyMs": 15149
   },
   "Spankys Card Shop": {
     "name": "Spankys Card Shop",
@@ -617,11 +629,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833444969,
+    "lastSuccessAt": 1793837567238,
     "lastProductsCount": 9,
     "resolvedPath": "/collections/30th-pokemon-sealed/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 969
+    "lastLatencyMs": 8655
   },
   "Forge and Fire": {
     "name": "Forge and Fire",
@@ -629,11 +641,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833445206,
-    "lastProductsCount": 250,
+    "lastSuccessAt": 1793837578205,
+    "lastProductsCount": 1000,
     "resolvedPath": "/products.json?limit=250",
-    "lastPagesScanned": 1,
-    "lastLatencyMs": 1083
+    "lastPagesScanned": 4,
+    "lastLatencyMs": 19432
   },
   "Kanto Cards": {
     "name": "Kanto Cards",
@@ -641,23 +653,24 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833446912,
-    "lastProductsCount": 250,
+    "lastSuccessAt": 1793837579882,
+    "lastProductsCount": 1000,
     "resolvedPath": "/products.json?limit=250",
-    "lastPagesScanned": 1,
-    "lastLatencyMs": 2738
+    "lastPagesScanned": 4,
+    "lastLatencyMs": 20799
   },
   "Shinobi Collectibles": {
     "name": "Shinobi Collectibles",
     "baseUrl": "https://shinobicollectibles.com",
-    "status": "HEALTHY",
-    "consecutiveFailures": 0,
+    "status": "DEGRADED",
+    "consecutiveFailures": 1,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833445298,
+    "lastSuccessAt": 1793837506145,
     "lastProductsCount": 250,
     "resolvedPath": "/collections/pokemon/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 523
+    "lastLatencyMs": 1928,
+    "lastError": "HTTP 429"
   },
   "The Awesome Card Shop": {
     "name": "The Awesome Card Shop",
@@ -665,11 +678,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833446360,
+    "lastSuccessAt": 1793837567701,
     "lastProductsCount": 87,
     "resolvedPath": "/collections/pokemon/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 1300
+    "lastLatencyMs": 177
   },
   "PokeGirl CC": {
     "name": "PokeGirl CC",
@@ -677,11 +690,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833445471,
-    "lastProductsCount": 250,
+    "lastSuccessAt": 1793837568424,
+    "lastProductsCount": 259,
     "resolvedPath": "/products.json?limit=250",
-    "lastPagesScanned": 1,
-    "lastLatencyMs": 186
+    "lastPagesScanned": 2,
+    "lastLatencyMs": 552
   },
   "Moxie Card Shop": {
     "name": "Moxie Card Shop",
@@ -689,11 +702,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833446461,
+    "lastSuccessAt": 1793837569869,
     "lastProductsCount": 215,
     "resolvedPath": "/collections/pokemon-boosters/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 1175
+    "lastLatencyMs": 626
   },
   "Sealed and Sleeved": {
     "name": "Sealed and Sleeved",
@@ -701,11 +714,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833446415,
+    "lastSuccessAt": 1793837570329,
     "lastProductsCount": 94,
     "resolvedPath": "/collections/pokemon/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 1127
+    "lastLatencyMs": 828
   },
   "Pro Collect Shop": {
     "name": "Pro Collect Shop",
@@ -713,11 +726,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833446880,
+    "lastSuccessAt": 1793837570640,
     "lastProductsCount": 10,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 1468
+    "lastLatencyMs": 196
   },
   "DRPM Collectors": {
     "name": "DRPM Collectors",
@@ -725,11 +738,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833450679,
+    "lastSuccessAt": 1793837570832,
     "lastProductsCount": 5,
     "resolvedPath": "/collections/pokemon-booster-boxes/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 5231
+    "lastLatencyMs": 268
   },
   "Gorge Poke Shop": {
     "name": "Gorge Poke Shop",
@@ -737,11 +750,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833447496,
-    "lastProductsCount": 250,
+    "lastSuccessAt": 1793837571338,
+    "lastProductsCount": 493,
     "resolvedPath": "/products.json?limit=250",
-    "lastPagesScanned": 1,
-    "lastLatencyMs": 1161
+    "lastPagesScanned": 2,
+    "lastLatencyMs": 476
   },
   "Squirtle Squad Card Shop": {
     "name": "Squirtle Squad Card Shop",
@@ -749,11 +762,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833447778,
+    "lastSuccessAt": 1793837571986,
     "lastProductsCount": 250,
     "resolvedPath": "/collections/pokemon/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 910
+    "lastLatencyMs": 1019
   },
   "CardsHQ": {
     "name": "CardsHQ",
@@ -761,11 +774,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833448342,
+    "lastSuccessAt": 1793837573345,
     "lastProductsCount": 250,
     "resolvedPath": "/collections/pokemon-boxes/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 1472
+    "lastLatencyMs": 1146
   },
   "Collectors Cafe": {
     "name": "Collectors Cafe",
@@ -773,11 +786,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833447969,
+    "lastSuccessAt": 1793837573037,
     "lastProductsCount": 250,
     "resolvedPath": "/collections/pokemon/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 1098
+    "lastLatencyMs": 648
   },
   "Poke Unlimited": {
     "name": "Poke Unlimited",
@@ -785,11 +798,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833448934,
+    "lastSuccessAt": 1793837576195,
     "lastProductsCount": 250,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 1465
+    "lastLatencyMs": 2859
   },
   "J&J Gaming Factory": {
     "name": "J&J Gaming Factory",
@@ -797,11 +810,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833448839,
+    "lastSuccessAt": 1793837576155,
     "lastProductsCount": 250,
     "resolvedPath": "/collections/pokemon/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 1368
+    "lastLatencyMs": 2374
   },
   "Victory Road Collections": {
     "name": "Victory Road Collections",
@@ -809,11 +822,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833448897,
-    "lastProductsCount": 55,
+    "lastSuccessAt": 1793837576130,
+    "lastProductsCount": 56,
     "resolvedPath": "/collections/sealed-pokemon-collection/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 1140
+    "lastLatencyMs": 2338
   },
   "Puzzled Gamer": {
     "name": "Puzzled Gamer",
@@ -821,11 +834,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833449150,
+    "lastSuccessAt": 1793837576117,
     "lastProductsCount": 49,
     "resolvedPath": "/collections/pokemon-tcg/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 1206
+    "lastLatencyMs": 2324
   },
   "CardPop USA": {
     "name": "CardPop USA",
@@ -833,11 +846,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833449249,
+    "lastSuccessAt": 1793837573955,
     "lastProductsCount": 250,
     "resolvedPath": "/collections/pokemon/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 933
+    "lastLatencyMs": 161
   },
   "MissingNo Games": {
     "name": "MissingNo Games",
@@ -845,11 +858,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833449546,
+    "lastSuccessAt": 1793837574292,
     "lastProductsCount": 16,
     "resolvedPath": "/collections/pokemon/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 720
+    "lastLatencyMs": 497
   },
   "Common Lands": {
     "name": "Common Lands",
@@ -857,11 +870,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833449760,
+    "lastSuccessAt": 1793837576393,
     "lastProductsCount": 108,
     "resolvedPath": "/collections/modern-sealed/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 618
+    "lastLatencyMs": 2113
   },
   "iPokeTCG": {
     "name": "iPokeTCG",
@@ -869,11 +882,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833449593,
+    "lastSuccessAt": 1793837576598,
     "lastProductsCount": 58,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 450
+    "lastLatencyMs": 493
   },
   "AVA TCG": {
     "name": "AVA TCG",
@@ -881,11 +894,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833449778,
+    "lastSuccessAt": 1793837576388,
     "lastProductsCount": 25,
     "resolvedPath": "/collections/pokemon/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 634
+    "lastLatencyMs": 282
   },
   "Moonshot Games": {
     "name": "Moonshot Games",
@@ -893,11 +906,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833450000,
+    "lastSuccessAt": 1793837576763,
     "lastProductsCount": 97,
     "resolvedPath": "/collections/karls-krazy-pokemon-deals/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 461
+    "lastLatencyMs": 386
   },
   "Stonebrook Collectibles": {
     "name": "Stonebrook Collectibles",
@@ -905,11 +918,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833449870,
+    "lastSuccessAt": 1793837576528,
     "lastProductsCount": 23,
     "resolvedPath": "/collections/pokemon-elite-trainer-boxes/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 330
+    "lastLatencyMs": 145
   },
   "CardDog TCG": {
     "name": "CardDog TCG",
@@ -917,11 +930,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833450286,
+    "lastSuccessAt": 1793837577145,
     "lastProductsCount": 109,
     "resolvedPath": "/collections/in-stock/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 504
+    "lastLatencyMs": 761
   },
   "Elite4 TCG": {
     "name": "Elite4 TCG",
@@ -929,11 +942,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833450389,
+    "lastSuccessAt": 1793837576832,
     "lastProductsCount": 250,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 550
+    "lastLatencyMs": 432
   },
   "JBs Emporium": {
     "name": "JBs Emporium",
@@ -941,11 +954,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833450703,
+    "lastSuccessAt": 1793837577067,
     "lastProductsCount": 15,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 662
+    "lastLatencyMs": 475
   },
   "Derium and Wifey": {
     "name": "Derium and Wifey",
@@ -953,11 +966,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833450937,
+    "lastSuccessAt": 1793837577087,
     "lastProductsCount": 166,
     "resolvedPath": "/collections/all-pokemon-sealed-product/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 895
+    "lastLatencyMs": 331
   },
   "Oaks Poke Box": {
     "name": "Oaks Poke Box",
@@ -965,11 +978,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833450804,
+    "lastSuccessAt": 1793837577000,
     "lastProductsCount": 91,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 539
+    "lastLatencyMs": 242
   },
   "Nova Break": {
     "name": "Nova Break",
@@ -977,11 +990,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833450857,
+    "lastSuccessAt": 1793837576926,
     "lastProductsCount": 116,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 587
+    "lastLatencyMs": 167
   },
   "Epic Trading Collectibles": {
     "name": "Epic Trading Collectibles",
@@ -989,11 +1002,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833451131,
+    "lastSuccessAt": 1793837578012,
     "lastProductsCount": 250,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 595
+    "lastLatencyMs": 1026
   },
   "BAM Cards": {
     "name": "BAM Cards",
@@ -1001,11 +1014,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833451087,
+    "lastSuccessAt": 1793837578156,
     "lastProductsCount": 250,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 504
+    "lastLatencyMs": 1169
   },
   "Boxed Vinyl": {
     "name": "Boxed Vinyl",
@@ -1013,11 +1026,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833451541,
+    "lastSuccessAt": 1793837577392,
     "lastProductsCount": 47,
     "resolvedPath": "/collections/pokemon-booster-boxes/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 691
+    "lastLatencyMs": 341
   },
   "Mini Collects": {
     "name": "Mini Collects",
@@ -1025,11 +1038,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833451490,
+    "lastSuccessAt": 1793837578014,
     "lastProductsCount": 15,
     "resolvedPath": "/collections/pokemon-sealed-english/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 573
+    "lastLatencyMs": 875
   },
   "Black Wolf Collectibles": {
     "name": "Black Wolf Collectibles",
@@ -1037,11 +1050,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833451542,
+    "lastSuccessAt": 1793837578029,
     "lastProductsCount": 68,
     "resolvedPath": "/collections/sealed-cases-pokemon/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 419
+    "lastLatencyMs": 788
   },
   "Pentix Games": {
     "name": "Pentix Games",
@@ -1049,11 +1062,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833451901,
+    "lastSuccessAt": 1793837577417,
     "lastProductsCount": 174,
     "resolvedPath": "/collections/pokemon/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 777
+    "lastLatencyMs": 145
   },
   "Top Shop Collectibles": {
     "name": "Top Shop Collectibles",
@@ -1061,11 +1074,11 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833451518,
+    "lastSuccessAt": 1793837578130,
     "lastProductsCount": 57,
     "resolvedPath": "/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 378
+    "lastLatencyMs": 826
   },
   "Lvl Up Games": {
     "name": "Lvl Up Games",
@@ -1073,20 +1086,20 @@
     "status": "HEALTHY",
     "consecutiveFailures": 0,
     "cooldownUntil": 0,
-    "lastSuccessAt": 1793833454785,
+    "lastSuccessAt": 1793837582281,
     "lastProductsCount": 250,
     "resolvedPath": "/collections/alpha-asc-pokemon/products.json?limit=250",
     "lastPagesScanned": 1,
-    "lastLatencyMs": 3561
+    "lastLatencyMs": 4895
   },
   "__bigBoxHealth": {
-    "targetRedskyStatus": "DEGRADED",
+    "targetRedskyStatus": "HEALTHY",
     "redditRssStatus": "HEALTHY",
     "pokemonCenterStatus": "ARMED_MSRP_WATCH",
     "walmartStatus": "ARMED_1P_MSRP_ONLY",
     "bestBuyStatus": "ARMED_MSRP_WATCH",
     "costcoStatus": "HEALTHY",
-    "lastCheckAt": 1793833472647,
+    "lastCheckAt": 1793837620344,
     "itemsScanned": 24,
     "activeBigBoxCount": 9,
     "northStar5": {
@@ -1095,8 +1108,8 @@
         "status": "200 OK — 38 Checked",
         "targetRule": "$59.99 PC Exclusive ETBs & Pre-Orders + Queue Radar",
         "queueState": "NORMAL",
-        "lastCheckedAt": 1793833452444,
-        "lastUrlChecked": "https://www.pokemoncenter.com/en-us/category/booster-packs",
+        "lastCheckedAt": 1793837607777,
+        "lastUrlChecked": "https://www.pokemoncenter.com/en-us/category/trading-card-game",
         "productsDetected": 0,
         "cadence": "90s Direct + Queue-It Radar",
         "engineMethod": "$59.99 PC Exclusive ETB & Queue-It Detector",
@@ -1108,8 +1121,8 @@
         "name": "Target",
         "status": "200 OK — 24 Checked",
         "targetRule": "RedSky JSON API (Zip 76177 • $49.99–$54.99 ETB / $26.99 Bundle)",
-        "lastCheckedAt": 1793833393918,
-        "lastKeyword": "pokemon booster box",
+        "lastCheckedAt": 1793837614135,
+        "lastKeyword": "pokemon booster bundle",
         "itemsScanned": 24,
         "cadence": "15s RedSky JSON API",
         "engineMethod": "RedSky Fulfillment JSON API (Zip 76177 • Store 3991)",
@@ -1121,7 +1134,7 @@
         "name": "Walmart",
         "status": "200 OK — 18 Checked",
         "targetRule": "Sold & Shipped by Walmart Only (<= $55 ETB / <= $30 Bundle)",
-        "lastCheckedAt": 1793833394562,
+        "lastCheckedAt": 1793837620344,
         "itemsScanned": 18,
         "cadence": "45s 1P Facet Sweep",
         "engineMethod": "1st-Party Retailer Facet (<= $55 ETB / <= $30 Bundle)",
@@ -1133,7 +1146,7 @@
         "name": "Best Buy",
         "status": "SKU + RSS Active — 16 Checked",
         "targetRule": "SKU Availability Watch ($49.99–$54.99 ETB / $26.99 Bundle)",
-        "lastCheckedAt": 1793833324314,
+        "lastCheckedAt": 1793837585382,
         "cadence": "60s SKU + RSS Watch",
         "engineMethod": "Open SKU Availability JSON + Restock Feed Watcher",
         "strictFilter": "1P Retail MSRP ($49.99–$54.99 ETB / $26.99 Bundle)",
@@ -1142,18 +1155,18 @@
       },
       "costco": {
         "name": "Costco",
-        "status": "200 OK — 12 Checked",
+        "status": "RSS + Pallet Watch — 12 Monitored",
         "targetRule": "$39.99–$64.99 ETB + Tin Multi-Pack Pallet Drops",
-        "lastCheckedAt": 1793833286535,
+        "lastCheckedAt": 1793837551655,
         "itemsScanned": 12,
         "cadence": "60s CatalogSearch",
         "engineMethod": "CatalogSearch Pallet Bundle Watcher ($39.99–$64.99)",
         "strictFilter": "$39.99–$64.99 Member Pallet Multi-Packs",
         "itemsParsed": 12,
-        "lastStatus": "200 OK — 12 Checked"
+        "lastStatus": "RSS + Pallet Watch — 12 Monitored"
       }
     },
-    "lastTargetKeyword": "pokemon booster box",
+    "lastTargetKeyword": "pokemon booster bundle",
     "lastRedditFeed": "https://www.reddit.com/r/PKMNTCGDeals/new/.rss",
     "lastRedditPostsChecked": 25,
     "lastTargetError": "Request failed with status code 435",

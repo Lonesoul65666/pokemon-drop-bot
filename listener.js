@@ -23,7 +23,7 @@ async function processIncomingDrop(item) {
         const result = (0, evaluator_1.evaluateItem)(item);
         if (result.action === 'BUY' && result.rule) {
             const r = result.rule;
-            console.log(`🎯 [BUY ALERT] "${item.title}" ($${item.price?.toFixed(2)}) at ${item.retailer} -> [${result.alertType}] ${result.reason}`);
+            console.log(`◈ [BUY ALERT] "${item.title}" ($${item.price?.toFixed(2)}) at ${item.retailer} -> [${result.alertType}] ${result.reason}`);
             const alertPromise = (0, notifier_1.sendAlert)({
                 title: item.title,
                 retailer: item.retailer,
@@ -69,7 +69,10 @@ async function processIncomingDrop(item) {
                 statusTier: result.statusTier,
                 statusTag: result.statusTag,
                 isCloseCall: result.isCloseCall,
-                closeCallDelta: result.closeCallDelta
+                closeCallDelta: result.closeCallDelta,
+                trendSignal: result.trendSignal,
+                trendVerdictLabel: result.trendVerdictLabel,
+                isElasticDip: result.isElasticDip
             });
             await Promise.race([
                 alertPromise,

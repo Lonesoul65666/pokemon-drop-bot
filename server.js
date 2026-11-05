@@ -34,6 +34,11 @@ const {
   saveGlobalSettingsFromUi,
   loadActiveLgsStores
 } = require('./src/config/configManager');
+const {
+  evaluateSkuTrendAndTiming,
+  computeRollingMarketMetrics,
+  isPreReleaseDate
+} = require('./src/engine/trendAdvisor');
 
 function getRuntimePolicies() {
   try {
@@ -47,8 +52,6 @@ function getRuntimePolicies() {
   } catch (e) {}
   return [];
 }
-
-const PRE_RELEASE_BLEED_TAG = '⏳ PRE-RELEASE BLEED (Wait for Launch Week)';
 
 function atomicWriteJson(filePath, data) {
   try {
@@ -285,13 +288,6 @@ function saveConqueredPlaques(plaques) {
     updatedAt: new Date().toISOString()
   });
   return loadConqueredVault();
-}
-
-function isPreReleaseDate(releaseDate, nowTs = Date.now()) {
-  if (!releaseDate) return false;
-  const parsed = Date.parse(`${releaseDate}T00:00:00`);
-  if (Number.isNaN(parsed)) return false;
-  return nowTs < parsed;
 }
 
 if (!fs.existsSync(ART_DIR)) {
@@ -542,6 +538,20 @@ async function handleBountyRecon(req, res) {
         muteVaulted: muteVaultedSetting,
         storeName: cand.store
       });
+      const trendEval = evaluateSkuTrendAndTiming({
+        skuId: cand.skuId,
+        formFactor: cand.formFactor || (polRef && polRef.formFactor),
+        dropPrice: Number(cand.price || cand.landedPrice),
+        landedPrice: Number(cand.landedPrice),
+        estimatedShipping: shipDiff,
+        policyMaxBuy: triggerPrice,
+        msrpCeiling: Number((polRef && polRef.msrpCeiling) || cand.msrp || 0),
+        marketBaseline: Number(cand.marketValue || 0),
+        releaseDate: polRef && polRef.releaseDate,
+        owned: Boolean(polRef && (polRef.owned || polRef.inVault)),
+        isCloseCall: shelfStatus.isCloseCall,
+        isMarketplace3P: /tcgplayer|ebay|3p|marketplace/i.test(String(cand.store || ''))
+      });
       candidates.push({
         ...cand,
         era: cand.era || (polRef && polRef.era) || 'Modern Era',
@@ -556,7 +566,12 @@ async function handleBountyRecon(req, res) {
         statusTier: shelfStatus.statusTier,
         statusTag: shelfStatus.statusTag,
         isCloseCall: shelfStatus.isCloseCall,
-        closeCallDelta: shelfStatus.closeCallDelta
+        closeCallDelta: shelfStatus.closeCallDelta,
+        trendSignal: trendEval.trendSignal,
+        trendVerdictLabel: trendEval.trendVerdictLabel,
+        isElasticDip: trendEval.isElasticDip,
+        isPreRelease: trendEval.isPreRelease,
+        preReleaseStatusTag: trendEval.preReleaseStatusTag
       });
     };
 
@@ -928,6 +943,7 @@ function computeNearMissesAndBestOffers() {
   const rawBestOffers = (liveMap && liveMap.__bestOffers && typeof liveMap.__bestOffers === 'object')
     ? liveMap.__bestOffers
     : {};
+  const mergedBySku = loadMergedStoreOffersBySku();
   const bestCurrentOffers = {};
   const nearMisses = [];
   const now = Date.now();
@@ -944,6 +960,32 @@ function computeNearMissesAndBestOffers() {
       : Number(pol.estimatedMarketValue || triggerPrice);
 
     let cand = rawBestOffers[ruleId];
+    const skuMergedList = Object.values(mergedBySku[ruleId] || {}).filter(o => o && o.landedPrice > 0);
+    if (skuMergedList.length > 0) {
+      skuMergedList.sort((a, b) => a.landedPrice - b.landedPrice);
+      const lowestMerged = skuMergedList[0];
+      if (!cand || lowestMerged.landedPrice < Number(cand.landedPrice || 999999)) {
+        cand = {
+          ruleId,
+          ruleName: pol.name,
+          formFactor: pol.formFactor || 'Sealed',
+          era: pol.era,
+          title: lowestMerged.listingTitle || pol.name,
+          retailer: lowestMerged.store,
+          price: lowestMerged.price,
+          shippingPrice: lowestMerged.shipping,
+          landedPrice: lowestMerged.landedPrice,
+          freeShipNote: lowestMerged.shippingNote,
+          url: lowestMerged.url,
+          productUrl: lowestMerged.url,
+          cart1xUrl: lowestMerged.cart1xUrl,
+          cart2xUrl: lowestMerged.cart2xUrl,
+          cart3xUrl: lowestMerged.cart3xUrl,
+          updatedAt: lowestMerged.updatedAt || now,
+          timeStr: 'Live Radar'
+        };
+      }
+    }
     if (!cand && tel && tel.lowestPrice > 0 && tel.lowestStore && !/baseline/i.test(tel.lowestStore)) {
       const price = Number(tel.lowestPrice);
       const isTcg = /tcgplayer/i.test(tel.lowestStore);
@@ -976,7 +1018,33 @@ function computeNearMissesAndBestOffers() {
     const rawGapDollars = Math.round((price - triggerPrice) * 100) / 100;
     const rawGapPct = Math.round(((price - triggerPrice) / triggerPrice) * 1000) / 10;
     const rip = computeRipMetrics(landedPrice, ruleId, pol.formFactor, pol.name, pol.packCount);
-    const isPreRelease = isPreReleaseDate(pol.releaseDate, now);
+    const shelfStatus = computeShelfStatusForOffer({
+      dropPrice: price,
+      landedPrice,
+      estimatedShipping: Math.max(0, landedPrice - price),
+      triggerPrice,
+      msrpCeiling: Number(pol.msrpCeiling || 0),
+      marketValue,
+      formFactor: pol.formFactor,
+      owned: Boolean(pol.owned || pol.inVault),
+      muteVaulted: Boolean(loadGlobalSettings()?.muteVaulted),
+      storeName: cand.retailer
+    });
+    const trendEval = evaluateSkuTrendAndTiming({
+      skuId: ruleId,
+      formFactor: pol.formFactor,
+      dropPrice: price,
+      landedPrice,
+      estimatedShipping: Math.max(0, landedPrice - price),
+      policyMaxBuy: triggerPrice,
+      msrpCeiling: Number(pol.msrpCeiling || 0),
+      marketBaseline: marketValue,
+      releaseDate: pol.releaseDate,
+      owned: Boolean(pol.owned || pol.inVault),
+      isCloseCall: shelfStatus.isCloseCall,
+      isMarketplace3P: /tcgplayer|ebay|3p|marketplace/i.test(String(cand.retailer || '')),
+      nowTs: now
+    });
 
     const enrichedOffer = {
       ...cand,
@@ -997,20 +1065,12 @@ function computeNearMissesAndBestOffers() {
       pricePerPack: rip.pricePerPack,
       isRipValueLeader: rip.isRipValueLeader,
       owned: Boolean(pol.owned || pol.inVault),
-      isPreRelease,
-      preReleaseStatusTag: isPreRelease ? PRE_RELEASE_BLEED_TAG : undefined,
-      ...computeShelfStatusForOffer({
-        dropPrice: price,
-        landedPrice,
-        estimatedShipping: Math.max(0, landedPrice - price),
-        triggerPrice,
-        msrpCeiling: Number(pol.msrpCeiling || 0),
-        marketValue,
-        formFactor: pol.formFactor,
-        owned: Boolean(pol.owned || pol.inVault),
-        muteVaulted: Boolean(loadGlobalSettings()?.muteVaulted),
-        storeName: cand.retailer
-      })
+      isPreRelease: trendEval.isPreRelease,
+      preReleaseStatusTag: trendEval.preReleaseStatusTag,
+      trendSignal: trendEval.trendSignal,
+      trendVerdictLabel: trendEval.trendVerdictLabel,
+      isElasticDip: trendEval.isElasticDip,
+      ...shelfStatus
     };
 
     bestCurrentOffers[ruleId] = enrichedOffer;
@@ -1287,6 +1347,21 @@ function loadMergedStoreOffersBySku() {
         muteVaulted: muteVaultedSetting,
         storeName: rec.storeName || storeKey
       });
+      const trendEval = evaluateSkuTrendAndTiming({
+        skuId,
+        formFactor: pol.formFactor,
+        dropPrice: rawPrice,
+        landedPrice: landed,
+        estimatedShipping: rawShip,
+        policyMaxBuy: trig,
+        msrpCeiling: Number(pol.msrpCeiling || 54.99),
+        marketBaseline: mkt,
+        releaseDate: pol.releaseDate,
+        owned: Boolean(pol.owned || pol.inVault),
+        isCloseCall: shelfStatus.isCloseCall,
+        isMarketplace3P: /tcgplayer|ebay|3p|marketplace/i.test(String(rec.storeName || storeKey)),
+        nowTs: now
+      });
       const underTrig = shelfStatus.statusTier === 'UNDER_TARGET' || landed <= trig + 0.01;
       const gapDollars = Math.round((landed - trig) * 100) / 100;
       bucket[storeKey] = {
@@ -1309,6 +1384,11 @@ function loadMergedStoreOffersBySku() {
         statusTag: shelfStatus.statusTag,
         isCloseCall: shelfStatus.isCloseCall,
         closeCallDelta: shelfStatus.closeCallDelta,
+        trendSignal: trendEval.trendSignal,
+        trendVerdictLabel: trendEval.trendVerdictLabel,
+        isElasticDip: trendEval.isElasticDip,
+        isPreRelease: trendEval.isPreRelease,
+        preReleaseStatusTag: trendEval.preReleaseStatusTag,
         packCount: rip.packCount,
         pricePerPack: rip.pricePerPack,
         isRipValueLeader: rip.isRipValueLeader,
@@ -1359,6 +1439,21 @@ function loadMergedStoreOffersBySku() {
       muteVaulted: muteVaultedSetting,
       storeName: cleanStore
     });
+    const trendEval = evaluateSkuTrendAndTiming({
+      skuId,
+      formFactor: pol.formFactor,
+      dropPrice: rawPrice,
+      landedPrice: landed,
+      estimatedShipping: rawShip,
+      policyMaxBuy: trig,
+      msrpCeiling: Number(pol.msrpCeiling || 54.99),
+      marketBaseline: mkt,
+      releaseDate: pol.releaseDate,
+      owned: Boolean(pol.owned || pol.inVault),
+      isCloseCall: shelfStatus.isCloseCall,
+      isMarketplace3P: /tcgplayer|ebay|3p|marketplace/i.test(cleanStore),
+      nowTs: now
+    });
     const underTrig = shelfStatus.statusTier === 'UNDER_TARGET' || landed <= trig + 0.01;
     const gapDollars = Math.round((landed - trig) * 100) / 100;
     bucket[storeKey] = {
@@ -1381,6 +1476,11 @@ function loadMergedStoreOffersBySku() {
       statusTag: shelfStatus.statusTag,
       isCloseCall: shelfStatus.isCloseCall,
       closeCallDelta: shelfStatus.closeCallDelta,
+      trendSignal: trendEval.trendSignal,
+      trendVerdictLabel: trendEval.trendVerdictLabel,
+      isElasticDip: trendEval.isElasticDip,
+      isPreRelease: trendEval.isPreRelease,
+      preReleaseStatusTag: trendEval.preReleaseStatusTag,
       packCount: rip.packCount,
       pricePerPack: rip.pricePerPack,
       isRipValueLeader: rip.isRipValueLeader,
@@ -1695,7 +1795,7 @@ app.get('/api/engine-room', (req, res) => {
   }
 });
 
-app.get('/api/sku-history/:skuId', (req, res) => {
+app.get(['/api/sku-history/:skuId', '/api/price-history/:skuId'], (req, res) => {
   try {
     const rawParam = String(req.params.skuId || '').trim().toLowerCase();
     const policies = getRuntimePolicies();
@@ -2001,6 +2101,20 @@ app.get('/api/sku-history/:skuId', (req, res) => {
       }));
 
     const ripNow = computeRipMetrics(currentLowestOffer, skuId, pol.formFactor, pol.name, packCount);
+    const rollingMetrics = computeRollingMarketMetrics(skuId, marketPrice, msrp);
+    const rawOfferPrice = currentOffers[0] ? Number(currentOffers[0].price || currentLowestOffer) : currentLowestOffer;
+    const trendEval = evaluateSkuTrendAndTiming({
+      skuId: pol.id,
+      formFactor: pol.formFactor,
+      releaseDate: pol.releaseDate,
+      msrpCeiling: msrp,
+      policyMaxBuy: maxBuyThreshold,
+      marketBaseline: marketPrice,
+      landedPrice: currentLowestOffer,
+      dropPrice: rawOfferPrice,
+      estimatedShipping: Math.max(0, currentLowestOffer - rawOfferPrice),
+      owned: Boolean(pol.owned || pol.inVault)
+    });
 
     res.json({
       skuId: pol.id,
@@ -2017,6 +2131,10 @@ app.get('/api/sku-history/:skuId', (req, res) => {
       isRipValueLeader: ripNow.isRipValueLeader,
       allTimeLow,
       liveMarketplaceFloor,
+      trendSignal: trendEval.trendSignal,
+      trendVerdictLabel: trendEval.trendVerdictLabel,
+      isElasticDip: trendEval.isElasticDip,
+      rollingMetrics,
       priceHistory: priceHistory30d,
       priceHistory24h,
       priceHistory7d,
@@ -2141,22 +2259,36 @@ app.get('/api/live-stock', (req, res) => {
       const pol = policyMap.get(ruleId);
       if (!pol || pol.active === false) continue;
       const rawMaxBuy = Math.max(pol.msrpCeiling || 0, pol.maxMarketBuyPrice || 0);
-      const effectiveMaxBuy = entry.isPreOrder
-        ? Math.min(rawMaxBuy, Math.round((pol.msrpCeiling || 0) * 1.05))
-        : rawMaxBuy;
+      const effectiveMaxBuy = rawMaxBuy;
       const landed = entry.landedPrice || entry.price;
       const eligible = entry.price <= effectiveMaxBuy && (landed <= effectiveMaxBuy || Boolean(entry.freeShipNote));
       if (eligible && (now - (entry.updatedAt || 0)) < 6 * 60 * 60 * 1000) {
-        const isPreRelease = isPreReleaseDate(pol.releaseDate, now);
         const rip = computeRipMetrics(landed, ruleId, pol.formFactor, pol.name, pol.packCount);
+        const rawEntryPrice = Number(entry.price || landed);
+        const trendEval = evaluateSkuTrendAndTiming({
+          skuId: ruleId,
+          formFactor: pol.formFactor,
+          releaseDate: pol.releaseDate,
+          msrpCeiling: pol.msrpCeiling || 0,
+          policyMaxBuy: effectiveMaxBuy,
+          marketBaseline: pol.estimatedMarketValue || pol.msrpCeiling || 0,
+          landedPrice: landed,
+          dropPrice: rawEntryPrice,
+          estimatedShipping: Math.max(0, landed - rawEntryPrice),
+          owned: Boolean(pol.owned || pol.inVault),
+          nowTs: now
+        });
         activeStock[ruleId] = {
           ...entry,
           packCount: entry.packCount ?? rip.packCount,
           pricePerPack: entry.pricePerPack ?? rip.pricePerPack,
           isRipValueLeader: entry.isRipValueLeader ?? rip.isRipValueLeader,
           releaseDate: pol.releaseDate,
-          isPreRelease,
-          preReleaseStatusTag: isPreRelease ? PRE_RELEASE_BLEED_TAG : undefined
+          isPreRelease: trendEval.isPreRelease,
+          preReleaseStatusTag: trendEval.preReleaseStatusTag,
+          trendSignal: trendEval.trendSignal,
+          trendVerdictLabel: trendEval.trendVerdictLabel,
+          isElasticDip: trendEval.isElasticDip
         };
       }
     }
@@ -2282,20 +2414,35 @@ app.get('/api/policies', (req, res) => {
     }
     const now = Date.now();
     const enriched = parsed.map(p => {
-      const pre = isPreReleaseDate(p.releaseDate, now);
       const liveEntry = liveMap[p.id];
       const tel = cache[p.id];
       const refLanded = (liveEntry && liveEntry.inStock && (liveEntry.landedPrice || liveEntry.price))
         ? Number(liveEntry.landedPrice || liveEntry.price)
         : ((tel && tel.lowestPrice > 0) ? Number(tel.lowestPrice) : Number(p.maxMarketBuyPrice || p.estimatedMarketValue || p.msrpCeiling || 0));
       const rip = computeRipMetrics(refLanded, p.id, p.formFactor, p.name, p.packCount);
+      const trendEval = evaluateSkuTrendAndTiming({
+        skuId: p.id,
+        formFactor: p.formFactor,
+        releaseDate: p.releaseDate,
+        msrpCeiling: p.msrpCeiling || 0,
+        policyMaxBuy: Math.max(p.msrpCeiling || 0, p.maxMarketBuyPrice || 0),
+        marketBaseline: p.estimatedMarketValue || p.msrpCeiling || 0,
+        landedPrice: refLanded,
+        dropPrice: refLanded,
+        estimatedShipping: 0,
+        owned: Boolean(p.owned || p.inVault),
+        nowTs: now
+      });
       return {
         ...p,
         packCount: rip.packCount,
         pricePerPack: rip.pricePerPack,
         isRipValueLeader: rip.isRipValueLeader,
-        isPreRelease: pre,
-        preReleaseStatusTag: pre ? PRE_RELEASE_BLEED_TAG : undefined
+        isPreRelease: trendEval.isPreRelease,
+        preReleaseStatusTag: trendEval.preReleaseStatusTag,
+        trendSignal: trendEval.trendSignal,
+        trendVerdictLabel: trendEval.trendVerdictLabel,
+        isElasticDip: trendEval.isElasticDip
       };
     });
     res.json(enriched);

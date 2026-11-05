@@ -437,5 +437,77 @@
     "alertCount": 1,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "46489628279004"
+  },
+  "Mystic TCG::me-30th-celebration-bundle": {
+    "lastPrice": 69.99,
+    "lowestAlertedPrice": 69.99,
+    "timestamp": 1793833597858,
+    "timeStr": "05:06 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "67626348314813"
+  },
+  "AVA TCG::sv-destined-rivals-etb": {
+    "lastPrice": 108.49,
+    "lowestAlertedPrice": 108.49,
+    "timestamp": 1793833624024,
+    "timeStr": "05:07 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "67888309207342"
+  },
+  "CardPop USA::sv-journey-together-booster-box": {
+    "lastPrice": 199.99,
+    "lowestAlertedPrice": 199.99,
+    "timestamp": 1793833628291,
+    "timeStr": "05:07 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "53049261982060"
+  },
+  "Double Infinity Gaming::me-30th-celebration-bundle": {
+    "lastPrice": 69.99,
+    "lowestAlertedPrice": 69.99,
+    "timestamp": 1793833657519,
+    "timeStr": "05:07 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "53770428416316"
+  },
+  "Stomping Grounds::sv-destined-rivals-etb": {
+    "lastPrice": 108,
+    "lowestAlertedPrice": 108,
+    "timestamp": 1793833670051,
+    "timeStr": "05:07 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "57948510191776"
+  },
+  "Stomping Grounds::me-30th-celebration-bundle": {
+    "lastPrice": 70,
+    "lowestAlertedPrice": 70,
+    "timestamp": 1793833678286,
+    "timeStr": "05:07 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "58888640725152"
+  },
+  "Rip N Ship Arena::me-chaos-rising-booster-case": {
+    "lastPrice": 1049.99,
+    "lowestAlertedPrice": 1049.99,
+    "timestamp": 1793837427360,
+    "timeStr": "06:10 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "48636061909219"
+  },
+  "Rip N Ship Arena::me-perfect-order-booster-case": {
+    "lastPrice": 1049.99,
+    "lowestAlertedPrice": 1049.99,
+    "timestamp": 1793837429517,
+    "timeStr": "06:10 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "47992561008867"
   }
 }

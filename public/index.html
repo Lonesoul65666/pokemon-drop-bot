@@ -2499,6 +2499,9 @@
           store: stripEmojiClutter(ls.retailer || 'Verified LGS'),
           url: ls.cart1xUrl || ls.productUrl || ls.url || ('https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=' + encodeURIComponent(p.name) + '&view=grid'),
           cart1xUrl: ls.cart1xUrl,
+          trendSignal: ls.trendSignal || p.trendSignal,
+          trendVerdictLabel: ls.trendVerdictLabel || ls.preReleaseStatusTag || p.trendVerdictLabel || p.preReleaseStatusTag,
+          isElasticDip: Boolean(ls.isElasticDip || p.isElasticDip),
           isLiveShelf: true
         };
       }
@@ -2509,6 +2512,9 @@
           store: stripEmojiClutter(bo.retailer || 'Verified LGS'),
           url: bo.cart1xUrl || bo.productUrl || bo.url || ('https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=' + encodeURIComponent(p.name) + '&view=grid'),
           cart1xUrl: bo.cart1xUrl,
+          trendSignal: bo.trendSignal || p.trendSignal,
+          trendVerdictLabel: bo.trendVerdictLabel || bo.preReleaseStatusTag || p.trendVerdictLabel || p.preReleaseStatusTag,
+          isElasticDip: Boolean(bo.isElasticDip || p.isElasticDip),
           isLiveShelf: true
         };
       }
@@ -2518,6 +2524,9 @@
           price: Number(tel.lowestPrice),
           store: stripEmojiClutter(tel.lowestStore || 'TCGPlayer Verified'),
           url: tel.lowestUrl || ('https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=' + encodeURIComponent(p.name) + '&view=grid'),
+          trendSignal: p.trendSignal,
+          trendVerdictLabel: p.trendVerdictLabel || p.preReleaseStatusTag,
+          isElasticDip: Boolean(p.isElasticDip),
           isLiveShelf: Boolean(tel.inStock)
         };
       }
@@ -2527,6 +2536,9 @@
           price: Number(mMap.staleFloorPrice || mMap.marketPrice),
           store: stripEmojiClutter(mMap.topStore || 'TCGPlayer Verified'),
           url: 'https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=' + encodeURIComponent(p.name) + '&view=grid',
+          trendSignal: mMap.trendSignal || p.trendSignal,
+          trendVerdictLabel: mMap.trendVerdictLabel || mMap.preReleaseStatusTag || p.trendVerdictLabel || p.preReleaseStatusTag,
+          isElasticDip: Boolean(mMap.isElasticDip || p.isElasticDip),
           isLiveShelf: false
         };
       }
@@ -2534,6 +2546,9 @@
         price: Number(p.estimatedMarketValue || p.maxMarketBuyPrice || p.msrpCeiling || 54.99),
         store: 'TCGPlayer Verified',
         url: 'https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=' + encodeURIComponent(p.name) + '&view=grid',
+        trendSignal: p.trendSignal,
+        trendVerdictLabel: p.trendVerdictLabel || p.preReleaseStatusTag,
+        isElasticDip: Boolean(p.isElasticDip),
         isLiveShelf: false
       };
     }
@@ -2577,6 +2592,10 @@
           pricePerPack: ppp,
           isRipValueLeader: Boolean(pol.isRipValueLeader || (ppp > 0 && ppp <= 4.25)),
           isPreRelease: Boolean(pol.isPreRelease),
+          preReleaseStatusTag: offer.trendVerdictLabel || pol.preReleaseStatusTag,
+          trendSignal: offer.trendSignal || pol.trendSignal,
+          trendVerdictLabel: offer.trendVerdictLabel || pol.trendVerdictLabel || pol.preReleaseStatusTag,
+          isElasticDip: Boolean(offer.isElasticDip || pol.isElasticDip),
           url: offer.url,
           cart1xUrl: offer.cart1xUrl,
           timeStr: '+$' + gapDollars.toFixed(2) + ' (+' + gapPct.toFixed(1) + '% Over Trigger)',
@@ -2684,6 +2703,23 @@
       return '<span class="font-mono-num text-[10px] font-bold px-2 py-0.5 rounded-md bg-cyan-500/15 text-cyan-200 border border-cyan-400/35 whitespace-nowrap">' + tag + '</span>';
     }
 
+    function renderTrendVerdictPillHtml(item) {
+      if (!item) return '';
+      const label = item.trendVerdictLabel || item.preReleaseStatusTag || '';
+      if (!label) return '';
+      const sig = String(item.trendSignal || '').toUpperCase();
+      if (sig === 'ELASTIC_DIP' || /ELASTIC DIP/i.test(label)) {
+        return '<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-cyan-500/25 text-cyan-200 border border-cyan-400/50 text-[10px] font-mono-num font-extrabold shadow-[0_0_10px_rgba(34,211,238,0.25)]">' + label + '</span>';
+      }
+      if (sig === 'BEATS_MARKET_FLOOR' || sig === 'UPTREND_LAG_DEAL' || /BEATS.*FLOOR|CLIMBING/i.test(label)) {
+        return '<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-200 border border-emerald-400/45 text-[10px] font-mono-num font-extrabold">' + label + '</span>';
+      }
+      if (sig === 'FALLING_KNIFE_WAIT' || /WAIT FOR|FALLING/i.test(label)) {
+        return '<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-mono-num font-extrabold">' + label + '</span>';
+      }
+      return '<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-slate-500/20 text-slate-200 border border-white/15 text-[10px] font-mono-num font-bold">' + label + '</span>';
+    }
+
     // Shared Canonical Deal Feed Builder (Used by BOTH KPI Card #2 and Live Deal Feed so counts NEVER diverge!)
     function buildUnifiedDealFeedItems() {
       const items = [];
@@ -2719,7 +2755,10 @@
           pricePerPack: ppp,
           isRipValueLeader: ls.isRipValueLeader || pol.isRipValueLeader || (ppp > 0 && ppp <= 4.25),
           isPreRelease: ls.isPreRelease || pol.isPreRelease,
-          preReleaseStatusTag: ls.preReleaseStatusTag || pol.preReleaseStatusTag,
+          preReleaseStatusTag: ls.trendVerdictLabel || ls.preReleaseStatusTag || pol.trendVerdictLabel || pol.preReleaseStatusTag,
+          trendSignal: ls.trendSignal || pol.trendSignal,
+          trendVerdictLabel: ls.trendVerdictLabel || ls.preReleaseStatusTag || pol.trendVerdictLabel || pol.preReleaseStatusTag,
+          isElasticDip: Boolean(ls.isElasticDip || pol.isElasticDip),
           statusTier: ls.statusTier,
           statusTag: ls.statusTag,
           isCloseCall: ls.isCloseCall,
@@ -2766,7 +2805,10 @@
           pricePerPack: ppp,
           isRipValueLeader: d.isRipValueLeader || (ppp > 0 && ppp <= 4.25),
           isPreRelease: pol ? pol.isPreRelease : false,
-          preReleaseStatusTag: pol ? pol.preReleaseStatusTag : undefined,
+          preReleaseStatusTag: d.trendVerdictLabel || (pol ? (pol.trendVerdictLabel || pol.preReleaseStatusTag) : undefined),
+          trendSignal: d.trendSignal || (pol ? pol.trendSignal : undefined),
+          trendVerdictLabel: d.trendVerdictLabel || (pol ? (pol.trendVerdictLabel || pol.preReleaseStatusTag) : undefined),
+          isElasticDip: Boolean(d.isElasticDip || (pol && pol.isElasticDip)),
           statusTier: d.statusTier,
           statusTag: d.statusTag,
           isCloseCall: d.isCloseCall,
@@ -2805,7 +2847,10 @@
           pricePerPack: ppp,
           isRipValueLeader: pol.isRipValueLeader || (ppp > 0 && ppp <= 4.25),
           isPreRelease: Boolean(pol.isPreRelease),
-          preReleaseStatusTag: pol.preReleaseStatusTag,
+          preReleaseStatusTag: offer.trendVerdictLabel || pol.trendVerdictLabel || pol.preReleaseStatusTag,
+          trendSignal: offer.trendSignal || pol.trendSignal,
+          trendVerdictLabel: offer.trendVerdictLabel || pol.trendVerdictLabel || pol.preReleaseStatusTag,
+          isElasticDip: Boolean(offer.isElasticDip || pol.isElasticDip),
           url: offer.url,
           timeStr: 'IN STOCK NOW',
           discountPct: mktVal > landedVal ? Math.max(0, Math.round(((mktVal - landedVal) / mktVal) * 100)) : 0
@@ -3318,9 +3363,7 @@
         const isNearMiss = Boolean(item.isNearMiss);
         const packPill = getPackBadgeHtml(item.pricePerPack, item.packCount, item.isRipValueLeader);
         const formatTag = formatShortTag(item.formFactor);
-        const preBleedBadge = item.isPreRelease
-          ? '<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-extrabold">PRE-RELEASE BLEED</span>'
-          : '';
+        const preBleedBadge = renderTrendVerdictPillHtml(item);
 
         const spreadPill = discPct > 0
           ? '<span class="font-mono-num text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/35">-' + discPct + '% Under Mkt (Save $' + saveDollars.toFixed(0) + ')</span>'
@@ -3519,7 +3562,7 @@
           const wk = m.latestWeekly;
           const wowStr = wk ? ((wk.wowDeltaPct > 0 ? '+' : '') + wk.wowDeltaPct.toFixed(1) + '%') : '0.0%';
           const packPill = getPackBadgeHtml(m.pricePerPack, m.packCount, m.isRipValueLeader);
-          const preTag = m.isPreRelease ? '<div class="text-[9px] font-bold text-amber-300">PRE-RELEASE BLEED</div>' : '';
+          const preTag = m.preReleaseStatusTag ? '<div class="text-[9px] font-mono-num font-bold text-cyan-300">' + m.preReleaseStatusTag + '</div>' : '';
 
           return (
             '<tr class="border-b border-white/5 hover:bg-white/5 align-top">' +
@@ -3728,11 +3771,17 @@
               const shipSubLabel = opt.shippingNote || (opt.landedPrice > opt.price + 0.05 ? ('+ $' + (opt.landedPrice - opt.price).toFixed(2) + ' Ship') : '+ FREE Ship');
               const pol = policies.find(p => p.id === opt.skuId);
               const trigPrice = Number(opt.triggerPrice || (pol ? (pol.maxMarketBuyPrice || pol.msrpCeiling) : opt.msrp) || 54.99);
-              const verdictColHtml = renderShelfStatusPillHtml({
-                ...opt,
-                triggerPrice: trigPrice,
-                owned: pol ? Boolean(pol.owned) : Boolean(opt.owned)
-              });
+              const verdictColHtml = '<div class="flex flex-col gap-1 items-start">' +
+                renderShelfStatusPillHtml({
+                  ...opt,
+                  triggerPrice: trigPrice,
+                  owned: pol ? Boolean(pol.owned) : Boolean(opt.owned)
+                }) +
+                renderTrendVerdictPillHtml({
+                  trendSignal: opt.trendSignal || (pol ? pol.trendSignal : undefined),
+                  trendVerdictLabel: opt.trendVerdictLabel || opt.preReleaseStatusTag || (pol ? (pol.trendVerdictLabel || pol.preReleaseStatusTag) : undefined)
+                }) +
+              '</div>';
               const spreadBadgeHtml = Number(opt.discountPct || 0) > 0
                 ? '<span class="px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/35 text-emerald-300 font-mono-num text-[10px] font-extrabold">-' + opt.discountPct + '% Spread</span>'
                 : '<span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-400 font-mono-num text-[10px] font-bold">At Market</span>';
@@ -4433,6 +4482,10 @@
               '<span class="text-[9px] font-mono-num font-bold uppercase px-1.5 py-0.2 rounded bg-white/5 text-cyan-300 border border-white/10">' + (p.era || 'Pokemon TCG') + '</span>' +
               '<span class="text-[9px] font-mono-num text-slate-400">' + p.formFactor + ' (' + (p.packCount || 9) + 'p)</span>' +
               '<button onclick="openPriceHistoryModal(\'' + p.id + '\')" class="text-[9px] font-pokedex font-bold px-1.5 py-0.2 rounded bg-cyan-500/15 text-cyan-300 hover:bg-cyan-500 hover:text-slate-950 transition">⟦ CHART &amp; COMPS ⟧</button>' +
+              renderTrendVerdictPillHtml({
+                trendSignal: offer.trendSignal || p.trendSignal,
+                trendVerdictLabel: offer.trendVerdictLabel || p.trendVerdictLabel || p.preReleaseStatusTag
+              }) +
             '</div>' +
           '</div>' +
 
@@ -4486,11 +4539,11 @@
       const disabledAttr = spectatorLocked ? 'disabled' : '';
 
       const packPill = getPackBadgeHtml(p.pricePerPack, p.packCount, p.isRipValueLeader);
-      const preBleedBadge = p.isPreRelease
-        ? '<div class="mt-1 inline-flex items-center px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-extrabold">PRE-RELEASE BLEED</div>'
-        : '';
-
       const offer = getBestLiveOfferForPolicy(p);
+      const preBleedBadge = '<div class="mt-1">' + renderTrendVerdictPillHtml({
+        trendSignal: offer.trendSignal || p.trendSignal,
+        trendVerdictLabel: offer.trendVerdictLabel || p.trendVerdictLabel || p.preReleaseStatusTag
+      }) + '</div>';
       const bestOfferPrice = Number(offer.price || marketVal);
       const bestOfferStore = offer.store || 'TCGPlayer Verified';
       const bestOfferUrl = offer.url || '#';

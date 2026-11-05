@@ -8,6 +8,10 @@ import {
   getPackCountForSku,
   computeRipMetrics
 } from './policies';
+import {
+  evaluateSkuTrendAndTiming,
+  TrendSignal
+} from './src/engine/trendAdvisor';
 
 export const SALES_HISTORY_PATH = path.resolve(process.cwd(), 'salesHistory.json');
 export const DAILY_SNAPSHOTS_PATH = path.resolve(process.cwd(), 'dailySnapshots.json');
@@ -80,6 +84,9 @@ export interface TargetTapeMetrics {
   releaseDate?: string;
   isPreRelease?: boolean;
   preReleaseStatusTag?: string;
+  trendSignal?: TrendSignal;
+  trendVerdictLabel?: string;
+  isElasticDip?: boolean;
   nrt7dDeltaPct: number;
   absorptionRatio: number;
   clearedCount14d: number;
@@ -625,38 +632,61 @@ export function computeFullMarketTape() {
     const isDistributorWave = waveStores48h.length >= 3;
 
     const releaseDate: string | undefined = (pol as any).releaseDate;
-    const isPreRelease = Boolean(releaseDate && !Number.isNaN(Date.parse(`${releaseDate}T00:00:00`)) && now < Date.parse(`${releaseDate}T00:00:00`));
-    const preReleaseStatusTag = isPreRelease ? '⏳ PRE-RELEASE BLEED (Wait for Launch Week)' : undefined;
+    const refOfferPrice = (liveEntry && liveEntry.inStock && liveEntry.price)
+      ? Number(liveEntry.price)
+      : (staleFloorPrice && staleFloorPrice > 0 ? staleFloorPrice : currentMarket);
+    const refLandedPrice = (liveEntry && liveEntry.inStock && (liveEntry.landedPrice || liveEntry.price))
+      ? Number(liveEntry.landedPrice || liveEntry.price)
+      : refOfferPrice;
+
+    const trendEval = evaluateSkuTrendAndTiming({
+      skuId: pol.id,
+      formFactor: pol.formFactor,
+      dropPrice: refOfferPrice,
+      landedPrice: refLandedPrice,
+      estimatedShipping: Math.max(0, refLandedPrice - refOfferPrice),
+      policyMaxBuy: Math.max(pol.msrpCeiling, pol.maxMarketBuyPrice),
+      msrpCeiling: pol.msrpCeiling,
+      marketBaseline: currentMarket,
+      releaseDate,
+      owned: Boolean(pol.inVault ?? pol.owned),
+      isCloseCall: Boolean(liveEntry?.isCloseCall),
+      nowTs: now
+    });
+    const isPreRelease = trendEval.isPreRelease;
+    const preReleaseStatusTag = trendEval.preReleaseStatusTag;
+    const { trendSignal, trendVerdictLabel, isElasticDip } = trendEval;
 
     // Verdict Badge & Tone
-    let verdictBadge = '🟡 HOLD / WAIT FOR DIP';
+    let verdictBadge = trendVerdictLabel || '◈ ⟦ STABLE 60D PLATEAU ⟧';
     let verdictTone: TargetTapeMetrics['verdictTone'] = 'slate';
 
     if (liveEntry && liveEntry.inStock && liveEntry.bigBoxBadge && (liveEntry.bigBoxTier === 'PC_EXCLUSIVE_MSRP' || liveEntry.bigBoxTier === 'MSRP_TIER_A')) {
       verdictBadge = `${liveEntry.bigBoxBadge} @ ${liveEntry.retailer}`;
       verdictTone = 'emerald';
-    } else if (isPreRelease && (!liveEntry || !liveEntry.inStock || liveEntry.price > pol.msrpCeiling * 1.08)) {
-      verdictBadge = preReleaseStatusTag!;
-      verdictTone = 'purple';
+    } else if (isElasticDip) {
+      verdictBadge = trendVerdictLabel;
+      verdictTone = 'emerald';
+    } else if (isPreRelease) {
+      verdictBadge = trendVerdictLabel;
+      verdictTone = trendSignal === 'BEATS_MARKET_FLOOR' ? 'emerald' : 'purple';
     } else if (isDistributorWave) {
-      verdictBadge = `🌊 DISTRO WAVE (${waveStores48h.length} Stores) • WAIT FOR UNDERCUT`;
+      verdictBadge = `◈ ⟦ DISTRO WAVE (${waveStores48h.length} STORES) // WAIT FOR UNDERCUT ⟧`;
       verdictTone = 'purple';
     } else if (liveEntry && liveEntry.inStock && liveEntry.price <= pol.maxMarketBuyPrice) {
-      if (lastClear && liveEntry.price <= lastClear.price * 1.02) {
-        verdictBadge = '🟢 BUY NOW • AT/BELOW CLEAR FLOOR';
-        verdictTone = 'emerald';
-      } else {
-        verdictBadge = '🟢 BUY ZONE • IN STOCK UNDER TRIGGER';
-        verdictTone = 'emerald';
-      }
+      verdictBadge = trendVerdictLabel;
+      verdictTone = 'emerald';
     } else if (lastClear && lastClear.velocity === '⚡ FLASH') {
-      verdictBadge = `⚡ FLASH-CLEAR TARGET (${lastClear.durationMins}m @ $${lastClear.price.toFixed(0)})`;
+      verdictBadge = `◈ ⟦ FLASH-CLEAR TARGET (${lastClear.durationMins}m @ $${lastClear.price.toFixed(0)}) ⟧`;
       verdictTone = 'cyan';
-    } else if (nrt7dDeltaPct <= -5) {
-      verdictBadge = `📉 SOFTENING (${nrt7dDeltaPct}% 7d) • WAIT FOR FLOOR`;
+    } else if (trendSignal === 'UPTREND_LAG_DEAL') {
+      verdictBadge = trendVerdictLabel;
+      verdictTone = 'emerald';
+    } else if (trendSignal === 'FALLING_KNIFE_WAIT' || nrt7dDeltaPct <= -5) {
+      verdictBadge = trendVerdictLabel;
       verdictTone = 'amber';
     } else if (nrt7dDeltaPct >= 5) {
-      verdictBadge = `📈 RISING (+${nrt7dDeltaPct}% 7d) • SNIPE AT TRIGGER`;
+      verdictBadge = trendVerdictLabel;
       verdictTone = 'emerald';
     }
 
@@ -682,6 +712,9 @@ export function computeFullMarketTape() {
       releaseDate,
       isPreRelease,
       preReleaseStatusTag,
+      trendSignal,
+      trendVerdictLabel,
+      isElasticDip,
       nrt7dDeltaPct,
       absorptionRatio,
       clearedCount14d: clearedEvs.length,

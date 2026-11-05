@@ -5,10 +5,10 @@
 ---
 
 ## 1. Live System Snapshot
-- **Current Phase:** **V5 Slice 3 Complete** (Unblocked Pre-Order sliders, fixed `$6.99` shipping blocking `$54.99` MSRP Unicorns and limit-1 drops, added the `+$5` ETB / `+$10` Box Close-Call Grace Cushion, normalized `booster.*(box|display)` matchers, raised `getMaxPlausiblePriceCeiling()`, scoped `alertState.json` cooldowns to `${storeName}::${skuId}`, added 4-tier plain-English shelf status badges across `storeOffersCache.json` and the UI, and wired the Marketplace Scam & Shipping Trap Shield; Ready for **V5 Slice 4: Fix Narrow Shopify Store Collection Paths, Launch 15-Second Tier-1 Fast Restock Poller & Wire Honest Big-Box SKU/TCIN + Stealth Browser Polling**).
-- **Last Checkpoint Timestamp:** `2026-11-04 17:04 CST`
+- **Current Phase:** **V5 Slice 3.5 Complete** (Extracted standalone `src/engine/trendAdvisor.ts` (`312` lines, `< 350` lines), killed the blind Pre-Release calendar bleed warning in favor of data-driven `◈ ⟦ BEATS $100 MARKET FLOOR (-13%) // SOLID PRE-LAUNCH GRAB ⟧` verdicts, wired 14d/30d/60d/90d rolling market analytics with the `60D ELASTIC DIP` and `MARKET CLIMBING` sniper signals, enforced Zero Stock Emojis on Close-Call tags, and surfaced `trendVerdictLabel` across `storeOffersCache.json`, `/api/status`, `/api/sku-history/:skuId`, and `public/index.html`; Ready for **V5 Slice 4: Fix Narrow Shopify Store Collection Paths, Launch 15-Second Tier-1 Fast Restock Poller & Wire Honest Big-Box SKU/TCIN + Stealth Browser Polling**).
+- **Last Checkpoint Timestamp:** `2026-11-04 18:13 CST`
 - **Git Branch:** `main`
-- **Parent Baseline Commit:** `51e0616` (`V5 Slice 3: Unblock pre-order sliders and MSRP shipping, add / Close-Call cushion, per-store cooldowns, and TCGPlayer scam shield`)
+- **Parent Baseline Commit:** `6dc0947` (`V5 Slice 3.5: Extract src/engine/trendAdvisor.ts with 30/60/90d Elastic Dip sniper and replace blind pre-release calendar warnings`)
 - **PM2 Process Status:**
   - `pokemon-drop-bot` (id `0`, `index.js`): **ONLINE** (`0` crashes, all 90 active Shopify LGS stores healthy)
   - `drop-bot-dashboard` (id `1`, `server.js` on `http://localhost:3000`): **ONLINE** (`HTTP 200 OK` across `/`, `/dashboard.html`, `/css/stadium.css`, `/js/stadium/stadium-data.js`, `/js/stadium/stadium-audio.js`, `/js/stadium/stadium-combat.js`, `/js/stadium/stadium-ui.js`, and `/api/status`)
@@ -37,7 +37,8 @@
 | `public/js/stadium/stadium-ui.js` | 1,641 | **HARD-FROZEN (V5 Slice 2)** | Arena DOM Rendering, 4 Visual Attack Animations, Trophy/Squad Drawers & `window.*` Entrypoints (`git diff = 0 lines`) |
 | `public/index.html` | 5,543 | **ACTIVE (V5 Slice 2)** | Trimmed by `-4,237` lines (`9,780 -> 5,543`); serves `/`, `/index.html`, and `/dashboard.html` |
 | `dashboard.html` | 0 (Deleted) | **DELETED (V5 Slice 2)** | Removed redundant 9,780-line root clone via `git rm dashboard.html` |
-| `evaluator.ts` | 1,290 | **ACTIVE (V5 Slice 3)** | Unblocked pre-order sliders, `$54.99` MSRP Unicorns w/ `$6.99` ship, `+$5/+$10` Close-Call Cushion, `${store}::${sku}` cooldowns, plain-English `statusTag`, and Scam Shield |
+| `evaluator.ts` | 1,290 | **ACTIVE (V5 Slice 3.5)** | Unblocked pre-order sliders, `$54.99` MSRP Unicorns w/ `$6.99` ship, `+$5/+$10` Close-Call Cushion, `${store}::${sku}` cooldowns, `trendAdvisor.ts` integration, and Scam Shield |
+| `src/engine/trendAdvisor.ts` | 312 | **ACTIVE (V5 Slice 3.5)** | Standalone `< 350` line 14d/30d/60d/90d Rolling Market Analytics, Data-Driven Pre-Release Verdicts, 60D Elastic Dip & Runaway Uptrend Sniper Signals |
 | `policies.ts` | 412 | **ACTIVE (V5 Slice 3)** | Normalized `booster.*(box\|display)` matchers & dynamic `getMaxPlausiblePriceCeiling()` (`709` Destined Rivals, `285` SV ETBs, `4,207` Evolving Skies) |
 | `vampirePoller.ts` | 1,019 | **ACTIVE (V5 Slice 3 / Next Slice 4)** | Wired Marketplace Scam & Shipping Trap Shield (`shipping > $35` or `>20%`, unverified 1-qty `>35%` under market, real `freeShipping`); Big-Box TCIN/SKU in Slice 4 |
 | `lgsPoller.ts` | 594 | **NEXT UP (V5 Slice 4)** | Fix narrow `resolvedPath` feeds & launch 15s Tier-1 Fast Poller in Slice 4 |

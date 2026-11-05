@@ -124,6 +124,9 @@ export interface DropPayload {
   statusTag?: string;
   isCloseCall?: boolean;
   closeCallDelta?: number;
+  trendSignal?: string;
+  trendVerdictLabel?: string;
+  isElasticDip?: boolean;
 }
 
 interface ActiveDiscordMessage {
@@ -268,6 +271,9 @@ function recordDropHistory(drop: DropPayload) {
       statusTag: drop.statusTag,
       isCloseCall: Boolean(drop.isCloseCall),
       closeCallDelta: drop.closeCallDelta,
+      trendSignal: drop.trendSignal,
+      trendVerdictLabel: drop.trendVerdictLabel,
+      isElasticDip: Boolean(drop.isElasticDip),
       marketValue: drop.marketValue || 0,
       discountPct: drop.discountPct || 0,
       url: drop.url,
@@ -393,9 +399,14 @@ export async function sendAlert(drop: DropPayload): Promise<void> {
   } else if (flashEscalation.isHighVelocityRepeat && flashEscalation.badgeText) {
     tierBadge = `${tacticalFormatCallsign} • HIGH-VELOCITY REPEAT`;
     embedColor = 0xe11d48;
+  } else if (drop.isElasticDip) {
+    tierBadge = `${tacticalFormatCallsign} • 60D ELASTIC DIP OPPORTUNITY`;
+    embedColor = 0x10b981;
   } else if (drop.isPreRelease && drop.preReleaseStatusTag) {
-    tierBadge = `${tacticalFormatCallsign} • PRE-RELEASE BLEED`;
-    embedColor = 0x8b5cf6;
+    tierBadge = drop.preReleaseStatusTag.includes('SOLID PRE-LAUNCH GRAB')
+      ? `${tacticalFormatCallsign} • SOLID PRE-LAUNCH GRAB`
+      : `${tacticalFormatCallsign} • PRE-RELEASE ALLOCATION`;
+    embedColor = drop.preReleaseStatusTag.includes('SOLID PRE-LAUNCH GRAB') ? 0x10b981 : 0x8b5cf6;
   } else if (drop.isPreOrder) {
     tierBadge = `${tacticalFormatCallsign} • PRE-ORDER ALLOCATION`;
     embedColor = 0x8b5cf6;
@@ -411,7 +422,7 @@ export async function sendAlert(drop: DropPayload): Promise<void> {
     : (drop.bigBoxTier === 'PC_EXCLUSIVE_MSRP'
         ? '✦ ⟦ PC EXCLUSIVE MSRP ⟧'
         : tacticalFormatCallsign);
-  let signalLine = drop.isPreOrder ? 'Pre-order allocation live (Strict MSRP+5% cap enforced)' : 'Fresh restock detected';
+  let signalLine = drop.isPreOrder ? 'Pre-order allocation live (Slider target active)' : 'Fresh restock detected';
 
   if (drop.alertType === 'PRICE_DROP' && drop.previousPrice) {
     const cut = (drop.previousPrice - priceVal).toFixed(2);
@@ -426,13 +437,10 @@ export async function sendAlert(drop: DropPayload): Promise<void> {
     signalLine = `Previously seen at $${drop.previousPrice.toFixed(2)} (${drop.previousTimeStr})`;
   }
 
-  if (drop.isPreRelease) {
-    const bleedTag = '⟦ PRE-RELEASE BLEED // WAIT FOR LAUNCH WEEK ⟧';
-    if (isTierAMsrpHit) {
-      signalLine += `\n✦ **PRE-RELEASE AT TRUE RETAIL MSRP** (${bleedTag} bypassed)`;
-    } else {
-      signalLine += `\n▲ **${bleedTag}** — Avoid inflated pre-release allocation dumps above retail MSRP!`;
-    }
+  if (drop.trendVerdictLabel) {
+    signalLine += `\n**${drop.trendVerdictLabel}**`;
+  } else if (drop.isPreRelease && drop.preReleaseStatusTag) {
+    signalLine += `\n**${drop.preReleaseStatusTag}**`;
   }
 
   if (flashEscalation.isHighVelocityRepeat && flashEscalation.badgeText) {
