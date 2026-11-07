@@ -6,9 +6,17 @@ import path from 'path';
 import dotenv from 'dotenv';
 import { processIncomingDrop } from './listener';
 import { markAlertSoldOut, recordPreDropStagingEvent } from './notifier';
-import { isValidSkuForFormFactor, atomicWriteJson } from './policies';
+import {
+  isValidSkuForFormFactor,
+  isSingleOrNonSealedShopifyProduct,
+  isSingleCardOrNonSealed,
+  isCollectibleSingleCardOrSlab,
+  hasMandatorySealedContainerKeyword,
+  atomicWriteJson
+} from './policies';
 import { matchTargetRuleForStaging, pruneStoreMissingOffers } from './evaluator';
 import { loadActiveLgsStores } from './src/config/configManager';
+import { ingestSingleCardOffer } from './src/engine/singlesSniper';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 dns.setDefaultResultOrder('ipv4first');
@@ -58,43 +66,83 @@ const storeHealthMap = new Map<string, StoreHealthRecord>();
 let bigBoxHealthTelemetry: Record<string, any> = {
   targetRedskyStatus: 'HEALTHY',
   redditRssStatus: 'HEALTHY',
-  pokemonCenterStatus: 'ARMED_MSRP_WATCH',
-  walmartStatus: 'ARMED_1P_MSRP_ONLY',
-  bestBuyStatus: 'ARMED_MSRP_WATCH',
-  costcoStatus: 'ARMED_PALLET_WATCH',
+  pokemonCenterStatus: 'WAF_CHALLENGE_IMPERVA',
+  walmartStatus: 'WAF_CHALLENGE_PX',
+  bestBuyStatus: '200_OK_0_IN_STOCK',
+  costcoStatus: '200_OK_0_IN_STOCK',
   lastCheckAt: Date.now(),
-  itemsScanned: 24,
+  itemsScanned: 0,
   activeBigBoxCount: 9,
   northStar5: {
     pokemonCenter: {
       name: 'Pokémon Center',
-      status: 'ARMED_MSRP_WATCH',
+      status: 'WAF CHALLENGE (IMPERVA / PX)',
+      lastStatus: 'WAF CHALLENGE (IMPERVA / PX)',
+      statusCode: 'WAF_CHALLENGE_IMPERVA',
+      itemsExtracted: 0,
+      itemsParsed: 0,
       targetRule: '$59.99 PC Exclusive ETBs & Pre-Orders + Queue Radar',
       queueState: 'NORMAL',
       lastCheckedAt: Date.now()
     },
     target: {
       name: 'Target',
-      status: 'HEALTHY',
+      status: '200 OK // 0 IN STOCK',
+      lastStatus: '200 OK // 0 IN STOCK',
+      statusCode: '200_OK',
+      itemsExtracted: 0,
+      itemsParsed: 0,
       targetRule: 'RedSky JSON API (Zip 76177 • $49.99–$54.99 ETB / $26.99 Bundle)',
       lastCheckedAt: Date.now()
     },
     walmart: {
       name: 'Walmart',
-      status: 'ARMED_1P_MSRP_ONLY',
+      status: 'WAF CHALLENGE (IMPERVA / PX)',
+      lastStatus: 'WAF CHALLENGE (IMPERVA / PX)',
+      statusCode: 'WAF_CHALLENGE_PX',
+      itemsExtracted: 0,
+      itemsParsed: 0,
       targetRule: 'Sold & Shipped by Walmart Only (<= $55 ETB / <= $30 Bundle)',
       lastCheckedAt: Date.now()
     },
     bestBuy: {
       name: 'Best Buy',
-      status: 'ARMED_MSRP_WATCH',
+      status: '200 OK // 0 IN STOCK',
+      lastStatus: '200 OK // 0 IN STOCK',
+      statusCode: '200_OK',
+      itemsExtracted: 0,
+      itemsParsed: 0,
       targetRule: 'SKU Availability Watch ($49.99–$54.99 ETB / $26.99 Bundle)',
       lastCheckedAt: Date.now()
     },
     costco: {
       name: 'Costco',
-      status: 'ARMED_PALLET_WATCH',
+      status: '200 OK // 0 IN STOCK',
+      lastStatus: '200 OK // 0 IN STOCK',
+      statusCode: '200_OK_0_IN_STOCK',
+      itemsExtracted: 0,
+      itemsParsed: 0,
       targetRule: '$39.99–$64.99 ETB + Tin Multi-Pack Pallet Drops',
+      lastCheckedAt: Date.now()
+    },
+    samsClub: {
+      name: "Sam's Club",
+      status: '200 OK // 0 IN STOCK',
+      lastStatus: '200 OK // 0 IN STOCK',
+      statusCode: '200_OK_0_IN_STOCK',
+      itemsExtracted: 0,
+      itemsParsed: 0,
+      targetRule: 'Member Exclusive Sealed Multi-Packs',
+      lastCheckedAt: Date.now()
+    },
+    gamestop: {
+      name: 'GameStop',
+      status: '200 OK // 0 IN STOCK',
+      lastStatus: '200 OK // 0 IN STOCK',
+      statusCode: '200_OK_0_IN_STOCK',
+      itemsExtracted: 0,
+      itemsParsed: 0,
+      targetRule: '1P Retail MSRP Sealed Boxes & ETBs',
       lastCheckedAt: Date.now()
     }
   }
@@ -521,16 +569,42 @@ async function pollSingleStore(store: MonitoredStore): Promise<{ hit: boolean; p
     const activeVariantIds = new Set<string>();
 
     for (const prod of products) {
+      const isShopifyMetaSingleOrNonSealed = isSingleOrNonSealedShopifyProduct(prod);
+
       for (const variant of prod.variants || []) {
         const rawPrice = parseFloat(variant.price);
         const priceNum = fxMultiplier !== 1.0 ? Math.round(rawPrice * fxMultiplier * 100) / 100 : rawPrice;
-        if (!priceNum || priceNum < 18) continue;
+        if (!priceNum || priceNum < 15) continue;
 
         if (variant.available) {
-          activeVariantIds.add(String(variant.id));
           const fullTitle = `${prod.title} ${variant.title !== 'Default Title' ? variant.title : ''}`.trim();
           const tagsStr = Array.isArray(prod.tags) ? prod.tags.join(' ') : String(prod.tags || '');
+          const productUrl = prod.handle ? `${store.baseUrl}/products/${prod.handle}` : store.baseUrl;
+
+          // Layer 1 & Layer 2: If single card or non-sealed, route collectibles >= $15 quietly to singlesCache.json and never into sealed cache
+          if (isShopifyMetaSingleOrNonSealed || isSingleCardOrNonSealed(fullTitle, prod.product_type, `${prod.handle || ''} ${tagsStr}`)) {
+            if (priceNum >= 15 && isCollectibleSingleCardOrSlab(fullTitle, prod.product_type, tagsStr)) {
+              const rawCompare = parseFloat(variant.compare_at_price || '0');
+              const compareAtPrice = rawCompare > 0 ? (fxMultiplier !== 1.0 ? Math.round(rawCompare * fxMultiplier * 100) / 100 : rawCompare) : undefined;
+              ingestSingleCardOffer({
+                title: fullTitle,
+                storeName: store.name,
+                price: priceNum,
+                compareAtPrice,
+                url: productUrl,
+                itemId: String(variant.id),
+                productType: prod.product_type,
+                tags: prod.tags,
+                stock: typeof variant.inventory_quantity === 'number' && variant.inventory_quantity > 0 ? variant.inventory_quantity : undefined,
+                image: prod.images?.[0]?.src
+              });
+            }
+            continue;
+          }
+          if (priceNum < 18) continue;
+          if (!hasMandatorySealedContainerKeyword(fullTitle)) continue;
           if (!isValidSkuForFormFactor(fullTitle, undefined, priceNum, { handle: `${prod.handle || ''} ${tagsStr}` })) continue;
+          activeVariantIds.add(String(variant.id));
 
           const prev = variantStateMap.get(variant.id);
           const minsSinceCheck = prev ? (checkNow - prev.lastCheckedAt) / (1000 * 60) : 999;
@@ -586,6 +660,9 @@ async function pollSingleStore(store: MonitoredStore): Promise<{ hit: boolean; p
           if (isNewStagingUpload || isOosPriceSlashed) {
             const fullTitle = `${prod.title} ${variant.title !== 'Default Title' ? variant.title : ''}`.trim();
             const tagsStr = Array.isArray(prod.tags) ? prod.tags.join(' ') : String(prod.tags || '');
+            if (isSingleCardOrNonSealed(fullTitle, `${prod.handle || ''} ${tagsStr}`) || !hasMandatorySealedContainerKeyword(fullTitle)) {
+              continue;
+            }
             const matchedRule = matchTargetRuleForStaging(fullTitle, priceNum, store.name, `${prod.handle || ''} ${tagsStr}`);
             if (matchedRule && matchedRule.msrpCeiling > 0 && priceNum <= Math.round(matchedRule.msrpCeiling * 1.02 * 100) / 100) {
               const stagingKey = `${store.name}__${matchedRule.id}`;

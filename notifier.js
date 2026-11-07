@@ -231,6 +231,12 @@ function getThumbnailUrl(ruleId) {
     return undefined;
 }
 async function sendAlert(drop) {
+    // Hard Rule (V5 Slice 6): Single cards and slabs NEVER fire notifications (singlesAlertsEnabled: false enforced)
+    if (String(drop.ruleId || '').startsWith('single-') ||
+        /single|slab|graded/i.test(String(drop.formFactor || '')) ||
+        (0, policies_1.isSingleCardOrNonSealed)(drop.title, drop.url)) {
+        return;
+    }
     recordDropHistory(drop);
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
     if (!webhookUrl) {
@@ -382,36 +388,31 @@ async function sendAlert(drop) {
     const landedLine = drop.landedPrice && drop.landedPrice > priceVal
         ? `\n◈ Landed (1x): **$${drop.landedPrice.toFixed(2)}**${drop.freeShipNote ? ` • *${drop.freeShipNote}*` : ''}`
         : '';
-    const isShopifyCart = Boolean(drop.cart1xUrl || drop.url.includes('/cart/'));
-    const baseCartRoot = (drop.cart1xUrl || drop.url).replace(/:\d+$/, '');
-    const c1 = drop.cart1xUrl || drop.url;
     const knownStock = typeof drop.stock === 'number' && drop.stock > 0 ? drop.stock : undefined;
-    const c2 = (knownStock === undefined || knownStock >= 2)
-        ? (drop.cart2xUrl || (isShopifyCart ? `${baseCartRoot}:2` : undefined))
-        : undefined;
-    const isEtbDrop = drop.formFactor === 'ETB' || /\b(etb|elite trainer box)\b/i.test(`${drop.ruleName || ''} ${drop.title || ''}`);
-    const c3 = isEtbDrop && (knownStock === undefined || knownStock >= 3)
-        ? (drop.cart3xUrl || (isShopifyCart ? `${baseCartRoot}:3` : undefined))
-        : undefined;
+    const directCart = (0, evaluator_1.buildShopifyDirectCartLinks)({
+        url: drop.url,
+        productUrl: drop.productUrl,
+        cart1xUrl: drop.cart1xUrl,
+        cart2xUrl: drop.cart2xUrl,
+        cart3xUrl: drop.cart3xUrl,
+        itemId: drop.itemId,
+        stock: knownStock,
+        retailer: drop.retailer
+    });
+    const c1 = directCart.cart1xUrl;
+    const c2 = directCart.cart2xUrl;
+    const c3 = directCart.cart3xUrl;
+    const isShopifyCart = Boolean(c1 && c1.includes('/cart/'));
     const prodPageUrl = drop.productUrl || (drop.url.includes('/cart/') ? drop.url.split('/cart/')[0] : drop.url);
     let actionLinks;
-    if (isShopifyCart) {
-        if (isEtbDrop) {
-            const segments = [`[**⟦ 1x SINGLE ↗ ⟧**](${c1})`];
-            if (c2)
-                segments.push(`[**⟦ 2x PAIR ↗ ⟧**](${c2})`);
-            if (c3)
-                segments.push(`[**⟦ 3x FAMILY PACK (FREE SHIP) ↗ ⟧**](${c3})`);
-            segments.push(`[Product Page ↗](${prodPageUrl})`);
-            actionLinks = segments.join('   •   ');
-        }
-        else {
-            const segments = [`[**⟦ INSTANT CART 1x ↗ ⟧**](${c1})`];
-            if (c2)
-                segments.push(`[**⟦ INSTANT CART 2x ↗ ⟧**](${c2})`);
-            segments.push(`[Product Page ↗](${prodPageUrl})`);
-            actionLinks = segments.join('   •   ');
-        }
+    if (isShopifyCart && c1) {
+        const segments = [`[**⟦ CART 1X ↗ ⟧**](${c1})`];
+        if (c2)
+            segments.push(`[**⟦ CART 2X ↗ ⟧**](${c2})`);
+        if (c3)
+            segments.push(`[**⟦ CART 3X ↗ ⟧**](${c3})`);
+        segments.push(`[Product Page ↗](${prodPageUrl})`);
+        actionLinks = segments.join('   •   ');
     }
     else {
         actionLinks = `[**⟦ VIEW & CHECKOUT ON ${drop.retailer.toUpperCase()} ↗ ⟧**](${drop.url})`;
@@ -546,159 +547,243 @@ function writeDigestStateToDisk(sentAt, digestHash) {
     catch (e) { }
 }
 async function sendStockDigestCard(options) {
-    const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
-    if (!webhookUrl) {
-        return { sent: false, count: 0, reason: 'No DISCORD_WEBHOOK_URL' };
-    }
     const digestState = readDigestStateFromDisk();
     if (!options?.force && !digestState.liveDigestEnabled) {
-        return { sent: false, count: 0, reason: 'Automatic Live Shelf Digest is disabled (liveDigestEnabled=false)' };
+        return { ok: false, sent: false, count: 0, reason: 'Automatic Roundup Digest is disabled (liveDigestEnabled=false)' };
     }
     const nowMs = Date.now();
     if (!options?.force && digestState.lastDigestSentAt > 0 && (nowMs - digestState.lastDigestSentAt) < DIGEST_COOLDOWN_MS) {
         const minsRemaining = Math.ceil((DIGEST_COOLDOWN_MS - (nowMs - digestState.lastDigestSentAt)) / 60000);
-        console.log(`[DIGEST] Cooldown active (${minsRemaining}m remaining) — skipping automatic digest.`);
-        return { sent: false, count: 0, reason: `Cooldown active (${minsRemaining}m remaining)` };
+        return { ok: false, sent: false, count: 0, reason: `Cooldown active (${minsRemaining}m remaining)` };
     }
     const nowDate = new Date();
-    const hour = nowDate.getHours();
-    if (!options?.force && hour >= 0 && hour < 7) {
-        console.log('[DIGEST] Skipping scheduled 4-hour digest during quiet hours (12:00 AM - 7:00 AM).');
-        return { sent: false, count: 0, reason: 'Quiet hours (12 AM - 7 AM)' };
-    }
     const liveStockPath = path_1.default.resolve(process.cwd(), 'liveStock.json');
-    const policiesPath = path_1.default.resolve(process.cwd(), 'policies.json');
+    const storeOffersPath = path_1.default.resolve(process.cwd(), 'storeOffersCache.json');
     let liveMap = {};
+    let offersMap = {};
     let policies = [];
     let cache = {};
     try {
         if (fs_1.default.existsSync(liveStockPath))
-            liveMap = JSON.parse(fs_1.default.readFileSync(liveStockPath, 'utf-8'));
+            liveMap = JSON.parse(fs_1.default.readFileSync(liveStockPath, 'utf-8')) || {};
     }
-    catch (e) { }
+    catch { }
+    try {
+        if (fs_1.default.existsSync(storeOffersPath))
+            offersMap = JSON.parse(fs_1.default.readFileSync(storeOffersPath, 'utf-8')) || {};
+    }
+    catch { }
     try {
         policies = (0, configManager_1.loadMergedPoliciesRaw)();
     }
-    catch (e) { }
+    catch { }
     try {
         if (fs_1.default.existsSync(TELEMETRY_PATH))
-            cache = JSON.parse(fs_1.default.readFileSync(TELEMETRY_PATH, 'utf-8'));
+            cache = JSON.parse(fs_1.default.readFileSync(TELEMETRY_PATH, 'utf-8')) || {};
     }
-    catch (e) { }
+    catch { }
     const policyMap = new Map(policies.map(p => [p.id, p]));
-    const now = Date.now();
-    const validDeals = [];
-    for (const [ruleId, entry] of Object.entries(liveMap)) {
-        if (ruleId.startsWith('__') || !entry || !entry.inStock)
+    // Family Rule of 3 progress stats
+    const etbPolicies = policies.filter(p => String(p.formFactor || '').toUpperCase() === 'ETB');
+    const wallEtbsConquered = etbPolicies.filter(p => Boolean(p.wallOwned ?? p.owned)).length;
+    const totalWallOwned = policies.filter(p => Boolean(p.wallOwned ?? p.owned)).length;
+    const totalDadRipOwned = policies.filter(p => Boolean(p.dadRipOwned)).length;
+    const totalLoganRipOwned = policies.filter(p => Boolean(p.loganRipOwned)).length;
+    const total3of3Complete = policies.filter(p => Boolean(p.fullyConquered)).length;
+    const totalRipHuntActive = policies.filter(p => (p.completionCount || 0) >= 1 && !p.fullyConquered).length;
+    const candidateOffers = [];
+    for (const [skuId, skuStores] of Object.entries(offersMap)) {
+        if (!skuStores || typeof skuStores !== 'object')
             continue;
-        const pol = policyMap.get(ruleId);
+        const pol = policyMap.get(skuId);
         if (!pol || pol.active === false)
             continue;
-        const rawMaxBuy = Math.max(pol.msrpCeiling || 0, pol.maxMarketBuyPrice || 0);
-        const effectiveMaxBuy = entry.isPreOrder
-            ? Math.min(rawMaxBuy, Math.round((pol.msrpCeiling || 0) * 1.05))
-            : rawMaxBuy;
-        const landed = entry.landedPrice || entry.price;
-        const eligible = entry.price <= effectiveMaxBuy && (landed <= effectiveMaxBuy || Boolean(entry.freeShipNote));
-        if (!eligible || (now - (entry.updatedAt || 0)) > 6 * 60 * 60 * 1000)
+        const storeList = Object.values(skuStores).filter((o) => o && Number(o.price || o.landedPrice) > 0);
+        if (storeList.length === 0)
             continue;
-        const mkt = (cache[ruleId]?.rollingAverage > 0)
-            ? cache[ruleId].rollingAverage
-            : (pol.estimatedMarketValue || effectiveMaxBuy);
-        const spreadPct = mkt > 0 ? Math.round(((mkt - entry.price) / mkt) * 100) : 0;
-        const c1 = entry.cart1xUrl || (typeof entry.url === 'string' && entry.url.includes('/cart/') ? entry.url : undefined);
-        const prodUrl = entry.productUrl || (c1 ? c1.split('/cart/')[0] : entry.url);
-        validDeals.push({
-            ruleId,
-            name: pol.name || entry.ruleName || entry.title,
-            price: Number(entry.price),
+        storeList.sort((a, b) => Number(a.landedPrice || a.price) - Number(b.landedPrice || b.price));
+        const best = storeList[0];
+        const price = Number(best.price || best.landedPrice);
+        const landedPrice = Number(best.landedPrice || price);
+        const mkt = Number(cache[skuId]?.rollingAverage || pol.estimatedMarketValue || best.marketValue || pol.msrpCeiling || price);
+        const ap = (0, evaluator_1.computeAutoPilotTarget)({
+            skuId,
+            msrpCeiling: Number(pol.msrpCeiling || 54.99),
+            policyMaxBuy: Math.max(Number(pol.msrpCeiling || 0), Number(pol.maxMarketBuyPrice || 0)),
+            marketBaseline: mkt,
+            autoPilotEnabled: pol.autoPilotEnabled !== false,
+            lowestShelfPrice: price,
+            activeStoreCount: storeList.length,
+            wallOwned: Boolean(pol.wallOwned ?? pol.owned),
+            dadRipOwned: Boolean(pol.dadRipOwned),
+            loganRipOwned: Boolean(pol.loganRipOwned),
+            completionCount: Number(pol.completionCount || 0),
+            fullyConquered: Boolean(pol.fullyConquered)
+        });
+        const effTrig = ap.effectiveTargetCeiling;
+        const spreadPct = mkt > 0 ? Math.round(((mkt - landedPrice) / mkt) * 100) : 0;
+        const grace = /box|case/i.test(pol.formFactor || '') ? 10 : 5;
+        const isUnderOrCushion = price <= effTrig + grace || landedPrice <= effTrig + grace || best.statusTier === 'UNDER_TARGET' || best.statusTier === 'CLOSE_CALL';
+        const cartLinks = (0, evaluator_1.buildShopifyDirectCartLinks)({
+            url: best.url,
+            productUrl: best.productUrl,
+            cart1xUrl: best.cart1xUrl,
+            cart2xUrl: best.cart2xUrl,
+            cart3xUrl: best.cart3xUrl,
+            itemId: best.itemId,
+            stock: best.stock,
+            retailer: best.storeName
+        });
+        candidateOffers.push({
+            skuId,
+            name: pol.name || best.productName || skuId,
+            store: best.storeName || 'Verified Store',
+            price,
+            landedPrice,
+            marketValue: mkt,
+            triggerPrice: effTrig,
             spreadPct,
-            store: entry.retailer || 'LGS',
-            url: prodUrl,
-            cartUrl: c1,
-            owned: Boolean(pol.owned),
-            isPreOrder: Boolean(entry.isPreOrder)
+            url: best.productUrl || best.url,
+            cart1xUrl: cartLinks.cart1xUrl,
+            cart2xUrl: cartLinks.cart2xUrl,
+            cart3xUrl: cartLinks.cart3xUrl,
+            completionCount: Number(pol.completionCount || (pol.owned ? 1 : 0)),
+            fullyConquered: Boolean(pol.fullyConquered),
+            isUnderOrCushion,
+            isBleedingDown: ap.isBleedingDown,
+            delta14dPct: -6,
+            autoPilotCeiling: ap.autoPilotCeiling,
+            badge: ap.autoPilotBadge || best.trendVerdictLabel
         });
     }
-    if (validDeals.length === 0) {
-        console.log('[DIGEST] 0 eligible items in stock under buy threshold — skipping digest card.');
-        return { sent: false, count: 0, reason: '0 items in stock' };
-    }
-    // Sort by highest % below market and cap at top 12 best deals
-    validDeals.sort((a, b) => b.spreadPct - a.spreadPct);
-    const topDeals = validDeals.slice(0, 12);
-    const formatDealLine = (d) => {
-        const spreadText = d.spreadPct >= 0 ? `${d.spreadPct}% Under Mkt` : `${Math.abs(d.spreadPct)}% Above Mkt`;
-        const preTag = d.isPreOrder ? ' `[PRE-ORDER]`' : '';
-        const cartSegment = d.cartUrl ? ` • [1x Cart ↗](${d.cartUrl})` : '';
-        return `◈ **${d.name}**${preTag} — **$${d.price.toFixed(2)}** (${spreadText}) @ ${d.store} — [Checkout ↗](${d.url})${cartSegment}`;
+    const formatCartPills = (d) => {
+        const links = [];
+        if (d.cart1xUrl)
+            links.push(`[CART 1X](${d.cart1xUrl})`);
+        if (d.cart2xUrl)
+            links.push(`[CART 2X](${d.cart2xUrl})`);
+        if (d.cart3xUrl)
+            links.push(`[CART 3X](${d.cart3xUrl})`);
+        if (links.length === 0 && d.url)
+            links.push(`[VIEW ↗](${d.url})`);
+        return links.join(' • ');
     };
-    const neededDeals = topDeals.filter(d => !d.owned);
-    const crewDeals = topDeals.filter(d => d.owned);
-    const fields = [];
-    if (neededDeals.length > 0) {
-        fields.push({
-            name: `◈ ⟦ NEEDED FOR WALL // ACTIVE (${neededDeals.length}) ⟧`,
-            value: neededDeals.map(formatDealLine).join('\n').slice(0, 1020),
+    // (A) Top 5 Live Deals Under Target / In Cushion
+    const liveUnderOrCushion = candidateOffers
+        .filter(d => !d.fullyConquered && d.isUnderOrCushion && !d.isBleedingDown)
+        .sort((a, b) => b.spreadPct - a.spreadPct)
+        .slice(0, 5);
+    // (B) Top 3 "Next Best Buy" Dip/Breakout Picks ($200–$500 budget range)
+    const nextBestPicks = candidateOffers
+        .filter(d => !d.fullyConquered && !d.isBleedingDown && d.landedPrice <= 500)
+        .sort((a, b) => (Number(a.completionCount === 0) - Number(b.completionCount === 0)) * -10 + (b.spreadPct - a.spreadPct))
+        .slice(0, 3);
+    // (C) Bleeding Sets to Skip Today
+    const bleedingSkipList = candidateOffers
+        .filter(d => d.isBleedingDown)
+        .slice(0, 4);
+    const sectionALines = (liveUnderOrCushion.length > 0 ? liveUnderOrCushion : nextBestPicks).map(d => {
+        const spreadTxt = d.spreadPct >= 0 ? `${d.spreadPct}% Under Mkt` : `${Math.abs(d.spreadPct)}% Over Mkt`;
+        return `◈ **${d.name}** (\`${d.completionCount}/3\`) — **$${d.price.toFixed(2)}** (${spreadTxt}) @ ${d.store} — ${formatCartPills(d)}`;
+    });
+    const sectionBLines = nextBestPicks.map((d, idx) => {
+        const slotTag = d.completionCount === 0 ? '0/3 NEED WALL' : `${d.completionCount}/3 RIP HUNT`;
+        return `**#${idx + 1}** **${d.name}** [\`${slotTag}\`] — **$${d.landedPrice.toFixed(2)} Landed** vs $${d.marketValue.toFixed(0)} Mkt • ${formatCartPills(d)}`;
+    });
+    const sectionCLines = bleedingSkipList.length > 0
+        ? bleedingSkipList.map(d => `▼ **${d.name}** — Sitting @ $${d.price.toFixed(2)} (${d.store}) • **HOLD OFF** (Auto-Pilot Floor: **$${d.autoPilotCeiling.toFixed(0)}**)`)
+        : ['◈ Zero tracked sets in active 14D freefall — shelves stable.'];
+    const sectionDText = `◈ **ETB Display Wall:** \`${wallEtbsConquered} / ${etbPolicies.length || 38} Conquered\` (${totalWallOwned} Total Wall Boxes)\n` +
+        `◈ **Rip Slots Checked:** \`Dad Rip: ${totalDadRipOwned}\` • \`Logan Rip: ${totalLoganRipOwned}\` • \`Rip Hunt Active: ${totalRipHuntActive}\`\n` +
+        `◈ **3/3 Family Complete:** \`${total3of3Complete} SKUs Fully Conquered (Standard Alerts Muted)\``;
+    const fields = [
+        {
+            name: `◈ ⟦ (A) TOP LIVE DEALS UNDER TARGET / IN CUSHION (${sectionALines.length}) ⟧`,
+            value: (sectionALines.join('\n') || 'No active deals under target right now.').slice(0, 1020),
             inline: false
-        });
-    }
-    if (crewDeals.length > 0) {
-        fields.push({
-            name: `❖ ⟦ IN VAULT // CREW DEALS (${crewDeals.length}) ⟧`,
-            value: crewDeals.map(formatDealLine).join('\n').slice(0, 1020),
+        },
+        {
+            name: `✦ ⟦ (B) TOP 3 "NEXT BEST BUY" DIP / BREAKOUT PICKS ($200–$500) ⟧`,
+            value: (sectionBLines.join('\n') || 'Scanning live shelves for dip candidates...').slice(0, 1020),
             inline: false
-        });
-    }
-    // Recent 4-Hour OOS tracker line
-    let recentOosList = [];
-    if (Array.isArray(liveMap.__recentOos)) {
-        recentOosList = liveMap.__recentOos.filter((x) => now - (x.oosAt || 0) < 4 * 60 * 60 * 1000);
-    }
-    if (recentOosList.length > 0) {
-        const oosSummary = recentOosList
-            .slice(0, 4)
-            .map(x => `${x.ruleName} ($${Number(x.price).toFixed(2)} @ ${x.retailer})`)
-            .join(' • ');
-        fields.push({
-            name: '▲ ⟦ DEPLETED IN LAST 4 HOURS ⟧',
-            value: oosSummary.slice(0, 1020),
+        },
+        {
+            name: `▼ ⟦ (C) BLEEDING SETS TO SKIP TODAY (WAIT FOR FLOOR) ⟧`,
+            value: sectionCLines.join('\n').slice(0, 1020),
             inline: false
-        });
-    }
-    const digestHash = topDeals
-        .map(d => `${d.ruleId}:${d.store}:${d.price.toFixed(2)}`)
-        .join('|');
-    if (!options?.force && digestState.lastDigestHash && digestHash === digestState.lastDigestHash) {
-        console.log('[DIGEST] Shelf state hash unchanged since last digest — skipping duplicate digest.');
-        return { sent: false, count: 0, reason: 'Digest content hash unchanged' };
-    }
+        },
+        {
+            name: `❖ ⟦ (D) FAMILY "RULE OF 3" WALL + RIP PROGRESS ⟧`,
+            value: sectionDText.slice(0, 1020),
+            inline: false
+        }
+    ];
+    const digestHash = [...liveUnderOrCushion, ...nextBestPicks]
+        .map(d => `${d.skuId}:${d.store}:${d.price.toFixed(2)}`)
+        .join('|') || `roundup-${nowDate.toISOString().slice(0, 13)}`;
+    const windowTag = options?.windowLabel || (options?.force ? 'ON-DEMAND COMMAND BRIEFING' : 'SCHEDULED TWICE-DAILY BRIEFING');
     const embed = {
-        title: `◈ ⟦ 4-HOUR LIVE SHELF DIGEST // ${validDeals.length} ACTIVE DEALS ⟧`,
-        description: `Real-time snapshot of verified in-stock targets at or below your buy triggers.${validDeals.length > 12 ? ` *(Showing top 12 of ${validDeals.length} by % spread)*` : ''}`,
-        color: 0x3b82f6,
+        title: `◈ ⟦ DROPBOT MARKET & DEAL ROUNDUP DIGEST // ${windowTag} ⟧`,
+        description: `Autonomous 90-Store LGS + Big-Box + TCGPlayer Capital Briefing • **1-Click Shopify Cart Links Armed**`,
+        color: 0x8b5cf6,
         fields,
         footer: {
-            text: `DropBot Commander • Auto-Digest Every 4h (Quiet 12AM–7AM) • ${nowDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+            text: `DropBot v5.6 Roundup • Auto-Fires 09:00 & 18:00 Local • ${nowDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
         },
         timestamp: nowDate.toISOString()
     };
-    try {
-        // Persist lastDigestSentAt and lastDigestHash to disk BEFORE awaiting webhook so any timeout/restart cannot re-fire
-        writeDigestStateToDisk(Date.now(), digestHash);
-        await enqueueDiscordWebhook(webhookUrl, { embeds: [embed] }, 'POST');
-        console.log(`[DIGEST SENT] Pushed 4-Hour Live Shelf Digest (${topDeals.length} items) to Discord.`);
-        return { sent: true, count: topDeals.length };
+    writeDigestStateToDisk(Date.now(), digestHash);
+    const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+    let discordDispatched = false;
+    if (webhookUrl) {
+        try {
+            await enqueueDiscordWebhook(webhookUrl, { embeds: [embed] }, 'POST');
+            discordDispatched = true;
+            console.log(`[ROUNDUP DIGEST SENT] Pushed DropBot Market & Deal Roundup (${windowTag}) to Discord.`);
+        }
+        catch (err) {
+            console.error(`[DIGEST WARNING] Webhook dispatch error: ${err.message}`);
+        }
     }
-    catch (err) {
-        console.error(`[DIGEST ERROR] Failed to send digest card: ${err.message}`);
-        return { sent: false, count: 0, reason: err.message };
-    }
+    return {
+        ok: true,
+        sent: true,
+        count: sectionALines.length,
+        summary: {
+            windowTag,
+            discordDispatched,
+            topDealsCount: sectionALines.length,
+            nextBestPicksCount: sectionBLines.length,
+            bleedingSkipCount: bleedingSkipList.length,
+            familyProgress: {
+                wallEtbsConquered,
+                totalEtbSets: etbPolicies.length || 38,
+                totalWallOwned,
+                totalDadRipOwned,
+                totalLoganRipOwned,
+                total3of3Complete,
+                totalRipHuntActive
+            }
+        }
+    };
 }
+let lastScheduledRoundupSlot = '';
 function startStockDigestScheduler() {
-    // NEVER fire a Live Shelf Digest on process startup/boot!
-    // Only evaluate on the 4-hour interval (which also enforces liveDigestEnabled=false by default + 4h disk cooldown).
+    // Twice-Daily Roundup Digest Scheduler (09:00 and 18:00 local time)
     setInterval(() => {
-        sendStockDigestCard().catch(() => { });
-    }, DIGEST_COOLDOWN_MS);
+        try {
+            const now = new Date();
+            const hour = now.getHours();
+            const min = now.getMinutes();
+            if ((hour === 9 || hour === 18) && min <= 4) {
+                const slotKey = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}-${hour}`;
+                if (lastScheduledRoundupSlot !== slotKey) {
+                    lastScheduledRoundupSlot = slotKey;
+                    const label = hour === 9 ? '09:00 MORNING ROUNDUP' : '18:00 EVENING ROUNDUP';
+                    sendStockDigestCard({ force: false, windowLabel: label }).catch(() => { });
+                }
+            }
+        }
+        catch { }
+    }, 60 * 1000);
 }

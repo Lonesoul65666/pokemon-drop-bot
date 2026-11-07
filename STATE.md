@@ -110,6 +110,21 @@ All persistent JSON files are written via `atomicWriteJson()` (`.tmp` write + `f
 
 ## 6. Last Touch Log
 
+- **2026-11-07 | Agent: Gemini 4 Argon (via `agy`)**
+  - **Completed V5 Slice 6 ("Interactive 'Rule of 3' `[WALL / DAD / LOGAN]` Checkboxes, Dynamic Auto-Pilot Dip Brain & `$200/$350/$500` Next-Buy Advisor, 1P Big-Box/PC Retail Flip Bypass, Roundup Digest Restoration, and 1-Click Shopify Cart Links") (`src/config/configManager.ts`, `src/engine/trendAdvisor.ts`, `src/engine/singlesSniper.ts`, `policies.ts`, `evaluator.ts`, `notifier.ts`, `server.js`, `public/index.html`, `config/userPreferences.json`, `_nyx_state/03..06_*.md`):**
+    - **1. Interactive "Rule of 3" Family Completion Tracker (`config/userPreferences.json`, `src/config/configManager.ts`, `policies.ts`, `evaluator.ts`, `server.js`, `public/index.html`):**
+      - Upgraded per-SKU ownership state to track `wallOwned` (initialized from `owned === true`), `dadRipOwned` (`false` default), and `loganRipOwned` (`false` default), computing `completionCount` (`0..3`) and `fullyConquered`.
+      - Wired `POST /api/policies/:skuId/family-slots` and rendered interactive `[WALL]`, `[DAD RIP]`, `[LOGAN RIP]`, and `[X/3 ALL]` toggle pills across `Live Command`, `Capital Advisor`, `Bounty Hunter`, `Conquered Vault` Wall Checklist, and `Target Matrix`.
+      - Enforced `0/3 (NEED WALL)` standard/Auto-Pilot hunting, `1/3` & `2/3 (WALL LOCKED // NEED RIP)` Rip Hunt Mode (`Math.min(effectiveMaxBuy, Math.max(msrpCeiling * 1.18, low60d * 1.03))` + `◈ ⟦ RIP PAIR READY (QTY 2+) ⟧`), and `3/3 (COMPLETE)` mute (`⟦ MUTED: 3/3 FAMILY COMPLETE ⟧`).
+    - **2. 1st-Party Big-Box & Pokémon Center "Retail MSRP Flip / Trade Bait" Bypass (`evaluator.ts`):**
+      - Added `isVerified1PBigBoxOrPc()` (`Pokémon Center`, `Target`, `Walmart`, `Best Buy`, `Costco`, `Sam's Club`, `GameStop`). Even when a SKU is `3/3 COMPLETE` or muted, if a verified 1P Big-Box/PC retailer drops a sealed product at retail MSRP (`dropPrice <= msrpCeiling * 1.08`) and `estimatedMarketValue >= dropPrice * 1.30` (or PC exclusive), bypasses the mute filter and fires `◈ ⟦ RETAIL MSRP FLIP / TRADE BAIT // $XX.XX RETAIL VS $XXX MARKET (+XX%) ⟧`.
+    - **3. Dynamic Auto-Pilot Sliders & `$100 / $200 / $350 / $500+` Next Best Buy Advisor (`src/engine/trendAdvisor.ts`, `server.js`, `public/index.html`):**
+      - Added `computeAutoPilotTarget()` in `src/engine/trendAdvisor.ts` (`336` lines, `< 350` lines) computing `autoPilotCeiling` from 14d/60d/90d rolling history (`Math.round(low60d * 1.03)` for Elastic Dip/Grails, `-8%` below shelf floor with `◈ ⟦ BLEEDING DOWN (-X% 14D) // HOLD OFF ⟧` for falling knives, and `◈ ⟦ SUPPLY TIGHTENING (+X% 60D) // PRIORITY GRAB ⟧` for breakouts).
+      - Exposed `GET /api/advisor/next-buy` and added the top-level **Capital Advisor Bar** on `Live Command` with `$100`, `$200`, `$350`, `$500+` budget pills, Top 3 Smartest In-Stock Buys Right Now, and the Bleeding / Hold Off caution list.
+    - **4. Restored Roundup Digest + 1-Click Direct Shopify Cart Links + 100% Silent Singles (`notifier.ts`, `src/engine/singlesSniper.ts`, `server.js`, `public/index.html`):**
+      - Enabled `liveDigestEnabled: true`, upgraded `sendStockDigestCard()` into the 4-section **DropBot Market & Deal Roundup Digest** scheduled at `09:00` and `18:00` local time, and wired `POST /api/digest/send-now` + the top header **`[SEND DIGEST NOW]`** button.
+      - Added `buildShopifyDirectCartLinks()` (`https://{storeDomain}/cart/{variantId}:1`, `:2`, `:3`) across Discord embeds and UI cards (`[CART 1X]`, `[CART 2X]`, `[CART 3X]`), and enforced `singlesAlertsEnabled: false` in both `singlesSniper.ts` and `notifier.ts`.
+
 - **2026-11-04 | Agent: Gemini 4 Argon (via `agy`)**
   - **Completed V5 Slice 3.5 ("Build Standalone `src/engine/trendAdvisor.ts` `< 350 Lines`: Kill the Blind Pre-Release Calendar Warning, Wire 30/60/90-Day Rolling Market Analytics, and Add the 'Elastic Dip' & 'Runaway Uptrend' Sniper Signals") (`src/engine/trendAdvisor.ts`, `evaluator.ts`, `marketTape.ts`, `listener.ts`, `notifier.ts`, `server.js`, `public/index.html`, `_nyx_state/02..06_*.md`):**
     - **1. Logged `[FAILED - V4 Blind Pre-Release Calendar Warning Override]` in `_nyx_state/02_TECHNICAL_ARCHITECTURE_AND_PIPELINES.md`:**

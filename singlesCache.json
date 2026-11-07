@@ -1,0 +1,3238 @@
+{
+  "updatedAt": 1794035628725,
+  "compBenchmarks": {
+    "tornadus 98 full art 98/98 epo::98/98::nm (raw single)": {
+      "highPrice": 23.5,
+      "medianPrice": 23.5,
+      "samples": [
+        23.5
+      ],
+      "updatedAt": 1794035621794
+    },
+    "milotic 25/106 ge holofoil::25/106::nm (raw single)": {
+      "highPrice": 32,
+      "medianPrice": 32,
+      "samples": [
+        32
+      ],
+      "updatedAt": 1794035621797
+    },
+    "lugia 14/132 sw heavily played holofoil::14/132::raw single": {
+      "highPrice": 281.3,
+      "medianPrice": 281.3,
+      "samples": [
+        281.3
+      ],
+      "updatedAt": 1794035621799
+    },
+    "pidgeotto 022/102 bss lightly played unlimited::022/102::lp (raw single)": {
+      "highPrice": 22.9,
+      "medianPrice": 22.9,
+      "samples": [
+        22.9
+      ],
+      "updatedAt": 1794035621801
+    },
+    "ho oh 18 18/64 n3 lightly::18/64::lp (raw single)": {
+      "highPrice": 24.8,
+      "medianPrice": 24.8,
+      "samples": [
+        24.8
+      ],
+      "updatedAt": 1794035621803
+    },
+    "pikachu 065/202 cosmos 065/202 mcap holofoil::065/202::nm (raw single)": {
+      "highPrice": 32.2,
+      "medianPrice": 32.2,
+      "samples": [
+        32.2
+      ],
+      "updatedAt": 1794035621804
+    },
+    "magikarp 039/192 cosmos 039/192 mcap holofoil::039/192::nm (raw single)": {
+      "highPrice": 137.3,
+      "medianPrice": 137.3,
+      "samples": [
+        137.3
+      ],
+      "updatedAt": 1794035621806
+    },
+    "eevee 130/185 cosmos 130/185 mcap holofoil::130/185::nm (raw single)": {
+      "highPrice": 24.3,
+      "medianPrice": 24.3,
+      "samples": [
+        24.3
+      ],
+      "updatedAt": 1794035621807
+    },
+    "charmander 023/185 cosmos 023/185 mcap holofoil::023/185::nm (raw single)": {
+      "highPrice": 28.4,
+      "medianPrice": 28.4,
+      "samples": [
+        28.4
+      ],
+      "updatedAt": 1794035621808
+    },
+    "tidus zanarkand fayth thrasios triton hero::single::nm (raw single)": {
+      "highPrice": 16.3,
+      "medianPrice": 16.3,
+      "samples": [
+        16.3
+      ],
+      "updatedAt": 1794035621810
+    },
+    "the darkness crystal borderless 335 fin::single::nm (raw single)": {
+      "highPrice": 17,
+      "medianPrice": 17,
+      "samples": [
+        17
+      ],
+      "updatedAt": 1794035621811
+    },
+    "the cabbage merchant 134 tle::single::nm (raw single)": {
+      "highPrice": 29.3,
+      "medianPrice": 29.3,
+      "samples": [
+        29.3
+      ],
+      "updatedAt": 1794035621812
+    },
+    "ilima japanese 065/060 sm1s collection sun::065/060::nm (raw single)": {
+      "highPrice": 39.99,
+      "medianPrice": 39.99,
+      "samples": [
+        39.99,
+        39.99
+      ],
+      "updatedAt": 1794035627742
+    },
+    "professor kukui japanese 066/060 sm1s collection::066/060::nm (raw single)": {
+      "highPrice": 39.99,
+      "medianPrice": 39.99,
+      "samples": [
+        39.99,
+        39.99
+      ],
+      "updatedAt": 1794035627744
+    },
+    "dragonite japanese mystery of the fossils::single::lp (raw single)": {
+      "highPrice": 89.99,
+      "medianPrice": 89.99,
+      "samples": [
+        89.99,
+        89.99
+      ],
+      "updatedAt": 1794035627746
+    },
+    "umbreon 13 french 13/75 neo discovery::13/75::mp (raw single)": {
+      "highPrice": 299.99,
+      "medianPrice": 299.99,
+      "samples": [
+        299.99,
+        299.99
+      ],
+      "updatedAt": 1794035627747
+    },
+    "flareon japanese jungle moderately played holofoil::single::mp (raw single)": {
+      "highPrice": 29.99,
+      "medianPrice": 29.99,
+      "samples": [
+        29.99,
+        29.99
+      ],
+      "updatedAt": 1794035627748
+    },
+    "mega dragonite ex japanese 246/193 m2a::246/193::nm (raw single)": {
+      "highPrice": 154.99,
+      "medianPrice": 154.99,
+      "samples": [
+        154.99,
+        154.99
+      ],
+      "updatedAt": 1794035627749
+    },
+    "gardevoir ex japanese 348/190 sv4a shiny::348/190::nm (raw single)": {
+      "highPrice": 124.99,
+      "medianPrice": 124.99,
+      "samples": [
+        124.99,
+        124.99
+      ],
+      "updatedAt": 1794035627751
+    },
+    "glaceon vstar japanese 217/172 s12a vstar::217/172::nm (raw single)": {
+      "highPrice": 42.99,
+      "medianPrice": 42.99,
+      "samples": [
+        42.99,
+        42.99
+      ],
+      "updatedAt": 1794035627752
+    },
+    "magikarp japanese 165/103 m6a mega expansion::165/103::nm (raw single)": {
+      "highPrice": 69.99,
+      "medianPrice": 69.99,
+      "samples": [
+        69.99,
+        69.99
+      ],
+      "updatedAt": 1794035627754
+    },
+    "espeon ex japanese 043/040 mf 30th::043/040::nm (raw single)": {
+      "highPrice": 52.99,
+      "medianPrice": 52.99,
+      "samples": [
+        52.99,
+        52.99
+      ],
+      "updatedAt": 1794035627755
+    },
+    "leafeon ex japanese 200/187 sv8a terastal::200/187::nm (raw single)": {
+      "highPrice": 59.99,
+      "medianPrice": 59.99,
+      "samples": [
+        59.99,
+        59.99
+      ],
+      "updatedAt": 1794035627757
+    },
+    "mega zygarde ex japanese 113/080 m3::113/080::nm (raw single)": {
+      "highPrice": 26.99,
+      "medianPrice": 26.99,
+      "samples": [
+        26.99,
+        26.99
+      ],
+      "updatedAt": 1794035627759
+    },
+    "dark charizard 21 german 21/82 team::21/82::lp (raw single)": {
+      "highPrice": 69.99,
+      "medianPrice": 69.99,
+      "samples": [
+        69.99,
+        69.99
+      ],
+      "updatedAt": 1794035627761
+    },
+    "umbreon japanese neo premium file 2::single::mp (raw single)": {
+      "highPrice": 39.99,
+      "medianPrice": 39.99,
+      "samples": [
+        39.99,
+        39.99
+      ],
+      "updatedAt": 1794035627763
+    },
+    "eevee japanese neo premium file 2::single::mp (raw single)": {
+      "highPrice": 29.99,
+      "medianPrice": 29.99,
+      "samples": [
+        29.99,
+        29.99
+      ],
+      "updatedAt": 1794035627764
+    },
+    "flareon japanese 016/088 split earth moderately::016/088::mp (raw single)": {
+      "highPrice": 69.99,
+      "medianPrice": 69.99,
+      "samples": [
+        69.99,
+        69.99
+      ],
+      "updatedAt": 1794035627765
+    },
+    "blaziken vmax japanese 217/184 s8b vmax::217/184::nm (raw single)": {
+      "highPrice": 29.99,
+      "medianPrice": 29.99,
+      "samples": [
+        29.99,
+        29.99
+      ],
+      "updatedAt": 1794035627766
+    },
+    "hydreigon ex japanese 133/106 sv8 super::133/106::nm (raw single)": {
+      "highPrice": 27.99,
+      "medianPrice": 27.99,
+      "samples": [
+        27.99,
+        27.99
+      ],
+      "updatedAt": 1794035627767
+    },
+    "zapdos ex japanese 204/165 sv2a 151::204/165::nm (raw single)": {
+      "highPrice": 94.99,
+      "medianPrice": 94.99,
+      "samples": [
+        94.99,
+        94.99
+      ],
+      "updatedAt": 1794035627770
+    },
+    "glaceon lv x japanese dp4 dawn::single::lp (raw single)": {
+      "highPrice": 149.99,
+      "medianPrice": 149.99,
+      "samples": [
+        149.99,
+        149.99
+      ],
+      "updatedAt": 1794035627772
+    },
+    "charizard japanese 137/103 m6a mega expansion::137/103::nm (raw single)": {
+      "highPrice": 199.99,
+      "medianPrice": 199.99,
+      "samples": [
+        199.99,
+        199.99
+      ],
+      "updatedAt": 1794035627774
+    },
+    "mewtwo ex japanese 128/103 m6a mega::128/103::nm (raw single)": {
+      "highPrice": 34.99,
+      "medianPrice": 34.99,
+      "samples": [
+        34.99,
+        34.99
+      ],
+      "updatedAt": 1794035627776
+    },
+    "lugia japanese 142/103 m6a mega expansion::142/103::nm (raw single)": {
+      "highPrice": 174.99,
+      "medianPrice": 174.99,
+      "samples": [
+        174.99,
+        174.99
+      ],
+      "updatedAt": 1794035627778
+    },
+    "greninja ex 125/103 japanese 125/103 m6a::125/103::nm (raw single)": {
+      "highPrice": 29.99,
+      "medianPrice": 29.99,
+      "samples": [
+        29.99,
+        29.99
+      ],
+      "updatedAt": 1794035627779
+    },
+    "rocket s raikou japanese 094/141 vs::094/141::lp (raw single)": {
+      "highPrice": 249.99,
+      "medianPrice": 249.99,
+      "samples": [
+        249.99,
+        249.99
+      ],
+      "updatedAt": 1794035627780
+    },
+    "gengar prime japanese 150/103 m6a mega::150/103::nm (raw single)": {
+      "highPrice": 44.99,
+      "medianPrice": 44.99,
+      "samples": [
+        44.99,
+        44.99
+      ],
+      "updatedAt": 1794035627782
+    },
+    "sylveon ex 130/103 japanese 130/103 m6a::130/103::nm (raw single)": {
+      "highPrice": 49.99,
+      "medianPrice": 49.99,
+      "samples": [
+        49.99,
+        49.99
+      ],
+      "updatedAt": 1794035627783
+    },
+    "reshiram ex 95 full art inked::single::raw single": {
+      "highPrice": 52.99,
+      "medianPrice": 52.99,
+      "samples": [
+        52.99,
+        52.99
+      ],
+      "updatedAt": 1794035627817
+    },
+    "pok mon first partner illustration collection::single::raw single": {
+      "highPrice": 34.99,
+      "medianPrice": 34.99,
+      "samples": [
+        34.99,
+        34.99
+      ],
+      "updatedAt": 1794035627844
+    },
+    "30th celebration poster collection release date::9/16::raw single": {
+      "highPrice": 35,
+      "medianPrice": 35,
+      "samples": [
+        35,
+        35
+      ],
+      "updatedAt": 1794035625388
+    },
+    "30th anniversary welcome back pikachu 1/1::1/1::raw single": {
+      "highPrice": 199.99,
+      "medianPrice": 199.99,
+      "samples": [
+        199.99
+      ],
+      "updatedAt": 1794035623304
+    },
+    "scarlet violet shrouded fable kingdra ex::single::raw single": {
+      "highPrice": 174.99,
+      "medianPrice": 174.99,
+      "samples": [
+        174.99
+      ],
+      "updatedAt": 1794035624413
+    },
+    "mega moonlit gengar tin mega gengar::single::raw single": {
+      "highPrice": 24.99,
+      "medianPrice": 24.99,
+      "samples": [
+        24.99
+      ],
+      "updatedAt": 1794035624741
+    },
+    "mega evolution ascended heroes tin mega::single::raw single": {
+      "highPrice": 49.99,
+      "medianPrice": 49.99,
+      "samples": [
+        49.99,
+        49.99,
+        49.99
+      ],
+      "updatedAt": 1794035624747
+    },
+    "scorbunny on the ball 004/005 futsal::004/005::nm (raw single)": {
+      "highPrice": 64,
+      "medianPrice": 64,
+      "samples": [
+        64
+      ],
+      "updatedAt": 1794035625748
+    },
+    "center lady full art 185/185 swsh04::185/185::nm (raw single)": {
+      "highPrice": 21,
+      "medianPrice": 21,
+      "samples": [
+        21
+      ],
+      "updatedAt": 1794035625780
+    },
+    "bulbasaur day 2026 1 miscellaneous cards::single::lp (raw single)": {
+      "highPrice": 44.2,
+      "medianPrice": 44.2,
+      "samples": [
+        44.2
+      ],
+      "updatedAt": 1794035625881
+    },
+    "radiant charizard 11/78 go holofoil::11/78::nm (raw single)": {
+      "highPrice": 21.5,
+      "medianPrice": 21.5,
+      "samples": [
+        21.5
+      ],
+      "updatedAt": 1794035625890
+    },
+    "mewtwo vstar 79 secret 79/78 go::79/78::nm (raw single)": {
+      "highPrice": 52.5,
+      "medianPrice": 52.5,
+      "samples": [
+        52.5
+      ],
+      "updatedAt": 1794035625906
+    },
+    "miraidon 013 center exclusive 13 sv::single::nm (raw single)": {
+      "highPrice": 67,
+      "medianPrice": 67,
+      "samples": [
+        67
+      ],
+      "updatedAt": 1794035625958
+    },
+    "zarude 088 center exclusive 88 me::single::nm (raw single)": {
+      "highPrice": 23,
+      "medianPrice": 23,
+      "samples": [
+        23
+      ],
+      "updatedAt": 1794035626060
+    },
+    "fennekin 080 center exclusive 80 me::single::nm (raw single)": {
+      "highPrice": 33,
+      "medianPrice": 33,
+      "samples": [
+        33
+      ],
+      "updatedAt": 1794035626066
+    },
+    "tyrunt 070 center exclusive 70 me::single::nm (raw single)": {
+      "highPrice": 31,
+      "medianPrice": 31,
+      "samples": [
+        31
+      ],
+      "updatedAt": 1794035626382
+    },
+    "n s zekrom 031 center exclusive::single::nm (raw single)": {
+      "highPrice": 56,
+      "medianPrice": 56,
+      "samples": [
+        56
+      ],
+      "updatedAt": 1794035626386
+    },
+    "riolu 010 center exclusive 10 me::single::nm (raw single)": {
+      "highPrice": 62.5,
+      "medianPrice": 62.5,
+      "samples": [
+        62.5
+      ],
+      "updatedAt": 1794035626398
+    },
+    "tornadus 210 center exclusive 210 sv::single::nm (raw single)": {
+      "highPrice": 16,
+      "medianPrice": 16,
+      "samples": [
+        16
+      ],
+      "updatedAt": 1794035626410
+    },
+    "fan club 106 full art 106/106::106/106::nm (raw single)": {
+      "highPrice": 28,
+      "medianPrice": 28,
+      "samples": [
+        28
+      ],
+      "updatedAt": 1794035626427
+    },
+    "numel peelable ditto 13 go holofoil::single::nm (raw single)": {
+      "highPrice": 16.5,
+      "medianPrice": 16.5,
+      "samples": [
+        16.5
+      ],
+      "updatedAt": 1794035626459
+    },
+    "bidoof peelable ditto 59 go holofoil::single::nm (raw single)": {
+      "highPrice": 19.5,
+      "medianPrice": 19.5,
+      "samples": [
+        19.5
+      ],
+      "updatedAt": 1794035626461
+    },
+    "bidoof peelable ditto 59 go holofoil::single::lp (raw single)": {
+      "highPrice": 16.57,
+      "medianPrice": 16.57,
+      "samples": [
+        16.57
+      ],
+      "updatedAt": 1794035626463
+    },
+    "pecharunt 129 center exclusive 129 sv::single::lp (raw single)": {
+      "highPrice": 19.13,
+      "medianPrice": 19.13,
+      "samples": [
+        19.13
+      ],
+      "updatedAt": 1794035626526
+    },
+    "lugia v 110 s12 paradigm trigger::#110::psa 10": {
+      "highPrice": 995,
+      "medianPrice": 995,
+      "samples": [
+        995
+      ],
+      "updatedAt": 1794035626716
+    },
+    "gengar mimikyu gx 038 sm9 tag::sm9::psa 10": {
+      "highPrice": 490,
+      "medianPrice": 490,
+      "samples": [
+        490
+      ],
+      "updatedAt": 1794035626718
+    },
+    "pikachu zekrom gx 031 sm9 tag::sm9::psa 10": {
+      "highPrice": 122,
+      "medianPrice": 122,
+      "samples": [
+        122
+      ],
+      "updatedAt": 1794035626720
+    },
+    "garganacl 147 mega base set tag::#147::raw single": {
+      "highPrice": 33,
+      "medianPrice": 33,
+      "samples": [
+        33
+      ],
+      "updatedAt": 1794035626721
+    },
+    "mega kangaskhan ex 089 mega m::#089::raw single": {
+      "highPrice": 60,
+      "medianPrice": 60,
+      "samples": [
+        60
+      ],
+      "updatedAt": 1794035626723
+    },
+    "n s plot 173 black bolt::#173::raw single": {
+      "highPrice": 76,
+      "medianPrice": 76,
+      "samples": [
+        76
+      ],
+      "updatedAt": 1794035626724
+    },
+    "espeon vmax sword shield evolving skies::single::raw single": {
+      "highPrice": 115,
+      "medianPrice": 115,
+      "samples": [
+        115
+      ],
+      "updatedAt": 1794035626725
+    },
+    "glaceon vmax 025 s6a eevee heroes::#025::psa 10": {
+      "highPrice": 55,
+      "medianPrice": 55,
+      "samples": [
+        55
+      ],
+      "updatedAt": 1794035626728
+    },
+    "tatsugiri 112 sv6 transformation mask japanese::sv6::cgc 10": {
+      "highPrice": 41,
+      "medianPrice": 41,
+      "samples": [
+        41
+      ],
+      "updatedAt": 1794035626730
+    },
+    "computer error 016 black star promos::#016::cgc 9": {
+      "highPrice": 40,
+      "medianPrice": 40,
+      "samples": [
+        40
+      ],
+      "updatedAt": 1794035626732
+    },
+    "dragonite v 078 go s10b japanese::#078::cgc 10": {
+      "highPrice": 31,
+      "medianPrice": 31,
+      "samples": [
+        31
+      ],
+      "updatedAt": 1794035626734
+    },
+    "walking wake ex 235 high class::#235::cgc 10": {
+      "highPrice": 16,
+      "medianPrice": 16,
+      "samples": [
+        16
+      ],
+      "updatedAt": 1794035626736
+    },
+    "ditto 197 vstar universe s12a japanese::#197::cgc 10": {
+      "highPrice": 37,
+      "medianPrice": 37,
+      "samples": [
+        26,
+        37
+      ],
+      "updatedAt": 1794035626739
+    },
+    "greninja swsh144 black star promos sword::swsh144::cgc 9": {
+      "highPrice": 71,
+      "medianPrice": 71,
+      "samples": [
+        71
+      ],
+      "updatedAt": 1794035626741
+    },
+    "mega gardevoir ex 032 mega evolution::#032::cgc 10": {
+      "highPrice": 25,
+      "medianPrice": 25,
+      "samples": [
+        25
+      ],
+      "updatedAt": 1794035626743
+    },
+    "mega kangaskhan ex 089 mega symphonia::#089::cgc 10": {
+      "highPrice": 38,
+      "medianPrice": 38,
+      "samples": [
+        38
+      ],
+      "updatedAt": 1794035626744
+    },
+    "lillie s ribombee 164 journey together::#164::psa 10": {
+      "highPrice": 69,
+      "medianPrice": 69,
+      "samples": [
+        69
+      ],
+      "updatedAt": 1794035626745
+    },
+    "mega sableye tyranitar gx 126 sun::#126::psa 10": {
+      "highPrice": 300,
+      "medianPrice": 300,
+      "samples": [
+        300
+      ],
+      "updatedAt": 1794035626746
+    },
+    "salamence ex 187 journey together psa::#187::psa 10": {
+      "highPrice": 227,
+      "medianPrice": 227,
+      "samples": [
+        227
+      ],
+      "updatedAt": 1794035626747
+    },
+    "articuno 102 sv9 battle partners japanese::sv9::psa 10": {
+      "highPrice": 56,
+      "medianPrice": 56,
+      "samples": [
+        56
+      ],
+      "updatedAt": 1794035626748
+    },
+    "acerola s mischief 183 mega evolution::#183::psa 10": {
+      "highPrice": 65,
+      "medianPrice": 65,
+      "samples": [
+        65
+      ],
+      "updatedAt": 1794035626749
+    },
+    "pikachu 001 sv p promo japanese::#001::psa 10": {
+      "highPrice": 88,
+      "medianPrice": 88,
+      "samples": [
+        88
+      ],
+      "updatedAt": 1794035626751
+    },
+    "mega venusaur ex 177 mega evolution::#177::psa 9": {
+      "highPrice": 107,
+      "medianPrice": 107,
+      "samples": [
+        107
+      ],
+      "updatedAt": 1794035626752
+    },
+    "mega sharpedo ex 127 phantasmal flames::#127::psa 10": {
+      "highPrice": 64,
+      "medianPrice": 64,
+      "samples": [
+        64
+      ],
+      "updatedAt": 1794035626755
+    },
+    "lucario vstar 291 sword shield black::#291::psa 9": {
+      "highPrice": 40,
+      "medianPrice": 40,
+      "samples": [
+        40
+      ],
+      "updatedAt": 1794035626756
+    },
+    "deoxys vstar gg46 sword and shield::gg46::psa 10": {
+      "highPrice": 200,
+      "medianPrice": 200,
+      "samples": [
+        200
+      ],
+      "updatedAt": 1794035626757
+    },
+    "cynthia s garchomp ex 087 sv9a::#087::psa 10": {
+      "highPrice": 277,
+      "medianPrice": 277,
+      "samples": [
+        277
+      ],
+      "updatedAt": 1794035626759
+    },
+    "mega gengar ex 284 me ascended::#284::psa 9": {
+      "highPrice": 817,
+      "medianPrice": 817,
+      "samples": [
+        817
+      ],
+      "updatedAt": 1794035626760
+    },
+    "pikachu ex 276 me ascended heroes::#276::psa 10": {
+      "highPrice": 1277,
+      "medianPrice": 1277,
+      "samples": [
+        1277
+      ],
+      "updatedAt": 1794035626761
+    },
+    "mega absol ex 180 me01 mega::#180::psa 9": {
+      "highPrice": 46,
+      "medianPrice": 46,
+      "samples": [
+        46
+      ],
+      "updatedAt": 1794035626763
+    },
+    "hydreigon ex 240 sv08 surging sparks::sv08::psa 9": {
+      "highPrice": 35,
+      "medianPrice": 35,
+      "samples": [
+        35
+      ],
+      "updatedAt": 1794035626765
+    },
+    "sylveon vmax 075 swsh07 evolving skies::swsh07::psa 9": {
+      "highPrice": 35,
+      "medianPrice": 35,
+      "samples": [
+        35
+      ],
+      "updatedAt": 1794035626766
+    },
+    "eevee 173 sv scarlet violet promo::#173::psa 9": {
+      "highPrice": 29,
+      "medianPrice": 29,
+      "samples": [
+        29
+      ],
+      "updatedAt": 1794035626767
+    },
+    "pok mon shrouded fable ex special::single::raw single": {
+      "highPrice": 190,
+      "medianPrice": 190,
+      "samples": [
+        190,
+        185
+      ],
+      "updatedAt": 1794035626827
+    },
+    "11/29 4pm one piece op18 sunday::11/29::raw single": {
+      "highPrice": 30,
+      "medianPrice": 30,
+      "samples": [
+        30
+      ],
+      "updatedAt": 1794035627029
+    },
+    "11/23 7pm one piece op18 monday::11/23::raw single": {
+      "highPrice": 30,
+      "medianPrice": 30,
+      "samples": [
+        30
+      ],
+      "updatedAt": 1794035627030
+    },
+    "14/04 star wars unlimited booster draft::14/04::raw single": {
+      "highPrice": 20,
+      "medianPrice": 20,
+      "samples": [
+        20
+      ],
+      "updatedAt": 1794035627032
+    },
+    "ekko boy who shattered time overnumbered::single::nm (raw single)": {
+      "highPrice": 60.41,
+      "medianPrice": 60.41,
+      "samples": [
+        60.41
+      ],
+      "updatedAt": 1794035627034
+    },
+    "k sante pride of nazumah overnumbered::single::nm (raw single)": {
+      "highPrice": 44.21,
+      "medianPrice": 44.21,
+      "samples": [
+        44.21
+      ],
+      "updatedAt": 1794035627036
+    },
+    "sett kingpin heartsteel overnumbered radiance /::single::nm (raw single)": {
+      "highPrice": 65.62,
+      "medianPrice": 65.62,
+      "samples": [
+        65.62
+      ],
+      "updatedAt": 1794035627038
+    },
+    "renekton butcher of the sands overnumbered::single::nm (raw single)": {
+      "highPrice": 48.36,
+      "medianPrice": 48.36,
+      "samples": [
+        48.36
+      ],
+      "updatedAt": 1794035627041
+    },
+    "mega greninja ex premium collection box::single::raw single": {
+      "highPrice": 45,
+      "medianPrice": 45,
+      "samples": [
+        45
+      ],
+      "updatedAt": 1794035628173
+    }
+  },
+  "offers": {
+    "seed::Zulus Games::gyarados-ex-225-198": {
+      "id": "seed::Zulus Games::gyarados-ex-225-198",
+      "cardKey": "gyarados ex 225/198 scarlet violet base",
+      "title": "Gyarados ex - 225/198 - Scarlet & Violet Base Set (Ultra Rare Tera Full Art Single - NM)",
+      "storeName": "Zulus Games",
+      "price": 16.5,
+      "shipping": 0,
+      "landedPrice": 16.5,
+      "compPrice": 22.99,
+      "discountPct": 28,
+      "savingsDollars": 6.49,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "225/198",
+      "isSlab": false,
+      "isFavoriteMatch": true,
+      "matchedFavoritePokemon": "Gyarados",
+      "isOffloadSnipe": true,
+      "snipeBadge": "◈ ⟦ FAVORITE OFFLOAD SNIPE // GYARADOS (-28% VS COMP) ⟧",
+      "url": "https://zulusgames.com/collections/pokemon",
+      "itemId": "gyarados_ex_225_198",
+      "stock": 2,
+      "updatedAt": 1793999804670
+    },
+    "seed::Full Grip Games::gyarados-ao-21-98": {
+      "id": "seed::Full Grip Games::gyarados-ao-21-98",
+      "cardKey": "gyarados 21/98 ancient origins holo",
+      "title": "Gyarados (Ancient Origins 21/98) - Holo Rare Ancient Trait Single Card (Near Mint)",
+      "storeName": "Full Grip Games",
+      "price": 24,
+      "shipping": 0,
+      "landedPrice": 24,
+      "compPrice": 31.5,
+      "discountPct": 24,
+      "savingsDollars": 7.5,
+      "conditionOrGrade": "NM (Holo Single)",
+      "cardNumber": "21/98",
+      "isSlab": false,
+      "isFavoriteMatch": true,
+      "matchedFavoritePokemon": "Gyarados",
+      "isOffloadSnipe": true,
+      "snipeBadge": "◈ ⟦ FAVORITE OFFLOAD SNIPE // GYARADOS (-24% VS COMP) ⟧",
+      "url": "https://www.fullgripgames.com/collections/pokemon",
+      "itemId": "gyarados_ao_21_98",
+      "stock": 1,
+      "updatedAt": 1793999804670
+    },
+    "seed::Over The Brick::mega-gyarados-ex-115-122": {
+      "id": "seed::Over The Brick::mega-gyarados-ex-115-122",
+      "cardKey": "m gyarados ex 115/122 breakpoint full art",
+      "title": "M Gyarados EX - 115/122 - XY BREAKpoint Full Art Shiny Single Card (NM)",
+      "storeName": "Over The Brick",
+      "price": 58,
+      "shipping": 0,
+      "landedPrice": 58,
+      "compPrice": 64.99,
+      "discountPct": 11,
+      "savingsDollars": 6.99,
+      "conditionOrGrade": "NM (Full Art Single)",
+      "cardNumber": "115/122",
+      "isSlab": false,
+      "isFavoriteMatch": true,
+      "matchedFavoritePokemon": "Gyarados",
+      "isOffloadSnipe": false,
+      "snipeBadge": "◈ ⟦ FAVORITE WATCH // GYARADOS (-11% VS COMP) ⟧",
+      "url": "https://overthebrick.com/collections/pokemon",
+      "itemId": "m_gyarados_ex_115_122",
+      "stock": 1,
+      "updatedAt": 1793999804670
+    },
+    "Smoke & Mirrors::68267174887623": {
+      "id": "Smoke & Mirrors::68267174887623",
+      "cardKey": "tornadus 98 full art 98/98 epo::98/98::nm (raw single)",
+      "title": "Tornadus (98 Full Art) (98/98) (EPO) Near Mint - Holofoil",
+      "storeName": "Smoke & Mirrors",
+      "price": 23.5,
+      "shipping": 4.99,
+      "landedPrice": 28.49,
+      "compPrice": 23.5,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "98/98",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://smokeandmirrorshobby.com/products/tornadus-98-full-art-98-98-epo",
+      "itemId": "68267174887623",
+      "image": "https://cdn.shopify.com/s/files/1/0515/0189/1783/files/89977.jpg?v=1794021363",
+      "updatedAt": 1794035621795
+    },
+    "Smoke & Mirrors::68267173707975": {
+      "id": "Smoke & Mirrors::68267173707975",
+      "cardKey": "milotic 25/106 ge holofoil::25/106::nm (raw single)",
+      "title": "Milotic (25/106) (GE) Near Mint - Reverse Holofoil",
+      "storeName": "Smoke & Mirrors",
+      "price": 32,
+      "shipping": 4.99,
+      "landedPrice": 36.99,
+      "compPrice": 32,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "25/106",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://smokeandmirrorshobby.com/products/milotic-25-106-ge",
+      "itemId": "68267173707975",
+      "image": "https://cdn.shopify.com/s/files/1/0515/0189/1783/files/87454.jpg?v=1794021306",
+      "updatedAt": 1794035621797
+    },
+    "Smoke & Mirrors::68264259223751": {
+      "id": "Smoke & Mirrors::68264259223751",
+      "cardKey": "lugia 14/132 sw heavily played holofoil::14/132::raw single",
+      "title": "Lugia (14/132) (SW) Heavily Played - Holofoil",
+      "storeName": "Smoke & Mirrors",
+      "price": 281.3,
+      "shipping": 0,
+      "landedPrice": 281.3,
+      "compPrice": 281.3,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "Raw Single",
+      "cardNumber": "14/132",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://smokeandmirrorshobby.com/products/lugia-14-132-sw",
+      "itemId": "68264259223751",
+      "image": "https://cdn.shopify.com/s/files/1/0515/0189/1783/files/86908.jpg?v=1794005904",
+      "updatedAt": 1794035621799
+    },
+    "Smoke & Mirrors::68263217529031": {
+      "id": "Smoke & Mirrors::68263217529031",
+      "cardKey": "pidgeotto 022/102 bss lightly played unlimited::022/102::lp (raw single)",
+      "title": "Pidgeotto (022/102) (BSS) Lightly Played - Unlimited",
+      "storeName": "Smoke & Mirrors",
+      "price": 22.9,
+      "shipping": 4.99,
+      "landedPrice": 27.89,
+      "compPrice": 22.9,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "LP (Raw Single)",
+      "cardNumber": "022/102",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://smokeandmirrorshobby.com/products/pidgeotto-022-102-bss",
+      "itemId": "68263217529031",
+      "image": "https://cdn.shopify.com/s/files/1/0515/0189/1783/files/107017.jpg?v=1793994952",
+      "updatedAt": 1794035621801
+    },
+    "Smoke & Mirrors::68263214153927": {
+      "id": "Smoke & Mirrors::68263214153927",
+      "cardKey": "ho oh 18 18/64 n3 lightly::18/64::lp (raw single)",
+      "title": "Ho-oh (18) (18/64) (N3) Lightly Played - Unlimited",
+      "storeName": "Smoke & Mirrors",
+      "price": 24.8,
+      "shipping": 4.99,
+      "landedPrice": 29.79,
+      "compPrice": 24.8,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "LP (Raw Single)",
+      "cardNumber": "18/64",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://smokeandmirrorshobby.com/products/ho-oh-18-18-64-n3",
+      "itemId": "68263214153927",
+      "image": "https://cdn.shopify.com/s/files/1/0515/0189/1783/files/86119.jpg?v=1793994901",
+      "updatedAt": 1794035621803
+    },
+    "Smoke & Mirrors::68262868975815": {
+      "id": "Smoke & Mirrors::68262868975815",
+      "cardKey": "pikachu 065/202 cosmos 065/202 mcap holofoil::065/202::nm (raw single)",
+      "title": "Pikachu - 065/202 (Reverse Cosmos Holo) (065/202) (MCAP) Near Mint - Reverse Holofoil",
+      "storeName": "Smoke & Mirrors",
+      "price": 32.2,
+      "shipping": 4.99,
+      "landedPrice": 37.19,
+      "compPrice": 32.2,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "065/202",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://smokeandmirrorshobby.com/products/pikachu-065-202-reverse-cosmos-holo-065-202-mcap",
+      "itemId": "68262868975815",
+      "image": "https://cdn.shopify.com/s/files/1/0515/0189/1783/files/253841.jpg?v=1793990878",
+      "updatedAt": 1794035621804
+    },
+    "Smoke & Mirrors::68262867501255": {
+      "id": "Smoke & Mirrors::68262867501255",
+      "cardKey": "magikarp 039/192 cosmos 039/192 mcap holofoil::039/192::nm (raw single)",
+      "title": "Magikarp - 039/192 (Reverse Cosmos Holo) (039/192) (MCAP) Near Mint - Reverse Holofoil",
+      "storeName": "Smoke & Mirrors",
+      "price": 137.3,
+      "shipping": 4.99,
+      "landedPrice": 142.29,
+      "compPrice": 137.3,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "039/192",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://smokeandmirrorshobby.com/products/magikarp-039-192-reverse-cosmos-holo-039-192-mcap",
+      "itemId": "68262867501255",
+      "image": "https://cdn.shopify.com/s/files/1/0515/0189/1783/files/253843.jpg?v=1793990863",
+      "updatedAt": 1794035621806
+    },
+    "Smoke & Mirrors::68262866583751": {
+      "id": "Smoke & Mirrors::68262866583751",
+      "cardKey": "eevee 130/185 cosmos 130/185 mcap holofoil::130/185::nm (raw single)",
+      "title": "Eevee - 130/185 (Reverse Cosmos Holo) (130/185) (MCAP) Near Mint - Reverse Holofoil",
+      "storeName": "Smoke & Mirrors",
+      "price": 24.3,
+      "shipping": 4.99,
+      "landedPrice": 29.29,
+      "compPrice": 24.3,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "130/185",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://smokeandmirrorshobby.com/products/eevee-130-185-reverse-cosmos-holo-130-185-mcap",
+      "itemId": "68262866583751",
+      "image": "https://cdn.shopify.com/s/files/1/0515/0189/1783/files/253840.jpg?v=1793990850",
+      "updatedAt": 1794035621807
+    },
+    "Smoke & Mirrors::68262864289991": {
+      "id": "Smoke & Mirrors::68262864289991",
+      "cardKey": "charmander 023/185 cosmos 023/185 mcap holofoil::023/185::nm (raw single)",
+      "title": "Charmander - 023/185 (Reverse Cosmos Holo) (023/185) (MCAP) Near Mint - Reverse Holofoil",
+      "storeName": "Smoke & Mirrors",
+      "price": 28.4,
+      "shipping": 4.99,
+      "landedPrice": 33.39,
+      "compPrice": 28.4,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "023/185",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://smokeandmirrorshobby.com/products/charmander-023-185-reverse-cosmos-holo-023-185-mcap",
+      "itemId": "68262864289991",
+      "image": "https://cdn.shopify.com/s/files/1/0515/0189/1783/files/253842.jpg?v=1793990835",
+      "updatedAt": 1794035621808
+    },
+    "Smoke & Mirrors::68224207487175": {
+      "id": "Smoke & Mirrors::68224207487175",
+      "cardKey": "tidus zanarkand fayth thrasios triton hero::single::nm (raw single)",
+      "title": "Tidus, Zanarkand Fayth - Thrasios, Triton Hero (Showcase) (58) (FCA) Near Mint",
+      "storeName": "Smoke & Mirrors",
+      "price": 16.3,
+      "shipping": 4.99,
+      "landedPrice": 21.29,
+      "compPrice": 16.3,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://smokeandmirrorshobby.com/products/tidus-zanarkand-fayth-thrasios-triton-hero-showcase-58-fca",
+      "itemId": "68224207487175",
+      "image": "https://cdn.shopify.com/s/files/1/0515/0189/1783/files/632702.jpg?v=1793829573",
+      "updatedAt": 1794035621810
+    },
+    "Smoke & Mirrors::68224206438599": {
+      "id": "Smoke & Mirrors::68224206438599",
+      "cardKey": "the darkness crystal borderless 335 fin::single::nm (raw single)",
+      "title": "The Darkness Crystal (Borderless) (335) (FIN) Near Mint - Foil",
+      "storeName": "Smoke & Mirrors",
+      "price": 17,
+      "shipping": 4.99,
+      "landedPrice": 21.99,
+      "compPrice": 17,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://smokeandmirrorshobby.com/products/the-darkness-crystal-borderless-335-fin-1",
+      "itemId": "68224206438599",
+      "image": "https://cdn.shopify.com/s/files/1/0515/0189/1783/files/630849_944ba2a7-f91b-417a-bbd2-022108d44f82.jpg?v=1793829552",
+      "updatedAt": 1794035621811
+    },
+    "Smoke & Mirrors::68224203751623": {
+      "id": "Smoke & Mirrors::68224203751623",
+      "cardKey": "the cabbage merchant 134 tle::single::nm (raw single)",
+      "title": "The Cabbage Merchant (134) (TLE) Near Mint",
+      "storeName": "Smoke & Mirrors",
+      "price": 29.3,
+      "shipping": 4.99,
+      "landedPrice": 34.29,
+      "compPrice": 29.3,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://smokeandmirrorshobby.com/products/the-cabbage-merchant-134-tle",
+      "itemId": "68224203751623",
+      "image": "https://cdn.shopify.com/s/files/1/0515/0189/1783/files/648732.jpg?v=1793829532",
+      "updatedAt": 1794035621812
+    },
+    "Zulus Games::51051700813989": {
+      "id": "Zulus Games::51051700813989",
+      "cardKey": "ilima japanese 065/060 sm1s collection sun::065/060::nm (raw single)",
+      "title": "Ilima (Japanese) (065/060) [SM1S: Collection Sun] Near Mint Foil",
+      "storeName": "Zulus Games",
+      "price": 39.99,
+      "shipping": 4.99,
+      "landedPrice": 44.98,
+      "compPrice": 39.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "065/060",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/ilima-japanese-065-060-sm1s-collection-sun",
+      "itemId": "51051700813989",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/b152ef957cdb0e1f7d5fddcf407b2464.jpg?v=1793395394",
+      "updatedAt": 1794035627742
+    },
+    "Zulus Games::51051695046821": {
+      "id": "Zulus Games::51051695046821",
+      "cardKey": "professor kukui japanese 066/060 sm1s collection::066/060::nm (raw single)",
+      "title": "Professor Kukui (Japanese) (066/060) [SM1S: Collection Sun] Near Mint Foil",
+      "storeName": "Zulus Games",
+      "price": 39.99,
+      "shipping": 4.99,
+      "landedPrice": 44.98,
+      "compPrice": 39.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "066/060",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/professor-kukui-japanese-066-060-sm1s-collection-sun",
+      "itemId": "51051695046821",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/0f1246b413880ba09fad51b3fd67f405.jpg?v=1793395298",
+      "updatedAt": 1794035627744
+    },
+    "Zulus Games::51051687641253": {
+      "id": "Zulus Games::51051687641253",
+      "cardKey": "dragonite japanese mystery of the fossils::single::lp (raw single)",
+      "title": "Dragonite (Japanese) [Mystery of the Fossils] Lightly Played",
+      "storeName": "Zulus Games",
+      "price": 89.99,
+      "shipping": 4.99,
+      "landedPrice": 94.98,
+      "compPrice": 89.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "LP (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/dragonite-japanese-mystery-of-the-fossils",
+      "itemId": "51051687641253",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/de561446ed87535ec8a584f1fe6e199b.jpg?v=1793395201",
+      "updatedAt": 1794035627746
+    },
+    "Zulus Games::50798900936869": {
+      "id": "Zulus Games::50798900936869",
+      "cardKey": "umbreon 13 french 13/75 neo discovery::13/75::mp (raw single)",
+      "title": "Umbreon (13) (French) (13/75) [Neo Discovery] Moderately Played Holofoil",
+      "storeName": "Zulus Games",
+      "price": 299.99,
+      "shipping": 0,
+      "landedPrice": 299.99,
+      "compPrice": 299.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "MP (Raw Single)",
+      "cardNumber": "13/75",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/umbreon-13-french-13-75-neo-discovery",
+      "itemId": "50798900936869",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/f66a0db58e6c6cc44e4204a75dd9c742.jpg?v=1792703375",
+      "updatedAt": 1794035627747
+    },
+    "Zulus Games::50798715109541": {
+      "id": "Zulus Games::50798715109541",
+      "cardKey": "flareon japanese jungle moderately played holofoil::single::mp (raw single)",
+      "title": "Flareon (Japanese) [Pokemon Jungle] Moderately Played Holofoil",
+      "storeName": "Zulus Games",
+      "price": 29.99,
+      "shipping": 4.99,
+      "landedPrice": 34.98,
+      "compPrice": 29.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "MP (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/flareon-japanese-pokemon-jungle",
+      "itemId": "50798715109541",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/79b6139be067e268af1656f0770a0003.jpg?v=1792702870",
+      "updatedAt": 1794035627748
+    },
+    "Zulus Games::50798503690405": {
+      "id": "Zulus Games::50798503690405",
+      "cardKey": "mega dragonite ex japanese 246/193 m2a::246/193::nm (raw single)",
+      "title": "Mega Dragonite ex (Japanese) (246/193) [M2a: High Class Pack: MEGA Dream ex] Near Mint Holofoil",
+      "storeName": "Zulus Games",
+      "price": 154.99,
+      "shipping": 0,
+      "landedPrice": 154.99,
+      "compPrice": 154.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "246/193",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/mega-dragonite-ex-japanese-246-193-m2a-high-class-pack-mega-dream-ex",
+      "itemId": "50798503690405",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/13dbfd440a255df22fd3295686ba6030.jpg?v=1792702358",
+      "updatedAt": 1794035627749
+    },
+    "Zulus Games::50798427439269": {
+      "id": "Zulus Games::50798427439269",
+      "cardKey": "gardevoir ex japanese 348/190 sv4a shiny::348/190::nm (raw single)",
+      "title": "Gardevoir ex (Japanese) (348/190) [SV4a: Shiny Treasure ex] Near Mint Holofoil",
+      "storeName": "Zulus Games",
+      "price": 124.99,
+      "shipping": 0,
+      "landedPrice": 124.99,
+      "compPrice": 124.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "348/190",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/gardevoir-ex-japanese-348-190-sv4a-shiny-treasure-ex",
+      "itemId": "50798427439269",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/f4ada5476dace488e0a20756d9f9e9b9.jpg?v=1792702184",
+      "updatedAt": 1794035627751
+    },
+    "Zulus Games::50798401585317": {
+      "id": "Zulus Games::50798401585317",
+      "cardKey": "glaceon vstar japanese 217/172 s12a vstar::217/172::nm (raw single)",
+      "title": "Glaceon VSTAR (Japanese) (217/172) [S12a: VSTAR Universe] Near Mint Holofoil",
+      "storeName": "Zulus Games",
+      "price": 42.99,
+      "shipping": 4.99,
+      "landedPrice": 47.98,
+      "compPrice": 42.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "217/172",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/glaceon-vstar-japanese-217-172-s12a-vstar-universe",
+      "itemId": "50798401585317",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/df9e38cb57abd45790b926a61d1aec12.jpg?v=1792702133",
+      "updatedAt": 1794035627752
+    },
+    "Zulus Games::50798389624997": {
+      "id": "Zulus Games::50798389624997",
+      "cardKey": "magikarp japanese 165/103 m6a mega expansion::165/103::nm (raw single)",
+      "title": "Magikarp (Japanese) (165/103) [M6a: MEGA Expansion 30th Celebration] Near Mint Holofoil",
+      "storeName": "Zulus Games",
+      "price": 69.99,
+      "shipping": 4.99,
+      "landedPrice": 74.98,
+      "compPrice": 69.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "165/103",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/magikarp-japanese-165-103-m6a-mega-expansion-30th-celebration",
+      "itemId": "50798389624997",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/e655f58b4c4bf158871e91c686307ef9.jpg?v=1792702095",
+      "updatedAt": 1794035627754
+    },
+    "Zulus Games::50798329561253": {
+      "id": "Zulus Games::50798329561253",
+      "cardKey": "espeon ex japanese 043/040 mf 30th::043/040::nm (raw single)",
+      "title": "Espeon ex (Japanese) (043/040) [MF: 30th CELEBRATION Premium Deck Set Espeon & Umbreon] Near Mint Holofoil",
+      "storeName": "Zulus Games",
+      "price": 52.99,
+      "shipping": 4.99,
+      "landedPrice": 57.98,
+      "compPrice": 52.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "043/040",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/espeon-ex-japanese-043-040-mf-30th-celebration-premium-deck-set-espeon-umbreon",
+      "itemId": "50798329561253",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/1a04a79ec6023521da8f24529d886333.jpg?v=1792701980",
+      "updatedAt": 1794035627755
+    },
+    "Zulus Games::50798310686885": {
+      "id": "Zulus Games::50798310686885",
+      "cardKey": "leafeon ex japanese 200/187 sv8a terastal::200/187::nm (raw single)",
+      "title": "Leafeon ex (Japanese) (200/187) [SV8a: Terastal Fest ex] Near Mint Holofoil",
+      "storeName": "Zulus Games",
+      "price": 59.99,
+      "shipping": 4.99,
+      "landedPrice": 64.98,
+      "compPrice": 59.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "200/187",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/leafeon-ex-japanese-200-187-sv8a-terastal-fest-ex",
+      "itemId": "50798310686885",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/4f4b69afaa783658c09738f836584aa5.jpg?v=1792701937",
+      "updatedAt": 1794035627757
+    },
+    "Zulus Games::50798225588389": {
+      "id": "Zulus Games::50798225588389",
+      "cardKey": "mega zygarde ex japanese 113/080 m3::113/080::nm (raw single)",
+      "title": "Mega Zygarde ex (Japanese) (113/080) [M3: Nihil Zero] Near Mint Holofoil",
+      "storeName": "Zulus Games",
+      "price": 26.99,
+      "shipping": 4.99,
+      "landedPrice": 31.98,
+      "compPrice": 26.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "113/080",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/mega-zygarde-ex-japanese-113-080-m3-nihil-zero",
+      "itemId": "50798225588389",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/4e153c28ada70bce9359619539d9e4cf.jpg?v=1792701762",
+      "updatedAt": 1794035627759
+    },
+    "Zulus Games::50673119461541": {
+      "id": "Zulus Games::50673119461541",
+      "cardKey": "dark charizard 21 german 21/82 team::21/82::lp (raw single)",
+      "title": "Dark Charizard (21) (German) (21/82) [Team Rocket] Lightly Played",
+      "storeName": "Zulus Games",
+      "price": 69.99,
+      "shipping": 4.99,
+      "landedPrice": 74.98,
+      "compPrice": 69.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "LP (Raw Single)",
+      "cardNumber": "21/82",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/dark-charizard-21-german-21-82-team-rocket",
+      "itemId": "50673119461541",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/3a973de29fdf68027b5ac0b8bf930056.jpg?v=1792105907",
+      "updatedAt": 1794035627761
+    },
+    "Zulus Games::50673116250277": {
+      "id": "Zulus Games::50673116250277",
+      "cardKey": "umbreon japanese neo premium file 2::single::mp (raw single)",
+      "title": "Umbreon (Japanese) [Neo Premium File 2] Moderately Played",
+      "storeName": "Zulus Games",
+      "price": 39.99,
+      "shipping": 4.99,
+      "landedPrice": 44.98,
+      "compPrice": 39.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "MP (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/umbreon-japanese-neo-premium-file-2",
+      "itemId": "50673116250277",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/9ce01dfea1c17372aad6509b6c176cb5.jpg?v=1792105541",
+      "updatedAt": 1794035627763
+    },
+    "Zulus Games::50673114579109": {
+      "id": "Zulus Games::50673114579109",
+      "cardKey": "eevee japanese neo premium file 2::single::mp (raw single)",
+      "title": "Eevee (Japanese) [Neo Premium File 2] Moderately Played",
+      "storeName": "Zulus Games",
+      "price": 29.99,
+      "shipping": 4.99,
+      "landedPrice": 34.98,
+      "compPrice": 29.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "MP (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/eevee-japanese-neo-premium-file-2",
+      "itemId": "50673114579109",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/7a2a1e9a6aaccb1548e22bf89e7e9cee.jpg?v=1792105337",
+      "updatedAt": 1794035627764
+    },
+    "Zulus Games::50673113956517": {
+      "id": "Zulus Games::50673113956517",
+      "cardKey": "flareon japanese 016/088 split earth moderately::016/088::mp (raw single)",
+      "title": "Flareon (Japanese) (016/088) [Split Earth] Moderately Played",
+      "storeName": "Zulus Games",
+      "price": 69.99,
+      "shipping": 4.99,
+      "landedPrice": 74.98,
+      "compPrice": 69.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "MP (Raw Single)",
+      "cardNumber": "016/088",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/flareon-japanese-016-088-split-earth",
+      "itemId": "50673113956517",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/1a636dd62e5d57d7abc2e3e71eeffd5c.jpg?v=1792105256",
+      "updatedAt": 1794035627765
+    },
+    "Zulus Games::50673096655013": {
+      "id": "Zulus Games::50673096655013",
+      "cardKey": "blaziken vmax japanese 217/184 s8b vmax::217/184::nm (raw single)",
+      "title": "Blaziken VMAX (Japanese) (217/184) [S8b: VMAX Climax] Near Mint Holofoil",
+      "storeName": "Zulus Games",
+      "price": 29.99,
+      "shipping": 4.99,
+      "landedPrice": 34.98,
+      "compPrice": 29.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "217/184",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/blaziken-vmax-japanese-217-184-s8b-vmax-climax",
+      "itemId": "50673096655013",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/fe0c528babd82744acaffdd450939cc1.jpg?v=1792104131",
+      "updatedAt": 1794035627766
+    },
+    "Zulus Games::50673074733221": {
+      "id": "Zulus Games::50673074733221",
+      "cardKey": "hydreigon ex japanese 133/106 sv8 super::133/106::nm (raw single)",
+      "title": "Hydreigon ex (Japanese) (133/106) [SV8: Super Electric Breaker] Near Mint Holofoil",
+      "storeName": "Zulus Games",
+      "price": 27.99,
+      "shipping": 4.99,
+      "landedPrice": 32.98,
+      "compPrice": 27.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "133/106",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/hydreigon-ex-japanese-133-106-sv8-super-electric-breaker",
+      "itemId": "50673074733221",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/b7e62b9ba3b8032a8f81ea9a2f1ce350.jpg?v=1792102262",
+      "updatedAt": 1794035627768
+    },
+    "Zulus Games::50673037017253": {
+      "id": "Zulus Games::50673037017253",
+      "cardKey": "zapdos ex japanese 204/165 sv2a 151::204/165::nm (raw single)",
+      "title": "Zapdos ex (Japanese) (204/165) [SV2a: Pokemon Card 151] Near Mint Holofoil",
+      "storeName": "Zulus Games",
+      "price": 94.99,
+      "shipping": 4.99,
+      "landedPrice": 99.98,
+      "compPrice": 94.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "204/165",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/zapdos-ex-japanese-204-165-sv2a-pokemon-card-151",
+      "itemId": "50673037017253",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/93f664570b1b64f92e794d66cc935eb5.jpg?v=1792100999",
+      "updatedAt": 1794035627770
+    },
+    "Zulus Games::50673030037669": {
+      "id": "Zulus Games::50673030037669",
+      "cardKey": "glaceon lv x japanese dp4 dawn::single::lp (raw single)",
+      "title": "Glaceon LV.X (Japanese) [DP4: Dawn Dash] Lightly Played Holofoil",
+      "storeName": "Zulus Games",
+      "price": 149.99,
+      "shipping": 0,
+      "landedPrice": 149.99,
+      "compPrice": 149.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "LP (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/glaceon-lv-x-japanese-dp4-dawn-dash",
+      "itemId": "50673030037669",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/a5df9d7a2485a09f8425b9556d8c6267.jpg?v=1792100945",
+      "updatedAt": 1794035627772
+    },
+    "Zulus Games::50673006084261": {
+      "id": "Zulus Games::50673006084261",
+      "cardKey": "charizard japanese 137/103 m6a mega expansion::137/103::nm (raw single)",
+      "title": "Charizard (Japanese) (137/103) [M6a: MEGA Expansion 30th Celebration] Near Mint Holofoil",
+      "storeName": "Zulus Games",
+      "price": 199.99,
+      "shipping": 0,
+      "landedPrice": 199.99,
+      "compPrice": 199.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "137/103",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/charizard-japanese-137-103-m6a-mega-expansion-30th-celebration",
+      "itemId": "50673006084261",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/0ae89afd2205fd2c91ef279fcac5b3ab.jpg?v=1792100523",
+      "updatedAt": 1794035627774
+    },
+    "Zulus Games::50672989765797": {
+      "id": "Zulus Games::50672989765797",
+      "cardKey": "mewtwo ex japanese 128/103 m6a mega::128/103::nm (raw single)",
+      "title": "Mewtwo ex (Japanese) (128/103) [M6a: MEGA Expansion 30th Celebration] Near Mint Holofoil",
+      "storeName": "Zulus Games",
+      "price": 34.99,
+      "shipping": 4.99,
+      "landedPrice": 39.98,
+      "compPrice": 34.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "128/103",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/mewtwo-ex-japanese-128-103-m6a-mega-expansion-30th-celebration",
+      "itemId": "50672989765797",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/00edd781d30fc0708c055f07ca079b3f.jpg?v=1792100323",
+      "updatedAt": 1794035627776
+    },
+    "Zulus Games::50672979706021": {
+      "id": "Zulus Games::50672979706021",
+      "cardKey": "lugia japanese 142/103 m6a mega expansion::142/103::nm (raw single)",
+      "title": "Lugia (Japanese) (142/103) [M6a: MEGA Expansion 30th Celebration] Near Mint Holofoil",
+      "storeName": "Zulus Games",
+      "price": 174.99,
+      "shipping": 0,
+      "landedPrice": 174.99,
+      "compPrice": 174.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "142/103",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/lugia-japanese-142-103-m6a-mega-expansion-30th-celebration",
+      "itemId": "50672979706021",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/de067040d9fb98b1153d2091218d7d4b.jpg?v=1792100111",
+      "updatedAt": 1794035627778
+    },
+    "Zulus Games::50619313356965": {
+      "id": "Zulus Games::50619313356965",
+      "cardKey": "greninja ex 125/103 japanese 125/103 m6a::125/103::nm (raw single)",
+      "title": "Greninja ex - 125/103 (Japanese) (125/103) [M6a: MEGA Expansion 30th Celebration] Near Mint Holofoil",
+      "storeName": "Zulus Games",
+      "price": 29.99,
+      "shipping": 4.99,
+      "landedPrice": 34.98,
+      "compPrice": 29.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "125/103",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/greninja-ex-125-103-japanese-125-103-m6a-mega-expansion-30th-celebration",
+      "itemId": "50619313356965",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/bfad3c47ba9cdbcb37986169b92a9532.jpg?v=1791492715",
+      "updatedAt": 1794035627779
+    },
+    "Zulus Games::50619170128037": {
+      "id": "Zulus Games::50619170128037",
+      "cardKey": "rocket s raikou japanese 094/141 vs::094/141::lp (raw single)",
+      "title": "Rocket's Raikou (Japanese) (094/141) [Pokemon VS] Lightly Played Holofoil",
+      "storeName": "Zulus Games",
+      "price": 249.99,
+      "shipping": 0,
+      "landedPrice": 249.99,
+      "compPrice": 249.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "LP (Raw Single)",
+      "cardNumber": "094/141",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/rockets-raikou-japanese-094-141-pokemon-vs",
+      "itemId": "50619170128037",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/8034da77369d3a0cd27b49edcf37fd6d.jpg?v=1791491603",
+      "updatedAt": 1794035627780
+    },
+    "Zulus Games::50583074177189": {
+      "id": "Zulus Games::50583074177189",
+      "cardKey": "gengar prime japanese 150/103 m6a mega::150/103::nm (raw single)",
+      "title": "Gengar (Prime) (Japanese) (150/103) [M6a: MEGA Expansion 30th Celebration] Near Mint Holofoil",
+      "storeName": "Zulus Games",
+      "price": 44.99,
+      "shipping": 4.99,
+      "landedPrice": 49.98,
+      "compPrice": 44.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "150/103",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/gengar-prime-japanese-150-103-m6a-mega-expansion-30th-celebration",
+      "itemId": "50583074177189",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/2a97bd90bc97a1bde75a6f4b89697813.jpg?v=1791232011",
+      "updatedAt": 1794035627782
+    },
+    "Zulus Games::50583064740005": {
+      "id": "Zulus Games::50583064740005",
+      "cardKey": "sylveon ex 130/103 japanese 130/103 m6a::130/103::nm (raw single)",
+      "title": "Sylveon ex - 130/103 (Japanese) (130/103) [M6a: MEGA Expansion 30th Celebration] Near Mint Holofoil",
+      "storeName": "Zulus Games",
+      "price": 49.99,
+      "shipping": 4.99,
+      "landedPrice": 54.98,
+      "compPrice": 49.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "130/103",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/sylveon-ex-130-103-japanese-130-103-m6a-mega-expansion-30th-celebration",
+      "itemId": "50583064740005",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/7c8ceb3a8d2d076305629de61ee083fb.jpg?v=1791231622",
+      "updatedAt": 1794035627783
+    },
+    "Zulus Games::48217901924517": {
+      "id": "Zulus Games::48217901924517",
+      "cardKey": "reshiram ex 95 full art inked::single::raw single",
+      "title": "Reshiram EX (95 Full Art) (Inked) [Next Destinies] Damaged Foil",
+      "storeName": "Zulus Games",
+      "price": 52.99,
+      "shipping": 4.99,
+      "landedPrice": 57.98,
+      "compPrice": 52.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "Raw Single",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/reshiram-ex-95-full-art-inked-next-destinies",
+      "itemId": "48217901924517",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/4e6ee4a534b581dcdf165dbd108ea821.jpg?v=1788476986",
+      "updatedAt": 1794035627817
+    },
+    "Zulus Games::47742901223589": {
+      "id": "Zulus Games::47742901223589",
+      "cardKey": "pok mon first partner illustration collection::single::raw single",
+      "title": "Pokémon TCG: First Partner Illustration Collection (Series 2)",
+      "storeName": "Zulus Games",
+      "price": 29.99,
+      "shipping": 4.99,
+      "landedPrice": 34.98,
+      "compPrice": 34.99,
+      "discountPct": 14,
+      "savingsDollars": 5,
+      "conditionOrGrade": "Raw Single",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://zulusgames.com/products/pokemon-tcg-first-partner-illustration-collection-series-2",
+      "itemId": "47742901223589",
+      "image": "https://cdn.shopify.com/s/files/1/0579/0960/8613/files/FirstPartnerIllustrationSeries2.jpg?v=1776812115",
+      "updatedAt": 1794035627844
+    },
+    "MinMaxGames::48092526903470": {
+      "id": "MinMaxGames::48092526903470",
+      "cardKey": "30th celebration poster collection release date::9/16::raw single",
+      "title": "30th Celebration Poster Collection (Pokemon) Release Date: 9/16/2026",
+      "storeName": "MinMaxGames",
+      "price": 35,
+      "shipping": 4.99,
+      "landedPrice": 39.99,
+      "compPrice": 35,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "Raw Single",
+      "cardNumber": "9/16",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://minmaxgames.com/products/30th-celebration-poster-collection-pokemon",
+      "itemId": "48092526903470",
+      "image": "https://cdn.shopify.com/s/files/1/0507/3263/0190/files/704153_in_1000x1000_69bdccbc-12f0-4195-8bc7-ca892dee450a.jpg?v=1784056832",
+      "updatedAt": 1794035625389
+    },
+    "TCG Stadium::50122778247414": {
+      "id": "TCG Stadium::50122778247414",
+      "cardKey": "30th anniversary welcome back pikachu 1/1::1/1::raw single",
+      "title": "Pokemon 30th Anniversary Welcome Back Pikachu 1/1 scale",
+      "storeName": "TCG Stadium",
+      "price": 195,
+      "shipping": 0,
+      "landedPrice": 195,
+      "compPrice": 199.99,
+      "discountPct": 2,
+      "savingsDollars": 4.99,
+      "conditionOrGrade": "Raw Single",
+      "cardNumber": "1/1",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://tcg-stadium.com/products/pokemon-30th-anniversary-welcome-back-pikachu-1-1-scale",
+      "itemId": "50122778247414",
+      "image": "https://cdn.shopify.com/s/files/1/0512/6832/1456/files/s-l1600_1.webp?v=1774029337",
+      "updatedAt": 1794035623304
+    },
+    "Collector Store::52126938333352": {
+      "id": "Collector Store::52126938333352",
+      "cardKey": "scarlet violet shrouded fable kingdra ex::single::raw single",
+      "title": "Pokemon: Scarlet & Violet Shrouded Fable Kingdra ex Special Illustration Collection",
+      "storeName": "Collector Store",
+      "price": 167.99,
+      "shipping": 0,
+      "landedPrice": 167.99,
+      "compPrice": 174.99,
+      "discountPct": 4,
+      "savingsDollars": 7,
+      "conditionOrGrade": "Raw Single",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://collectorstore.com/products/pokemon-scarlet-violet-shrouded-fable-kingdra-ex-special-illustration-collection",
+      "itemId": "52126938333352",
+      "image": "https://cdn.shopify.com/s/files/1/0653/5646/4296/files/pokemon-scarlet-violet-shrouded-fable-kingdra-ex-special-illustration-collection-see-description-109652.png?v=1744229137",
+      "updatedAt": 1794035624413
+    },
+    "Double Infinity Gaming::53014656319804": {
+      "id": "Double Infinity Gaming::53014656319804",
+      "cardKey": "mega moonlit gengar tin mega gengar::single::raw single",
+      "title": "Pokemon Tcg: Mega Moonlit Gengar Tin Mega Gengar ex",
+      "storeName": "Double Infinity Gaming",
+      "price": 24.99,
+      "shipping": 4.99,
+      "landedPrice": 29.98,
+      "compPrice": 24.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "Raw Single",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://doubleinfinitygaming.com/products/pokemon-tcg-mega-moonlit-tin-presale-expected-release-date-june-5th-2026",
+      "itemId": "53014656319804",
+      "image": "https://cdn.shopify.com/s/files/1/0732/1311/6732/files/Lorriane_826d1de8-49aa-4786-aec6-df0240b811dc.jpg?v=1777317758",
+      "updatedAt": 1794035624741
+    },
+    "Double Infinity Gaming::53196062523708": {
+      "id": "Double Infinity Gaming::53196062523708",
+      "cardKey": "mega evolution ascended heroes tin mega::single::raw single",
+      "title": "Pokemon Tcg: Mega Evolution: Ascended Heroes Tin Mega Emboar ex",
+      "storeName": "Double Infinity Gaming",
+      "price": 49.99,
+      "shipping": 4.99,
+      "landedPrice": 54.98,
+      "compPrice": 49.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "Raw Single",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://doubleinfinitygaming.com/products/pokemon-tcg-mega-evolution-ascended-heroes-tin-presale-expected-release-date-august-28th-2026",
+      "itemId": "53196062523708",
+      "image": "https://cdn.shopify.com/s/files/1/0732/1311/6732/files/Pokemon-TCG-Mega-Evolution_Ascended-Heroes-Tin-Mega-Emboar_EN-1206x1500-3d8f6f2-1.jpg?v=1783539128",
+      "updatedAt": 1794035624743
+    },
+    "Double Infinity Gaming::53196062556476": {
+      "id": "Double Infinity Gaming::53196062556476",
+      "cardKey": "mega evolution ascended heroes tin mega::single::raw single",
+      "title": "Pokemon Tcg: Mega Evolution: Ascended Heroes Tin Mega Feraligatr ex",
+      "storeName": "Double Infinity Gaming",
+      "price": 49.99,
+      "shipping": 4.99,
+      "landedPrice": 54.98,
+      "compPrice": 49.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "Raw Single",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://doubleinfinitygaming.com/products/pokemon-tcg-mega-evolution-ascended-heroes-tin-presale-expected-release-date-august-28th-2026",
+      "itemId": "53196062556476",
+      "image": "https://cdn.shopify.com/s/files/1/0732/1311/6732/files/Pokemon-TCG-Mega-Evolution_Ascended-Heroes-Tin-Mega-Emboar_EN-1206x1500-3d8f6f2-1.jpg?v=1783539128",
+      "updatedAt": 1794035624745
+    },
+    "Double Infinity Gaming::53196062589244": {
+      "id": "Double Infinity Gaming::53196062589244",
+      "cardKey": "mega evolution ascended heroes tin mega::single::raw single",
+      "title": "Pokemon Tcg: Mega Evolution: Ascended Heroes Tin Mega Meganium ex",
+      "storeName": "Double Infinity Gaming",
+      "price": 49.99,
+      "shipping": 4.99,
+      "landedPrice": 54.98,
+      "compPrice": 49.99,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "Raw Single",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://doubleinfinitygaming.com/products/pokemon-tcg-mega-evolution-ascended-heroes-tin-presale-expected-release-date-august-28th-2026",
+      "itemId": "53196062589244",
+      "image": "https://cdn.shopify.com/s/files/1/0732/1311/6732/files/Pokemon-TCG-Mega-Evolution_Ascended-Heroes-Tin-Mega-Emboar_EN-1206x1500-3d8f6f2-1.jpg?v=1783539128",
+      "updatedAt": 1794035624747
+    },
+    "Knight & Day Games::45074249744407": {
+      "id": "Knight & Day Games::45074249744407",
+      "cardKey": "scorbunny on the ball 004/005 futsal::004/005::nm (raw single)",
+      "title": "Scorbunny on the Ball - 004/005 (Pokemon Futsal) 4/5 - Miscellaneous Cards & Products Near Mint",
+      "storeName": "Knight & Day Games",
+      "price": 64,
+      "shipping": 4.99,
+      "landedPrice": 68.99,
+      "compPrice": 64,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "004/005",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://knightanddaygames.com/products/scorbunny-on-the-ball-004-005-pokemon-futsal-4-5-miscellaneous-cards-products",
+      "itemId": "45074249744407",
+      "image": "https://cdn.shopify.com/s/files/1/2301/7769/files/248016.jpg?v=1776962086",
+      "updatedAt": 1794035625748
+    },
+    "Knight & Day Games::42148088741911": {
+      "id": "Knight & Day Games::42148088741911",
+      "cardKey": "center lady full art 185/185 swsh04::185/185::nm (raw single)",
+      "title": "Pokemon Center Lady (Full Art) 185/185 - SWSH04 Vivid Voltage Holofoil Near Mint",
+      "storeName": "Knight & Day Games",
+      "price": 21,
+      "shipping": 4.99,
+      "landedPrice": 25.99,
+      "compPrice": 21,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "185/185",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://knightanddaygames.com/products/pokemon-center-lady-full-art-185-185-swsh04-vivid-voltage-holofoil",
+      "itemId": "42148088741911",
+      "image": "https://cdn.shopify.com/s/files/1/2301/7769/files/226545_81c9208e-e4cc-450a-a627-d1b7f6610265.jpg?v=1775691635",
+      "updatedAt": 1794035625780
+    },
+    "Knight & Day Games::45074355191831": {
+      "id": "Knight & Day Games::45074355191831",
+      "cardKey": "bulbasaur day 2026 1 miscellaneous cards::single::lp (raw single)",
+      "title": "Bulbasaur (Pokemon Day 2026) 1 - Miscellaneous Cards & Products Holofoil Lightly Played",
+      "storeName": "Knight & Day Games",
+      "price": 44.2,
+      "shipping": 4.99,
+      "landedPrice": 49.19,
+      "compPrice": 44.2,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "LP (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://knightanddaygames.com/products/bulbasaur-pokemon-day-2026-1-miscellaneous-cards-products-holofoil",
+      "itemId": "45074355191831",
+      "image": "https://cdn.shopify.com/s/files/1/2301/7769/files/678169.jpg?v=1776962129",
+      "updatedAt": 1794035625881
+    },
+    "Knight & Day Games::42149175263255": {
+      "id": "Knight & Day Games::42149175263255",
+      "cardKey": "radiant charizard 11/78 go holofoil::11/78::nm (raw single)",
+      "title": "Radiant Charizard 11/78 - Pokemon GO Holofoil Near Mint",
+      "storeName": "Knight & Day Games",
+      "price": 21.5,
+      "shipping": 4.99,
+      "landedPrice": 26.49,
+      "compPrice": 21.5,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "11/78",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://knightanddaygames.com/products/radiant-charizard-11-78-pokemon-go-holofoil",
+      "itemId": "42149175263255",
+      "image": "https://cdn.shopify.com/s/files/1/2301/7769/files/274467.jpg?v=1775691406",
+      "updatedAt": 1794035625890
+    },
+    "Knight & Day Games::42149168742423": {
+      "id": "Knight & Day Games::42149168742423",
+      "cardKey": "mewtwo vstar 79 secret 79/78 go::79/78::nm (raw single)",
+      "title": "Mewtwo VSTAR (79) (Secret) 79/78 - Pokemon GO Holofoil Near Mint",
+      "storeName": "Knight & Day Games",
+      "price": 52.5,
+      "shipping": 4.99,
+      "landedPrice": 57.49,
+      "compPrice": 52.5,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "79/78",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://knightanddaygames.com/products/mewtwo-vstar-79-secret-79-78-pokemon-go-holofoil",
+      "itemId": "42149168742423",
+      "image": "https://cdn.shopify.com/s/files/1/2301/7769/files/277011_85844bee-54bd-4a01-873e-5af42118f819.jpg?v=1775691707",
+      "updatedAt": 1794035625906
+    },
+    "Knight & Day Games::42147659743255": {
+      "id": "Knight & Day Games::42147659743255",
+      "cardKey": "miraidon 013 center exclusive 13 sv::single::nm (raw single)",
+      "title": "Miraidon - 013 (Pokemon Center Exclusive) 13 - SV Scarlet & Violet Promo Cards Holofoil Near Mint",
+      "storeName": "Knight & Day Games",
+      "price": 67,
+      "shipping": 4.99,
+      "landedPrice": 71.99,
+      "compPrice": 67,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://knightanddaygames.com/products/miraidon-013-pokemon-center-exclusive-13-sv-scarlet-violet-promo-cards-holofoil",
+      "itemId": "42147659743255",
+      "image": "https://cdn.shopify.com/s/files/1/2301/7769/files/490730.jpg?v=1775691725",
+      "updatedAt": 1794035625958
+    },
+    "Knight & Day Games::45439957041175": {
+      "id": "Knight & Day Games::45439957041175",
+      "cardKey": "zarude 088 center exclusive 88 me::single::nm (raw single)",
+      "title": "Zarude - 088 (Pokemon Center Exclusive) 88 - ME Mega Evolution Promo Holofoil Near Mint",
+      "storeName": "Knight & Day Games",
+      "price": 23,
+      "shipping": 4.99,
+      "landedPrice": 27.99,
+      "compPrice": 23,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://knightanddaygames.com/products/zarude-088-pokemon-center-exclusive-88-me-mega-evolution-promo-holofoil",
+      "itemId": "45439957041175",
+      "image": "https://cdn.shopify.com/s/files/1/2301/7769/files/706199.jpg?v=1790079792",
+      "updatedAt": 1794035626060
+    },
+    "Knight & Day Games::45439954485271": {
+      "id": "Knight & Day Games::45439954485271",
+      "cardKey": "fennekin 080 center exclusive 80 me::single::nm (raw single)",
+      "title": "Fennekin - 080 (Pokemon Center Exclusive) 80 - ME Mega Evolution Promo Holofoil Near Mint",
+      "storeName": "Knight & Day Games",
+      "price": 33,
+      "shipping": 4.99,
+      "landedPrice": 37.99,
+      "compPrice": 33,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://knightanddaygames.com/products/fennekin-080-pokemon-center-exclusive-80-me-mega-evolution-promo-holofoil",
+      "itemId": "45439954485271",
+      "image": "https://cdn.shopify.com/s/files/1/2301/7769/files/694695.jpg?v=1787735156",
+      "updatedAt": 1794035626066
+    },
+    "Knight & Day Games::45071571157015": {
+      "id": "Knight & Day Games::45071571157015",
+      "cardKey": "tyrunt 070 center exclusive 70 me::single::nm (raw single)",
+      "title": "Tyrunt - 070 (Pokemon Center Exclusive) 70 - ME Mega Evolution Promo Holofoil Near Mint",
+      "storeName": "Knight & Day Games",
+      "price": 31,
+      "shipping": 4.99,
+      "landedPrice": 35.99,
+      "compPrice": 31,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://knightanddaygames.com/products/tyrunt-070-pokemon-center-exclusive-70-me-mega-evolution-promo-holofoil",
+      "itemId": "45071571157015",
+      "image": "https://cdn.shopify.com/s/files/1/2301/7769/files/685563_8c0129ef-2539-4e8c-8157-6d3953fafe24.jpg?v=1776875318",
+      "updatedAt": 1794035626382
+    },
+    "Knight & Day Games::44840694415383": {
+      "id": "Knight & Day Games::44840694415383",
+      "cardKey": "n s zekrom 031 center exclusive::single::nm (raw single)",
+      "title": "N's Zekrom - 031 (Pokemon Center Exclusive) 31 - ME Mega Evolution Promo Holofoil Near Mint",
+      "storeName": "Knight & Day Games",
+      "price": 56,
+      "shipping": 4.99,
+      "landedPrice": 60.99,
+      "compPrice": 56,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://knightanddaygames.com/products/ns-zekrom-031-pokemon-center-exclusive-31-me-mega-evolution-promo-holofoil",
+      "itemId": "44840694415383",
+      "image": "https://cdn.shopify.com/s/files/1/2301/7769/files/680481_8716994c-f37f-47e7-a212-ba07207c1d4c.jpg?v=1775691508",
+      "updatedAt": 1794035626386
+    },
+    "Knight & Day Games::43509957230615": {
+      "id": "Knight & Day Games::43509957230615",
+      "cardKey": "riolu 010 center exclusive 10 me::single::nm (raw single)",
+      "title": "Riolu - 010 (Pokemon Center Exclusive) 10 - ME Mega Evolution Promo Holofoil Near Mint",
+      "storeName": "Knight & Day Games",
+      "price": 62.5,
+      "shipping": 4.99,
+      "landedPrice": 67.49,
+      "compPrice": 62.5,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://knightanddaygames.com/products/riolu-010-pokemon-center-exclusive-10-me-mega-evolution-promo-holofoil",
+      "itemId": "43509957230615",
+      "updatedAt": 1794035626398
+    },
+    "Knight & Day Games::43472020668439": {
+      "id": "Knight & Day Games::43472020668439",
+      "cardKey": "tornadus 210 center exclusive 210 sv::single::nm (raw single)",
+      "title": "Tornadus - 210 (Pokemon Center Exclusive) 210 - SV Scarlet & Violet Promo Cards Holofoil Near Mint",
+      "storeName": "Knight & Day Games",
+      "price": 16,
+      "shipping": 4.99,
+      "landedPrice": 20.99,
+      "compPrice": 16,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://knightanddaygames.com/products/tornadus-210-pokemon-center-exclusive-210-sv-scarlet-violet-promo-cards-holofoil",
+      "itemId": "43472020668439",
+      "image": "https://cdn.shopify.com/s/files/1/2301/7769/files/644836.jpg?v=1775869662",
+      "updatedAt": 1794035626410
+    },
+    "Knight & Day Games::42508573245463": {
+      "id": "Knight & Day Games::42508573245463",
+      "cardKey": "fan club 106 full art 106/106::106/106::nm (raw single)",
+      "title": "Pokemon Fan Club (106 Full Art) 106/106 - XY  Flashfire Holofoil Near Mint",
+      "storeName": "Knight & Day Games",
+      "price": 28,
+      "shipping": 4.99,
+      "landedPrice": 32.99,
+      "compPrice": 28,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "106/106",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://knightanddaygames.com/products/pokemon-fan-club-106-full-art-106-106-xy-flashfire-holofoil",
+      "itemId": "42508573245463",
+      "image": "https://cdn.shopify.com/s/files/1/2301/7769/files/91244_7adb8a0a-f0ee-40ed-b431-eac3015ff240.jpg?v=1775869655",
+      "updatedAt": 1794035626427
+    },
+    "Knight & Day Games::42149169594391": {
+      "id": "Knight & Day Games::42149169594391",
+      "cardKey": "numel peelable ditto 13 go holofoil::single::nm (raw single)",
+      "title": "Numel (Peelable Ditto) 13 - Pokemon GO Reverse Holofoil Near Mint",
+      "storeName": "Knight & Day Games",
+      "price": 16.5,
+      "shipping": 4.99,
+      "landedPrice": 21.49,
+      "compPrice": 16.5,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://knightanddaygames.com/products/numel-peelable-ditto-13-pokemon-go-reverse-holofoil",
+      "itemId": "42149169594391",
+      "image": "https://cdn.shopify.com/s/files/1/2301/7769/files/277791.jpg?v=1775691531",
+      "updatedAt": 1794035626459
+    },
+    "Knight & Day Games::42149153636375": {
+      "id": "Knight & Day Games::42149153636375",
+      "cardKey": "bidoof peelable ditto 59 go holofoil::single::nm (raw single)",
+      "title": "Bidoof (Peelable Ditto) 59 - Pokemon GO Reverse Holofoil Near Mint",
+      "storeName": "Knight & Day Games",
+      "price": 19.5,
+      "shipping": 4.99,
+      "landedPrice": 24.49,
+      "compPrice": 19.5,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://knightanddaygames.com/products/bidoof-peelable-ditto-59-pokemon-go-reverse-holofoil",
+      "itemId": "42149153636375",
+      "image": "https://cdn.shopify.com/s/files/1/2301/7769/files/277788.jpg?v=1775687335",
+      "updatedAt": 1794035626461
+    },
+    "Knight & Day Games::42149153669143": {
+      "id": "Knight & Day Games::42149153669143",
+      "cardKey": "bidoof peelable ditto 59 go holofoil::single::lp (raw single)",
+      "title": "Bidoof (Peelable Ditto) 59 - Pokemon GO Reverse Holofoil Lightly Played",
+      "storeName": "Knight & Day Games",
+      "price": 16.57,
+      "shipping": 4.99,
+      "landedPrice": 21.56,
+      "compPrice": 16.57,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "LP (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://knightanddaygames.com/products/bidoof-peelable-ditto-59-pokemon-go-reverse-holofoil",
+      "itemId": "42149153669143",
+      "image": "https://cdn.shopify.com/s/files/1/2301/7769/files/277788.jpg?v=1775687335",
+      "updatedAt": 1794035626463
+    },
+    "Knight & Day Games::42147672817687": {
+      "id": "Knight & Day Games::42147672817687",
+      "cardKey": "pecharunt 129 center exclusive 129 sv::single::lp (raw single)",
+      "title": "Pecharunt - 129 (Pokemon Center Exclusive) 129 - SV Scarlet & Violet Promo Cards Holofoil Lightly Played",
+      "storeName": "Knight & Day Games",
+      "price": 19.13,
+      "shipping": 4.99,
+      "landedPrice": 24.12,
+      "compPrice": 19.13,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "LP (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://knightanddaygames.com/products/pecharunt-129-pokemon-center-exclusive-129-sv-scarlet-violet-promo-cards-holofoil",
+      "itemId": "42147672817687",
+      "image": "https://cdn.shopify.com/s/files/1/2301/7769/files/573720.jpg?v=1775691549",
+      "updatedAt": 1794035626526
+    },
+    "Poke-Collect::57992169226423": {
+      "id": "Poke-Collect::57992169226423",
+      "cardKey": "lugia v 110 s12 paradigm trigger::#110::psa 10",
+      "title": "Lugia V #110 S12: Paradigm Trigger Japanese PSA 10",
+      "storeName": "Poke-Collect",
+      "price": 995,
+      "shipping": 0,
+      "landedPrice": 995,
+      "compPrice": 995,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "PSA 10",
+      "cardNumber": "#110",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/lugia-v-110-s12-paradigm-trigger-japanese-psa-10-113623518",
+      "itemId": "57992169226423",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/FFMFnWUCQkKrZyiNgPoKNQ.jpg?v=1793824716",
+      "updatedAt": 1794035626716
+    },
+    "Poke-Collect::57992168276151": {
+      "id": "Poke-Collect::57992168276151",
+      "cardKey": "gengar mimikyu gx 038 sm9 tag::sm9::psa 10",
+      "title": "Gengar & Mimikyu GX #038 SM9: Tag Bolt Japanese PSA 10",
+      "storeName": "Poke-Collect",
+      "price": 490,
+      "shipping": 0,
+      "landedPrice": 490,
+      "compPrice": 490,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "PSA 10",
+      "cardNumber": "SM9",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/gengar-mimikyu-gx-038-sm9-tag-bolt-japanese-psa-10-167923221",
+      "itemId": "57992168276151",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/Tu9NzBV810itmv5biwl7vg.jpg?v=1793824709",
+      "updatedAt": 1794035626718
+    },
+    "Poke-Collect::57992168046775": {
+      "id": "Poke-Collect::57992168046775",
+      "cardKey": "pikachu zekrom gx 031 sm9 tag::sm9::psa 10",
+      "title": "Pikachu & Zekrom GX #031 SM9: Tag Bolt Japanese PSA 10",
+      "storeName": "Poke-Collect",
+      "price": 122,
+      "shipping": 4.99,
+      "landedPrice": 126.99,
+      "compPrice": 122,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "PSA 10",
+      "cardNumber": "SM9",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/pikachu-zekrom-gx-031-sm9-tag-bolt-japanese-psa-10-167923220",
+      "itemId": "57992168046775",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/D2GZRMUbhEKp7ekk4rj-Lg.jpg?v=1793824707",
+      "updatedAt": 1794035626720
+    },
+    "Poke-Collect::57985222344887": {
+      "id": "Poke-Collect::57985222344887",
+      "cardKey": "garganacl 147 mega base set tag::#147::raw single",
+      "title": "Garganacl #147 Mega Base Set TAG 10",
+      "storeName": "Poke-Collect",
+      "price": 33,
+      "shipping": 4.99,
+      "landedPrice": 37.99,
+      "compPrice": 33,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "Raw Single",
+      "cardNumber": "#147",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/garganacl-147-mega-base-set-tag-10-w7689145",
+      "itemId": "57985222344887",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/W7689145_Slabbed_1x1_FRONT.jpg?v=1793771062",
+      "updatedAt": 1794035626721
+    },
+    "Poke-Collect::57985222246583": {
+      "id": "Poke-Collect::57985222246583",
+      "cardKey": "mega kangaskhan ex 089 mega m::#089::raw single",
+      "title": "Mega Kangaskhan EX #089 Mega M. Symphonia Japanese TAG 10",
+      "storeName": "Poke-Collect",
+      "price": 60,
+      "shipping": 4.99,
+      "landedPrice": 64.99,
+      "compPrice": 60,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "Raw Single",
+      "cardNumber": "#089",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/mega-kangaskhan-ex-089-mega-m-symphonia-japanese-tag-10-c8197339",
+      "itemId": "57985222246583",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/C8197339_Slabbed_1x1_FRONT.jpg?v=1793771061",
+      "updatedAt": 1794035626723
+    },
+    "Poke-Collect::57985222213815": {
+      "id": "Poke-Collect::57985222213815",
+      "cardKey": "n s plot 173 black bolt::#173::raw single",
+      "title": "N's Plot #173 Black Bolt Japanese TAG 10",
+      "storeName": "Poke-Collect",
+      "price": 76,
+      "shipping": 4.99,
+      "landedPrice": 80.99,
+      "compPrice": 76,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "Raw Single",
+      "cardNumber": "#173",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/ns-plot-173-black-bolt-japanese-tag-10-y3042221",
+      "itemId": "57985222213815",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/Y3042221_Slabbed_1x1_FRONT.jpg?v=1793771058",
+      "updatedAt": 1794035626724
+    },
+    "Poke-Collect::57985222148279": {
+      "id": "Poke-Collect::57985222148279",
+      "cardKey": "espeon vmax sword shield evolving skies::single::raw single",
+      "title": "Espeon VMAX Sword & Shield Evolving Skies TAG 10",
+      "storeName": "Poke-Collect",
+      "price": 115,
+      "shipping": 4.99,
+      "landedPrice": 119.99,
+      "compPrice": 115,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "Raw Single",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/espeon-vmax-sword-shield-evolving-skies-tag-10-x8830067",
+      "itemId": "57985222148279",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/X8830067_Slabbed_1x1_FRONT.jpg?v=1793771054",
+      "updatedAt": 1794035626725
+    },
+    "Poke-Collect::57984563183799": {
+      "id": "Poke-Collect::57984563183799",
+      "cardKey": "glaceon vmax 025 s6a eevee heroes::#025::psa 10",
+      "title": "Glaceon VMAX #025 S6a: Eevee Heroes Japanese PSA 10",
+      "storeName": "Poke-Collect",
+      "price": 55,
+      "shipping": 4.99,
+      "landedPrice": 59.99,
+      "compPrice": 55,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "PSA 10",
+      "cardNumber": "#025",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/glaceon-vmax-025-s6a-eevee-heroes-japanese-psa-10-102291550",
+      "itemId": "57984563183799",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/24lNvQTcxUKxgHE6euOScA.jpg?v=1793761988",
+      "updatedAt": 1794035626728
+    },
+    "Poke-Collect::57984563052727": {
+      "id": "Poke-Collect::57984563052727",
+      "cardKey": "tatsugiri 112 sv6 transformation mask japanese::sv6::cgc 10",
+      "title": "Tatsugiri #112 SV6: Transformation Mask Japanese CGC 10",
+      "storeName": "Poke-Collect",
+      "price": 41,
+      "shipping": 4.99,
+      "landedPrice": 45.99,
+      "compPrice": 41,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "CGC 10",
+      "cardNumber": "SV6",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/tatsugiri-112-sv6-transformation-mask-japanese-cgc-10-6022972031",
+      "itemId": "57984563052727",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/CAR6022972-031_OBV.jpg?v=1793761985",
+      "updatedAt": 1794035626730
+    },
+    "Poke-Collect::57984230031543": {
+      "id": "Poke-Collect::57984230031543",
+      "cardKey": "computer error 016 black star promos::#016::cgc 9",
+      "title": "Computer Error #016 Black Star Promos CGC 9",
+      "storeName": "Poke-Collect",
+      "price": 40,
+      "shipping": 4.99,
+      "landedPrice": 44.99,
+      "compPrice": 40,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "CGC 9",
+      "cardNumber": "#016",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/computer-error-016-black-star-promos-cgc-9-6027468099",
+      "itemId": "57984230031543",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/CAR6027468-099_OBV.jpg?v=1793748932",
+      "updatedAt": 1794035626732
+    },
+    "Poke-Collect::57984229966007": {
+      "id": "Poke-Collect::57984229966007",
+      "cardKey": "dragonite v 078 go s10b japanese::#078::cgc 10",
+      "title": "Dragonite V #078 GO - s10b Japanese CGC 10",
+      "storeName": "Poke-Collect",
+      "price": 31,
+      "shipping": 4.99,
+      "landedPrice": 35.99,
+      "compPrice": 31,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "CGC 10",
+      "cardNumber": "#078",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/dragonite-v-078-go-s10b-japanese-cgc-10-6052037036",
+      "itemId": "57984229966007",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/CAR6052037-036_OBV.jpg?v=1793748930",
+      "updatedAt": 1794035626734
+    },
+    "Poke-Collect::57984229933239": {
+      "id": "Poke-Collect::57984229933239",
+      "cardKey": "walking wake ex 235 high class::#235::cgc 10",
+      "title": "Walking Wake ex #235 High Class Pack: Terastal Fest ex Japanese CGC 10",
+      "storeName": "Poke-Collect",
+      "price": 16,
+      "shipping": 4.99,
+      "landedPrice": 20.99,
+      "compPrice": 16,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "CGC 10",
+      "cardNumber": "#235",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/walking-wake-ex-235-high-class-pack-terastal-fest-ex-japanese-cgc-10-6052024008",
+      "itemId": "57984229933239",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/CAR6052024-008_OBV.jpg?v=1793748928",
+      "updatedAt": 1794035626736
+    },
+    "Poke-Collect::57984228622519": {
+      "id": "Poke-Collect::57984228622519",
+      "cardKey": "ditto 197 vstar universe s12a japanese::#197::cgc 10",
+      "title": "Ditto #197 VSTAR Universe - s12a Japanese CGC 10",
+      "storeName": "Poke-Collect",
+      "price": 26,
+      "shipping": 4.99,
+      "landedPrice": 30.99,
+      "compPrice": 26,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "CGC 10",
+      "cardNumber": "#197",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/ditto-197-vstar-universe-s12a-japanese-cgc-10-6014678052",
+      "itemId": "57984228622519",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/CAR6014678-052_OBV.jpg?v=1793748918",
+      "updatedAt": 1794035626738
+    },
+    "Poke-Collect::57984228589751": {
+      "id": "Poke-Collect::57984228589751",
+      "cardKey": "ditto 197 vstar universe s12a japanese::#197::cgc 10",
+      "title": "Ditto #197 VSTAR Universe - s12a Japanese CGC 10 Pristine",
+      "storeName": "Poke-Collect",
+      "price": 37,
+      "shipping": 4.99,
+      "landedPrice": 41.99,
+      "compPrice": 37,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "CGC 10",
+      "cardNumber": "#197",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/ditto-197-vstar-universe-s12a-japanese-cgc-10-pristine-6014688287",
+      "itemId": "57984228589751",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/CAR6014688-287_OBV.jpg?v=1793748916",
+      "updatedAt": 1794035626739
+    },
+    "Poke-Collect::57984228458679": {
+      "id": "Poke-Collect::57984228458679",
+      "cardKey": "greninja swsh144 black star promos sword::swsh144::cgc 9",
+      "title": "Greninja ★ #SWSH144 Black Star Promos - Sword & Shield CGC 9",
+      "storeName": "Poke-Collect",
+      "price": 71,
+      "shipping": 4.99,
+      "landedPrice": 75.99,
+      "compPrice": 71,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "CGC 9",
+      "cardNumber": "SWSH144",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/greninja-swsh144-black-star-promos-sword-shield-cgc-9-6023286020",
+      "itemId": "57984228458679",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/CAR6023286-020_OBV.jpg?v=1793748911",
+      "updatedAt": 1794035626742
+    },
+    "Poke-Collect::57984228425911": {
+      "id": "Poke-Collect::57984228425911",
+      "cardKey": "mega gardevoir ex 032 mega evolution::#032::cgc 10",
+      "title": "Mega Gardevoir ex #032 Mega Evolution Black Star Promos CGC 10",
+      "storeName": "Poke-Collect",
+      "price": 25,
+      "shipping": 4.99,
+      "landedPrice": 29.99,
+      "compPrice": 25,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "CGC 10",
+      "cardNumber": "#032",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/mega-gardevoir-ex-032-mega-evolution-black-star-promos-cgc-10-6163545211",
+      "itemId": "57984228425911",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/CAR6163545-211_OBV.jpg?v=1793748909",
+      "updatedAt": 1794035626743
+    },
+    "Poke-Collect::57984228393143": {
+      "id": "Poke-Collect::57984228393143",
+      "cardKey": "mega kangaskhan ex 089 mega symphonia::#089::cgc 10",
+      "title": "Mega Kangaskhan ex #089 Mega Symphonia - M1S Japanese CGC 10",
+      "storeName": "Poke-Collect",
+      "price": 38,
+      "shipping": 4.99,
+      "landedPrice": 42.99,
+      "compPrice": 38,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "CGC 10",
+      "cardNumber": "#089",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/mega-kangaskhan-ex-089-mega-symphonia-m1s-japanese-cgc-10-6138764059",
+      "itemId": "57984228393143",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/CAR6138764-059_OBV.jpg?v=1793748906",
+      "updatedAt": 1794035626744
+    },
+    "Poke-Collect::57984119636151": {
+      "id": "Poke-Collect::57984119636151",
+      "cardKey": "lillie s ribombee 164 journey together::#164::psa 10",
+      "title": "Lillie's Ribombee #164 Journey Together PSA 10",
+      "storeName": "Poke-Collect",
+      "price": 69,
+      "shipping": 4.99,
+      "landedPrice": 73.99,
+      "compPrice": 69,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "PSA 10",
+      "cardNumber": "#164",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/lillies-ribombee-164-journey-together-psa-10-115713806",
+      "itemId": "57984119636151",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/fvSE_YUHfUajrnkLxM59GQ.jpg?v=1793747113",
+      "updatedAt": 1794035626745
+    },
+    "Poke-Collect::57984119472311": {
+      "id": "Poke-Collect::57984119472311",
+      "cardKey": "mega sableye tyranitar gx 126 sun::#126::psa 10",
+      "title": "Mega Sableye & Tyranitar GX #126 Sun & Moon Unified Minds PSA 10",
+      "storeName": "Poke-Collect",
+      "price": 300,
+      "shipping": 0,
+      "landedPrice": 300,
+      "compPrice": 300,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "PSA 10",
+      "cardNumber": "#126",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/mega-sableye-tyranitar-gx-126-sun-moon-unified-minds-psa-10-115713790",
+      "itemId": "57984119472311",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/CFZjXMusG0Soft8OfB9nVw.jpg?v=1793747111",
+      "updatedAt": 1794035626746
+    },
+    "Poke-Collect::57984119308471": {
+      "id": "Poke-Collect::57984119308471",
+      "cardKey": "salamence ex 187 journey together psa::#187::psa 10",
+      "title": "Salamence EX #187 Journey Together PSA 10",
+      "storeName": "Poke-Collect",
+      "price": 227,
+      "shipping": 0,
+      "landedPrice": 227,
+      "compPrice": 227,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "PSA 10",
+      "cardNumber": "#187",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/salamence-ex-187-journey-together-psa-10-115713810",
+      "itemId": "57984119308471",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/Ov9WyFJDBUS7IRYgZ5xdlQ.jpg?v=1793747108",
+      "updatedAt": 1794035626747
+    },
+    "Poke-Collect::57984119177399": {
+      "id": "Poke-Collect::57984119177399",
+      "cardKey": "articuno 102 sv9 battle partners japanese::sv9::psa 10",
+      "title": "Articuno #102 SV9-Battle Partners Japanese PSA 10",
+      "storeName": "Poke-Collect",
+      "price": 56,
+      "shipping": 4.99,
+      "landedPrice": 60.99,
+      "compPrice": 56,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "PSA 10",
+      "cardNumber": "SV9",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/articuno-102-sv9-battle-partners-japanese-psa-10-109716420",
+      "itemId": "57984119177399",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/xE6TBDgQdkSOsZXOd9-Iag.jpg?v=1793747106",
+      "updatedAt": 1794035626748
+    },
+    "Poke-Collect::57984119013559": {
+      "id": "Poke-Collect::57984119013559",
+      "cardKey": "acerola s mischief 183 mega evolution::#183::psa 10",
+      "title": "Acerola's Mischief #183 Mega Evolution PSA 10",
+      "storeName": "Poke-Collect",
+      "price": 65,
+      "shipping": 4.99,
+      "landedPrice": 69.99,
+      "compPrice": 65,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "PSA 10",
+      "cardNumber": "#183",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/acerolas-mischief-183-mega-evolution-psa-10-135996654",
+      "itemId": "57984119013559",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/VPViLo6doEOMYVWSXs5NPQ.jpg?v=1793747103",
+      "updatedAt": 1794035626749
+    },
+    "Poke-Collect::57984118882487": {
+      "id": "Poke-Collect::57984118882487",
+      "cardKey": "pikachu 001 sv p promo japanese::#001::psa 10",
+      "title": "Pikachu #001 SV-P Promo Japanese PSA 10",
+      "storeName": "Poke-Collect",
+      "price": 88,
+      "shipping": 4.99,
+      "landedPrice": 92.99,
+      "compPrice": 88,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "PSA 10",
+      "cardNumber": "#001",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/pikachu-001-sv-p-promo-japanese-psa-10-163711198",
+      "itemId": "57984118882487",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/fbOsuqr6cEei5j45LcOlYw.jpg?v=1793747101",
+      "updatedAt": 1794035626751
+    },
+    "Poke-Collect::57984118685879": {
+      "id": "Poke-Collect::57984118685879",
+      "cardKey": "mega venusaur ex 177 mega evolution::#177::psa 9",
+      "title": "Mega Venusaur EX #177 Mega Evolution PSA 9",
+      "storeName": "Poke-Collect",
+      "price": 107,
+      "shipping": 4.99,
+      "landedPrice": 111.99,
+      "compPrice": 107,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "PSA 9",
+      "cardNumber": "#177",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/mega-venusaur-ex-177-mega-evolution-psa-9-159777830",
+      "itemId": "57984118685879",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/lF72O8fC10CU2-RhNX1i5Q.jpg?v=1793747099",
+      "updatedAt": 1794035626753
+    },
+    "Poke-Collect::57984118554807": {
+      "id": "Poke-Collect::57984118554807",
+      "cardKey": "mega sharpedo ex 127 phantasmal flames::#127::psa 10",
+      "title": "Mega Sharpedo EX #127 Phantasmal Flames PSA 10",
+      "storeName": "Poke-Collect",
+      "price": 64,
+      "shipping": 4.99,
+      "landedPrice": 68.99,
+      "compPrice": 64,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "PSA 10",
+      "cardNumber": "#127",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/mega-sharpedo-ex-127-phantasmal-flames-psa-10-159777831",
+      "itemId": "57984118554807",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/HB9DfHaNFkiNM7muFjDeOg.jpg?v=1793747097",
+      "updatedAt": 1794035626755
+    },
+    "Poke-Collect::57984117899447": {
+      "id": "Poke-Collect::57984117899447",
+      "cardKey": "lucario vstar 291 sword shield black::#291::psa 9",
+      "title": "Lucario VSTAR #291 Sword & Shield Black Star Promos PSA 9",
+      "storeName": "Poke-Collect",
+      "price": 40,
+      "shipping": 4.99,
+      "landedPrice": 44.99,
+      "compPrice": 40,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "PSA 9",
+      "cardNumber": "#291",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/lucario-vstar-291-sword-shield-black-star-promos-psa-9-111524862",
+      "itemId": "57984117899447",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/D5E2d0v8b0OcGcV2beb89Q.jpg?v=1793747095",
+      "updatedAt": 1794035626756
+    },
+    "Poke-Collect::57984117440695": {
+      "id": "Poke-Collect::57984117440695",
+      "cardKey": "deoxys vstar gg46 sword and shield::gg46::psa 10",
+      "title": "Deoxys Vstar #GG46 Sword and Shield Crown Zenith PSA 10",
+      "storeName": "Poke-Collect",
+      "price": 200,
+      "shipping": 0,
+      "landedPrice": 200,
+      "compPrice": 200,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "PSA 10",
+      "cardNumber": "GG46",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/deoxys-vstar-gg46-sword-and-shield-crown-zenith-psa-10-132429891",
+      "itemId": "57984117440695",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/tD1wC1r4jki91-epaXGPNQ.jpg?v=1793747087",
+      "updatedAt": 1794035626757
+    },
+    "Poke-Collect::57983947178167": {
+      "id": "Poke-Collect::57983947178167",
+      "cardKey": "cynthia s garchomp ex 087 sv9a::#087::psa 10",
+      "title": "Cynthia's Garchomp ex #087 SV9a Japanese PSA 10",
+      "storeName": "Poke-Collect",
+      "price": 277,
+      "shipping": 0,
+      "landedPrice": 277,
+      "compPrice": 277,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "PSA 10",
+      "cardNumber": "#087",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/cynthias-garchomp-ex-087-sv9a-japanese-psa-10-126558784",
+      "itemId": "57983947178167",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/gcu-rDsxrUCfk8QPRkxsMA.jpg?v=1793744979",
+      "updatedAt": 1794035626759
+    },
+    "Poke-Collect::57983947014327": {
+      "id": "Poke-Collect::57983947014327",
+      "cardKey": "mega gengar ex 284 me ascended::#284::psa 9",
+      "title": "Mega Gengar ex #284 ME: Ascended Heroes PSA 9",
+      "storeName": "Poke-Collect",
+      "price": 817,
+      "shipping": 0,
+      "landedPrice": 817,
+      "compPrice": 817,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "PSA 9",
+      "cardNumber": "#284",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/mega-gengar-ex-284-me-ascended-heroes-psa-9-171574715",
+      "itemId": "57983947014327",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/bfj2_IbSnUOF_QE8oaLjFA.jpg?v=1793744977",
+      "updatedAt": 1794035626760
+    },
+    "Poke-Collect::57983946850487": {
+      "id": "Poke-Collect::57983946850487",
+      "cardKey": "pikachu ex 276 me ascended heroes::#276::psa 10",
+      "title": "Pikachu ex #276 ME: Ascended Heroes PSA 10",
+      "storeName": "Poke-Collect",
+      "price": 1277,
+      "shipping": 0,
+      "landedPrice": 1277,
+      "compPrice": 1277,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "PSA 10",
+      "cardNumber": "#276",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/pikachu-ex-276-me-ascended-heroes-psa-10-171574714",
+      "itemId": "57983946850487",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/31lE7ZhsrkaAk-ZOwOjC0w.jpg?v=1793744975",
+      "updatedAt": 1794035626761
+    },
+    "Poke-Collect::57983946162359": {
+      "id": "Poke-Collect::57983946162359",
+      "cardKey": "mega absol ex 180 me01 mega::#180::psa 9",
+      "title": "Mega Absol ex #180 ME01: Mega Evolution PSA 9",
+      "storeName": "Poke-Collect",
+      "price": 46,
+      "shipping": 4.99,
+      "landedPrice": 50.99,
+      "compPrice": 46,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "PSA 9",
+      "cardNumber": "#180",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/mega-absol-ex-180-me01-mega-evolution-psa-9-138448276",
+      "itemId": "57983946162359",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/mFtRmEWBp0ufQ1T34Vd0jA.jpg?v=1793744967",
+      "updatedAt": 1794035626763
+    },
+    "Poke-Collect::57983945703607": {
+      "id": "Poke-Collect::57983945703607",
+      "cardKey": "hydreigon ex 240 sv08 surging sparks::sv08::psa 9",
+      "title": "Hydreigon ex #240 SV08: Surging Sparks PSA 9",
+      "storeName": "Poke-Collect",
+      "price": 35,
+      "shipping": 4.99,
+      "landedPrice": 39.99,
+      "compPrice": 35,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "PSA 9",
+      "cardNumber": "SV08",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/hydreigon-ex-240-sv08-surging-sparks-psa-9-150687443",
+      "itemId": "57983945703607",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/lABc-tQ1HUGKqU612iuVhg.jpg?v=1793744963",
+      "updatedAt": 1794035626765
+    },
+    "Poke-Collect::57983945441463": {
+      "id": "Poke-Collect::57983945441463",
+      "cardKey": "sylveon vmax 075 swsh07 evolving skies::swsh07::psa 9",
+      "title": "Sylveon VMAX #075 SWSH07: Evolving Skies PSA 9",
+      "storeName": "Poke-Collect",
+      "price": 35,
+      "shipping": 4.99,
+      "landedPrice": 39.99,
+      "compPrice": 35,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "PSA 9",
+      "cardNumber": "SWSH07",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/sylveon-vmax-075-swsh07-evolving-skies-psa-9-132490440",
+      "itemId": "57983945441463",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/sgRPFaXJIES6zPMsWpEKnw.jpg?v=1793744961",
+      "updatedAt": 1794035626766
+    },
+    "Poke-Collect::57983944949943": {
+      "id": "Poke-Collect::57983944949943",
+      "cardKey": "eevee 173 sv scarlet violet promo::#173::psa 9",
+      "title": "Eevee #173 SV: Scarlet & Violet Promo Cards PSA 9",
+      "storeName": "Poke-Collect",
+      "price": 29,
+      "shipping": 4.99,
+      "landedPrice": 33.99,
+      "compPrice": 29,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "PSA 9",
+      "cardNumber": "#173",
+      "isSlab": true,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://poke-collect.com/products/eevee-173-sv-scarlet-violet-promo-cards-psa-9-125585227",
+      "itemId": "57983944949943",
+      "image": "https://cdn.shopify.com/s/files/1/0468/5299/7280/files/99_Z0yz0Dk2lJOXzR9S9bw.jpg?v=1793744959",
+      "updatedAt": 1794035626767
+    },
+    "MinMaxGames::45453085573294": {
+      "id": "MinMaxGames::45453085573294",
+      "cardKey": "pok mon shrouded fable ex special::single::raw single",
+      "title": "Pokémon Shrouded Fable ex Special Illustration Collection Greninja",
+      "storeName": "MinMaxGames",
+      "price": 190,
+      "shipping": 0,
+      "landedPrice": 190,
+      "compPrice": 190,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "Raw Single",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://minmaxgames.com/products/pokemon-shrouded-fable-ex-special-illustration-collection",
+      "itemId": "45453085573294",
+      "image": "https://cdn.shopify.com/s/files/1/0507/3263/0190/files/PokemonTCGScarletViolet--ShroudedFableGreninjaexSpecialCollection-Front_EN-3729x2778-d9bc1f5.jpg?v=1719593358",
+      "updatedAt": 1794035626826
+    },
+    "MinMaxGames::45453085606062": {
+      "id": "MinMaxGames::45453085606062",
+      "cardKey": "pok mon shrouded fable ex special::single::raw single",
+      "title": "Pokémon Shrouded Fable ex Special Illustration Collection Kingdra",
+      "storeName": "MinMaxGames",
+      "price": 185,
+      "shipping": 0,
+      "landedPrice": 185,
+      "compPrice": 190,
+      "discountPct": 3,
+      "savingsDollars": 5,
+      "conditionOrGrade": "Raw Single",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://minmaxgames.com/products/pokemon-shrouded-fable-ex-special-illustration-collection",
+      "itemId": "45453085606062",
+      "image": "https://cdn.shopify.com/s/files/1/0507/3263/0190/files/PokemonTCGScarletViolet--ShroudedFableGreninjaexSpecialCollection-Front_EN-3729x2778-d9bc1f5.jpg?v=1719593358",
+      "updatedAt": 1794035626827
+    },
+    "Game Grid Lehi::68018342232164": {
+      "id": "Game Grid Lehi::68018342232164",
+      "cardKey": "11/29 4pm one piece op18 sunday::11/29::raw single",
+      "title": "11/29 4pm One Piece OP18 Sunday Release Event Ticket Ticket",
+      "storeName": "Game Grid Lehi",
+      "price": 30,
+      "shipping": 4.99,
+      "landedPrice": 34.99,
+      "compPrice": 30,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "Raw Single",
+      "cardNumber": "11/29",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://store.gglehi.com/products/11-29-4pm-one-piece-op18-sunday-release-event-ticket",
+      "itemId": "68018342232164",
+      "image": "https://cdn.shopify.com/s/files/1/0273/0619/7092/files/01d17ce0-e120-4e39-988d-d98f426fbf25-1794010745901_2f7a6b98-0e2b-4f83-b908-93b7ea733334.webp?v=1794010820",
+      "updatedAt": 1794035627029
+    },
+    "Game Grid Lehi::68018340495460": {
+      "id": "Game Grid Lehi::68018340495460",
+      "cardKey": "11/23 7pm one piece op18 monday::11/23::raw single",
+      "title": "11/23 7pm One Piece OP18 Monday Release Event Ticket Ticket",
+      "storeName": "Game Grid Lehi",
+      "price": 30,
+      "shipping": 4.99,
+      "landedPrice": 34.99,
+      "compPrice": 30,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "Raw Single",
+      "cardNumber": "11/23",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://store.gglehi.com/products/11-23-7pm-one-piece-op18-sunday-release-event-ticket",
+      "itemId": "68018340495460",
+      "image": "https://cdn.shopify.com/s/files/1/0273/0619/7092/files/01d17ce0-e120-4e39-988d-d98f426fbf25-1794010745901_b3c236cc-d6d2-41a0-8584-a2f3b5aa4d80.webp?v=1794010791",
+      "updatedAt": 1794035627030
+    },
+    "Game Grid Lehi::68018303303780": {
+      "id": "Game Grid Lehi::68018303303780",
+      "cardKey": "14/04 star wars unlimited booster draft::14/04::raw single",
+      "title": "14/04 Star Wars Unlimited Booster Draft! Ticket Ticket",
+      "storeName": "Game Grid Lehi",
+      "price": 20,
+      "shipping": 4.99,
+      "landedPrice": 24.99,
+      "compPrice": 20,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "Raw Single",
+      "cardNumber": "14/04",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://store.gglehi.com/products/star-wars-unlimited-booster-draft-ticket-127",
+      "itemId": "68018303303780",
+      "image": "https://cdn.shopify.com/s/files/1/0273/0619/7092/files/a3f39f7e-0aec-46b1-a1ad-36ff205a6c0e-1721006462446_a8f4bb82-e5dc-40e0-b8a7-76e84dfbe8e7.png?v=1794009969",
+      "updatedAt": 1794035627032
+    },
+    "Game Grid Lehi::68017835540580": {
+      "id": "Game Grid Lehi::68017835540580",
+      "cardKey": "ekko boy who shattered time overnumbered::single::nm (raw single)",
+      "title": "Ekko, Boy Who Shattered Time (Overnumbered) [Radiance] Near Mint / English / Foil",
+      "storeName": "Game Grid Lehi",
+      "price": 60.41,
+      "shipping": 4.99,
+      "landedPrice": 65.4,
+      "compPrice": 60.41,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://store.gglehi.com/products/ekko-boy-who-shattered-time-overnumbered-radiance-722856",
+      "itemId": "68017835540580",
+      "image": "https://cdn.shopify.com/s/files/1/0273/0619/7092/files/722856_2ecf57a4ddac.jpg?v=1794003008",
+      "updatedAt": 1794035627034
+    },
+    "Game Grid Lehi::68017814339684": {
+      "id": "Game Grid Lehi::68017814339684",
+      "cardKey": "k sante pride of nazumah overnumbered::single::nm (raw single)",
+      "title": "K'Sante, Pride of Nazumah (Overnumbered) [Radiance] Near Mint / English / Foil",
+      "storeName": "Game Grid Lehi",
+      "price": 44.21,
+      "shipping": 4.99,
+      "landedPrice": 49.2,
+      "compPrice": 44.21,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://store.gglehi.com/products/k-sante-pride-of-nazumah-overnumbered-radiance-722312",
+      "itemId": "68017814339684",
+      "image": "https://cdn.shopify.com/s/files/1/0273/0619/7092/files/722312.jpg?v=1794002512",
+      "updatedAt": 1794035627036
+    },
+    "Game Grid Lehi::68017767252068": {
+      "id": "Game Grid Lehi::68017767252068",
+      "cardKey": "sett kingpin heartsteel overnumbered radiance /::single::nm (raw single)",
+      "title": "Sett, Kingpin (Heartsteel Overnumbered) [Radiance] Near Mint / English / Foil",
+      "storeName": "Game Grid Lehi",
+      "price": 65.62,
+      "shipping": 4.99,
+      "landedPrice": 70.61,
+      "compPrice": 65.62,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://store.gglehi.com/products/sett-kingpin-heartsteel-overnumbered-radiance-721357",
+      "itemId": "68017767252068",
+      "image": "https://cdn.shopify.com/s/files/1/0273/0619/7092/files/721357.jpg?v=1794001813",
+      "updatedAt": 1794035627038
+    },
+    "Game Grid Lehi::68017765285988": {
+      "id": "Game Grid Lehi::68017765285988",
+      "cardKey": "renekton butcher of the sands overnumbered::single::nm (raw single)",
+      "title": "Renekton, Butcher of the Sands (Overnumbered) [Vendetta] Near Mint / English / Foil",
+      "storeName": "Game Grid Lehi",
+      "price": 48.36,
+      "shipping": 4.99,
+      "landedPrice": 53.35,
+      "compPrice": 48.36,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "NM (Raw Single)",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://store.gglehi.com/products/renekton-butcher-of-the-sands-overnumbered-vendetta-706009",
+      "itemId": "68017765285988",
+      "image": "https://cdn.shopify.com/s/files/1/0273/0619/7092/files/706009_139cc89d7858.jpg?v=1794001793",
+      "updatedAt": 1794035627041
+    },
+    "Trading Card Market::47743143673908": {
+      "id": "Trading Card Market::47743143673908",
+      "cardKey": "mega greninja ex premium collection box::single::raw single",
+      "title": "Pokemon Mega Greninja Ex Premium Collection Box",
+      "storeName": "Trading Card Market",
+      "price": 45,
+      "shipping": 4.99,
+      "landedPrice": 49.99,
+      "compPrice": 45,
+      "discountPct": 0,
+      "savingsDollars": 0,
+      "conditionOrGrade": "Raw Single",
+      "cardNumber": "SINGLE",
+      "isSlab": false,
+      "isFavoriteMatch": false,
+      "isOffloadSnipe": false,
+      "url": "https://tradingcardmarket.com/products/pokemon-mega-greninja-ex-premium-collection-box",
+      "itemId": "47743143673908",
+      "image": "https://cdn.shopify.com/s/files/1/0596/9018/8852/files/PokemonMegaGreninjaExPremiumCollectionBox.jpg?v=1777314644",
+      "updatedAt": 1794035628173
+    }
+  }
+}

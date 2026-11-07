@@ -1323,6 +1323,12 @@
         <span id="autoLaunchState" class="font-mono-num text-slate-400 font-extrabold">OFF</span>
       </button>
 
+      <button onclick="sendRoundupDigestNow()" id="topSendDigestBtn" title="Dispatch the 4-Section DropBot Market &amp; Deal Roundup Digest to Discord right now"
+              class="top-ctrl-pill bg-emerald-500/20 hover:bg-emerald-500/35 text-emerald-200 border border-emerald-400/50 font-pokedex font-extrabold">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#10B981]"></span>
+        <span id="topSendDigestText">[SEND DIGEST NOW]</span>
+      </button>
+
       <button onclick="sweepLiveCompsGlobal()" id="sweepCompsBtn" title="Trigger live TCGPlayer + eBay market comp sweep and refresh radar"
               class="top-ctrl-pill bg-gradient-to-r from-cyan-500/25 to-blue-600/25 hover:from-cyan-500/40 hover:to-blue-600/40 text-cyan-100 border border-cyan-400/50">
         <span class="w-1.5 h-1.5 rounded-full bg-cyan-300"></span>
@@ -1719,6 +1725,48 @@
             </div>
           </div>
 
+          <!-- Capital Advisor Bar: $100 / $200 / $350 / $500+ Next Best Buy Allocator & Bleeding Caution Radar -->
+          <div id="capitalAdvisorCard" class="glass-card machined-card rounded-2xl p-5 space-y-4 border border-cyan-400/35" style="position: relative; z-index: 10;">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-white/10">
+              <div>
+                <div class="flex items-center gap-2.5 flex-wrap">
+                  <span class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#00F0FF]"></span>
+                  <h2 class="font-pokedex text-sm font-black uppercase tracking-wider text-white">
+                    ◈ ⟦ CAPITAL ADVISOR // NEXT BEST BUY &amp; AUTO-PILOT DIP BRAIN ⟧
+                  </h2>
+                  <span id="advisorFamilySummaryBadge" class="pokedex-badge px-2.5 py-0.5 rounded-full text-[10px] font-mono-num font-extrabold bg-purple-500/20 text-purple-200 border border-purple-400/40">
+                    RULE OF 3: 8 WALL • 0 DAD RIP • 0 LOGAN RIP
+                  </span>
+                </div>
+                <p class="text-[11px] text-slate-300 mt-0.5">
+                  Ranks the <strong class="text-emerald-300">Top 3 Smartest In-Stock Buys Right Now</strong> (where Family Completion &lt; 3/3) using real 14d/60d/90d rolling history alongside active <strong class="text-amber-300">Bleeding / Falling Knife</strong> sets to hold off on.
+                </p>
+              </div>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-[10px] font-pokedex font-bold uppercase tracking-wider text-slate-400 mr-1">Budget Ceiling:</span>
+                <button onclick="setAdvisorBudget(100)" id="advBudget_100" class="pokedex-badge px-2.5 py-1 rounded-lg text-[11px] font-mono-num font-bold bg-[#161329]/85 text-slate-200 border border-white/15 hover:text-white transition">$100</button>
+                <button onclick="setAdvisorBudget(200)" id="advBudget_200" class="pokedex-badge px-2.5 py-1 rounded-lg text-[11px] font-mono-num font-bold bg-[#161329]/85 text-slate-200 border border-white/15 hover:text-white transition">$200</button>
+                <button onclick="setAdvisorBudget(350)" id="advBudget_350" class="pokedex-badge px-2.5 py-1 rounded-lg text-[11px] font-mono-num font-extrabold bg-cyan-500 text-slate-950 shadow-[0_0_12px_rgba(0,240,255,0.35)] transition">$350</button>
+                <button onclick="setAdvisorBudget(500)" id="advBudget_500" class="pokedex-badge px-2.5 py-1 rounded-lg text-[11px] font-mono-num font-bold bg-[#161329]/85 text-slate-200 border border-white/15 hover:text-white transition">$500+</button>
+              </div>
+            </div>
+
+            <!-- Top 3 Smartest In-Stock Buys Grid -->
+            <div id="advisorTopBuysGrid" class="grid grid-cols-1 lg:grid-cols-3 gap-3.5"></div>
+
+            <!-- Bleeding / Falling Knife Caution Strip -->
+            <div id="advisorBleedingCautionWrap" class="pt-3 border-t border-white/10">
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="font-pokedex text-[11px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                  <span>Wait / Bleeding Down Caution List (14D Falling Floor or High-Supply Post-Launch Bleed)</span>
+                </span>
+                <span class="text-[10px] font-mono-num text-slate-400">Auto-Pilot pulls target -8% below shelf floor</span>
+              </div>
+              <div id="advisorBleedingList" class="grid grid-cols-1 md:grid-cols-3 gap-2.5"></div>
+            </div>
+          </div>
+
           <!-- Live In-Stock Deal Feed (Single-Row Header + Collector-Focused Quick Filter Pills) -->
           <div id="liveDealFeedCard" class="glass-card machined-card rounded-2xl p-5 space-y-4" style="position: relative; z-index: 10;">
             <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-white/10">
@@ -1783,6 +1831,50 @@
             </div>
 
             <div id="liveDealFeedGrid" class="live-deal-grid"></div>
+          </div>
+
+          <!-- Collapsible Quiet Singles & Favorites Offload Radar (Gyarados Watchlist — 100% Isolated from Sealed Alerts) -->
+          <div id="singlesRadarCard" class="glass-card machined-card rounded-2xl p-4 border border-cyan-400/25">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <button onclick="toggleSinglesRadarDrawer()" class="flex items-center gap-2.5 text-left group">
+                <span class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#00F0FF]"></span>
+                <span class="font-pokedex text-xs sm:text-sm font-black uppercase tracking-wider text-white group-hover:text-cyan-300 transition">
+                  ◈ ⟦ QUIET SINGLES &amp; FAVORITES OFFLOAD RADAR // GYARADOS WATCHLIST ⟧
+                </span>
+                <span id="singlesRadarCountBadge" class="pokedex-badge px-2.5 py-0.5 rounded-full text-[10px] font-mono-num font-extrabold bg-cyan-500/20 text-cyan-200 border border-cyan-400/40">100% Muted from Sealed Feed</span>
+                <span id="singlesRadarToggleLabel" class="text-[11px] font-mono-num px-2 py-0.5 rounded bg-white/10 text-cyan-300">Expand Search ▼</span>
+              </button>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <button onclick="quickSinglesFilter('Gyarados', false)" id="singlesPill_GYARADOS" class="pokedex-badge px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-cyan-500 text-slate-950 transition">
+                  ◈ GYARADOS
+                </button>
+                <button onclick="quickSinglesFilter('', true)" id="singlesPill_FAVORITES" class="pokedex-badge px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/85 text-amber-300 border border-amber-500/40 hover:bg-amber-500/20 transition">
+                  Favorites Only
+                </button>
+                <button onclick="quickSinglesFilter('', false)" id="singlesPill_ALL" class="pokedex-badge px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/85 text-slate-300 border border-white/15 hover:text-white transition">
+                  All Cached Singles (&ge;$15)
+                </button>
+              </div>
+            </div>
+
+            <div id="singlesRadarDrawerBody" class="hidden mt-4 pt-3.5 border-t border-white/10 space-y-3">
+              <div class="flex flex-col lg:flex-row items-stretch lg:items-center gap-2.5">
+                <div class="flex-1 flex items-center bg-[#0B0914]/90 border border-white/15 rounded-xl overflow-hidden focus-within:border-cyan-400">
+                  <input id="singlesSearchInput" type="text" value="Gyarados" placeholder="Search cached singles &amp; slabs (e.g. Gyarados, 225/198, PSA 10, Magikarp)..."
+                         onkeydown="if(event.key==='Enter') runSinglesSearch()"
+                         class="bg-transparent px-3 py-2 text-xs text-white w-full focus:outline-none" />
+                  <button onclick="runSinglesSearch()" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-extrabold shrink-0 transition">Search Singles</button>
+                </div>
+                <div class="flex items-center gap-2">
+                  <input id="singlesAddWatchInput" type="text" placeholder="Add Favorite Pokémon..."
+                         onkeydown="if(event.key==='Enter') addFavoritePokemonToWatchlist()"
+                         class="bg-[#0B0914]/90 border border-white/15 rounded-xl px-3 py-2 text-xs text-white w-44 focus:outline-none focus:border-cyan-400" />
+                  <button onclick="addFavoritePokemonToWatchlist()" class="px-3 py-2 rounded-xl bg-purple-500/20 hover:bg-purple-500/35 text-purple-200 border border-purple-400/40 text-xs font-extrabold whitespace-nowrap transition">+ Watchlist</button>
+                </div>
+              </div>
+              <div id="singlesWatchlistBar" class="flex items-center gap-1.5 flex-wrap text-[11px] text-slate-300"></div>
+              <div id="singlesResultsGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3"></div>
+            </div>
           </div>
         </section>
 
@@ -2345,6 +2437,8 @@
     };
     let activeBountyFormatTab = 'ETB';
     let activeBountyStoreFilter = '';
+    let activeAdvisorBudget = 350;
+    let nextBuyAdvisorData = null;
     let nearMissesList = [];
     let bestCurrentOffersMap = {};
     let shelfSpreadData = {
@@ -2362,7 +2456,7 @@
 
     async function loadAllState() {
       try {
-        const [polRes, telRes, lsRes, drRes, trRes, cvRes, mtRes, stRes, statRes, engRes] = await Promise.all([
+        const [polRes, telRes, lsRes, drRes, trRes, cvRes, mtRes, stRes, statRes, engRes, advRes] = await Promise.all([
           fetch('/api/policies'),
           fetch('/api/telemetry'),
           fetch('/api/live-stock'),
@@ -2372,7 +2466,8 @@
           fetch('/api/market-tape'),
           fetch('/api/settings'),
           fetch('/api/status'),
-          fetch('/api/engine-room')
+          fetch('/api/engine-room'),
+          fetch('/api/advisor/next-buy?budget=' + activeAdvisorBudget)
         ]);
 
         if (polRes.ok) policies = await polRes.json();
@@ -2402,6 +2497,12 @@
           if (statData && statData.shelfSpread) {
             shelfSpreadData = statData.shelfSpread;
           }
+          if (statData && statData.nextBuyAdvisor && !nextBuyAdvisorData) {
+            nextBuyAdvisorData = statData.nextBuyAdvisor;
+          }
+        }
+        if (advRes && advRes.ok) {
+          nextBuyAdvisorData = await advRes.json();
         }
         if (engRes && engRes.ok) {
           engineRoomData = await engRes.json();
@@ -2457,11 +2558,223 @@
 
     function renderAllActiveViews() {
       updateGlobalBadgesAndKPIs();
+      renderCapitalAdvisorBar();
       renderLiveCommandView();
       renderMarketIntelligenceBento();
       if (activeMainView === 'CONQUERED_VAULT') renderConqueredVaultView();
       if (activeMainView === 'TARGET_MATRIX') renderMatrixCatalog();
       if (activeMainView === 'ENGINE_ROOM') renderEngineRoomView();
+    }
+
+    function getSkuFamilyState(skuId, fallbackObj) {
+      const pol = policies.find(p => p.id === skuId) || fallbackObj || {};
+      const wallOwned = pol.wallOwned !== undefined ? Boolean(pol.wallOwned) : Boolean(pol.owned);
+      const dadRipOwned = Boolean(pol.dadRipOwned);
+      const loganRipOwned = Boolean(pol.loganRipOwned);
+      const completionCount = (wallOwned ? 1 : 0) + (dadRipOwned ? 1 : 0) + (loganRipOwned ? 1 : 0);
+      const fullyConquered = completionCount === 3;
+      const autoPilotEnabled = pol.autoPilotEnabled !== false;
+      const autoPilotCeiling = Number(pol.autoPilotCeiling || pol.effectiveTargetCeiling || pol.maxMarketBuyPrice || pol.msrpCeiling || 54.99);
+      let statusLabel = '0/3 (NEED WALL)';
+      let statusCls = 'bg-amber-500/20 text-amber-300 border-amber-400/45';
+      if (fullyConquered) {
+        statusLabel = '3/3 (COMPLETE)';
+        statusCls = 'bg-emerald-500/25 text-emerald-200 border-emerald-400/60';
+      } else if (completionCount >= 1) {
+        statusLabel = completionCount + '/3 (' + (wallOwned ? 'WALL LOCKED // NEED RIP' : 'NEED WALL') + ')';
+        statusCls = 'bg-cyan-500/20 text-cyan-200 border-cyan-400/50';
+      }
+      return {
+        wallOwned,
+        dadRipOwned,
+        loganRipOwned,
+        completionCount,
+        fullyConquered,
+        autoPilotEnabled,
+        autoPilotCeiling,
+        statusLabel,
+        statusCls
+      };
+    }
+
+    function renderFamilySlotsPillsHtml(skuId, fallbackObj, compact) {
+      if (!skuId) return '';
+      const st = getSkuFamilyState(skuId, fallbackObj);
+      const safeId = String(skuId).replace(/'/g, "\\'");
+      const padCls = compact ? 'px-1.5 py-0.5 text-[9px]' : 'px-2 py-0.5 text-[10px]';
+      const mkBtn = (slotKey, label, active, activeStyle) => {
+        const cls = active
+          ? activeStyle
+          : 'bg-black/45 text-slate-400 border-white/15 hover:text-white hover:border-white/30';
+        return '<button onclick="toggleSkuFamilySlot(\'' + safeId + '\', \'' + slotKey + '\', ' + (!active) + ', event)" title="Toggle ' + label + ' slot for Rule of 3 Family Completion" class="font-pokedex font-extrabold rounded border transition whitespace-nowrap ' + padCls + ' ' + cls + '">[' + label + (active ? ' ✓' : '') + ']</button>';
+      };
+      const allBtnCls = st.fullyConquered
+        ? 'bg-emerald-500 text-slate-950 border-emerald-300 shadow-[0_0_8px_rgba(16,185,129,0.4)]'
+        : 'bg-white/5 text-slate-300 border-white/15 hover:bg-emerald-500/25 hover:text-emerald-200';
+      return (
+        '<div class="inline-flex items-center gap-1 flex-wrap" onclick="event.stopPropagation()">' +
+          mkBtn('wallOwned', 'WALL', st.wallOwned, 'bg-cyan-500/25 text-cyan-200 border-cyan-400/60') +
+          mkBtn('dadRipOwned', 'DAD RIP', st.dadRipOwned, 'bg-purple-500/25 text-purple-200 border-purple-400/60') +
+          mkBtn('loganRipOwned', 'LOGAN RIP', st.loganRipOwned, 'bg-amber-500/25 text-amber-200 border-amber-400/60') +
+          '<button onclick="toggleSkuFamilySlot(\'' + safeId + '\', \'ALL\', ' + (!st.fullyConquered) + ', event)" title="Toggle all 3 Family Slots (3/3 Complete)" class="font-mono-num font-black rounded border transition whitespace-nowrap ' + padCls + ' ' + allBtnCls + '">[' + st.completionCount + '/3 ALL]</button>' +
+        '</div>'
+      );
+    }
+
+    function renderDirectCartButtonsHtml(item, primaryLabel) {
+      const c1 = item.cart1xUrl || (item.url && String(item.url).includes('/cart/') ? item.url : null);
+      const c2 = item.cart2xUrl || (c1 ? String(c1).replace(/:1$/, ':2') : null);
+      const c3 = item.cart3xUrl || (c1 ? String(c1).replace(/:1$/, ':3') : null);
+      if (c1) {
+        return (
+          '<div class="inline-flex items-center rounded-lg overflow-hidden border border-emerald-500/45 bg-[#0D1518] shrink-0" onclick="event.stopPropagation()">' +
+            '<a href="' + c1 + '" target="_blank" class="px-2 py-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono-num text-[10px] font-black transition whitespace-nowrap">[CART 1X]</a>' +
+            (c2 ? '<a href="' + c2 + '" target="_blank" class="px-2 py-1 hover:bg-cyan-500/25 text-cyan-200 border-l border-white/10 font-mono-num text-[10px] font-extrabold transition whitespace-nowrap">[CART 2X]</a>' : '') +
+            (c3 ? '<a href="' + c3 + '" target="_blank" class="px-2 py-1 hover:bg-amber-500/25 text-amber-300 border-l border-white/10 font-mono-num text-[10px] font-extrabold transition whitespace-nowrap">[CART 3X]</a>' : '') +
+          '</div>'
+        );
+      }
+      return '<a href="' + (item.url || item.productUrl || '#') + '" target="_blank" onclick="event.stopPropagation()" class="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-extrabold whitespace-nowrap shrink-0">' + (primaryLabel || 'Buy Now ↗') + '</a>';
+    }
+
+    async function toggleSkuFamilySlot(skuId, slotKey, newVal, ev) {
+      if (ev) ev.stopPropagation();
+      if (spectatorLocked) return;
+      const pol = policies.find(p => p.id === skuId);
+      const payload = {};
+      if (slotKey === 'ALL') {
+        payload.toggleAll = Boolean(newVal);
+      } else if (slotKey === 'autoPilotEnabled') {
+        payload.autoPilotEnabled = Boolean(newVal);
+      } else {
+        payload[slotKey] = Boolean(newVal);
+      }
+      try {
+        const res = await fetch('/api/policies/' + encodeURIComponent(skuId) + '/family-slots', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data && data.policy && pol) {
+          pol.wallOwned = Boolean(data.policy.wallOwned);
+          pol.owned = Boolean(data.policy.wallOwned);
+          pol.inVault = Boolean(data.policy.wallOwned);
+          pol.dadRipOwned = Boolean(data.policy.dadRipOwned);
+          pol.loganRipOwned = Boolean(data.policy.loganRipOwned);
+          pol.completionCount = Number(data.policy.completionCount || 0);
+          pol.fullyConquered = Boolean(data.policy.fullyConquered);
+          if (data.policy.autoPilotEnabled !== undefined) {
+            pol.autoPilotEnabled = Boolean(data.policy.autoPilotEnabled);
+          }
+        }
+        const advRes = await fetch('/api/advisor/next-buy?budget=' + activeAdvisorBudget);
+        if (advRes.ok) nextBuyAdvisorData = await advRes.json();
+        renderAllActiveViews();
+        const st = getSkuFamilyState(skuId, pol);
+        showCommanderToast((pol ? pol.name : skuId) + ' -> ' + st.statusLabel);
+      } catch (e) {}
+    }
+
+    async function setAdvisorBudget(budgetVal) {
+      activeAdvisorBudget = Number(budgetVal || 350);
+      [100, 200, 350, 500].forEach(b => {
+        const btn = document.getElementById('advBudget_' + b);
+        if (!btn) return;
+        btn.className = (b === activeAdvisorBudget)
+          ? 'pokedex-badge px-2.5 py-1 rounded-lg text-[11px] font-mono-num font-extrabold bg-cyan-500 text-slate-950 shadow-[0_0_12px_rgba(0,240,255,0.35)] transition'
+          : 'pokedex-badge px-2.5 py-1 rounded-lg text-[11px] font-mono-num font-bold bg-[#161329]/85 text-slate-200 border border-white/15 hover:text-white transition';
+      });
+      try {
+        const res = await fetch('/api/advisor/next-buy?budget=' + activeAdvisorBudget);
+        if (res.ok) {
+          nextBuyAdvisorData = await res.json();
+          renderCapitalAdvisorBar();
+        }
+      } catch (e) {}
+    }
+
+    function renderCapitalAdvisorBar() {
+      const topGrid = document.getElementById('advisorTopBuysGrid');
+      const bleedGrid = document.getElementById('advisorBleedingList');
+      const famBadge = document.getElementById('advisorFamilySummaryBadge');
+
+      const wallCnt = policies.filter(p => (p.wallOwned !== undefined ? p.wallOwned : p.owned)).length;
+      const dadCnt = policies.filter(p => p.dadRipOwned).length;
+      const loganCnt = policies.filter(p => p.loganRipOwned).length;
+      const fullCnt = policies.filter(p => p.fullyConquered || ((p.wallOwned || p.owned) && p.dadRipOwned && p.loganRipOwned)).length;
+      if (famBadge) {
+        famBadge.textContent = 'RULE OF 3: ' + wallCnt + ' WALL • ' + dadCnt + ' DAD RIP • ' + loganCnt + ' LOGAN RIP (' + fullCnt + ' 3/3 COMPLETE)';
+      }
+
+      if (!topGrid) return;
+      const picks = (nextBuyAdvisorData && Array.isArray(nextBuyAdvisorData.topBuys)) ? nextBuyAdvisorData.topBuys : [];
+      if (picks.length === 0) {
+        topGrid.innerHTML = '<div class="col-span-full p-4 rounded-xl bg-black/40 border border-white/10 text-xs text-slate-300">No in-stock non-bleeding sets under $' + activeAdvisorBudget + ' right now. Switch budget ceiling to $350 or $500+ to inspect Booster Boxes &amp; Cases.</div>';
+      } else {
+        topGrid.innerHTML = picks.slice(0, 3).map((pick, idx) => {
+          const imgPath = '/art/' + pick.skuId + '.jpg?v=' + cacheBuster;
+          const st = getSkuFamilyState(pick.skuId, pick);
+          const ripBadge = pick.isRipPairReady
+            ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-purple-500/25 text-purple-200 border border-purple-400/50 text-[9px] font-mono-num font-extrabold">◈ ⟦ RIP PAIR READY (QTY 2+) ⟧</span>'
+            : '';
+          const trendBadge = pick.trendVerdictLabel
+            ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-200 border border-cyan-400/45 text-[9px] font-mono-num font-extrabold">' + pick.trendVerdictLabel + '</span>'
+            : '';
+          return (
+            '<div class="p-3.5 rounded-xl bg-[#0B0E1D]/90 border border-emerald-400/40 flex flex-col justify-between gap-2.5">' +
+              '<div class="space-y-2">' +
+                '<div class="flex items-center justify-between gap-2">' +
+                  '<span class="pokedex-badge px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/45 text-[10px] font-mono-num font-black">#' + (idx + 1) + ' SMART BUY (&le;$' + activeAdvisorBudget + ')</span>' +
+                  '<span class="pokedex-badge px-2 py-0.5 rounded border text-[9px] font-mono-num font-extrabold ' + st.statusCls + '">' + st.statusLabel + '</span>' +
+                '</div>' +
+                '<div class="flex items-center gap-3">' +
+                  '<div onclick="openPriceHistoryModal(\'' + pick.skuId + '\')" class="w-14 h-14 art-pedestal rounded-xl p-1 flex items-center justify-center shrink-0 cursor-pointer group">' +
+                    '<img src="' + imgPath + '" class="max-h-full max-w-full object-contain group-hover:scale-110 transition-transform" alt="Art" />' +
+                  '</div>' +
+                  '<div class="min-w-0 flex-1">' +
+                    '<div onclick="openPriceHistoryModal(\'' + pick.skuId + '\')" class="text-xs font-extrabold text-white hover:text-cyan-300 cursor-pointer truncate">' + pick.name + '</div>' +
+                    '<div class="flex items-baseline gap-2 mt-0.5 font-mono-num">' +
+                      '<span class="text-lg font-black text-emerald-400">$' + Number(pick.landedPrice).toFixed(2) + '</span>' +
+                      '<span class="text-[11px] text-slate-300">Mkt <strong class="text-amber-300">$' + Number(pick.marketValue).toFixed(0) + '</strong> (-' + pick.discountPct + '%)</span>' +
+                    '</div>' +
+                    '<div class="text-[10px] font-mono-num text-cyan-200 truncate">' + pick.store + ' • Auto-Pilot Target: $' + Number(pick.autoPilotCeiling || pick.triggerPrice).toFixed(0) + '</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="flex items-center gap-1 flex-wrap">' +
+                  ripBadge +
+                  trendBadge +
+                '</div>' +
+                renderFamilySlotsPillsHtml(pick.skuId, pick, true) +
+              '</div>' +
+              '<div class="pt-2 border-t border-white/10 flex items-center justify-between gap-2">' +
+                renderDirectCartButtonsHtml(pick, 'Buy Now ↗') +
+                '<button onclick="openPriceHistoryModal(\'' + pick.skuId + '\')" class="px-2 py-1 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/35 text-[10px] font-pokedex font-extrabold shrink-0 transition">⟦ CHART ⟧</button>' +
+              '</div>' +
+            '</div>'
+          );
+        }).join('');
+      }
+
+      if (bleedGrid) {
+        const bleeding = (nextBuyAdvisorData && Array.isArray(nextBuyAdvisorData.bleedingWaitList)) ? nextBuyAdvisorData.bleedingWaitList : [];
+        if (bleeding.length === 0) {
+          bleedGrid.innerHTML = '<div class="col-span-full text-[11px] text-slate-400">No active tracked sets are currently flagged in steep 14-day falling-knife bleed (&le; -5% 14d).</div>';
+        } else {
+          bleedGrid.innerHTML = bleeding.slice(0, 3).map(b => (
+            '<div onclick="openPriceHistoryModal(\'' + b.skuId + '\')" class="p-2.5 rounded-xl bg-amber-950/30 hover:bg-amber-950/45 border border-amber-500/40 flex items-center justify-between gap-2 cursor-pointer transition">' +
+              '<div class="min-w-0">' +
+                '<div class="text-xs font-extrabold text-amber-200 truncate">' + b.name + '</div>' +
+                '<div class="text-[10px] font-mono-num text-amber-300/90 truncate">' + (b.badge || ('◈ ⟦ BLEEDING DOWN (' + b.delta14dPct + '% 14D) // HOLD OFF ⟧')) + '</div>' +
+              '</div>' +
+              '<div class="text-right font-mono-num shrink-0">' +
+                '<div class="text-xs font-black text-white">$' + Number(b.landedPrice).toFixed(2) + '</div>' +
+                '<div class="text-[10px] text-emerald-300">Wait Target: $' + Number(b.autoPilotCeiling).toFixed(0) + '</div>' +
+              '</div>' +
+            '</div>'
+          )).join('');
+        }
+      }
     }
 
     function isPolicyInStockNow(p) {
@@ -3415,13 +3728,7 @@
 
         const checkoutBtns = isNearMiss
           ? '<button onclick="bumpTriggerAndBuy(\'' + item.skuId + '\', ' + bumpVal + ', \'' + safeBuyTargetUrl + '\')" class="px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-400 text-slate-950 font-mono-num text-[11px] font-black whitespace-nowrap shrink-0 transition shadow-[0_0_12px_rgba(249,115,22,0.35)]">⟦ BUMP TRIGGER ($' + bumpVal + ') &amp; BUY ↗ ⟧</button>'
-          : (c1
-              ? '<div class="inline-flex items-center rounded-lg overflow-hidden border border-emerald-500/40 bg-[#0D1518] shrink-0">' +
-                  '<a href="' + c1 + '" target="_blank" class="px-2.5 py-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono-num text-[11px] font-black transition">1x Cart</a>' +
-                  (c2 ? '<a href="' + c2 + '" target="_blank" class="px-2 py-1 hover:bg-cyan-500/25 text-cyan-200 border-l border-white/10 font-mono-num text-[11px] font-extrabold transition">2x</a>' : '') +
-                  (c3 ? '<a href="' + c3 + '" target="_blank" class="px-2 py-1 hover:bg-amber-500/25 text-amber-300 border-l border-white/10 font-mono-num text-[11px] font-extrabold transition">3x</a>' : '') +
-                '</div>'
-              : '<a href="' + (item.url || '#') + '" target="_blank" class="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-extrabold whitespace-nowrap shrink-0">Buy Now ↗</a>');
+          : renderDirectCartButtonsHtml({ cart1xUrl: c1, cart2xUrl: c2, cart3xUrl: c3, url: item.url }, 'Buy Now ↗');
 
         const encodedItem = encodeURIComponent(JSON.stringify({
           skuId: item.skuId,
@@ -3434,9 +3741,8 @@
         }));
 
         const priceColorCls = isNearMiss ? 'text-orange-300' : (isMsrpDefcon ? 'text-[#00F0FF]' : 'text-[#10B981]');
-        const ownedBadge = item.owned
-          ? '<span class="text-[9px] font-mono-num font-bold px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">OWNED</span>'
-          : '<span class="text-[9px] font-mono-num font-bold px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30">NEEDED</span>';
+        const famSt = getSkuFamilyState(item.skuId, item);
+        const ownedBadge = '<span class="text-[9px] font-mono-num font-bold px-1.5 py-0.5 rounded border ' + famSt.statusCls + '">' + famSt.statusLabel + '</span>';
 
         return (
           '<div class="deal-card glass-card rounded-2xl p-4" style="display:flex;flex-direction:column;justify-content:space-between;min-height:242px;">' +
@@ -3464,6 +3770,9 @@
                     packPill +
                     triggerPill +
                     preBleedBadge +
+                  '</div>' +
+                  '<div class="mt-1.5">' +
+                    renderFamilySlotsPillsHtml(item.skuId, item, true) +
                   '</div>' +
                 '</div>' +
               '</div>' +
@@ -3805,6 +4114,9 @@
                       '<button onclick="filterBountyByStore(\'' + safeStoreClick + '\')" title="Filter scoreboard by ' + cleanStoreSource + '" class="px-2 py-0.5 rounded bg-cyan-500/15 hover:bg-cyan-500/30 border border-cyan-400/35 text-[11px] font-semibold text-cyan-200 transition truncate max-w-[240px]">' + cleanStoreSource + '</button>' +
                       '<button onclick="openPriceHistoryModal(\'' + opt.skuId + '\')" class="px-2 py-0.5 rounded bg-indigo-500/20 hover:bg-indigo-500 text-[10px] font-pokedex font-bold text-indigo-200 hover:text-white transition">⟦ CHART ⟧</button>' +
                     '</div>' +
+                    '<div class="pt-0.5">' +
+                      renderFamilySlotsPillsHtml(opt.skuId, pol || opt, true) +
+                    '</div>' +
                   '</div>' +
                   '<div class="font-mono-num">' +
                     '<div class="font-pokedex text-xl font-black text-emerald-400">$' + Number(opt.landedPrice).toFixed(2) + '</div>' +
@@ -3821,8 +4133,7 @@
                     verdictColHtml +
                   '</div>' +
                   '<div class="flex items-center gap-1.5 shrink-0">' +
-                    '<a href="' + (opt.cart1xUrl || opt.url || '#') + '" target="_blank" class="px-3.5 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 border border-cyan-500/40 text-xs font-extrabold transition whitespace-nowrap">Buy Now ↗</a>' +
-                    multiCartBtns +
+                    renderDirectCartButtonsHtml(opt, 'Buy Now ↗') +
                   '</div>' +
                 '</div>'
               );
@@ -4079,6 +4390,9 @@
                 '<div class="min-w-0 flex-1">' +
                   '<div onclick="openModalByIndex(' + idx + ')" class="set-title-pokedex text-sm font-extrabold text-white hover:text-cyan-300 cursor-pointer transition leading-snug line-clamp-2">' + p.name.replace(' Elite Trainer Box', ' ETB') + '</div>' +
                   bodyDetailsHtml +
+                  '<div class="mt-1.5">' +
+                    renderFamilySlotsPillsHtml(p.id, p, true) +
+                  '</div>' +
                 '</div>' +
               '</div>' +
             '</div>' +
@@ -4487,6 +4801,9 @@
                 trendVerdictLabel: offer.trendVerdictLabel || p.trendVerdictLabel || p.preReleaseStatusTag
               }) +
             '</div>' +
+            '<div class="mt-1">' +
+              renderFamilySlotsPillsHtml(p.id, p, true) +
+            '</div>' +
           '</div>' +
 
           '<!-- Col 4: MSRP -->' +
@@ -4580,6 +4897,9 @@
                 '<h3 onclick="openPriceHistoryModal(\'' + p.id + '\')" class="text-sm font-extrabold text-white hover:text-cyan-300 cursor-pointer transition leading-snug">' + p.name + '</h3>' +
                 '<div class="text-[11px] font-mono-num text-slate-400 mt-0.5">Retail MSRP: $' + (p.msrpCeiling ? p.msrpCeiling.toFixed(2) : '0.00') + '</div>' +
                 preBleedBadge +
+                '<div class="mt-1.5">' +
+                  renderFamilySlotsPillsHtml(p.id, p, true) +
+                '</div>' +
               '</div>' +
             '</div>' +
 
@@ -5220,15 +5540,26 @@
       setTimeout(() => { if (btn) btn.innerText = 'Test Discord Embed'; }, 2000);
     }
 
-    async function sendDigestToDiscord() {
-      const btn = document.getElementById('sendDigestBtn');
-      if (btn) btn.innerText = 'Pushing...';
+    async function sendRoundupDigestNow() {
+      const topBtn = document.getElementById('topSendDigestText');
+      const matBtn = document.getElementById('sendDigestBtn');
+      if (topBtn) topBtn.innerText = 'SENDING...';
+      if (matBtn) matBtn.innerText = 'Pushing...';
       try {
-        const res = await fetch('/api/send-digest', { method: 'POST' });
+        const res = await fetch('/api/digest/send-now', { method: 'POST' });
         const data = await res.json();
-        showCommanderToast(data?.sent ? ('Live Shelf Digest Sent (' + data.count + ')') : (data?.reason || '0 In-Stock Deals'));
+        showCommanderToast(data?.sent
+          ? ('4-Section Roundup Digest Dispatched (' + (data.count || 0) + ' Deals)')
+          : (data?.reason || 'Roundup Digest Sent'));
       } catch (e) {}
-      setTimeout(() => { if (btn) btn.innerText = 'Send Digest'; }, 2000);
+      setTimeout(() => {
+        if (topBtn) topBtn.innerText = '[SEND DIGEST NOW]';
+        if (matBtn) matBtn.innerText = 'Send Digest';
+      }, 2000);
+    }
+
+    async function sendDigestToDiscord() {
+      await sendRoundupDigestNow();
     }
 
     async function triggerSundaySnapshot() {
@@ -5636,10 +5967,110 @@
       }
     });
 
+    let singlesDrawerOpen = false;
+    let singlesFavoritesOnly = false;
+
+    function toggleSinglesRadarDrawer(forceOpen) {
+      singlesDrawerOpen = typeof forceOpen === 'boolean' ? forceOpen : !singlesDrawerOpen;
+      const body = document.getElementById('singlesRadarDrawerBody');
+      const lbl = document.getElementById('singlesRadarToggleLabel');
+      if (body) body.classList.toggle('hidden', !singlesDrawerOpen);
+      if (lbl) lbl.textContent = singlesDrawerOpen ? 'Collapse ▲' : 'Expand Search ▼';
+      if (singlesDrawerOpen) {
+        runSinglesSearch();
+      }
+    }
+
+    function quickSinglesFilter(queryText, favOnly) {
+      singlesFavoritesOnly = Boolean(favOnly);
+      const inp = document.getElementById('singlesSearchInput');
+      if (inp) inp.value = queryText || '';
+      toggleSinglesRadarDrawer(true);
+    }
+
+    async function runSinglesSearch() {
+      try {
+        const inp = document.getElementById('singlesSearchInput');
+        const q = inp ? inp.value.trim() : '';
+        const url = '/api/singles?q=' + encodeURIComponent(q) + '&favoritesOnly=' + (singlesFavoritesOnly ? 'true' : 'false');
+        const res = await fetch(url);
+        if (!res.ok) return;
+        const data = await res.json();
+        renderSinglesRadarResults(data);
+      } catch (e) {}
+    }
+
+    async function addFavoritePokemonToWatchlist() {
+      try {
+        const inp = document.getElementById('singlesAddWatchInput');
+        const val = inp ? inp.value.trim() : '';
+        if (!val) return;
+        const res = await fetch('/api/singles/watchlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ addPokemon: val })
+        });
+        if (inp) inp.value = '';
+        if (res.ok) {
+          const data = await res.json();
+          renderSinglesRadarResults(data);
+        }
+      } catch (e) {}
+    }
+
+    function renderSinglesRadarResults(data) {
+      const badgeEl = document.getElementById('singlesRadarCountBadge');
+      if (badgeEl && data) {
+        badgeEl.textContent = (data.totalCached || 0) + ' Singles Cached • ' + (data.offloadSnipesCount || 0) + ' Offload Snipes';
+      }
+      const wlBar = document.getElementById('singlesWatchlistBar');
+      if (wlBar && data && Array.isArray(data.watchlist)) {
+        wlBar.innerHTML =
+          '<span class="font-pokedex text-[10px] uppercase tracking-wider text-slate-400 mr-1">Active Favorite Watchlist:</span>' +
+          data.watchlist.map(w =>
+            '<button onclick="quickSinglesFilter(\'' + String(w).replace(/'/g, "\\'") + '\', false)" class="px-2 py-0.5 rounded-md bg-cyan-500/15 hover:bg-cyan-500/30 border border-cyan-400/35 text-cyan-200 font-mono-num text-[10px] font-bold transition">' +
+              w +
+            '</button>'
+          ).join('');
+      }
+      const grid = document.getElementById('singlesResultsGrid');
+      if (!grid) return;
+      const list = (data && Array.isArray(data.results)) ? data.results : [];
+      if (list.length === 0) {
+        grid.innerHTML = '<div class="col-span-full text-xs text-slate-400 py-4 text-center">No cached singles matching filter yet. Pollers quietly index singles &ge;$15 in the background without triggering sealed alerts.</div>';
+        return;
+      }
+      grid.innerHTML = list.slice(0, 18).map(item => {
+        const badgeHtml = item.snipeBadge
+          ? '<div class="mb-1.5"><span class="pokedex-badge px-2 py-0.5 rounded text-[10px] font-mono-num font-extrabold ' + (item.isOffloadSnipe ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/50' : 'bg-cyan-500/20 text-cyan-200 border border-cyan-400/40') + '">' + item.snipeBadge + '</span></div>'
+          : '';
+        return (
+          '<div class="p-3 rounded-xl bg-black/45 border ' + (item.isOffloadSnipe ? 'border-emerald-400/45' : 'border-white/10') + ' flex flex-col justify-between gap-2">' +
+            '<div>' +
+              badgeHtml +
+              '<div class="text-xs font-extrabold text-white leading-snug">' + item.title + '</div>' +
+              '<div class="text-[11px] text-slate-300 mt-1 flex items-center justify-between gap-2 font-mono-num">' +
+                '<span class="text-cyan-300 font-bold">' + item.storeName + '</span>' +
+                '<span>' + (item.conditionOrGrade || 'Raw Single') + ' • ' + (item.cardNumber || 'Single') + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pt-2 border-t border-white/10 flex items-center justify-between gap-2">' +
+              '<div class="font-mono-num">' +
+                '<span class="text-sm font-black text-emerald-400">$' + Number(item.price || 0).toFixed(2) + '</span>' +
+                '<span class="text-[10px] text-slate-400 ml-1.5">Comp $' + Number(item.compPrice || item.price || 0).toFixed(2) + (item.discountPct > 0 ? ' (-' + item.discountPct + '%)' : '') + '</span>' +
+              '</div>' +
+              '<a href="' + (item.url || '#') + '" target="_blank" class="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-200 border border-cyan-400/40 text-[11px] font-extrabold transition">View Card ↗</a>' +
+            '</div>' +
+          '</div>'
+        );
+      }).join('');
+    }
+
     // Boot Sequence
     loadPartnerStateFromStorage();
     applyPartnerThemeAndHeader();
     loadAllState();
+    runSinglesSearch();
 
     // Background 8s Live Refresh Loop
     setInterval(async () => {

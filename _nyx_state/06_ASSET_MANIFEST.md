@@ -8,26 +8,29 @@
 
 | File Path | Lines | Role |
 | :--- | :---: | :--- |
-| `index.ts` (`index.js`) | 24 | PM2 daemon entrypoint for `pokemon-drop-bot`; boots pollers, MarketSync, MarketTape, and Digest schedulers. |
+| `index.ts` (`index.js`) | 29 | PM2 daemon entrypoint for `pokemon-drop-bot`; boots 90-store LGS poller, 15s Tier-1 Fast Poller, Big-Box poller, MarketSync, MarketTape, and 09:00/18:00 Roundup Digest scheduler. |
 | `listener.ts` (`listener.js`) | 85 | Receives `RawRestockItem` via `processIncomingDrop()`, invokes `evaluateItem()`, and dispatches `sendAlert()`. |
-| `src/config/configManager.ts` (`.js`) | 347 | Loads & merges `config/catalog.json` + `config/userPreferences.json` + `marketCache.json`; isolates UI preference saves from background syncs; serves unified `config/stores.json`. |
-| `policies.ts` (`policies.js`) | 412 | Loads & hot-watches merged policies via `configManager.ts`, normalizes `booster.*(box\|display)` matchers, enforces `GLOBAL_JUNK_EXCLUSIONS`, dynamic `getMaxPlausiblePriceCeiling()`, `$/Pack` rip math, and `atomicWriteJson()`. |
-| `evaluator.ts` (`evaluator.js`) | 1,290 | Evaluates drops against `WATCH_POLICIES`, honors pre-order sliders, applies `+$5/+$10` Close-Call Grace Cushion, delegates trend/timing analysis to `src/engine/trendAdvisor.ts`, runs Marketplace Scam Shield, scopes `alertState.json` to `${store}::${sku}`, and tags `storeOffersCache.json`. |
-| `src/engine/trendAdvisor.ts` (`.js`) | 312 | Standalone `< 350` line 14d/30d/60d/90d Rolling Market Analytics & Buy-Timing Advisor (`BEATS_MARKET_FLOOR`, `ELASTIC_DIP`, `UPTREND_LAG_DEAL`, `STABLE_ACCUMULATE`, `FALLING_KNIFE_WAIT`). |
-| `lgsPoller.ts` (`lgsPoller.js`) | 594 | Polls 90 active verified Shopify LGS storefronts from `config/stores.json`, resolves collection feeds, runs 2-tier pagination, detects OOS pre-drop staging, and writes `storeHealth.json`. |
-| `vampirePoller.ts` (`vampirePoller.js`) | 1,019 | Polls Big-Box endpoints, `r/PKMNTCGDeals` RSS, and TCGPlayer verified-seller undercuts with Marketplace Scam & Shipping Trap Shield (`shipping > $35` or `>20%` and unverified 1-qty bait blocked). |
-| `notifier.ts` (`notifier.js`) | 812 | Rate-limited FIFO Discord webhook queue (`1250ms` spacing), tactical embed builder, `dropsHistory.json` logger, and 4h Live Shelf Digest scheduler. |
+| `src/config/configManager.ts` (`.js`) | 336 | `< 350` lines; merges `config/catalog.json` + `config/userPreferences.json` + `marketCache.json`; Rule of 3 Family Completion slots (`wallOwned`, `dadRipOwned`, `loganRipOwned`, `autoPilotEnabled`) & `updateSkuFamilySlotsFromUi()`. |
+| `src/engine/trendAdvisor.ts` (`.js`) | 336 | `< 350` lines; 14d/30d/60d/90d Rolling Market Analytics, `computeAutoPilotTarget()`, `BLEEDING DOWN`, `SUPPLY TIGHTENING`, & `ELASTIC_DIP`. |
+| `src/engine/singlesSniper.ts` (`.js`) | 291 | `< 350` lines; Quiet Singles & Gyarados Offload Radar (`singlesCache.json`) with 100% silent alert rule enforced (`singlesAlertsEnabled: false`). |
+| `src/pollers/bigBoxRetailPoller.ts` (`.js`) | 326 | `< 350` lines; Honest 7-retailer Big-Box 1P poller (Target RedSky 1P, Walmart, Best Buy, Pokémon Center, Costco, Sam's Club, GameStop). |
+| `src/pollers/fastTier1Poller.ts` (`.js`) | 297 | `< 350` lines; 15-second Tier-1 Fast Shopify restock delta poller (`26` Tier-1 stores, `?limit=50`). |
+| `policies.ts` (`policies.js`) | 485 | Loads & hot-watches merged policies, enforces `isSingleCardOrNonSealed()` + positive sealed container gate, dynamic `getMaxPlausiblePriceCeiling()`, and `reloadWatchPolicies()`. |
+| `evaluator.ts` (`evaluator.js`) | 1,355 | Evaluates drops against `WATCH_POLICIES`, Rule of 3 Rip Hunt Mode (`1/3` & `2/3` + `◈ ⟦ RIP PAIR READY (QTY 2+) ⟧`), `3/3 COMPLETE` mute, 1P Big-Box/PC Retail MSRP Flip Bypass, and `buildShopifyDirectCartLinks()`. |
+| `lgsPoller.ts` (`lgsPoller.js`) | 612 | Polls 90 active verified Shopify LGS storefronts from `config/stores.json`, routes singles to `singlesSniper.ts`, and writes `storeHealth.json`. |
+| `vampirePoller.ts` (`vampirePoller.js`) | 780 | Delegates Big-Box polling to `bigBoxRetailPoller.ts`, polls `r/PKMNTCGDeals` RSS, and runs TCGPlayer verified-seller undercut sweeps with Scam Shield. |
+| `notifier.ts` (`notifier.js`) | 915 | Hard silent-singles guard, rate-limited FIFO Discord webhook queue, `[CART 1X] / [CART 2X] / [CART 3X]` links, and twice-daily (`09:00` & `18:00`) 4-section Market & Deal Roundup Digest. |
 | `marketComps.ts` (`marketComps.js`) | 457 | Live TCGPlayer + eBay Buy-It-Now comp scraper with trimmed-median sanity guards (`applySyncSanityGuard`). |
 | `marketTape.ts` (`marketTape.js`) | 772 | 14-day NRT rolling sales velocity tracker, absorption ratio, 48h distributor wave detector, honey-hole store rankings, and weekly checkpoints. |
 | `marketTelemetry.ts` (`marketTelemetry.js`) | 106 | Rolling price observation tracker for `marketCache.json`. |
-| `src/marketSync.ts` (`src/marketSync.js`) | 168 | 6-hour background TCGPlayer market baseline synchronizer writing exclusively to `marketCache.json` (never touching `config/userPreferences.json`). |
-| `server.js` | 2,200 | Express HTTP server (`Port 3000`) serving `public/index.html` (`/` & `/dashboard.html`), static Stadium modules, and all 22 REST API endpoints via `configManager.ts`. |
-| `public/index.html` | 5,543 | Executive Sniper Command Center UI (trimmed down from `9,780` lines; `dashboard.html` root clone permanently deleted). |
-| `public/css/stadium.css` | 353 | **HARD-FROZEN (`git diff = 0`)** — Logan's Battle Stadium stylesheet, animations, D20 die styles, bench cards, and drawers. |
-| `public/js/stadium/stadium-data.js` | 819 | **HARD-FROZEN (`git diff = 0`)** — 18-type effectiveness matrix, signature moves, 3v3 preset decks, Champion Gauntlet boss roster, and 1,025 Pokédex/evolution lookup helpers. |
-| `public/js/stadium/stadium-audio.js` | 121 | **HARD-FROZEN (`git diff = 0`)** — WebAudio API battle synthesizer + official PokeAPI cry audio player and mute toggle state. |
-| `public/js/stadium/stadium-combat.js` | 1,376 | **HARD-FROZEN (`git diff = 0`)** — 3v3 squad state, D20 Action Point (AP) pool & banking rules, turn step tracker, AI turn controller, status effects, and stat-weighted damage calculations. |
-| `public/js/stadium/stadium-ui.js` | 1,641 | **HARD-FROZEN (`git diff = 0`)** — Arena DOM rendering, 4 distinct visual attack animations, Trophy Vault drawer, Squad & Deck Builder drawer, and global `window.*` entrypoints. |
+| `src/marketSync.ts` (`src/marketSync.js`) | 168 | 6-hour background TCGPlayer market baseline synchronizer writing exclusively to `marketCache.json`. |
+| `server.js` | 2,610 | Express HTTP server (`Port 3000`) serving `public/index.html`, static Stadium modules, and 27 REST API endpoints. |
+| `public/index.html` | 6,095 | Executive Sniper Command Center UI with `[SEND DIGEST NOW]`, `$100/$200/$350/$500+` Capital Advisor Bar, interactive `[WALL] [DAD RIP] [LOGAN RIP] [3/3 ALL]` pills, and `[CART 1X/2X/3X]` buttons. |
+| `public/css/stadium.css` | 353 | **HARD-FROZEN (`git diff = 0`)** — Logan's Battle Stadium stylesheet. |
+| `public/js/stadium/stadium-data.js` | 819 | **HARD-FROZEN (`git diff = 0`)** — 18-type matrix, signature moves, 3v3 preset decks, boss roster, and 1,025 Pokédex helpers. |
+| `public/js/stadium/stadium-audio.js` | 121 | **HARD-FROZEN (`git diff = 0`)** — WebAudio battle synthesizer + PokeAPI cry player. |
+| `public/js/stadium/stadium-combat.js` | 1,376 | **HARD-FROZEN (`git diff = 0`)** — 3v3 squad state, D20 AP pool & banking rules, AI controller, and damage math. |
+| `public/js/stadium/stadium-ui.js` | 1,641 | **HARD-FROZEN (`git diff = 0`)** — Arena DOM rendering, 4 attack animations, Trophy/Squad drawers, and `window.*` entrypoints. |
 
 ---
 
@@ -35,42 +38,26 @@
 
 | File Path | Purpose & Schema Summary |
 | :--- | :--- |
-| `config/userPreferences.json` | **LOCKED PERSONAL VAULT (`800` lines):** Scott's untouchable per-SKU settings (`maxMarketBuyPrice`, `owned`, `inVault`, `active`) for all 131 SKUs + global toggles (`muteVaulted`, `wallHunterMode`, `liveDigestEnabled`). |
+| `config/userPreferences.json` | **LOCKED PERSONAL VAULT:** Scott's untouchable per-SKU settings (`maxMarketBuyPrice`, `owned`, `inVault`, `wallOwned`, `dadRipOwned`, `loganRipOwned`, `autoPilotEnabled`, `active`) for all 131 SKUs + global toggles (`muteVaulted`, `wallHunterMode`, `liveDigestEnabled: true`, `singlesAlertsEnabled: false`, `favoritePokemonWatchlist`). |
 | `config/catalog.json` | **STATIC CATALOG (`3,096` lines):** Static SKU metadata for all 131 SKUs (`id`, `name`, `era`, `formFactor`, `packCount`, `msrpCeiling`, `releaseDate`, `matchers`, `targetTcin`, `walmartItemId`, `bestBuySku`, `pcSlug`, `tcgProductId`). |
-| `config/stores.json` | **UNIFIED STORE REGISTRY (`1,215` lines):** Single registry merging `LGS_STORES` + `STORE_SHIPPING_RULES` (`90` active Shopify LGS stores + `1` disabled dead store `Lets Play TCG` + `9` Big-Box shipping profiles). |
-| `policies.json` | Legacy read-only fallback target matrix (`131` SKUs) automatically kept in sync by `configManager.ts`. |
-| `storeOffersCache.json` | Full in-stock shelf visibility cache (`497` offers across `66` SKUs from Shopify LGS + TCGPlayer, including `isFreshRestock` flags). |
-| `storeHealth.json` | Per-store polling health, latency, `resolvedPath`, circuit breaker state for all 90 active Shopify stores + `__bigBoxHealth` (`northStar5`). |
+| `config/stores.json` | **UNIFIED STORE REGISTRY:** Single registry merging `LGS_STORES` + `STORE_SHIPPING_RULES` (`90` active Shopify LGS stores + `1` disabled dead store `Lets Play TCG` + `9` Big-Box shipping profiles). |
+| `singlesCache.json` | Quiet Singles & Slabs Offload cache (`>= $15`, 100% isolated from sealed alerts). |
+| `storeOffersCache.json` | Full in-stock sealed shelf visibility cache across all 90 Shopify LGS stores + TCGPlayer. |
+| `storeHealth.json` | Per-store polling health, latency, `resolvedPath`, circuit breaker state, `__fastTier1Summary`, and `__bigBoxHealth`. |
 | `marketCache.json` | Per-SKU rolling average, `estimatedMarketValue` baseline, lowest observed price, store, and timestamp (`131` SKUs). |
-| `liveStock.json` | Currently in-stock items under buy trigger (`< 6h`), `__bestOffers` across all stores, and `__recentOos`. |
-| `dropsHistory.json` | Last 25 Discord alert payloads (plus `[PRE-DROP STAGING RADAR]` events). |
-| `alertState.json` | Per-`ruleId__retailer` deduplication memory (`lastPrice`, `lowestAlertedPrice`, `wasOutOfStockSinceLastAlert`, `lastDigestSentAt`). |
-| `conqueredVault.json` | Gamified Trophy Plaque ledger (`Trophy #1`: `me-30th-celebration-etb-case` @ `$1,529.45`, `Trophy #2`: `me-chaos-rising-etb` @ `$51.00` MSRP catch). |
-| `data/msrpTrophies.json` | Persistent Tier-A Retail MSRP Unicorn counter (`totalMsrpHits` + last 20 catches). |
-| `salesHistory.json` | 14-day rolling sell-out velocity ledger for `marketTape.ts`. |
-| `dailySnapshots.json` | Daily price history snapshots for 24H/7D/30D/90D charting. |
-| `weeklyCheckpoints.json` | Sunday-to-Sunday weekly market tape checkpoints. |
-| `botSettings.json` | Legacy dashboard settings fallback synced from `config/userPreferences.json`. |
+| `liveStock.json` | Currently in-stock sealed items under buy trigger (`< 6h`), `__bestOffers`, and `__recentOos`. |
+| `dropsHistory.json` | Last 25 sealed Discord alert payloads. |
+| `alertState.json` | Per-`${storeName}::${skuId}` deduplication memory. |
+| `conqueredVault.json` | Gamified Trophy Plaque ledger. |
+| `data/msrpTrophies.json` | Persistent Tier-A Retail MSRP Unicorn counter. |
+| `salesHistory.json`, `dailySnapshots.json`, `weeklyCheckpoints.json` | Rolling price telemetry and 14/30/60/90-day history. |
 
 ---
 
 ## 3. Active REST API Endpoints (`server.js` on `http://localhost:3000`)
-- `GET /api/status` — System health, `storeTelemetry`, `shelfSpread`, `nearMisses`, `bestCurrentOffers`, `msrpTrophies`, `totalConquered`.
-- `GET /api/engine-room` — Full sensor matrix (`summary`, `northStar5` Big-Box sensors, `lgsStores` 90-store healthy shelf ledger).
-- `GET /api/store-offers` — All cached in-stock offers from `storeOffersCache.json`.
-- `GET /api/near-misses` — Offers within `+0.5%` to `+12.5%` over trigger with `recommendedTriggerBump`.
-- `GET /api/shelf-spread` — Live distribution across `Under Trigger`, `Near Misses`, `Under Market`, and `At Retail MSRP`.
-- `GET /api/sku-history/:skuId` — `24H / 7D / 30D / 90D` chart time-series, `allTimeLow`, `liveMarketplaceFloor`, and ranked `currentOffers`.
-- `GET/POST /api/bounty-recon` — On-demand cross-store comparison & live Shopify/TCGPlayer/eBay sweep (`?skuId=`, `?query=`, `?format=`, `?store=`).
-- `GET/POST /api/policies` — Reads merged policies or atomically saves user slider/owned updates to `config/userPreferences.json`.
-- `GET /api/live-stock`, `GET /api/drops`, `GET /api/trophies`, `GET /api/telemetry`, `GET /api/store-health`.
-- `GET /api/conquered-vault`, `POST /api/conquered-vault/claim`, `PATCH /api/conquered-vault/:id`.
-- `GET /api/market-tape`, `GET /api/trends`, `POST /api/market-tape/checkpoint`.
-- `GET/POST /api/settings`, `POST /api/reset-dedup`, `POST /api/send-digest`, `POST /api/test-alert`, `POST /api/live-comp`.
-
----
-
-## 4. Operational Scripts & Watchdogs (`scripts/`)
-- `scripts/dropbot-cli.ps1` — Portable PowerShell CLI (`dropbot save`, `dropbot undo`, `dropbot backup`, `dropbot next`).
-- `scripts/install-dropbot-cli.ps1` — Installs the `dropbot` command into the current machine's PowerShell `$PROFILE`.
-- `scripts/watchdog.vbs` & `scripts/watchdog.ps1` — Invisible 5-minute Windows Scheduled Task (`DropBot-PM2-Watchdog`) ensuring PM2 processes and Port 3000 stay online 24/7.
+- `GET /api/status` — System health, `storeTelemetry`, `shelfSpread`, `nearMisses`, `bestCurrentOffers`, `nextBuyAdvisor`, `familyProgress`, `msrpTrophies`, `totalConquered`.
+- `GET /api/advisor/next-buy` — Ranks Top 3 Smartest In-Stock Buys (`?budget=100|200|350|500`) where `completionCount < 3` alongside `bleedingWaitList` and `supplyTighteningList`.
+- `POST /api/policies/:skuId/family-slots` — Updates `wallOwned`, `dadRipOwned`, `loganRipOwned`, `toggleAll`, or `autoPilotEnabled` in `config/userPreferences.json` and hot-reloads policies.
+- `POST /api/digest/send-now` (and `POST /api/send-digest`) — Immediately dispatches the 4-section **DropBot Market & Deal Roundup Digest** to Discord.
+- `GET /api/singles` & `POST /api/singles/watchlist` — Quiet Singles & Gyarados Offload Radar search and watchlist management.
+- `GET /api/engine-room`, `GET /api/store-offers`, `GET /api/near-misses`, `GET /api/shelf-spread`, `GET /api/sku-history/:skuId`, `GET/POST /api/bounty-recon`, `GET/POST /api/policies`, `GET /api/live-stock`, `GET /api/drops`, `GET /api/trophies`, `GET /api/conquered-vault`, `POST /api/conquered-vault/claim`, `PATCH /api/conquered-vault/:id`, `GET /api/market-tape`, `GET /api/trends`, `POST /api/market-tape/checkpoint`, `GET/POST /api/settings`, `POST /api/reset-dedup`, `POST /api/test-alert`.

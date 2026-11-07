@@ -3,7 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.STORE_SHIPPING_RULES = exports.MSRP_TROPHIES_PATH = exports.isPreReleaseDate = void 0;
+exports.STORE_SHIPPING_RULES = exports.MSRP_TROPHIES_PATH = exports.computeAutoPilotTarget = exports.isPreReleaseDate = void 0;
+exports.isVerified1PBigBoxOrPc = isVerified1PBigBoxOrPc;
+exports.buildShopifyDirectCartLinks = buildShopifyDirectCartLinks;
 exports.getCloseCallGraceBuffer = getCloseCallGraceBuffer;
 exports.computeOfferShelfStatus = computeOfferShelfStatus;
 exports.isMarketplaceScamOrShippingTrap = isMarketplaceScamOrShippingTrap;
@@ -28,7 +30,41 @@ const marketTelemetry_1 = require("./marketTelemetry");
 const marketTape_1 = require("./marketTape");
 const configManager_1 = require("./src/config/configManager");
 const trendAdvisor_1 = require("./src/engine/trendAdvisor");
+Object.defineProperty(exports, "computeAutoPilotTarget", { enumerable: true, get: function () { return trendAdvisor_1.computeAutoPilotTarget; } });
 Object.defineProperty(exports, "isPreReleaseDate", { enumerable: true, get: function () { return trendAdvisor_1.isPreReleaseDate; } });
+function isVerified1PBigBoxOrPc(retailer, url, isMarketplace3P = false) {
+    if (isMarketplace3P)
+        return false;
+    const hay = `${retailer || ''} ${url || ''}`.toLowerCase();
+    if (/tcgplayer|ebay|target\s*plus|3rd[-\s]*party|marketplace/i.test(hay))
+        return false;
+    return /pok[eé]mon\s*center|pokemoncenter\.com|\btarget\b|target\.com|\bwalmart\b|walmart\.com|best\s*buy|bestbuy\.com|\bcostco\b|costco\.com|sam'?s\s*club|samsclub\.com|\bgamestop\b|gamestop\.com/i.test(hay);
+}
+function buildShopifyDirectCartLinks(params) {
+    const { url = '', productUrl = '', cart1xUrl, cart2xUrl, cart3xUrl, itemId, stock, retailer = '' } = params;
+    const hay = `${retailer} ${url} ${productUrl}`.toLowerCase();
+    if (/tcgplayer|ebay|target\.com|walmart\.com|bestbuy\.com|costco\.com|samsclub\.com|gamestop\.com|pokemoncenter\.com|reddit\.com/i.test(hay)) {
+        return { cart1xUrl, cart2xUrl, cart3xUrl };
+    }
+    let baseRoot = '';
+    const candidateCart = cart1xUrl || (url.includes('/cart/') ? url : '');
+    if (candidateCart && candidateCart.includes('/cart/')) {
+        baseRoot = candidateCart.replace(/:\d+$/, '');
+    }
+    else if (itemId && /^\d{8,18}$/.test(String(itemId))) {
+        const u = productUrl || url;
+        const m = u.match(/^(https?:\/\/[^/]+)/i);
+        if (m)
+            baseRoot = `${m[1]}/cart/${String(itemId)}`;
+    }
+    if (!baseRoot)
+        return { cart1xUrl, cart2xUrl, cart3xUrl };
+    return {
+        cart1xUrl: `${baseRoot}:1`,
+        cart2xUrl: (stock === undefined || stock >= 2) ? `${baseRoot}:2` : undefined,
+        cart3xUrl: (stock === undefined || stock >= 3) ? `${baseRoot}:3` : undefined
+    };
+}
 function getCloseCallGraceBuffer(formFactor) {
     const ff = String(formFactor || '').toLowerCase();
     if (ff === 'booster box' || ff === 'etb case' || ff === 'master case' || ff.includes('box') || ff.includes('case')) {
@@ -37,36 +73,46 @@ function getCloseCallGraceBuffer(formFactor) {
     return 5.00;
 }
 function computeOfferShelfStatus(params) {
-    const { dropPrice, landedPrice, estimatedShipping, triggerPrice, msrpCeiling, marketValue, formFactor, owned = false, muteVaulted = false, isMsrpUnicorn = false, isMarketplace3P = false } = params;
+    const { dropPrice, landedPrice, estimatedShipping, triggerPrice, msrpCeiling, marketValue, formFactor, owned = false, wallOwned = owned, fullyConquered = false, completionCount = wallOwned ? 1 : 0, ripHuntCeiling, stock, muteVaulted = false, isMsrpUnicorn = false, isRetailFlipBypass = false, isMarketplace3P = false } = params;
+    const isRipHuntMode = Boolean((wallOwned || completionCount >= 1) && !fullyConquered);
+    const effTrigger = (isRipHuntMode && ripHuntCeiling && ripHuntCeiling > 0) ? ripHuntCeiling : triggerPrice;
+    const ffLower = String(formFactor || '').toLowerCase();
+    const ripPairReady = Boolean(isRipHuntMode &&
+        ((stock !== undefined && stock >= 2) || stock === undefined || ffLower.includes('booster box')));
+    const ripPairBadge = ripPairReady ? '◈ ⟦ RIP PAIR READY (QTY 2+) ⟧' : undefined;
     const graceBuffer = getCloseCallGraceBuffer(formFactor);
-    // Standard LGS flat shipping (<= $10) does not penalize shelf comparison when evaluating target / close-call
     const canUseShelfPrice = !isMarketplace3P && estimatedShipping <= 10.00;
-    const comparePrice = (canUseShelfPrice && dropPrice <= triggerPrice + graceBuffer) ? dropPrice : landedPrice;
-    const isUnderOrAtTarget = comparePrice <= triggerPrice || landedPrice <= triggerPrice || isMsrpUnicorn;
-    const rawOver = Math.round((comparePrice - triggerPrice) * 100) / 100;
+    const comparePrice = (canUseShelfPrice && dropPrice <= effTrigger + graceBuffer) ? dropPrice : landedPrice;
+    const isUnderOrAtTarget = comparePrice <= effTrigger || landedPrice <= effTrigger || isMsrpUnicorn || isRetailFlipBypass;
+    const rawOver = Math.round((comparePrice - effTrigger) * 100) / 100;
     const withinGraceBuffer = rawOver > 0 && rawOver <= graceBuffer;
     const withinMarketOrMsrpGuard = (marketValue > 0 && comparePrice <= marketValue * 0.93) ||
         (msrpCeiling > 0 && comparePrice <= msrpCeiling * 1.10);
     const isCloseCall = !isUnderOrAtTarget && withinGraceBuffer && withinMarketOrMsrpGuard;
     const closeCallDelta = isCloseCall ? rawOver : 0;
-    if (owned && muteVaulted && !isMsrpUnicorn) {
+    if (fullyConquered && muteVaulted && !isMsrpUnicorn && !isRetailFlipBypass) {
         return {
             statusTier: 'MUTED_OWNED',
-            statusTag: '⟦ MUTED: OWNED ON WALL ⟧',
+            statusTag: '⟦ MUTED: 3/3 FAMILY COMPLETE ⟧',
             isCloseCall,
             closeCallDelta,
-            comparePrice
+            comparePrice,
+            ripPairReady: false
         };
     }
     if (isUnderOrAtTarget) {
-        const refPrice = landedPrice <= triggerPrice ? landedPrice : dropPrice;
-        const underDollars = Math.max(0, Math.round((triggerPrice - refPrice) * 100) / 100);
+        const refPrice = landedPrice <= effTrigger ? landedPrice : dropPrice;
+        const underDollars = Math.max(0, Math.round((effTrigger - refPrice) * 100) / 100);
         return {
             statusTier: 'UNDER_TARGET',
-            statusTag: `⟦ UNDER TARGET (-$${underDollars.toFixed(2)}) ⟧`,
+            statusTag: isRipHuntMode
+                ? `⟦ RIP TARGET HIT (-$${underDollars.toFixed(2)}) ⟧`
+                : `⟦ UNDER TARGET (-$${underDollars.toFixed(2)}) ⟧`,
             isCloseCall: false,
             closeCallDelta: 0,
-            comparePrice: refPrice
+            comparePrice: refPrice,
+            ripPairReady,
+            ripPairBadge
         };
     }
     if (isCloseCall) {
@@ -75,16 +121,31 @@ function computeOfferShelfStatus(params) {
             statusTag: `⟦ CLOSE CALL (+$${closeCallDelta.toFixed(2)} OVER TARGET — IN CUSHION) ⟧`,
             isCloseCall: true,
             closeCallDelta,
-            comparePrice
+            comparePrice,
+            ripPairReady,
+            ripPairBadge
         };
     }
-    const overDollars = Math.max(0.01, Math.round((landedPrice - triggerPrice) * 100) / 100);
+    if (wallOwned && muteVaulted && !isMsrpUnicorn && !isRetailFlipBypass) {
+        return {
+            statusTier: 'MUTED_OWNED',
+            statusTag: isRipHuntMode ? `⟦ WALL LOCKED (${completionCount}/3) // WAIT FOR $${effTrigger.toFixed(0)} RIP DIP ⟧` : '⟦ MUTED: OWNED ON WALL ⟧',
+            isCloseCall: false,
+            closeCallDelta: 0,
+            comparePrice: landedPrice,
+            ripPairReady,
+            ripPairBadge
+        };
+    }
+    const overDollars = Math.max(0.01, Math.round((landedPrice - effTrigger) * 100) / 100);
     return {
         statusTier: 'NEAR_MISS',
         statusTag: `⟦ NEAR MISS (+$${overDollars.toFixed(2)} OVER TARGET) ⟧`,
         isCloseCall: false,
         closeCallDelta: 0,
-        comparePrice: landedPrice
+        comparePrice: landedPrice,
+        ripPairReady,
+        ripPairBadge
     };
 }
 function isMarketplaceScamOrShippingTrap(item, dropPrice, shippingPrice, marketValue) {
@@ -336,6 +397,14 @@ function refreshCachedStoreOffersStatus() {
             for (const [storeKey, rec] of Object.entries(skuOffers)) {
                 if (!rec || typeof rec !== 'object')
                     continue;
+                const candidateTitle = String(rec.rawTitle || rec.productName || '');
+                const candidateFormFactor = rule?.formFactor || rec.formFactor;
+                if ((0, policies_1.isSingleCardOrNonSealed)(candidateTitle, rec.url) ||
+                    !(0, policies_1.hasMandatorySealedContainerKeyword)(candidateTitle, candidateFormFactor)) {
+                    delete skuOffers[storeKey];
+                    mutated = true;
+                    continue;
+                }
                 const rawShip = Number(rec.shipping || 0);
                 const rawItemPrice = (rawShip > 0 && Math.abs(rec.price - rec.landedPrice) < 0.01 && rec.price > rawShip)
                     ? Math.round((rec.landedPrice - rawShip) * 100) / 100
@@ -351,23 +420,17 @@ function refreshCachedStoreOffersStatus() {
                 const triggerPrice = rule
                     ? Math.max(rule.msrpCeiling, rule.maxMarketBuyPrice)
                     : Number(rec.triggerPrice || msrp);
-                const owned = rule ? Boolean(rule.inVault ?? rule.owned) : Boolean(rec.owned);
+                const wallOwned = rule ? Boolean(rule.wallOwned ?? rule.inVault ?? rule.owned) : Boolean(rec.owned);
+                const dadRipOwned = rule ? Boolean(rule.dadRipOwned) : false;
+                const loganRipOwned = rule ? Boolean(rule.loganRipOwned) : false;
+                const completionCount = (wallOwned ? 1 : 0) + (dadRipOwned ? 1 : 0) + (loganRipOwned ? 1 : 0);
+                const fullyConquered = Boolean(wallOwned && dadRipOwned && loganRipOwned);
                 const isMsrpUnicorn = Boolean(msrp > 0 && rawItemPrice <= Math.round(msrp * 1.08 * 100) / 100 && rawShip <= 10.00);
                 const is3P = /tcgplayer|ebay|3p/i.test(rec.storeName || storeKey);
+                const is1PBigBox = isVerified1PBigBoxOrPc(rec.storeName || storeKey, rec.url, is3P);
+                const isRetailFlipBypass = Boolean(is1PBigBox && isMsrpUnicorn && (marketVal >= rawItemPrice * 1.30 || (0, policies_1.isPokemonCenterSource)(rec.storeName || storeKey, rec.url)));
                 const landedVal = Number(rec.landedPrice || rawItemPrice + rawShip);
-                const status = computeOfferShelfStatus({
-                    dropPrice: rawItemPrice,
-                    landedPrice: landedVal,
-                    estimatedShipping: rawShip,
-                    triggerPrice,
-                    msrpCeiling: msrp,
-                    marketValue: marketVal,
-                    formFactor: rule?.formFactor || rec.formFactor,
-                    owned,
-                    muteVaulted,
-                    isMsrpUnicorn,
-                    isMarketplace3P: is3P
-                });
+                const activeStoreCount = Object.keys(skuOffers).length;
                 const trend = (0, trendAdvisor_1.evaluateSkuTrendAndTiming)({
                     skuId,
                     formFactor: rule?.formFactor || rec.formFactor,
@@ -378,18 +441,58 @@ function refreshCachedStoreOffersStatus() {
                     msrpCeiling: msrp,
                     marketBaseline: marketVal,
                     releaseDate: rule?.releaseDate,
-                    owned,
-                    isCloseCall: status.isCloseCall,
+                    owned: wallOwned,
+                    wallOwned,
+                    dadRipOwned,
+                    loganRipOwned,
+                    completionCount,
+                    fullyConquered,
+                    autoPilotEnabled: rule?.autoPilotEnabled !== false,
+                    activeStoreCount,
+                    lowestShelfPrice: rawItemPrice,
+                    isCloseCall: false,
                     isMarketplace3P: is3P,
                     nowTs: now
                 });
+                const status = computeOfferShelfStatus({
+                    dropPrice: rawItemPrice,
+                    landedPrice: landedVal,
+                    estimatedShipping: rawShip,
+                    triggerPrice: trend.effectiveTargetCeiling || triggerPrice,
+                    msrpCeiling: msrp,
+                    marketValue: marketVal,
+                    formFactor: rule?.formFactor || rec.formFactor,
+                    owned: wallOwned,
+                    wallOwned,
+                    fullyConquered,
+                    completionCount,
+                    ripHuntCeiling: trend.ripHuntCeiling,
+                    stock: rec.stock,
+                    muteVaulted,
+                    isMsrpUnicorn,
+                    isRetailFlipBypass,
+                    isMarketplace3P: is3P
+                });
+                const cartLinks = buildShopifyDirectCartLinks({
+                    url: rec.url,
+                    productUrl: rec.productUrl,
+                    cart1xUrl: rec.cart1xUrl,
+                    cart2xUrl: rec.cart2xUrl,
+                    cart3xUrl: rec.cart3xUrl,
+                    itemId: rec.itemId,
+                    stock: rec.stock,
+                    retailer: rec.storeName || storeKey
+                });
                 rec.price = rawItemPrice;
-                rec.triggerPrice = triggerPrice;
+                rec.triggerPrice = trend.effectiveTargetCeiling || triggerPrice;
                 rec.msrp = msrp;
                 rec.marketValue = marketVal || rec.marketValue;
-                rec.owned = owned;
+                rec.owned = wallOwned;
+                rec.cart1xUrl = cartLinks.cart1xUrl;
+                rec.cart2xUrl = cartLinks.cart2xUrl;
+                rec.cart3xUrl = cartLinks.cart3xUrl;
                 rec.statusTier = status.statusTier;
-                rec.statusTag = status.statusTag;
+                rec.statusTag = status.ripPairBadge ? `${status.statusTag} • ${status.ripPairBadge}` : status.statusTag;
                 rec.isCloseCall = status.isCloseCall;
                 rec.closeCallDelta = status.closeCallDelta;
                 rec.trendSignal = trend.trendSignal;
@@ -410,6 +513,29 @@ function refreshCachedStoreOffersStatus() {
                 const liveMap = JSON.parse(fs_1.default.readFileSync(LIVE_STOCK_PATH, 'utf-8')) || {};
                 const bestOffers = (liveMap.__bestOffers && typeof liveMap.__bestOffers === 'object') ? liveMap.__bestOffers : {};
                 let liveMutated = false;
+                // Purge any leaked singles or slabs from liveStock.json and __bestOffers
+                for (const [k, v] of Object.entries(liveMap)) {
+                    if (k.startsWith('__') || !v || typeof v !== 'object')
+                        continue;
+                    const lsEntry = v;
+                    const t = String(lsEntry.title || '');
+                    const ff = String(lsEntry.formFactor || '');
+                    if ((0, policies_1.isSingleCardOrNonSealed)(t, lsEntry.url) || !(0, policies_1.hasMandatorySealedContainerKeyword)(t, ff)) {
+                        delete liveMap[k];
+                        liveMutated = true;
+                    }
+                }
+                for (const [bKey, bVal] of Object.entries(bestOffers)) {
+                    if (!bVal || typeof bVal !== 'object')
+                        continue;
+                    const boEntry = bVal;
+                    const t = String(boEntry.title || '');
+                    const ff = String(boEntry.formFactor || '');
+                    if ((0, policies_1.isSingleCardOrNonSealed)(t, boEntry.url) || !(0, policies_1.hasMandatorySealedContainerKeyword)(t, ff)) {
+                        delete bestOffers[bKey];
+                        liveMutated = true;
+                    }
+                }
                 for (const [skuId, skuOffers] of Object.entries(storeOffersCacheMem)) {
                     const offersList = Object.values(skuOffers || {}).filter(o => o && o.landedPrice > 0);
                     if (offersList.length === 0)
@@ -598,33 +724,22 @@ function upsertBestCurrentOffer(entry) {
 }
 function matchTargetRuleForStaging(title, price, retailer, handleAndUrl) {
     const cleanTitle = (title || '').trim();
-    for (const junkRegex of policies_1.GLOBAL_JUNK_EXCLUSIONS) {
-        if (junkRegex.test(cleanTitle))
-            return null;
+    if ((0, policies_1.isSingleCardOrNonSealed)(cleanTitle, handleAndUrl) || !(0, policies_1.hasMandatorySealedContainerKeyword)(cleanTitle)) {
+        return null;
     }
-    for (const rule of policies_1.WATCH_POLICIES) {
-        if (rule.active === false)
-            continue;
-        const isMatched = rule.matchers.some((regex) => regex.test(cleanTitle));
-        if (!isMatched)
-            continue;
-        if (!(0, policies_1.isValidSkuForFormFactor)(cleanTitle, rule.formFactor, price, {
-            ruleId: rule.id,
-            targetName: rule.name,
-            handle: handleAndUrl,
-            retailer,
-            sourceUrl: handleAndUrl,
-            allowPcRetailUnlock: false
-        })) {
-            continue;
-        }
-        const minFloor = (0, policies_1.getMinPlausiblePriceFloor)(rule.formFactor);
-        const maxCeiling = (0, policies_1.getMaxPlausiblePriceCeiling)(rule.formFactor, rule.id, rule.name);
-        if (price < minFloor || price > maxCeiling)
-            continue;
-        return rule;
-    }
-    return null;
+    const matched = (0, policies_1.matchProductToSku)(cleanTitle, price, {
+        handle: handleAndUrl,
+        retailer,
+        sourceUrl: handleAndUrl,
+        allowPcRetailUnlock: false
+    });
+    if (!matched)
+        return null;
+    const minFloor = (0, policies_1.getMinPlausiblePriceFloor)(matched.formFactor);
+    const maxCeiling = (0, policies_1.getMaxPlausiblePriceCeiling)(matched.formFactor, matched.id, matched.name);
+    if (price < minFloor || price > maxCeiling)
+        return null;
+    return matched;
 }
 function upsertLiveStock(entry) {
     try {
@@ -736,6 +851,13 @@ function evaluateItem(item) {
     const bigBoxName = (0, policies_1.detectBigBoxRetailer)(item.retailer, handleAndUrl);
     const isPcSource = (0, policies_1.isPokemonCenterSource)(item.retailer, handleAndUrl);
     const hasPcTerm = (0, policies_1.hasPcExclusiveTerms)(cleanTitle, handleAndUrl);
+    // Layer 2 & Layer 3: Hard Anti-Singles / Slab / Loose-Pack Shield + Positive Sealed Container Gate
+    if ((0, policies_1.isSingleCardOrNonSealed)(cleanTitle, handleAndUrl)) {
+        return { action: 'IGNORE', reason: 'Blocked by V5 Sealed-Only / Anti-Singles Shield (Single Card, Slab, or Loose Pack).' };
+    }
+    if (!(0, policies_1.hasMandatorySealedContainerKeyword)(cleanTitle)) {
+        return { action: 'IGNORE', reason: 'Blocked by V5 Sealed-Only Shield (Missing mandatory positive sealed container keyword).' };
+    }
     for (const junkRegex of policies_1.GLOBAL_JUNK_EXCLUSIONS) {
         if (junkRegex.test(cleanTitle)) {
             return { action: 'IGNORE', reason: `Filtered out by global exclusion (${junkRegex})` };
@@ -745,6 +867,9 @@ function evaluateItem(item) {
         const isMatched = rule.matchers.some((regex) => regex.test(cleanTitle));
         if (!isMatched)
             continue;
+        if (!(0, policies_1.hasMandatorySealedContainerKeyword)(cleanTitle, rule.formFactor)) {
+            continue;
+        }
         if (!(0, policies_1.isValidSkuForFormFactor)(cleanTitle, rule.formFactor, item.price, {
             ruleId: rule.id,
             targetName: rule.name,
@@ -835,24 +960,28 @@ function evaluateItem(item) {
                 marketplaceWarning = '⚠️ 3P MARKETPLACE CHECK: Price is above MSRP — verify Sold & Shipped by 1st-Party Retailer before buying';
             }
         }
-        // Rule of 3 Family Pack Instant-Cart Links for Shopify LGS drops on ETBs
-        const baseCartUrl = item.cart1xUrl || (item.url && item.url.includes('/cart/') ? item.url : undefined);
-        let cart1xUrl = item.cart1xUrl;
-        let cart2xUrl = item.cart2xUrl;
-        let cart3xUrl = item.cart3xUrl;
-        if (baseCartUrl) {
-            const cleanCartRoot = baseCartUrl.replace(/:\d+$/, '');
-            cart1xUrl = `${cleanCartRoot}:1`;
-            cart2xUrl = (item.stock === undefined || item.stock >= 2) ? `${cleanCartRoot}:2` : undefined;
-            if (rule.formFactor === 'ETB') {
-                cart3xUrl = (item.stock === undefined || item.stock >= 3) ? `${cleanCartRoot}:3` : undefined;
-            }
-            else {
-                cart3xUrl = undefined;
-            }
-        }
-        // Check Vault suppression (inVault / owned + muteVaulted setting + wallHunterMode), with MSRP Tier-A Defcon-1 Override!
-        const isInVault = Boolean(rule.inVault ?? rule.owned);
+        // Rule of 3 Family Pack Instant-Cart Links for ALL Shopify LGS drops with a variantId
+        const directCartLinks = buildShopifyDirectCartLinks({
+            url: item.url,
+            productUrl: item.productUrl,
+            cart1xUrl: item.cart1xUrl,
+            cart2xUrl: item.cart2xUrl,
+            cart3xUrl: item.cart3xUrl,
+            itemId: item.itemId,
+            stock: item.stock,
+            retailer: item.retailer
+        });
+        const cart1xUrl = directCartLinks.cart1xUrl;
+        const cart2xUrl = directCartLinks.cart2xUrl;
+        const cart3xUrl = directCartLinks.cart3xUrl;
+        // Rule of 3 Family Completion state & 1P Big-Box / Pokemon Center Retail MSRP Flip Bypass
+        const wallOwned = Boolean(rule.wallOwned ?? rule.inVault ?? rule.owned);
+        const dadRipOwned = Boolean(rule.dadRipOwned);
+        const loganRipOwned = Boolean(rule.loganRipOwned);
+        const completionCount = (wallOwned ? 1 : 0) + (dadRipOwned ? 1 : 0) + (loganRipOwned ? 1 : 0);
+        const fullyConquered = Boolean(wallOwned && dadRipOwned && loganRipOwned);
+        const isRipHuntMode = Boolean((wallOwned || completionCount >= 1) && !fullyConquered);
+        const isInVault = wallOwned;
         const isMsrpUnicorn = Boolean(isTierAMsrp || isPcExclusiveRetailDrop);
         let muteVaulted = false;
         let wallHunterMode = false;
@@ -864,25 +993,17 @@ function evaluateItem(item) {
         catch (e) { }
         const isMarketplace3P = Boolean(item.isMarketplace3P ||
             /tcgplayer|ebay|target\s*plus|walmart.*3p|3rd[-\s]*party|marketplace/i.test(`${item.retailer} ${handleAndUrl}`));
-        const shelfStatus = computeOfferShelfStatus({
-            dropPrice,
-            landedPrice,
-            estimatedShipping,
-            triggerPrice: effectiveCeiling,
-            msrpCeiling: rule.msrpCeiling,
-            marketValue: currentMarketRef,
-            formFactor: rule.formFactor,
-            owned: isInVault,
-            muteVaulted,
-            isMsrpUnicorn,
-            isMarketplace3P
-        });
-        const { statusTier, statusTag, isCloseCall, closeCallDelta } = shelfStatus;
-        if (item.itemId && String(item.itemId).startsWith('tcg_')) {
-            clearTcgOosStrikes(String(item.itemId));
+        const is1PBigBoxOrPc = isVerified1PBigBoxOrPc(item.retailer, handleAndUrl, isMarketplace3P);
+        const isRetailFlipBypass = Boolean(is1PBigBoxOrPc &&
+            ((dropPrice <= Math.round(rule.msrpCeiling * 1.08 * 100) / 100 && currentMarketRef >= dropPrice * 1.30) || isPcExclusiveRetailDrop || isPcSource));
+        if (isRetailFlipBypass && (fullyConquered || (wallOwned && muteVaulted))) {
+            const gainPct = dropPrice > 0 ? Math.max(30, Math.round(((currentMarketRef - dropPrice) / dropPrice) * 100)) : 30;
+            bigBoxBadge = `◈ ⟦ RETAIL MSRP FLIP / TRADE BAIT // $${dropPrice.toFixed(2)} RETAIL VS $${Math.round(currentMarketRef)} MARKET (+${gainPct}%) ⟧`;
+            priorityFront = true;
         }
         const now = Date.now();
-        // V5 Slice 3.5: Data-Driven Pre-Release & 30/60/90d Rolling Trend Evaluation via src/engine/trendAdvisor.ts
+        const activeStoreCount = Object.keys(storeOffersCacheMem[rule.id] || {}).length;
+        // V5 Slice 3.5 & Slice 6: Data-Driven Auto-Pilot, Rip Hunt Mode, & 30/60/90d Rolling Trend Evaluation
         const trendEval = (0, trendAdvisor_1.evaluateSkuTrendAndTiming)({
             skuId: rule.id,
             formFactor: rule.formFactor,
@@ -893,12 +1014,50 @@ function evaluateItem(item) {
             msrpCeiling: rule.msrpCeiling,
             marketBaseline: currentMarketRef,
             releaseDate: rule.releaseDate,
-            owned: isInVault,
-            isCloseCall,
+            owned: wallOwned,
+            wallOwned,
+            dadRipOwned,
+            loganRipOwned,
+            completionCount,
+            fullyConquered,
+            autoPilotEnabled: rule.autoPilotEnabled !== false,
+            activeStoreCount,
+            lowestShelfPrice: dropPrice,
+            isCloseCall: false,
             isMarketplace3P,
             nowTs: now
         });
-        const { trendSignal, trendVerdictLabel, isElasticDip, qualifiesForElasticDipAlert, isPreRelease, preReleaseStatusTag } = trendEval;
+        const { trendSignal, trendVerdictLabel, isElasticDip, qualifiesForElasticDipAlert, isPreRelease, preReleaseStatusTag, effectiveTargetCeiling, ripHuntCeiling } = trendEval;
+        if (effectiveTargetCeiling > 0 && !isPcExclusiveRetailDrop) {
+            effectiveCeiling = effectiveTargetCeiling;
+        }
+        const shelfStatus = computeOfferShelfStatus({
+            dropPrice,
+            landedPrice,
+            estimatedShipping,
+            triggerPrice: effectiveCeiling,
+            msrpCeiling: rule.msrpCeiling,
+            marketValue: currentMarketRef,
+            formFactor: rule.formFactor,
+            owned: wallOwned,
+            wallOwned,
+            fullyConquered,
+            completionCount,
+            ripHuntCeiling,
+            stock: item.stock,
+            muteVaulted,
+            isMsrpUnicorn,
+            isRetailFlipBypass,
+            isMarketplace3P
+        });
+        const { statusTier, isCloseCall, closeCallDelta, ripPairReady, ripPairBadge } = shelfStatus;
+        const statusTag = ripPairBadge ? `${shelfStatus.statusTag} • ${ripPairBadge}` : shelfStatus.statusTag;
+        if (ripPairBadge && !bigBoxBadge) {
+            bigBoxBadge = ripPairBadge;
+        }
+        if (item.itemId && String(item.itemId).startsWith('tcg_')) {
+            clearTcgOosStrikes(String(item.itemId));
+        }
         const { packCount, pricePerPack, isRipValueLeader } = (0, policies_1.computeRipMetrics)(landedPrice, rule.id, rule.formFactor, `${rule.name} ${cleanTitle}`, rule.packCount);
         const nowTimeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         let freeShipNote = item.shippingNoteOverride;
@@ -1112,8 +1271,30 @@ function evaluateItem(item) {
             updatedAt: now,
             timeStr: nowTimeStr
         });
-        // Vault suppression check: If item is marked inVault/owned AND muteVaulted is enabled, suppress alert UNLESS it's a Tier-A True Retail MSRP Unicorn!
-        if (isInVault && muteVaulted && !isMsrpUnicorn) {
+        // Vault & Rule of 3 suppression check:
+        // - 3/3 COMPLETE (fullyConquered): Mutes standard LGS and 3rd-party alerts UNLESS it triggers 1P Big-Box/PC Retail Flip Bypass or MSRP Unicorn!
+        // - 1/3 or 2/3 (Rip Hunt Mode): Stays active at ripHuntCeiling; only mutes if above ripHuntCeiling.
+        if (fullyConquered && muteVaulted && !isRetailFlipBypass && !isMsrpUnicorn) {
+            return {
+                action: 'IGNORE',
+                reason: `[${statusTag}] Suppressed by 3/3 Family Complete Mute (above 1P Retail Flip Bypass).`,
+                rule,
+                packCount,
+                pricePerPack,
+                isRipValueLeader,
+                isPreRelease,
+                preReleaseStatusTag,
+                releaseDate: rule.releaseDate,
+                statusTier,
+                statusTag,
+                isCloseCall,
+                closeCallDelta,
+                trendSignal,
+                trendVerdictLabel,
+                isElasticDip
+            };
+        }
+        if (wallOwned && !isRipHuntMode && muteVaulted && !isMsrpUnicorn && !isRetailFlipBypass) {
             return {
                 action: 'IGNORE',
                 reason: `[${statusTag}] Suppressed by Vault Mute (inVault=true and above MSRP Tier-A ceiling).`,
@@ -1278,7 +1459,7 @@ function evaluateItem(item) {
             preReleaseStatusTag,
             releaseDate: rule.releaseDate,
             isMsrpUnicorn,
-            bypassVaultMute: Boolean(isInVault && isMsrpUnicorn),
+            bypassVaultMute: Boolean((isInVault || fullyConquered) && (isMsrpUnicorn || isRetailFlipBypass)),
             cart1xUrl,
             cart2xUrl,
             cart3xUrl,

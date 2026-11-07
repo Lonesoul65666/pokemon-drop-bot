@@ -4,8 +4,15 @@ import path from 'path';
 import dotenv from 'dotenv';
 import { loadTier1FastLgsStores, StoreRegistryEntry } from '../config/configManager';
 import { getNextProxy, variantStateMap, recordFastTier1Telemetry } from '../../lgsPoller';
-import { isValidSkuForFormFactor } from '../../policies';
+import {
+  isValidSkuForFormFactor,
+  isSingleOrNonSealedShopifyProduct,
+  isSingleCardOrNonSealed,
+  isCollectibleSingleCardOrSlab,
+  hasMandatorySealedContainerKeyword
+} from '../../policies';
 import { processIncomingDrop } from '../../listener';
+import { ingestSingleCardOffer } from '../engine/singlesSniper';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 dns.setDefaultResultOrder('ipv4first');
@@ -159,6 +166,8 @@ async function pollSingleTier1StoreFast(store: StoreRegistryEntry): Promise<{
   const now = Date.now();
 
   for (const prod of products) {
+    const isMetaSingle = isSingleOrNonSealedShopifyProduct(prod);
+
     for (const variant of prod.variants || []) {
       const variantId = Number(variant.id);
       if (!variantId) continue;
@@ -175,10 +184,26 @@ async function pollSingleTier1StoreFast(store: StoreRegistryEntry): Promise<{
         lastSeenAt: now
       });
 
-      if (!isAvail || !priceNum || priceNum < 18) continue;
+      if (!isAvail || !priceNum || priceNum < 15) continue;
 
       const fullTitle = `${prod.title} ${variant.title !== 'Default Title' ? variant.title : ''}`.trim();
       const tagsStr = Array.isArray(prod.tags) ? prod.tags.join(' ') : String(prod.tags || '');
+      const productUrl = prod.handle ? `${store.baseUrl}/products/${prod.handle}` : store.baseUrl;
+
+      if (isMetaSingle || isSingleCardOrNonSealed(fullTitle, prod.product_type, `${prod.handle || ''} ${tagsStr}`)) {
+        if (priceNum >= 15 && isCollectibleSingleCardOrSlab(fullTitle, prod.product_type, tagsStr)) {
+          const rawCompare = parseFloat(variant.compare_at_price || '0');
+          ingestSingleCardOffer({
+            title: fullTitle, storeName: store.name, price: priceNum,
+            compareAtPrice: rawCompare > 0 ? (fxMultiplier !== 1.0 ? Math.round(rawCompare * fxMultiplier * 100) / 100 : rawCompare) : undefined,
+            url: productUrl, itemId: String(variant.id), productType: prod.product_type, tags: prod.tags,
+            stock: typeof variant.inventory_quantity === 'number' && variant.inventory_quantity > 0 ? variant.inventory_quantity : undefined,
+            image: prod.images?.[0]?.src
+          });
+        }
+        continue;
+      }
+      if (priceNum < 18 || !hasMandatorySealedContainerKeyword(fullTitle)) continue;
       if (!isValidSkuForFormFactor(fullTitle, undefined, priceNum, { handle: `${prod.handle || ''} ${tagsStr}` })) {
         continue;
       }

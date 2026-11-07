@@ -13,6 +13,7 @@ const configManager_1 = require("../config/configManager");
 const lgsPoller_1 = require("../../lgsPoller");
 const policies_1 = require("../../policies");
 const listener_1 = require("../../listener");
+const singlesSniper_1 = require("../engine/singlesSniper");
 dotenv_1.default.config({ path: path_1.default.resolve(process.cwd(), '.env') });
 dns_1.default.setDefaultResultOrder('ipv4first');
 const FAST_INTERVAL_MS = 15000;
@@ -133,6 +134,7 @@ async function pollSingleTier1StoreFast(store) {
     let deltaHits = 0;
     const now = Date.now();
     for (const prod of products) {
+        const isMetaSingle = (0, policies_1.isSingleOrNonSealedShopifyProduct)(prod);
         for (const variant of prod.variants || []) {
             const variantId = Number(variant.id);
             if (!variantId)
@@ -147,10 +149,26 @@ async function pollSingleTier1StoreFast(store) {
                 price: priceNum || 0,
                 lastSeenAt: now
             });
-            if (!isAvail || !priceNum || priceNum < 18)
+            if (!isAvail || !priceNum || priceNum < 15)
                 continue;
             const fullTitle = `${prod.title} ${variant.title !== 'Default Title' ? variant.title : ''}`.trim();
             const tagsStr = Array.isArray(prod.tags) ? prod.tags.join(' ') : String(prod.tags || '');
+            const productUrl = prod.handle ? `${store.baseUrl}/products/${prod.handle}` : store.baseUrl;
+            if (isMetaSingle || (0, policies_1.isSingleCardOrNonSealed)(fullTitle, prod.product_type, `${prod.handle || ''} ${tagsStr}`)) {
+                if (priceNum >= 15 && (0, policies_1.isCollectibleSingleCardOrSlab)(fullTitle, prod.product_type, tagsStr)) {
+                    const rawCompare = parseFloat(variant.compare_at_price || '0');
+                    (0, singlesSniper_1.ingestSingleCardOffer)({
+                        title: fullTitle, storeName: store.name, price: priceNum,
+                        compareAtPrice: rawCompare > 0 ? (fxMultiplier !== 1.0 ? Math.round(rawCompare * fxMultiplier * 100) / 100 : rawCompare) : undefined,
+                        url: productUrl, itemId: String(variant.id), productType: prod.product_type, tags: prod.tags,
+                        stock: typeof variant.inventory_quantity === 'number' && variant.inventory_quantity > 0 ? variant.inventory_quantity : undefined,
+                        image: prod.images?.[0]?.src
+                    });
+                }
+                continue;
+            }
+            if (priceNum < 18 || !(0, policies_1.hasMandatorySealedContainerKeyword)(fullTitle))
+                continue;
             if (!(0, policies_1.isValidSkuForFormFactor)(fullTitle, undefined, priceNum, { handle: `${prod.handle || ''} ${tagsStr}` })) {
                 continue;
             }

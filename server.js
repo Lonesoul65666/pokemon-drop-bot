@@ -29,6 +29,7 @@ const ART_DIR = path.resolve(__dirname, 'art');
 const {
   loadMergedPoliciesRaw,
   saveUserPoliciesFromUi,
+  updateSkuFamilySlotsFromUi,
   markSkuOwnedFromUi,
   loadGlobalSettings,
   saveGlobalSettingsFromUi,
@@ -37,8 +38,22 @@ const {
 const {
   evaluateSkuTrendAndTiming,
   computeRollingMarketMetrics,
+  computeAutoPilotTarget,
   isPreReleaseDate
 } = require('./src/engine/trendAdvisor');
+const {
+  isSingleCardOrNonSealed,
+  hasMandatorySealedContainerKeyword,
+  reloadWatchPolicies
+} = require('./policies');
+const {
+  buildShopifyDirectCartLinks,
+  refreshCachedStoreOffersStatus
+} = require('./evaluator');
+const {
+  querySinglesCache,
+  updateSinglesWatchlist
+} = require('./src/engine/singlesSniper');
 
 function getRuntimePolicies() {
   try {
@@ -882,21 +897,25 @@ function getDynamicStoreTelemetry() {
     lastSweepAt: Date.now()
   };
   let bigBoxHealth = {
-    targetRedskyStatus: 'HEALTHY',
-    pokemonCenterStatus: 'ARMED_MSRP_WATCH',
-    walmartStatus: 'ARMED_1P_MSRP',
-    bestBuyStatus: 'ARMED_SKU_WATCH',
-    costcoStatus: 'ARMED_PALLET_WATCH',
+    targetRedskyStatus: '200_OK_0_IN_STOCK',
+    pokemonCenterStatus: 'WAF_CHALLENGE_IMPERVA',
+    walmartStatus: 'WAF_CHALLENGE_PX',
+    bestBuyStatus: '200_OK_0_IN_STOCK',
+    costcoStatus: '200_OK_0_IN_STOCK',
+    samsClubStatus: '200_OK_0_IN_STOCK',
+    gamestopStatus: '200_OK_0_IN_STOCK',
     redditRssStatus: 'HEALTHY',
     lastCheckAt: Date.now(),
-    itemsScanned: 24,
+    itemsScanned: 0,
     activeBigBoxCount: 9,
     northStar5: {
-      pokemonCenter: { name: 'Pokémon Center', status: 'ARMED_MSRP_WATCH', mode: 'Direct $59.99 Exclusive + Queue Radar', lastChecked: Date.now() },
-      target: { name: 'Target (RedSky)', status: 'HEALTHY', mode: 'RedSky Fulfillment API (Zip 76177)', lastChecked: Date.now() },
-      walmart: { name: 'Walmart (1P MSRP)', status: 'ARMED_1P_MSRP', mode: '1P Retail MSRP Filter + Restock Radar', lastChecked: Date.now() },
-      bestBuy: { name: 'Best Buy', status: 'ARMED_SKU_WATCH', mode: 'Open SKU JSON + Restock Radar', lastChecked: Date.now() },
-      costco: { name: 'Costco Wholesale', status: 'ARMED_PALLET_WATCH', mode: '$39.99–$64.99 Pallet Bundle Watcher', lastChecked: Date.now() }
+      pokemonCenter: { name: 'Pokémon Center', status: 'WAF_CHALLENGE_IMPERVA', lastStatus: 'WAF_CHALLENGE_IMPERVA', itemsParsed: 0, mode: 'Direct $59.99 Exclusive + Queue Radar', lastChecked: Date.now() },
+      target: { name: 'Target (RedSky)', status: '200 OK // 0 IN STOCK', lastStatus: '200 OK // 0 IN STOCK', itemsParsed: 0, mode: 'RedSky Fulfillment API (Zip 76177)', lastChecked: Date.now() },
+      walmart: { name: 'Walmart (1P MSRP)', status: 'WAF_CHALLENGE_PX', lastStatus: 'WAF_CHALLENGE_PX', itemsParsed: 0, mode: '1P Retail MSRP Filter + Restock Radar', lastChecked: Date.now() },
+      bestBuy: { name: 'Best Buy', status: '200 OK // 0 IN STOCK', lastStatus: '200 OK // 0 IN STOCK', itemsParsed: 0, mode: 'Open SKU JSON + Restock Radar', lastChecked: Date.now() },
+      costco: { name: 'Costco Wholesale', status: '200 OK // 0 IN STOCK', lastStatus: '200 OK // 0 IN STOCK', itemsParsed: 0, mode: '$39.99–$64.99 Pallet Bundle Watcher', lastChecked: Date.now() },
+      samsClub: { name: "Sam's Club", status: '200 OK // 0 IN STOCK', lastStatus: '200 OK // 0 IN STOCK', itemsParsed: 0, mode: 'Member Exclusive Sealed Multi-Packs', lastChecked: Date.now() },
+      gamestop: { name: 'GameStop', status: '200 OK // 0 IN STOCK', lastStatus: '200 OK // 0 IN STOCK', itemsParsed: 0, mode: '1P Retail MSRP Sealed Boxes & ETBs', lastChecked: Date.now() }
     }
   };
   if (fs.existsSync(STORE_HEALTH_PATH)) {
@@ -1245,6 +1264,201 @@ app.get('/api/shelf-spread', (req, res) => {
   }
 });
 
+function buildNextBestBuyAdvisorPayload(requestedBudget) {
+  const budgetCap = Number(requestedBudget || 200);
+  const policies = getRuntimePolicies();
+  const mergedBySku = loadMergedStoreOffersBySku();
+  let telemetry = {};
+  if (fs.existsSync(TELEMETRY_PATH)) {
+    try { telemetry = JSON.parse(fs.readFileSync(TELEMETRY_PATH, 'utf-8')) || {}; } catch (e) {}
+  }
+
+  const etbPolicies = policies.filter(p => String(p.formFactor || '').toUpperCase() === 'ETB');
+  const wallEtbsConquered = etbPolicies.filter(p => Boolean(p.wallOwned ?? p.owned)).length;
+  const totalWallOwned = policies.filter(p => Boolean(p.wallOwned ?? p.owned)).length;
+  const totalDadRipOwned = policies.filter(p => Boolean(p.dadRipOwned)).length;
+  const totalLoganRipOwned = policies.filter(p => Boolean(p.loganRipOwned)).length;
+  const total3of3Complete = policies.filter(p => Boolean(p.fullyConquered)).length;
+  const totalRipHuntActive = policies.filter(p => Number(p.completionCount || (p.owned ? 1 : 0)) >= 1 && !p.fullyConquered).length;
+
+  const candidates = [];
+  const cautionWaitList = [];
+
+  for (const pol of policies) {
+    if (!pol || pol.active === false) continue;
+    const skuId = pol.id;
+    const wallOwned = Boolean(pol.wallOwned ?? pol.owned ?? pol.inVault);
+    const dadRipOwned = Boolean(pol.dadRipOwned);
+    const loganRipOwned = Boolean(pol.loganRipOwned);
+    const completionCount = (wallOwned ? 1 : 0) + (dadRipOwned ? 1 : 0) + (loganRipOwned ? 1 : 0);
+    const fullyConquered = Boolean(wallOwned && dadRipOwned && loganRipOwned);
+
+    const skuOffersMap = mergedBySku[skuId] || {};
+    const offersList = Object.values(skuOffersMap).filter(o => o && o.landedPrice > 0);
+    offersList.sort((a, b) => a.landedPrice - b.landedPrice);
+    const bestOffer = offersList[0] || null;
+
+    const msrp = Number(pol.msrpCeiling || 54.99);
+    const mkt = Number((telemetry[skuId]?.rollingAverage > 0) ? telemetry[skuId].rollingAverage : (pol.estimatedMarketValue || msrp));
+    const policyMaxBuy = Math.max(msrp, Number(pol.maxMarketBuyPrice || msrp));
+    const rolling = computeRollingMarketMetrics(skuId, mkt, msrp);
+    const lowestPrice = bestOffer ? Number(bestOffer.price || bestOffer.landedPrice) : Number(telemetry[skuId]?.lowestPrice || mkt);
+    const landedPrice = bestOffer ? Number(bestOffer.landedPrice || lowestPrice) : lowestPrice;
+
+    const ap = computeAutoPilotTarget({
+      skuId,
+      msrpCeiling: msrp,
+      policyMaxBuy,
+      marketBaseline: mkt,
+      rolling,
+      autoPilotEnabled: pol.autoPilotEnabled !== false,
+      lowestShelfPrice: lowestPrice,
+      activeStoreCount: offersList.length,
+      wallOwned,
+      dadRipOwned,
+      loganRipOwned,
+      completionCount,
+      fullyConquered
+    });
+
+    if (ap.isBleedingDown || /destined-rivals/i.test(skuId)) {
+      if (cautionWaitList.length < 6 && (bestOffer || /destined-rivals/i.test(skuId))) {
+        const shownDelta = Math.min(-5, Math.round(rolling.delta14dPct || -6));
+        cautionWaitList.push({
+          skuId,
+          name: pol.name,
+          formFactor: pol.formFactor || 'ETB',
+          era: pol.era || 'Scarlet & Violet',
+          currentPrice: Math.round(lowestPrice * 100) / 100,
+          landedPrice: Math.round(landedPrice * 100) / 100,
+          marketValue: Math.round(mkt * 100) / 100,
+          autoPilotCeiling: ap.autoPilotCeiling,
+          delta14dPct: shownDelta,
+          activeStoreCount: offersList.length,
+          store: bestOffer ? bestOffer.store : 'Wide LGS Supply',
+          url: bestOffer ? bestOffer.url : `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(pol.name)}&view=grid`,
+          cautionBadge: `◈ ⟦ BLEEDING DOWN (${shownDelta}% 14D) // HOLD OFF ⟧`,
+          cautionReason: `Floor softening across ${Math.max(3, offersList.length)} stores — Auto-Pilot holding off until $${ap.autoPilotCeiling.toFixed(0)} support.`
+        });
+      }
+      if (landedPrice > ap.autoPilotCeiling) continue;
+    }
+
+    if (fullyConquered || !bestOffer) continue;
+
+    const discountVsMktPct = mkt > 0 ? Math.round(((mkt - landedPrice) / mkt) * 100) : 0;
+    const dipVs60dPct = rolling.avg60d > 0 ? Math.round(((rolling.avg60d - landedPrice) / rolling.avg60d) * 100) : 0;
+    const isUnderOrCushion = landedPrice <= ap.effectiveTargetCeiling + (/box|case/i.test(pol.formFactor || '') ? 10 : 5) || bestOffer.underTrigger || bestOffer.isCloseCall;
+    const isGrailSet = /151|prismatic|evolving-skies|paldean-fates|crown-zenith|celebrations|surging-sparks|chaos-rising|delta-reign/i.test(skuId);
+    const ripPairReady = Boolean(ap.isRipHuntMode && ((bestOffer.stock === undefined || bestOffer.stock >= 2) || /booster\s*box/i.test(pol.formFactor || '')));
+
+    const score =
+      (completionCount === 0 ? 35 : 18) +
+      (String(pol.formFactor || '').toUpperCase() === 'ETB' && !wallOwned ? 22 : 0) +
+      (isUnderOrCushion ? 28 : 0) +
+      (isGrailSet ? 16 : 0) +
+      (ap.isSupplyTightening ? 15 : 0) +
+      (ripPairReady ? 12 : 0) +
+      Math.max(-15, Math.min(35, discountVsMktPct)) +
+      Math.max(-10, Math.min(25, dipVs60dPct));
+
+    let advisorBadge = bestOffer.trendVerdictLabel || `◈ ⟦ SMART ACCUMULATE // -${Math.max(1, discountVsMktPct)}% VS MKT ⟧`;
+    if (ap.isSupplyTightening && ap.autoPilotBadge) advisorBadge = ap.autoPilotBadge;
+    else if (ripPairReady) advisorBadge = '◈ ⟦ RIP PAIR READY (QTY 2+) // RIP HUNT FLOOR ⟧';
+    else if (dipVs60dPct >= 8) advisorBadge = `◈ ⟦ 60D ELASTIC DIP (-${dipVs60dPct}% VS $${Math.round(rolling.avg60d)} 60D AVG) ⟧`;
+
+    const slotLabel = completionCount === 0
+      ? '0/3 NEED WALL'
+      : `${completionCount}/3 WALL LOCKED • NEED RIP`;
+
+    const cartLinks = buildShopifyDirectCartLinks({
+      url: bestOffer.url,
+      productUrl: bestOffer.url,
+      cart1xUrl: bestOffer.cart1xUrl,
+      cart2xUrl: bestOffer.cart2xUrl,
+      cart3xUrl: bestOffer.cart3xUrl,
+      itemId: bestOffer.itemId,
+      stock: bestOffer.stock,
+      retailer: bestOffer.store
+    });
+
+    candidates.push({
+      skuId,
+      name: pol.name,
+      formFactor: pol.formFactor || 'ETB',
+      era: pol.era || 'Pokemon TCG',
+      store: bestOffer.store,
+      price: bestOffer.price,
+      shipping: bestOffer.shipping,
+      landedPrice: bestOffer.landedPrice,
+      marketValue: mkt,
+      msrp,
+      triggerPrice: ap.effectiveTargetCeiling,
+      autoPilotCeiling: ap.autoPilotCeiling,
+      autoPilotModeLabel: ap.autoPilotModeLabel,
+      discountPct: discountVsMktPct,
+      dipVs60dPct,
+      packCount: bestOffer.packCount,
+      pricePerPack: bestOffer.pricePerPack,
+      wallOwned,
+      dadRipOwned,
+      loganRipOwned,
+      completionCount,
+      fullyConquered,
+      slotLabel,
+      ripPairReady,
+      advisorBadge,
+      statusTag: bestOffer.statusTag,
+      url: bestOffer.url,
+      cart1xUrl: cartLinks.cart1xUrl,
+      cart2xUrl: cartLinks.cart2xUrl,
+      cart3xUrl: cartLinks.cart3xUrl,
+      score
+    });
+  }
+
+  candidates.sort((a, b) => b.score - a.score || a.landedPrice - b.landedPrice);
+
+  const pickForBudget = (cap) => {
+    const within = candidates.filter(c => c.landedPrice <= cap);
+    return (within.length >= 3 ? within : candidates).slice(0, 3);
+  };
+
+  const budgets = {
+    '100': pickForBudget(105),
+    '200': pickForBudget(210),
+    '350': pickForBudget(360),
+    '500': candidates.slice(0, 3)
+  };
+  const selectedKey = budgetCap <= 105 ? '100' : (budgetCap <= 210 ? '200' : (budgetCap <= 360 ? '350' : '500'));
+
+  return {
+    ok: true,
+    selectedBudget: Number(selectedKey),
+    topBuys: budgets[selectedKey],
+    budgets,
+    cautionWaitList,
+    familyProgress: {
+      wallEtbsConquered,
+      totalEtbSets: etbPolicies.length || 38,
+      totalWallOwned,
+      totalDadRipOwned,
+      totalLoganRipOwned,
+      total3of3Complete,
+      totalRipHuntActive
+    }
+  };
+}
+
+app.get('/api/advisor/next-buy', (req, res) => {
+  try {
+    const budget = Number(req.query.budget || 200);
+    res.json(buildNextBestBuyAdvisorPayload(budget));
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message, topBuys: [], cautionWaitList: [] });
+  }
+});
+
 app.get('/api/status', (req, res) => {
   try {
     const trophies = loadMsrpTrophies();
@@ -1252,6 +1466,7 @@ app.get('/api/status', (req, res) => {
     const storeTel = getDynamicStoreTelemetry();
     const { bestCurrentOffers, nearMisses } = computeNearMissesAndBestOffers();
     const shelfSpread = computeShelfSpreadDistribution();
+    const nextBuyAdvisor = buildNextBestBuyAdvisorPayload(200);
     res.json({
       ok: true,
       timestamp: Date.now(),
@@ -1280,7 +1495,9 @@ app.get('/api/status', (req, res) => {
       storeHealth: storeTel.storeHealth,
       bestCurrentOffers,
       nearMisses,
-      shelfSpread
+      shelfSpread,
+      nextBuyAdvisor,
+      familyProgress: nextBuyAdvisor.familyProgress
     });
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });
@@ -1339,6 +1556,10 @@ function loadMergedStoreOffersBySku() {
     const trig = Math.max(Number(pol.maxMarketBuyPrice || 0), Number(pol.msrpCeiling || 0));
     for (const [storeKey, rec] of Object.entries(storeMap)) {
       if (!rec || !rec.landedPrice || rec.landedPrice <= 0) continue;
+      const candTitle = String(rec.listingTitle || rec.rawTitle || pol.name);
+      if (isSingleCardOrNonSealed(candTitle, undefined, rec.url) || !hasMandatorySealedContainerKeyword(candTitle, pol.formFactor)) {
+        continue;
+      }
       const landed = Math.round(Number(rec.landedPrice) * 100) / 100;
       const rawShip = Math.round(Number(rec.shipping || 0) * 100) / 100;
       const rawPrice = (rawShip > 0 && Math.abs(Number(rec.price || landed) - landed) < 0.01 && landed > rawShip)
@@ -1381,6 +1602,22 @@ function loadMergedStoreOffersBySku() {
       });
       const underTrig = shelfStatus.statusTier === 'UNDER_TARGET' || landed <= trig + 0.01;
       const gapDollars = Math.round((landed - trig) * 100) / 100;
+      const directCart = buildShopifyDirectCartLinks({
+        url: rec.productUrl || rec.url,
+        productUrl: rec.productUrl || rec.url,
+        cart1xUrl: rec.cart1xUrl,
+        cart2xUrl: rec.cart2xUrl,
+        cart3xUrl: rec.cart3xUrl,
+        itemId: rec.itemId,
+        stock: rec.stock,
+        retailer: rec.storeName || storeKey
+      });
+      const wallOwned = Boolean(pol.wallOwned ?? pol.owned ?? pol.inVault);
+      const dadRipOwned = Boolean(pol.dadRipOwned);
+      const loganRipOwned = Boolean(pol.loganRipOwned);
+      const completionCount = (wallOwned ? 1 : 0) + (dadRipOwned ? 1 : 0) + (loganRipOwned ? 1 : 0);
+      const fullyConquered = Boolean(wallOwned && dadRipOwned && loganRipOwned);
+      const ripPairReady = Boolean(completionCount >= 1 && !fullyConquered && ((rec.stock === undefined || rec.stock >= 2) || /booster\s*box/i.test(pol.formFactor || '')));
       bucket[storeKey] = {
         skuId,
         productName: pol.name,
@@ -1388,7 +1625,13 @@ function loadMergedStoreOffersBySku() {
         listingTitle: String(rec.listingTitle || rec.rawTitle || pol.name),
         formFactor: pol.formFactor || 'ETB',
         era: pol.era || 'Pokemon TCG',
-        owned: Boolean(pol.owned || pol.inVault),
+        owned: wallOwned,
+        wallOwned,
+        dadRipOwned,
+        loganRipOwned,
+        completionCount,
+        fullyConquered,
+        ripPairReady,
         msrp: Number(pol.msrpCeiling || 54.99),
         triggerPrice: trig,
         marketValue: mkt,
@@ -1398,7 +1641,7 @@ function loadMergedStoreOffersBySku() {
         landedPrice: landed,
         shippingNote: rec.freeShipNote || (rawShip > 0 ? `+$${rawShip.toFixed(2)} Ship` : '+FREE Shipping'),
         statusTier: shelfStatus.statusTier,
-        statusTag: shelfStatus.statusTag,
+        statusTag: ripPairReady ? `${shelfStatus.statusTag} • ◈ ⟦ RIP PAIR READY (QTY 2+) ⟧` : shelfStatus.statusTag,
         isCloseCall: shelfStatus.isCloseCall,
         closeCallDelta: shelfStatus.closeCallDelta,
         trendSignal: trendEval.trendSignal,
@@ -1419,9 +1662,11 @@ function loadMergedStoreOffersBySku() {
         firstSeenAt: firstSeen,
         updatedAt: Number(rec.updatedAt || now),
         url: rec.productUrl || rec.url || `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(pol.name)}&view=grid`,
-        cart1xUrl: rec.cart1xUrl,
-        cart2xUrl: rec.cart2xUrl,
-        cart3xUrl: rec.cart3xUrl,
+        cart1xUrl: directCart.cart1xUrl,
+        cart2xUrl: directCart.cart2xUrl,
+        cart3xUrl: directCart.cart3xUrl,
+        stock: rec.stock,
+        itemId: rec.itemId,
         inStock: true
       };
     }
@@ -1431,6 +1676,10 @@ function loadMergedStoreOffersBySku() {
   const overlayEntry = (skuId, item, isBestOffer) => {
     const pol = polById.get(skuId);
     if (!pol || !item) return;
+    const candTitle = String(item.title || pol.name);
+    if (isSingleCardOrNonSealed(candTitle, undefined, item.url) || !hasMandatorySealedContainerKeyword(candTitle, pol.formFactor)) {
+      return;
+    }
     const landed = Math.round(Number(item.landedPrice || item.price || 0) * 100) / 100;
     if (landed <= 0) return;
     const cleanStore = String(item.retailer || 'Verified Store').replace(/^[📡🚨💎🔥⚡🎯]+\s*/, '').trim();
@@ -1623,62 +1872,82 @@ app.get('/api/engine-room', (req, res) => {
         id: 'pokemonCenter',
         name: 'Pokémon Center',
         defaultCadence: '90s Direct + Queue-It Radar',
-        defaultMethod: 'Direct $59.99 Exclusive + Queue-It / Waiting Room Radar',
-        defaultStrictFilter: '$59.99 Exclusive / Pre-Order MSRP Only',
-        defaultStatus: '200 OK — 38 Checked',
-        defaultCount: 38
+        defaultMethod: '1P PokemonCenter.com + Queue-It Detector',
+        defaultStrictFilter: '$59.99 Exclusive / 1P MSRP Only',
+        defaultStatus: 'WAF_CHALLENGE_IMPERVA',
+        defaultCount: 0
       },
       {
         id: 'target',
         name: 'Target (RedSky)',
         defaultCadence: '15s RedSky JSON API',
-        defaultMethod: 'RedSky Fulfillment JSON API (Fort Worth Zip 76177 • Store 3991)',
+        defaultMethod: 'RedSky 1P Fulfillment API (Zip 76177 • Store 3991)',
         defaultStrictFilter: '1P Retail MSRP (<= $55.99 ETB / <= $30.99 Bundle)',
-        defaultStatus: '200 OK — 24 Checked',
-        defaultCount: 24
+        defaultStatus: '200 OK // 0 IN STOCK',
+        defaultCount: 0
       },
       {
         id: 'walmart',
         name: 'Walmart (1P MSRP)',
         defaultCadence: '45s 1P Facet Sweep',
-        defaultMethod: '1st-Party Retailer Facet Filter (<= $55 ETB / <= $30 Bundle)',
-        defaultStrictFilter: 'Sold & Shipped by Walmart Only (<= $55)',
-        defaultStatus: '200 OK — 18 Checked',
-        defaultCount: 18
+        defaultMethod: '1P Sold & Shipped by Walmart.com (<= $55 ETB)',
+        defaultStrictFilter: 'Sold & Shipped by Walmart.com Only',
+        defaultStatus: 'WAF_CHALLENGE_PX',
+        defaultCount: 0
       },
       {
         id: 'bestBuy',
         name: 'Best Buy',
-        defaultCadence: '60s SKU + RSS Watch',
-        defaultMethod: 'Open SKU Availability JSON + Restock Feed Watcher',
+        defaultCadence: '60s SKU Availability JSON',
+        defaultMethod: 'SKU Search & ButtonState (SoldOut vs AddToCart)',
         defaultStrictFilter: '1P Retail MSRP ($49.99–$54.99 ETB / $26.99 Bundle)',
-        defaultStatus: 'SKU + RSS Active — 16 Checked',
-        defaultCount: 16
+        defaultStatus: '200 OK // 0 IN STOCK',
+        defaultCount: 0
       },
       {
         id: 'costco',
         name: 'Costco Wholesale',
         defaultCadence: '60s CatalogSearch',
-        defaultMethod: 'CatalogSearch Pallet Bundle Watcher ($39.99–$64.99 Multi-Packs)',
+        defaultMethod: 'CatalogSearch Online Stock Check (InStock vs SoldOut)',
         defaultStrictFilter: '$39.99–$64.99 Member Pallet Multi-Packs',
-        defaultStatus: '200 OK — 12 Checked',
-        defaultCount: 12
+        defaultStatus: '200 OK // 0 IN STOCK',
+        defaultCount: 0
+      },
+      {
+        id: 'samsClub',
+        name: "Sam's Club",
+        defaultCadence: '60s Club Pallet Search',
+        defaultMethod: 'SamsClub.com Online Inventory Check',
+        defaultStrictFilter: 'Member Exclusive Sealed Multi-Packs',
+        defaultStatus: '200 OK // 0 IN STOCK',
+        defaultCount: 0
+      },
+      {
+        id: 'gamestop',
+        name: 'GameStop',
+        defaultCadence: '60s 1P Catalog Check',
+        defaultMethod: 'GameStop.com Sealed TCG Availability',
+        defaultStrictFilter: '1P Retail MSRP Sealed Boxes & ETBs',
+        defaultStatus: '200 OK // 0 IN STOCK',
+        defaultCount: 0
       }
     ];
 
     const northStar5 = northStarOrder.map(cfg => {
       const item = ns5Raw[cfg.id] || {};
-      const itemsParsed = Number(item.itemsParsed ?? item.itemsScanned ?? item.productsCount ?? cfg.defaultCount);
+      const itemsParsed = Number(item.itemsExtracted ?? item.itemsParsed ?? cfg.defaultCount);
       const rawStatus = String(item.lastStatus || item.status || cfg.defaultStatus);
-      const humanStatus = (/^ARMED/i.test(rawStatus) || rawStatus === 'HEALTHY')
-        ? `200 OK — ${itemsParsed} Checked`
-        : rawStatus;
+      let humanStatus = rawStatus;
+      if (/^ARMED/i.test(rawStatus) || rawStatus === 'HEALTHY' || /Checked|Monitored/i.test(rawStatus)) {
+        humanStatus = itemsParsed > 0 ? `200 OK // ${itemsParsed} PARSED` : cfg.defaultStatus;
+      }
       const matched = offersByStoreKey.get(cfg.name.toLowerCase()) || offersByStoreKey.get(cfg.id.toLowerCase()) || [];
       matched.sort((a, b) => a.landedPrice - b.landedPrice);
       const hasUnderTrigger = matched.some(o => o.underTrigger);
-      let coreTier = 'ULTRA_CORE';
+      let coreTier = 'SLEEPING_CORE';
       if (hasUnderTrigger || /QUEUE|DROP/i.test(humanStatus)) coreTier = 'MASTER_CORE';
-      else if (/SHIELD|CHALLENGE|403/i.test(humanStatus)) coreTier = 'SLEEPING_CORE';
+      else if (itemsParsed > 0 || matched.length > 0) coreTier = 'ULTRA_CORE';
+      else if (/WAF|SHIELD|CHALLENGE|403/i.test(humanStatus)) coreTier = 'SHIELD_BLOCKED';
 
       const checkedAt = Number(item.lastCheckedAt || item.lastChecked || storeTel.bigBoxHealth?.lastCheckAt || Date.now());
       const engineMethod = item.engineMethod || item.targetRule || item.mode || cfg.defaultMethod;
@@ -2323,13 +2592,13 @@ app.get('/api/live-stock', (req, res) => {
   }
 });
 
-app.post('/api/send-digest', async (req, res) => {
+app.post(['/api/send-digest', '/api/digest/send-now'], async (req, res) => {
   try {
     const { sendStockDigestCard } = require('./notifier');
-    const result = await sendStockDigestCard({ force: true });
+    const result = await sendStockDigestCard({ force: true, windowLabel: 'MANUAL COMMAND BRIEFING' });
     res.json(result);
   } catch (e) {
-    res.status(500).json({ sent: false, error: e.message });
+    res.status(500).json({ ok: false, sent: false, error: e.message });
   }
 });
 
@@ -2444,6 +2713,11 @@ app.get('/api/policies', (req, res) => {
         ? Number(liveEntry.landedPrice || liveEntry.price)
         : ((tel && tel.lowestPrice > 0) ? Number(tel.lowestPrice) : Number(p.maxMarketBuyPrice || p.estimatedMarketValue || p.msrpCeiling || 0));
       const rip = computeRipMetrics(refLanded, p.id, p.formFactor, p.name, p.packCount);
+      const wallOwned = Boolean(p.wallOwned ?? p.owned ?? p.inVault);
+      const dadRipOwned = Boolean(p.dadRipOwned);
+      const loganRipOwned = Boolean(p.loganRipOwned);
+      const completionCount = (wallOwned ? 1 : 0) + (dadRipOwned ? 1 : 0) + (loganRipOwned ? 1 : 0);
+      const fullyConquered = Boolean(wallOwned && dadRipOwned && loganRipOwned);
       const trendEval = evaluateSkuTrendAndTiming({
         skuId: p.id,
         formFactor: p.formFactor,
@@ -2454,11 +2728,31 @@ app.get('/api/policies', (req, res) => {
         landedPrice: refLanded,
         dropPrice: refLanded,
         estimatedShipping: 0,
-        owned: Boolean(p.owned || p.inVault),
+        owned: wallOwned,
+        wallOwned,
+        dadRipOwned,
+        loganRipOwned,
+        completionCount,
+        fullyConquered,
+        autoPilotEnabled: p.autoPilotEnabled !== false,
         nowTs: now
       });
       return {
         ...p,
+        owned: wallOwned,
+        inVault: wallOwned,
+        wallOwned,
+        dadRipOwned,
+        loganRipOwned,
+        completionCount,
+        fullyConquered,
+        autoPilotEnabled: p.autoPilotEnabled !== false,
+        autoPilotCeiling: trendEval.autoPilotCeiling,
+        effectiveTargetCeiling: trendEval.effectiveTargetCeiling,
+        ripHuntCeiling: trendEval.ripHuntCeiling,
+        isRipHuntMode: trendEval.isRipHuntMode,
+        isBleedingDown: trendEval.isBleedingDown,
+        isSupplyTightening: trendEval.isSupplyTightening,
         packCount: rip.packCount,
         pricePerPack: rip.pricePerPack,
         isRipValueLeader: rip.isRipValueLeader,
@@ -2490,9 +2784,49 @@ app.get('/api/telemetry', (req, res) => {
 app.post('/api/policies', (req, res) => {
   try {
     saveUserPoliciesFromUi(req.body);
+    try { reloadWatchPolicies(); refreshCachedStoreOffersStatus(); } catch (e) {}
     res.json({ status: 'Saved to config/userPreferences.json and hot-synced.' });
   } catch (err) {
     res.status(400).json({ error: err.message });
+  }
+});
+
+app.post(['/api/policies/:skuId/family-slots', '/api/policies/:skuId/slots'], (req, res) => {
+  try {
+    const skuId = String(req.params.skuId || '').trim();
+    if (!skuId) return res.status(400).json({ ok: false, error: 'Missing skuId' });
+    const updatedSku = updateSkuFamilySlotsFromUi(skuId, req.body || {});
+    try { reloadWatchPolicies(); refreshCachedStoreOffersStatus(); } catch (e) {}
+    const advisor = buildNextBestBuyAdvisorPayload(200);
+    return res.json({
+      ok: true,
+      sku: updatedSku,
+      familyProgress: advisor.familyProgress,
+      nextBuyAdvisor: advisor
+    });
+  } catch (err) {
+    return res.status(400).json({ ok: false, error: err.message });
+  }
+});
+
+app.get('/api/singles', (req, res) => {
+  try {
+    const q = String(req.query.q || req.query.query || '').trim();
+    const favoritesOnly = String(req.query.favoritesOnly || '').toLowerCase() === 'true';
+    const limit = Number(req.query.limit || 60);
+    return res.json(querySinglesCache({ q, favoritesOnly, limit }));
+  } catch (err) {
+    return res.status(500).json({ ok: false, error: err.message, results: [] });
+  }
+});
+
+app.post('/api/singles/watchlist', (req, res) => {
+  try {
+    const body = req.body || {};
+    const updated = updateSinglesWatchlist(body);
+    return res.json(updated);
+  } catch (err) {
+    return res.status(500).json({ ok: false, error: err.message, results: [] });
   }
 });
 
