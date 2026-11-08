@@ -166,7 +166,13 @@ export const GLOBAL_JUNK_EXCLUSIONS = [
   /\bsingle(s)?\b/i,
   /single card/i,
   /\bholo\b/i,
+  /\bholofoil\b/i,
   /reverse holo/i,
+  /reverse holofoil/i,
+  /pokeball holo/i,
+  /masterball holo/i,
+  /\(\d{1,3}\/\d{1,3}\)/i,
+  /\[[a-z]{2,4}\d*:/i,
   /\bfoil\b/i,
   /full art/i,
   /alt art/i,
@@ -229,12 +235,18 @@ export function isSingleOrNonSealedShopifyProduct(prod?: {
   if (SHOPIFY_BLOCKED_META_REGEX.test(prodType) || SHOPIFY_BLOCKED_META_REGEX.test(tagsStr)) {
     return true;
   }
+  const handleWords = String(prod.handle || '').replace(/-/g, ' ').trim();
+  if (handleWords && isSingleCardOrNonSealed(handleWords, prodType, tagsStr)) {
+    return true;
+  }
   return false;
 }
 
 const SINGLE_CARD_OR_NON_SEALED_PATTERNS: RegExp[] = [
   // Card Number / Set Number Patterns (excludes 3-part MM/DD/YYYY dates)
   /\b\d{1,3}\s*\/\s*\d{1,3}\b(?!\s*\/\s*\d{2,4})/i,
+  /\(\d{1,3}\/\d{1,3}\)/i,
+  /\[[a-z]{2,4}\d*:/i,
   /#[0-9]{1,4}\b/i,
   /\b(tg|gg|svp)[0-9]{1,3}\b/i,
   /\b(sv|swsh|sm|xy)[0-9]{3}\b/i,
@@ -243,7 +255,11 @@ const SINGLE_CARD_OR_NON_SEALED_PATTERNS: RegExp[] = [
   /\bsingle(s)?\b/i,
   /single\s+cards?\b/i,
   /\bholo\b/i,
+  /\bholofoil\b/i,
   /reverse\s+holo/i,
+  /reverse\s+holofoil/i,
+  /pokeball\s+holo/i,
+  /masterball\s+holo/i,
   /\bfoil\b/i,
   /full\s+art/i,
   /alt\s+art/i,
@@ -342,8 +358,16 @@ export function isSingleCardOrNonSealed(
     if (junkRegex.test(clean)) return true;
   }
 
-  if (metaCombined && /\b(psa-[0-9]|cgc-[0-9]|bgs-[0-9]|single-card|pokemon-singles|loose-pack|graded-card)\b/i.test(metaCombined)) {
+  if (metaCombined && /\b(psa-[0-9]|cgc-[0-9]|bgs-[0-9]|single-card|pokemon-singles|loose-pack|graded-card|holofoil)\b/i.test(metaCombined)) {
     return true;
+  }
+
+  const urlSlugMatch = `${clean} ${tagsStr}`.match(/\/products\/([a-z0-9-_]+)/i);
+  if (urlSlugMatch && urlSlugMatch[1]) {
+    const slugText = urlSlugMatch[1].replace(/-/g, ' ');
+    for (const rx of SINGLE_CARD_OR_NON_SEALED_PATTERNS) {
+      if (rx.test(slugText)) return true;
+    }
   }
 
   return false;

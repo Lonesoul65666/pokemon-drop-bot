@@ -2715,11 +2715,12 @@
         topGrid.innerHTML = picks.slice(0, 3).map((pick, idx) => {
           const imgPath = '/art/' + pick.skuId + '.jpg?v=' + cacheBuster;
           const st = getSkuFamilyState(pick.skuId, pick);
-          const ripBadge = pick.isRipPairReady
+          const ripBadge = (pick.isRipPairReady || pick.ripPairReady)
             ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-purple-500/25 text-purple-200 border border-purple-400/50 text-[9px] font-mono-num font-extrabold">◈ ⟦ RIP PAIR READY (QTY 2+) ⟧</span>'
             : '';
-          const trendBadge = pick.trendVerdictLabel
-            ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-200 border border-cyan-400/45 text-[9px] font-mono-num font-extrabold">' + pick.trendVerdictLabel + '</span>'
+          const rawTrendLbl = pick.trendVerdictLabel || pick.advisorBadge || '';
+          const trendBadge = rawTrendLbl
+            ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-200 border border-cyan-400/45 text-[9px] font-mono-num font-extrabold">' + rawTrendLbl + '</span>'
             : '';
           return (
             '<div class="p-3.5 rounded-xl bg-[#0B0E1D]/90 border border-emerald-400/40 flex flex-col justify-between gap-2.5">' +
@@ -2757,7 +2758,9 @@
       }
 
       if (bleedGrid) {
-        const bleeding = (nextBuyAdvisorData && Array.isArray(nextBuyAdvisorData.bleedingWaitList)) ? nextBuyAdvisorData.bleedingWaitList : [];
+        const bleeding = (nextBuyAdvisorData && Array.isArray(nextBuyAdvisorData.cautionWaitList))
+          ? nextBuyAdvisorData.cautionWaitList
+          : ((nextBuyAdvisorData && Array.isArray(nextBuyAdvisorData.bleedingWaitList)) ? nextBuyAdvisorData.bleedingWaitList : []);
         if (bleeding.length === 0) {
           bleedGrid.innerHTML = '<div class="col-span-full text-[11px] text-slate-400">No active tracked sets are currently flagged in steep 14-day falling-knife bleed (&le; -5% 14d).</div>';
         } else {
@@ -2765,7 +2768,7 @@
             '<div onclick="openPriceHistoryModal(\'' + b.skuId + '\')" class="p-2.5 rounded-xl bg-amber-950/30 hover:bg-amber-950/45 border border-amber-500/40 flex items-center justify-between gap-2 cursor-pointer transition">' +
               '<div class="min-w-0">' +
                 '<div class="text-xs font-extrabold text-amber-200 truncate">' + b.name + '</div>' +
-                '<div class="text-[10px] font-mono-num text-amber-300/90 truncate">' + (b.badge || ('◈ ⟦ BLEEDING DOWN (' + b.delta14dPct + '% 14D) // HOLD OFF ⟧')) + '</div>' +
+                '<div class="text-[10px] font-mono-num text-amber-300/90 truncate">' + (b.cautionBadge || b.badge || ('◈ ⟦ BLEEDING DOWN (' + b.delta14dPct + '% 14D) // HOLD OFF ⟧')) + '</div>' +
               '</div>' +
               '<div class="text-right font-mono-num shrink-0">' +
                 '<div class="text-xs font-black text-white">$' + Number(b.landedPrice).toFixed(2) + '</div>' +

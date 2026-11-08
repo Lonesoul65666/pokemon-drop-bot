@@ -503,14 +503,14 @@
     "name": "Kanzen Games",
     "storeType": "SHOPIFY_LGS",
     "baseUrl": "https://kanzengames.com",
-    "resolvedPath": "/products.json?limit=250",
+    "resolvedPath": "/collections/pokemon-sealed-in-stock/products.json",
     "flatShipping": 6.99,
     "freeShipThreshold": 150,
     "currency": "USD",
     "tier": "TIER1_FAST",
     "enabled": true,
     "additionalPaths": [
-      "/collections/pokemon-tcg-mega-evolution/products.json?limit=250"
+      "/collections/pokemon-elite-trainer-box/products.json"
     ]
   },
   {

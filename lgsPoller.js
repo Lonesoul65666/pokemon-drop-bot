@@ -215,7 +215,8 @@ exports.LGS_STORES = (0, configManager_1.loadActiveLgsStores)();
 exports.MONITORED_STORES = exports.LGS_STORES;
 const INVALID_COLLECTION_SUBPATH_REGEX = /single|singles|graded|slab|slabs|psa|cgc|bgs|japanese|chinese|korean|event|local|lorcana|digimon|one-piece|magic|mtg|3d-cut|custom|break|bandai|indonesian|thai|spanish|french|german|italian|portuguese|figure|plush|toy|apparel|supply|sleeve|binder|accessories|codes|ptcgo|ptcgl/i;
 const NARROW_SUBCOLLECTION_HANDLE_REGEX = /booster-box|blister|elite-trainer|etb|pre-?order|sealed-cases|30th-pokemon|mega-evolution|a-great-place-to-begin|karls-krazy|modern-sealed/i;
-const BROAD_PARENT_COLLECTION_HANDLE_REGEX = /^(pokemon|pokemon-tcg|pokemon-sealed|all-pokemon|all-pokemon-sealed|all-pokemon-sealed-products|all-pokemon-sealed-product|pokemon-sealed-products|pokemon-sealed-product|pokemon-trading-card-game|games-pokemon|pokemon-cards|pokemon-english|sealed-pokemon-collection)$/i;
+const SEALED_PRIORITY_COLLECTION_HANDLE_REGEX = /^(pokemon-sealed-in-stock|pokemon-sealed|all-pokemon-sealed|all-pokemon-sealed-products|all-pokemon-sealed-product|pokemon-sealed-products|pokemon-sealed-product|sealed-pokemon-collection|in-stock-pokemon-sealed)$/i;
+const BROAD_PARENT_COLLECTION_HANDLE_REGEX = /^(pokemon-sealed-in-stock|pokemon-sealed|all-pokemon-sealed|all-pokemon-sealed-products|all-pokemon-sealed-product|pokemon-sealed-products|pokemon-sealed-product|sealed-pokemon-collection|pokemon|pokemon-tcg|all-pokemon|pokemon-trading-card-game|games-pokemon|pokemon-cards|pokemon-english)$/i;
 // Ensure all active stores exist in storeHealthMap with HEALTHY status on boot and sync authoritative config/stores.json paths
 for (const store of exports.MONITORED_STORES) {
     const existing = storeHealthMap.get(store.name);
@@ -328,6 +329,8 @@ function scorePokemonCollectionCandidate(col) {
     const hay = `${handle} ${title}`;
     if (INVALID_COLLECTION_SUBPATH_REGEX.test(hay))
         return -100;
+    if (SEALED_PRIORITY_COLLECTION_HANDLE_REGEX.test(handle) || /pokemon-sealed-in-stock|pokemon-sealed/i.test(handle))
+        return 120;
     if (BROAD_PARENT_COLLECTION_HANDLE_REGEX.test(handle))
         return 100;
     if (NARROW_SUBCOLLECTION_HANDLE_REGEX.test(handle))
@@ -418,9 +421,12 @@ async function pollSingleStore(store) {
         let products = resolved.initialProducts;
         let error = resolved.error;
         if (!products) {
-            const page1Url = resolved.feedPath.includes('page=')
-                ? `${store.baseUrl}${resolved.feedPath}`
-                : `${store.baseUrl}${resolved.feedPath}${resolved.feedPath.includes('?') ? '&' : '?'}page=1`;
+            const feedWithLimit = resolved.feedPath.includes('limit=')
+                ? resolved.feedPath
+                : `${resolved.feedPath}${resolved.feedPath.includes('?') ? '&' : '?'}limit=250`;
+            const page1Url = feedWithLimit.includes('page=')
+                ? `${store.baseUrl}${feedWithLimit}`
+                : `${store.baseUrl}${feedWithLimit}${feedWithLimit.includes('?') ? '&' : '?'}page=1`;
             const fetched = await smartGetJson(page1Url);
             products = fetched.data?.products;
             error = fetched.error;
@@ -445,7 +451,8 @@ async function pollSingleStore(store) {
             for (const extraPath of store.additionalPaths) {
                 if (!extraPath || extraPath === resolved.feedPath)
                     continue;
-                const extraRes = await smartGetJson(`${store.baseUrl}${extraPath}`);
+                const extraWithLimit = extraPath.includes('limit=') ? extraPath : `${extraPath}${extraPath.includes('?') ? '&' : '?'}limit=250`;
+                const extraRes = await smartGetJson(`${store.baseUrl}${extraWithLimit}`);
                 const extraItems = extraRes.data?.products;
                 if (Array.isArray(extraItems)) {
                     for (const ep of extraItems) {
@@ -510,6 +517,11 @@ async function pollSingleStore(store) {
         const fxMultiplier = store.currency === 'CAD' ? 0.73 : 1.0;
         const activeVariantIds = new Set();
         for (const prod of products) {
+            if (/kanzen\s*games/i.test(store.name) &&
+                prod.product_type &&
+                String(prod.product_type).trim().toLowerCase() !== 'pokemon sealed') {
+                continue;
+            }
             const isShopifyMetaSingleOrNonSealed = (0, policies_1.isSingleOrNonSealedShopifyProduct)(prod);
             for (const variant of prod.variants || []) {
                 const rawPrice = parseFloat(variant.price);

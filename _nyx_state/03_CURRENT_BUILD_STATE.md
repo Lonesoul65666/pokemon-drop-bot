@@ -5,10 +5,10 @@
 ---
 
 ## 1. Live System Snapshot
-- **Current Phase:** **V5 Slice 6 Complete** (Interactive "Rule of 3" `[WALL / DAD RIP / LOGAN RIP]` checkboxes, Dynamic Auto-Pilot Dip Brain & `$100/$200/$350/$500+` Next-Buy Capital Advisor, 1st-Party Big-Box & Pokémon Center Retail MSRP Flip / Trade Bait Bypass, 4-Section Market & Deal Roundup Digest (`09:00` & `18:00` + `[SEND DIGEST NOW]`), 1-Click Direct Shopify Cart Links (`[CART 1X]`, `[CART 2X]`, `[CART 3X]`), and 100% Silent Singles Enforcement).
-- **Last Checkpoint Timestamp:** `2026-11-07 01:13 CST`
+- **Current Phase:** **V5 Slice 6 + Kanzen Games Sealed-Feed Pin & Holofoil/Bracket Anti-Singles Patch Complete** (Interactive "Rule of 3" `[WALL / DAD RIP / LOGAN RIP]` checkboxes, Dynamic Auto-Pilot Dip Brain & `$100/$200/$350/$500+` Next-Buy Capital Advisor, 1st-Party Big-Box & Pokémon Center Retail MSRP Flip / Trade Bait Bypass, 4-Section Market & Deal Roundup Digest (`09:00` & `18:00` + `[SEND DIGEST NOW]`), 1-Click Direct Shopify Cart Links (`[CART 1X]`, `[CART 2X]`, `[CART 3X]`), Kanzen Games pinned to `/collections/pokemon-sealed-in-stock/products.json` + `product_type === "Pokemon Sealed"`, and 100% Silent Singles Enforcement).
+- **Last Checkpoint Timestamp:** `2026-11-07 18:54 CST`
 - **Git Branch:** `main`
-- **Parent Baseline Commit:** `4972515` (`V5 Slice 6: Rule of 3 Wall/Dad/Logan checkboxes, Auto-Pilot Dip Advisor, Big-Box Flip Bypass, Roundup Digest, and 1-Click Cart links`)
+- **Parent Baseline Commit:** `9d72726` (`V5 Final Polish: Pin Kanzen Games to pokemon-sealed-in-stock feed and block Holofoil/bracket singles`)
 - **PM2 Process Status:**
   - `pokemon-drop-bot` (id `0`, `index.js`): **ONLINE** (`0` crashes, all 90 active Shopify LGS stores healthy, 15s Tier-1 Fast Poller + Big-Box Poller + 09:00/18:00 Roundup Digest active)
   - `drop-bot-dashboard` (id `1`, `server.js` on `http://localhost:3000`): **ONLINE** (`HTTP 200 OK` across `/`, `/dashboard.html`, `/api/status`, `/api/advisor/next-buy`, `POST /api/digest/send-now`, `POST /api/policies/:skuId/family-slots`, `/api/singles`, and `/api/engine-room`)

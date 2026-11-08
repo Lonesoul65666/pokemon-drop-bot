@@ -1020,7 +1020,7 @@ function computeNearMissesAndBestOffers() {
         };
       }
     }
-    if (!cand && tel && tel.lowestPrice > 0 && tel.lowestStore && !/baseline/i.test(tel.lowestStore)) {
+    if (!cand && tel && tel.lowestPrice > 0 && tel.lowestStore && !/baseline/i.test(tel.lowestStore) && !isSingleCardOrNonSealed(pol.name, undefined, tel.lowestUrl)) {
       const price = Number(tel.lowestPrice);
       const isTcg = /tcgplayer/i.test(tel.lowestStore);
       const estShip = (!isTcg && price < 150) ? 6.99 : 0;

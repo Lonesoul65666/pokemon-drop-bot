@@ -1,4 +1,4 @@
-import { atomicWriteJson, WATCH_POLICIES, getMinPlausiblePriceFloor, getMaxPlausiblePriceCeiling } from './policies';
+import { atomicWriteJson, WATCH_POLICIES, getMinPlausiblePriceFloor, getMaxPlausiblePriceCeiling, isSingleCardOrNonSealed } from './policies';
 
 declare const require: any;
 declare const process: any;
@@ -20,10 +20,20 @@ const CACHE_PATH = path.resolve(process.cwd(), 'marketCache.json');
 let telemetryMap: Record<string, ProductTelemetry> = {};
 let saveTimeout: any = null;
 
-// Load existing cache on boot if available
+// Load existing cache on boot if available and scrub any single-card URL slugs
 try {
   if (fs.existsSync(CACHE_PATH)) {
     telemetryMap = JSON.parse(fs.readFileSync(CACHE_PATH, 'utf-8'));
+    let scrubbed = false;
+    for (const [k, rec] of Object.entries(telemetryMap)) {
+      if (rec && rec.lowestUrl && isSingleCardOrNonSealed(k, undefined, rec.lowestUrl)) {
+        rec.lowestUrl = '';
+        rec.lowestStore = 'TCGPlayer Market Baseline';
+        rec.lowestPrice = rec.rollingAverage || 0;
+        scrubbed = true;
+      }
+    }
+    if (scrubbed) atomicWriteJson(CACHE_PATH, telemetryMap);
   }
 } catch (e) {
   telemetryMap = {};
@@ -52,6 +62,7 @@ export function recordObservation(
   if (price <= 0) return;
 
   const pol = WATCH_POLICIES.find(p => p.id === policyId);
+  if (url && isSingleCardOrNonSealed(pol?.name || policyId, undefined, url)) return;
   const minFloor = getMinPlausiblePriceFloor(pol?.formFactor);
   const maxCeiling = getMaxPlausiblePriceCeiling(pol?.formFactor, policyId, pol?.name);
   if (price < minFloor || price > maxCeiling) return;

@@ -134,6 +134,8 @@ async function pollSingleTier1StoreFast(store) {
     let deltaHits = 0;
     const now = Date.now();
     for (const prod of products) {
+        if (/kanzen\s*games/i.test(store.name) && prod.product_type && String(prod.product_type).trim().toLowerCase() !== 'pokemon sealed')
+            continue;
         const isMetaSingle = (0, policies_1.isSingleOrNonSealedShopifyProduct)(prod);
         for (const variant of prod.variants || []) {
             const variantId = Number(variant.id);
