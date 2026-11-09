@@ -1,6 +1,6 @@
 {
   "schemaVersion": "5.0.0",
-  "updatedAt": "2026-11-07T07:10:12.509Z",
+  "updatedAt": "2026-11-09T16:43:20.123Z",
   "muteVaulted": true,
   "wallHunterMode": false,
   "liveDigestEnabled": true,
@@ -21,7 +21,7 @@
   },
   "skus": {
     "me-discovery-booster-box": {
-      "maxMarketBuyPrice": 194,
+      "maxMarketBuyPrice": 161.64,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -31,7 +31,7 @@
       "active": false
     },
     "me-discovery-booster-case": {
-      "maxMarketBuyPrice": 1161,
+      "maxMarketBuyPrice": 1000,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -41,17 +41,17 @@
       "active": true
     },
     "me-discovery-etb": {
-      "maxMarketBuyPrice": 86,
+      "maxMarketBuyPrice": 70,
       "owned": true,
       "inVault": true,
       "wallOwned": true,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
+      "dadRipOwned": true,
+      "loganRipOwned": true,
       "autoPilotEnabled": true,
       "active": true
     },
     "me-discovery-etb-case": {
-      "maxMarketBuyPrice": 855,
+      "maxMarketBuyPrice": 802,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -61,7 +61,7 @@
       "active": true
     },
     "me-pitch-black-booster-box": {
-      "maxMarketBuyPrice": 167,
+      "maxMarketBuyPrice": 161.64,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -71,7 +71,7 @@
       "active": true
     },
     "me-pitch-black-booster-case": {
-      "maxMarketBuyPrice": 945,
+      "maxMarketBuyPrice": 999,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -81,17 +81,17 @@
       "active": true
     },
     "me-pitch-black-etb": {
-      "maxMarketBuyPrice": 64,
+      "maxMarketBuyPrice": 60,
       "owned": true,
       "inVault": true,
       "wallOwned": true,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
+      "dadRipOwned": true,
+      "loganRipOwned": true,
       "autoPilotEnabled": true,
       "active": true
     },
     "me-pitch-black-etb-case": {
-      "maxMarketBuyPrice": 677,
+      "maxMarketBuyPrice": 653,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -101,7 +101,7 @@
       "active": true
     },
     "me-phantasmal-flames-booster-box": {
-      "maxMarketBuyPrice": 221,
+      "maxMarketBuyPrice": 344,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -111,7 +111,7 @@
       "active": true
     },
     "me-phantasmal-flames-booster-case": {
-      "maxMarketBuyPrice": 1323,
+      "maxMarketBuyPrice": 1250,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -121,17 +121,17 @@
       "active": true
     },
     "me-phantasmal-flames-etb": {
-      "maxMarketBuyPrice": 95,
+      "maxMarketBuyPrice": 133,
       "owned": true,
       "inVault": true,
       "wallOwned": true,
       "dadRipOwned": false,
-      "loganRipOwned": false,
+      "loganRipOwned": true,
       "autoPilotEnabled": true,
       "active": true
     },
     "me-phantasmal-flames-etb-case": {
-      "maxMarketBuyPrice": 945,
+      "maxMarketBuyPrice": 1360,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -141,7 +141,7 @@
       "active": true
     },
     "me-perfect-order-booster-box": {
-      "maxMarketBuyPrice": 151,
+      "maxMarketBuyPrice": 161.64,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -151,7 +151,7 @@
       "active": true
     },
     "me-perfect-order-booster-case": {
-      "maxMarketBuyPrice": 891,
+      "maxMarketBuyPrice": 993,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -161,17 +161,17 @@
       "active": true
     },
     "me-perfect-order-etb": {
-      "maxMarketBuyPrice": 63,
+      "maxMarketBuyPrice": 54.99,
       "owned": true,
       "inVault": true,
       "wallOwned": true,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
+      "dadRipOwned": true,
+      "loganRipOwned": true,
       "autoPilotEnabled": true,
       "active": true
     },
     "me-perfect-order-etb-case": {
-      "maxMarketBuyPrice": 558,
+      "maxMarketBuyPrice": 606,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -181,7 +181,7 @@
       "active": true
     },
     "me-chaos-rising-booster-box": {
-      "maxMarketBuyPrice": 161,
+      "maxMarketBuyPrice": 161.64,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -191,7 +191,7 @@
       "active": true
     },
     "me-chaos-rising-booster-case": {
-      "maxMarketBuyPrice": 918,
+      "maxMarketBuyPrice": 951,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -201,17 +201,17 @@
       "active": true
     },
     "me-chaos-rising-etb": {
-      "maxMarketBuyPrice": 67,
+      "maxMarketBuyPrice": 54.99,
       "owned": true,
       "inVault": true,
       "wallOwned": true,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
+      "dadRipOwned": true,
+      "loganRipOwned": true,
       "autoPilotEnabled": true,
       "active": true
     },
     "me-chaos-rising-etb-case": {
-      "maxMarketBuyPrice": 665,
+      "maxMarketBuyPrice": 814,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -221,7 +221,7 @@
       "active": true
     },
     "me-delta-reign-booster-box": {
-      "maxMarketBuyPrice": 222,
+      "maxMarketBuyPrice": 180,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -231,7 +231,7 @@
       "active": true
     },
     "me-delta-reign-booster-case": {
-      "maxMarketBuyPrice": 1349,
+      "maxMarketBuyPrice": 1096,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -242,16 +242,16 @@
     },
     "me-delta-reign-etb": {
       "maxMarketBuyPrice": 93,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
+      "owned": true,
+      "inVault": true,
+      "wallOwned": true,
       "dadRipOwned": false,
       "loganRipOwned": false,
       "autoPilotEnabled": true,
       "active": true
     },
     "me-delta-reign-etb-case": {
-      "maxMarketBuyPrice": 855,
+      "maxMarketBuyPrice": 802,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -261,17 +261,17 @@
       "active": true
     },
     "me-ascended-heroes-etb": {
-      "maxMarketBuyPrice": 61,
+      "maxMarketBuyPrice": 60,
       "owned": true,
       "inVault": true,
       "wallOwned": true,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
+      "dadRipOwned": true,
+      "loganRipOwned": true,
       "autoPilotEnabled": true,
       "active": true
     },
     "me-ascended-heroes-etb-case": {
-      "maxMarketBuyPrice": 580,
+      "maxMarketBuyPrice": 704,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -281,7 +281,7 @@
       "active": true
     },
     "me-ascended-heroes-bundle": {
-      "maxMarketBuyPrice": 40,
+      "maxMarketBuyPrice": 32,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -291,17 +291,17 @@
       "active": true
     },
     "me-30th-celebration-etb": {
-      "maxMarketBuyPrice": 77,
+      "maxMarketBuyPrice": 70,
       "owned": true,
       "inVault": true,
       "wallOwned": true,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
+      "dadRipOwned": true,
+      "loganRipOwned": true,
       "autoPilotEnabled": true,
       "active": true
     },
     "me-30th-celebration-etb-case": {
-      "maxMarketBuyPrice": 1440,
+      "maxMarketBuyPrice": 1002,
       "owned": true,
       "inVault": true,
       "wallOwned": true,
@@ -311,7 +311,7 @@
       "active": true
     },
     "me-30th-celebration-bundle": {
-      "maxMarketBuyPrice": 65,
+      "maxMarketBuyPrice": 32,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -321,7 +321,7 @@
       "active": true
     },
     "sv-base-booster-box": {
-      "maxMarketBuyPrice": 131,
+      "maxMarketBuyPrice": 283,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -331,7 +331,7 @@
       "active": true
     },
     "sv-base-booster-case": {
-      "maxMarketBuyPrice": 783,
+      "maxMarketBuyPrice": 808,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -341,7 +341,7 @@
       "active": true
     },
     "sv-base-koraidon-etb": {
-      "maxMarketBuyPrice": 47,
+      "maxMarketBuyPrice": 110,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -351,7 +351,7 @@
       "active": true
     },
     "sv-base-koraidon-etb-case": {
-      "maxMarketBuyPrice": 468,
+      "maxMarketBuyPrice": 973,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -361,7 +361,7 @@
       "active": true
     },
     "sv-base-miraidon-etb": {
-      "maxMarketBuyPrice": 47,
+      "maxMarketBuyPrice": 110,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -371,7 +371,7 @@
       "active": true
     },
     "sv-base-miraidon-etb-case": {
-      "maxMarketBuyPrice": 468,
+      "maxMarketBuyPrice": 978,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -381,7 +381,7 @@
       "active": true
     },
     "sv-paldea-evolved-booster-box": {
-      "maxMarketBuyPrice": 189,
+      "maxMarketBuyPrice": 384,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -391,7 +391,7 @@
       "active": true
     },
     "sv-paldea-evolved-booster-case": {
-      "maxMarketBuyPrice": 1134,
+      "maxMarketBuyPrice": 1071,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -401,7 +401,7 @@
       "active": true
     },
     "sv-paldea-evolved-etb": {
-      "maxMarketBuyPrice": 61,
+      "maxMarketBuyPrice": 180,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -411,7 +411,7 @@
       "active": true
     },
     "sv-paldea-evolved-etb-case": {
-      "maxMarketBuyPrice": 612,
+      "maxMarketBuyPrice": 1849,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -421,7 +421,7 @@
       "active": true
     },
     "sv-obsidian-flames-booster-box": {
-      "maxMarketBuyPrice": 158,
+      "maxMarketBuyPrice": 336,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -431,7 +431,7 @@
       "active": true
     },
     "sv-obsidian-flames-booster-case": {
-      "maxMarketBuyPrice": 945,
+      "maxMarketBuyPrice": 1850,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -441,7 +441,7 @@
       "active": true
     },
     "sv-obsidian-flames-etb": {
-      "maxMarketBuyPrice": 59,
+      "maxMarketBuyPrice": 200,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -471,7 +471,7 @@
       "active": true
     },
     "sv-151-etb-case": {
-      "maxMarketBuyPrice": 1575,
+      "maxMarketBuyPrice": 1681,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -481,7 +481,7 @@
       "active": true
     },
     "sv-151-bundle": {
-      "maxMarketBuyPrice": 56,
+      "maxMarketBuyPrice": 32,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -491,7 +491,7 @@
       "active": true
     },
     "sv-paradox-rift-booster-box": {
-      "maxMarketBuyPrice": 131,
+      "maxMarketBuyPrice": 257,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -511,7 +511,7 @@
       "active": true
     },
     "sv-paradox-rift-roaring-etb": {
-      "maxMarketBuyPrice": 68,
+      "maxMarketBuyPrice": 110,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -521,7 +521,7 @@
       "active": true
     },
     "sv-paradox-rift-roaring-etb-case": {
-      "maxMarketBuyPrice": 1200,
+      "maxMarketBuyPrice": 978,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -531,7 +531,7 @@
       "active": true
     },
     "sv-paradox-rift-valiant-etb": {
-      "maxMarketBuyPrice": 68,
+      "maxMarketBuyPrice": 110,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -541,7 +541,7 @@
       "active": true
     },
     "sv-paradox-rift-valiant-etb-case": {
-      "maxMarketBuyPrice": 1222,
+      "maxMarketBuyPrice": 978,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -561,7 +561,7 @@
       "active": true
     },
     "sv-paldean-fates-etb-case": {
-      "maxMarketBuyPrice": 1035,
+      "maxMarketBuyPrice": 978,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -571,7 +571,7 @@
       "active": true
     },
     "sv-paldean-fates-bundle": {
-      "maxMarketBuyPrice": 43,
+      "maxMarketBuyPrice": 32,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -581,7 +581,7 @@
       "active": true
     },
     "sv-temporal-forces-booster-box": {
-      "maxMarketBuyPrice": 144,
+      "maxMarketBuyPrice": 279,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -591,7 +591,7 @@
       "active": true
     },
     "sv-temporal-forces-booster-case": {
-      "maxMarketBuyPrice": 864,
+      "maxMarketBuyPrice": 1679,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -601,286 +601,6 @@
       "active": true
     },
     "sv-temporal-forces-wake-etb": {
-      "maxMarketBuyPrice": 68,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-temporal-forces-wake-etb-case": {
-      "maxMarketBuyPrice": 1301,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-temporal-forces-leaves-etb": {
-      "maxMarketBuyPrice": 68,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-temporal-forces-leaves-etb-case": {
-      "maxMarketBuyPrice": 1141,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-twilight-masquerade-booster-box": {
-      "maxMarketBuyPrice": 194,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-twilight-masquerade-booster-case": {
-      "maxMarketBuyPrice": 1161,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-twilight-masquerade-etb": {
-      "maxMarketBuyPrice": 93,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-twilight-masquerade-etb-case": {
-      "maxMarketBuyPrice": 558,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-shrouded-fable-etb": {
-      "maxMarketBuyPrice": 43,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-shrouded-fable-etb-case": {
-      "maxMarketBuyPrice": 432,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-shrouded-fable-bundle": {
-      "maxMarketBuyPrice": 54,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-stellar-crown-booster-box": {
-      "maxMarketBuyPrice": 140,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-stellar-crown-booster-case": {
-      "maxMarketBuyPrice": 837,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-stellar-crown-etb": {
-      "maxMarketBuyPrice": 49,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-stellar-crown-etb-case": {
-      "maxMarketBuyPrice": 486,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-surging-sparks-booster-box": {
-      "maxMarketBuyPrice": 212,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-surging-sparks-booster-case": {
-      "maxMarketBuyPrice": 1269,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-surging-sparks-etb": {
-      "maxMarketBuyPrice": 74,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-surging-sparks-etb-case": {
-      "maxMarketBuyPrice": 738,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-prismatic-evolutions-etb": {
-      "maxMarketBuyPrice": 120,
-      "owned": true,
-      "inVault": true,
-      "wallOwned": true,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-prismatic-evolutions-etb-case": {
-      "maxMarketBuyPrice": 1800,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-prismatic-evolutions-bundle": {
-      "maxMarketBuyPrice": 72,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-journey-together-booster-box": {
-      "maxMarketBuyPrice": 193,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-journey-together-booster-case": {
-      "maxMarketBuyPrice": 1053,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-journey-together-etb": {
-      "maxMarketBuyPrice": 65,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-journey-together-etb-case": {
-      "maxMarketBuyPrice": 648,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-destined-rivals-booster-box": {
-      "maxMarketBuyPrice": 221,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-destined-rivals-booster-case": {
-      "maxMarketBuyPrice": 1323,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
-      "autoPilotEnabled": true,
-      "active": true
-    },
-    "sv-destined-rivals-etb": {
       "maxMarketBuyPrice": 104,
       "owned": false,
       "inVault": false,
@@ -890,8 +610,288 @@
       "autoPilotEnabled": true,
       "active": true
     },
+    "sv-temporal-forces-wake-etb-case": {
+      "maxMarketBuyPrice": 978,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-temporal-forces-leaves-etb": {
+      "maxMarketBuyPrice": 104,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-temporal-forces-leaves-etb-case": {
+      "maxMarketBuyPrice": 978,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-twilight-masquerade-booster-box": {
+      "maxMarketBuyPrice": 294,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-twilight-masquerade-booster-case": {
+      "maxMarketBuyPrice": 1734,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-twilight-masquerade-etb": {
+      "maxMarketBuyPrice": 97,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-twilight-masquerade-etb-case": {
+      "maxMarketBuyPrice": 1018,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-shrouded-fable-etb": {
+      "maxMarketBuyPrice": 115,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-shrouded-fable-etb-case": {
+      "maxMarketBuyPrice": 1168,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-shrouded-fable-bundle": {
+      "maxMarketBuyPrice": 32,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-stellar-crown-booster-box": {
+      "maxMarketBuyPrice": 269,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-stellar-crown-booster-case": {
+      "maxMarketBuyPrice": 1571,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-stellar-crown-etb": {
+      "maxMarketBuyPrice": 142,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-stellar-crown-etb-case": {
+      "maxMarketBuyPrice": 1428,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-surging-sparks-booster-box": {
+      "maxMarketBuyPrice": 258,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-surging-sparks-booster-case": {
+      "maxMarketBuyPrice": 1649,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-surging-sparks-etb": {
+      "maxMarketBuyPrice": 115,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-surging-sparks-etb-case": {
+      "maxMarketBuyPrice": 1105,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-prismatic-evolutions-etb": {
+      "maxMarketBuyPrice": 121,
+      "owned": true,
+      "inVault": true,
+      "wallOwned": true,
+      "dadRipOwned": false,
+      "loganRipOwned": true,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-prismatic-evolutions-etb-case": {
+      "maxMarketBuyPrice": 1275,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-prismatic-evolutions-bundle": {
+      "maxMarketBuyPrice": 32,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-journey-together-booster-box": {
+      "maxMarketBuyPrice": 190,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-journey-together-booster-case": {
+      "maxMarketBuyPrice": 1315,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-journey-together-etb": {
+      "maxMarketBuyPrice": 122,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-journey-together-etb-case": {
+      "maxMarketBuyPrice": 1190,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-destined-rivals-booster-box": {
+      "maxMarketBuyPrice": 348,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-destined-rivals-booster-case": {
+      "maxMarketBuyPrice": 2550,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
+    "sv-destined-rivals-etb": {
+      "maxMarketBuyPrice": 111,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": true,
+      "active": true
+    },
     "sv-destined-rivals-etb-case": {
-      "maxMarketBuyPrice": 1170,
+      "maxMarketBuyPrice": 1275,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -901,7 +901,7 @@
       "active": true
     },
     "swsh-battle-styles-booster-box": {
-      "maxMarketBuyPrice": 149,
+      "maxMarketBuyPrice": 253,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -911,7 +911,7 @@
       "active": true
     },
     "swsh-battle-styles-booster-case": {
-      "maxMarketBuyPrice": 1080,
+      "maxMarketBuyPrice": 1567,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -931,7 +931,7 @@
       "active": true
     },
     "swsh-battle-styles-single-etb-case": {
-      "maxMarketBuyPrice": 1183,
+      "maxMarketBuyPrice": 1117,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -951,7 +951,7 @@
       "active": true
     },
     "swsh-battle-styles-rapid-etb-case": {
-      "maxMarketBuyPrice": 1205,
+      "maxMarketBuyPrice": 1138,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -961,7 +961,7 @@
       "active": true
     },
     "swsh-chilling-reign-booster-box": {
-      "maxMarketBuyPrice": 414,
+      "maxMarketBuyPrice": 402,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -971,7 +971,7 @@
       "active": true
     },
     "swsh-chilling-reign-booster-case": {
-      "maxMarketBuyPrice": 1035,
+      "maxMarketBuyPrice": 978,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -991,7 +991,7 @@
       "active": true
     },
     "swsh-chilling-reign-shadow-etb-case": {
-      "maxMarketBuyPrice": 1366,
+      "maxMarketBuyPrice": 1290,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1001,7 +1001,7 @@
       "active": true
     },
     "swsh-chilling-reign-ice-etb": {
-      "maxMarketBuyPrice": 126,
+      "maxMarketBuyPrice": 130,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1011,7 +1011,7 @@
       "active": true
     },
     "swsh-chilling-reign-ice-etb-case": {
-      "maxMarketBuyPrice": 1273,
+      "maxMarketBuyPrice": 1202,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1021,7 +1021,7 @@
       "active": true
     },
     "swsh-evolving-skies-booster-box": {
-      "maxMarketBuyPrice": 1125,
+      "maxMarketBuyPrice": 1995,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1031,7 +1031,7 @@
       "active": true
     },
     "swsh-evolving-skies-booster-case": {
-      "maxMarketBuyPrice": 1035,
+      "maxMarketBuyPrice": 15085,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1041,7 +1041,7 @@
       "active": true
     },
     "swsh-evolving-skies-etb": {
-      "maxMarketBuyPrice": 212,
+      "maxMarketBuyPrice": 469,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1051,7 +1051,7 @@
       "active": true
     },
     "swsh-evolving-skies-etb-case": {
-      "maxMarketBuyPrice": 675,
+      "maxMarketBuyPrice": 1870,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1061,7 +1061,7 @@
       "active": true
     },
     "swsh-celebrations-etb": {
-      "maxMarketBuyPrice": 315,
+      "maxMarketBuyPrice": 70,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1071,7 +1071,7 @@
       "active": true
     },
     "swsh-celebrations-etb-case": {
-      "maxMarketBuyPrice": 1035,
+      "maxMarketBuyPrice": 978,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1081,7 +1081,7 @@
       "active": true
     },
     "swsh-fusion-strike-booster-box": {
-      "maxMarketBuyPrice": 869,
+      "maxMarketBuyPrice": 821,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1091,7 +1091,7 @@
       "active": true
     },
     "swsh-fusion-strike-booster-case": {
-      "maxMarketBuyPrice": 1035,
+      "maxMarketBuyPrice": 978,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1111,7 +1111,7 @@
       "active": true
     },
     "swsh-fusion-strike-etb-case": {
-      "maxMarketBuyPrice": 990,
+      "maxMarketBuyPrice": 833,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1121,7 +1121,7 @@
       "active": true
     },
     "swsh-brilliant-stars-booster-box": {
-      "maxMarketBuyPrice": 508,
+      "maxMarketBuyPrice": 589,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1131,7 +1131,7 @@
       "active": true
     },
     "swsh-brilliant-stars-booster-case": {
-      "maxMarketBuyPrice": 1035,
+      "maxMarketBuyPrice": 978,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1151,7 +1151,7 @@
       "active": true
     },
     "swsh-brilliant-stars-etb-case": {
-      "maxMarketBuyPrice": 585,
+      "maxMarketBuyPrice": 1631,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1161,7 +1161,7 @@
       "active": true
     },
     "swsh-astral-radiance-booster-box": {
-      "maxMarketBuyPrice": 212,
+      "maxMarketBuyPrice": 353,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1171,7 +1171,7 @@
       "active": true
     },
     "swsh-astral-radiance-booster-case": {
-      "maxMarketBuyPrice": 2259,
+      "maxMarketBuyPrice": 2550,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1191,7 +1191,7 @@
       "active": true
     },
     "swsh-astral-radiance-etb-case": {
-      "maxMarketBuyPrice": 540,
+      "maxMarketBuyPrice": 1530,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1211,7 +1211,7 @@
       "active": true
     },
     "swsh-pokemon-go-etb-case": {
-      "maxMarketBuyPrice": 585,
+      "maxMarketBuyPrice": 1844,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1221,7 +1221,7 @@
       "active": true
     },
     "swsh-lost-origin-booster-box": {
-      "maxMarketBuyPrice": 675,
+      "maxMarketBuyPrice": 619,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1231,7 +1231,7 @@
       "active": true
     },
     "swsh-lost-origin-booster-case": {
-      "maxMarketBuyPrice": 1035,
+      "maxMarketBuyPrice": 978,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1251,7 +1251,7 @@
       "active": true
     },
     "swsh-lost-origin-etb-case": {
-      "maxMarketBuyPrice": 630,
+      "maxMarketBuyPrice": 1869,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1261,7 +1261,7 @@
       "active": true
     },
     "swsh-silver-tempest-booster-box": {
-      "maxMarketBuyPrice": 463,
+      "maxMarketBuyPrice": 441,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1271,7 +1271,7 @@
       "active": true
     },
     "swsh-silver-tempest-booster-case": {
-      "maxMarketBuyPrice": 1035,
+      "maxMarketBuyPrice": 2847,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1291,7 +1291,7 @@
       "active": true
     },
     "swsh-silver-tempest-etb-case": {
-      "maxMarketBuyPrice": 540,
+      "maxMarketBuyPrice": 1249,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1311,7 +1311,7 @@
       "active": true
     },
     "swsh-crown-zenith-etb-case": {
-      "maxMarketBuyPrice": 675,
+      "maxMarketBuyPrice": 978,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1321,7 +1321,7 @@
       "active": true
     },
     "swsh-crown-zenith-bundle": {
-      "maxMarketBuyPrice": 49,
+      "maxMarketBuyPrice": 32,
       "owned": false,
       "inVault": false,
       "wallOwned": false,

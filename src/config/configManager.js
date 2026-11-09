@@ -3,12 +3,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LEGACY_SETTINGS_PATH = exports.LEGACY_POLICIES_PATH = exports.MARKET_CACHE_PATH = exports.STORES_PATH = exports.USER_PREFS_PATH = exports.CATALOG_PATH = exports.CONFIG_DIR = void 0;
+exports.LEGACY_SETTINGS_PATH = exports.LEGACY_POLICIES_PATH = exports.SALES_HISTORY_PATH = exports.STORE_OFFERS_CACHE_PATH = exports.MARKET_CACHE_PATH = exports.STORES_PATH = exports.USER_PREFS_PATH = exports.CATALOG_PATH = exports.CONFIG_DIR = void 0;
 exports.atomicWriteJson = atomicWriteJson;
 exports.normalizeSkuPref = normalizeSkuPref;
 exports.loadCatalog = loadCatalog;
 exports.loadUserPreferences = loadUserPreferences;
 exports.loadMarketCache = loadMarketCache;
+exports.computeLiveStoreOfferMedian = computeLiveStoreOfferMedian;
 exports.loadMergedPoliciesRaw = loadMergedPoliciesRaw;
 exports.syncLegacyPoliciesFallback = syncLegacyPoliciesFallback;
 exports.saveUserPoliciesFromUi = saveUserPoliciesFromUi;
@@ -31,6 +32,8 @@ exports.CATALOG_PATH = path_1.default.resolve(exports.CONFIG_DIR, 'catalog.json'
 exports.USER_PREFS_PATH = path_1.default.resolve(exports.CONFIG_DIR, 'userPreferences.json');
 exports.STORES_PATH = path_1.default.resolve(exports.CONFIG_DIR, 'stores.json');
 exports.MARKET_CACHE_PATH = path_1.default.resolve(ROOT_DIR, 'marketCache.json');
+exports.STORE_OFFERS_CACHE_PATH = path_1.default.resolve(ROOT_DIR, 'storeOffersCache.json');
+exports.SALES_HISTORY_PATH = path_1.default.resolve(ROOT_DIR, 'salesHistory.json');
 exports.LEGACY_POLICIES_PATH = path_1.default.resolve(ROOT_DIR, 'policies.json');
 exports.LEGACY_SETTINGS_PATH = path_1.default.resolve(ROOT_DIR, 'botSettings.json');
 function atomicWriteJson(filePath, data) {
@@ -61,9 +64,7 @@ function normalizeSkuPref(raw, fallbackMsrp = 0) {
     const wallOwned = Boolean(p.wallOwned ?? p.owned ?? p.inVault ?? false);
     return {
         maxMarketBuyPrice: p.maxMarketBuyPrice !== undefined ? Number(p.maxMarketBuyPrice) : Number(fallbackMsrp || 0),
-        owned: wallOwned,
-        inVault: wallOwned,
-        wallOwned,
+        owned: wallOwned, inVault: wallOwned, wallOwned,
         dadRipOwned: Boolean(p.dadRipOwned ?? false),
         loganRipOwned: Boolean(p.loganRipOwned ?? false),
         autoPilotEnabled: p.autoPilotEnabled !== undefined ? Boolean(p.autoPilotEnabled) : true,
@@ -108,27 +109,12 @@ function loadUserPreferences() {
         }
     }
     catch { }
-    const skus = {};
-    try {
-        if (fs_1.default.existsSync(exports.LEGACY_POLICIES_PATH)) {
-            const legacy = JSON.parse(fs_1.default.readFileSync(exports.LEGACY_POLICIES_PATH, 'utf-8'));
-            if (Array.isArray(legacy))
-                for (const p of legacy)
-                    skus[p.id] = normalizeSkuPref(p, Number(p.msrpCeiling || 0));
-        }
-    }
-    catch { }
     return {
-        schemaVersion: '5.6.0',
-        updatedAt: new Date().toISOString(),
-        muteVaulted: true,
-        wallHunterMode: false,
-        liveDigestEnabled: true,
-        singlesAlertsEnabled: false,
-        favoritePokemonWatchlist: ['Gyarados'],
-        minSinglesTrackPrice: 15,
+        schemaVersion: '5.7.0', updatedAt: new Date().toISOString(),
+        muteVaulted: true, wallHunterMode: false, liveDigestEnabled: true, singlesAlertsEnabled: false,
+        favoritePokemonWatchlist: ['Gyarados'], minSinglesTrackPrice: 15,
         globalSettings: { muteVaulted: true, wallHunterMode: false, liveDigestEnabled: true, singlesAlertsEnabled: false, favoritePokemonWatchlist: ['Gyarados'], minSinglesTrackPrice: 15 },
-        skus
+        skus: {}
     };
 }
 function loadMarketCache() {
@@ -139,17 +125,57 @@ function loadMarketCache() {
     catch { }
     return {};
 }
+function computeLiveStoreOfferMedian(skuId, minPlausible = 18, socCache, salesArr, maxPlausible = 99999) {
+    try {
+        const soc = socCache || (fs_1.default.existsSync(exports.STORE_OFFERS_CACHE_PATH) ? JSON.parse(fs_1.default.readFileSync(exports.STORE_OFFERS_CACHE_PATH, 'utf-8')) : {});
+        const offersMap = soc?.[skuId] || {};
+        let prices = Object.values(offersMap).map((o) => Number(o?.price || o?.dropPrice || o?.landedPrice || 0)).filter((p) => Number.isFinite(p) && p >= minPlausible && p <= maxPlausible).sort((a, b) => a - b);
+        if (prices.length < 2) {
+            const sales = salesArr || (fs_1.default.existsSync(exports.SALES_HISTORY_PATH) ? JSON.parse(fs_1.default.readFileSync(exports.SALES_HISTORY_PATH, 'utf-8')) : []);
+            if (Array.isArray(sales)) {
+                const recent = sales.filter((s) => s && s.targetId === skuId).map((s) => Number(s.price || s.landedPrice || 0)).filter((p) => Number.isFinite(p) && p >= minPlausible && p <= maxPlausible);
+                prices = [...prices, ...recent].sort((a, b) => a - b);
+            }
+        }
+        if (prices.length < 2)
+            return null;
+        const lowestSlice = prices.slice(0, Math.min(5, prices.length));
+        const mid = Math.floor(lowestSlice.length / 2);
+        const median = lowestSlice.length % 2 === 1 ? lowestSlice[mid] : (lowestSlice[mid - 1] + lowestSlice[mid]) / 2;
+        return Math.round(median * 100) / 100;
+    }
+    catch {
+        return null;
+    }
+}
 function loadMergedPoliciesRaw() {
     const catalog = loadCatalog();
     const userPrefs = loadUserPreferences();
     const marketCache = loadMarketCache();
+    let socCache = {};
+    let salesArr = [];
+    try {
+        if (fs_1.default.existsSync(exports.STORE_OFFERS_CACHE_PATH))
+            socCache = JSON.parse(fs_1.default.readFileSync(exports.STORE_OFFERS_CACHE_PATH, 'utf-8')) || {};
+    }
+    catch { }
+    try {
+        if (fs_1.default.existsSync(exports.SALES_HISTORY_PATH))
+            salesArr = JSON.parse(fs_1.default.readFileSync(exports.SALES_HISTORY_PATH, 'utf-8')) || [];
+    }
+    catch { }
     return catalog.map((cat) => {
         const msrpCeiling = Number(cat.msrpCeiling || 0);
         const pref = normalizeSkuPref(userPrefs.skus?.[cat.id], msrpCeiling);
         const mc = marketCache[cat.id] || {};
         const completionCount = (pref.wallOwned ? 1 : 0) + (pref.dadRipOwned ? 1 : 0) + (pref.loganRipOwned ? 1 : 0);
         const fullyConquered = Boolean(pref.wallOwned && pref.dadRipOwned && pref.loganRipOwned);
-        const estimatedMarketValue = Number((Number(mc.rollingAverage) > 0 ? Number(mc.rollingAverage) : 0) || mc.estimatedMarketValue || cat.defaultMarketBaseline || msrpCeiling);
+        const catBase = Number(cat.defaultMarketBaseline || msrpCeiling);
+        const maxPlausible = catBase > 0 ? Math.round(catBase * 1.35 * 100) / 100 : 99999;
+        const liveMedian = computeLiveStoreOfferMedian(cat.id, Math.max(18, msrpCeiling * 0.45), socCache, salesArr, maxPlausible);
+        const rawMcVal = Number((Number(mc.rollingAverage) > 0 ? Number(mc.rollingAverage) : 0) || mc.estimatedMarketValue || 0);
+        const isStale115Placeholder = (rawMcVal === 115 || rawMcVal === 1150 || rawMcVal > maxPlausible) && catBase !== 115 && catBase !== 1150;
+        const estimatedMarketValue = liveMedian !== null ? liveMedian : (rawMcVal > 0 && !isStale115Placeholder ? rawMcVal : catBase);
         const merged = {
             id: cat.id, name: cat.name, era: cat.era, formFactor: cat.formFactor, image: cat.image || '',
             matchers: Array.isArray(cat.matchers) ? cat.matchers : [], minStock: Number(cat.minStock ?? 1),
@@ -200,8 +226,7 @@ function saveUserPoliciesFromUi(incomingPolicies) {
         const priceChangedManually = item.maxMarketBuyPrice !== undefined && Math.abs(newPrice - existing.maxMarketBuyPrice) >= 0.5;
         const autoPilotEnabled = item.autoPilotEnabled !== undefined ? Boolean(item.autoPilotEnabled) : (priceChangedManually ? false : existing.autoPilotEnabled);
         prefs.skus[item.id] = {
-            maxMarketBuyPrice: newPrice, owned: wallOwned, inVault: wallOwned,
-            wallOwned, dadRipOwned, loganRipOwned, autoPilotEnabled,
+            maxMarketBuyPrice: newPrice, owned: wallOwned, inVault: wallOwned, wallOwned, dadRipOwned, loganRipOwned, autoPilotEnabled,
             active: item.active !== undefined ? Boolean(item.active) : existing.active
         };
     }
@@ -248,8 +273,7 @@ function loadGlobalSettings() {
         muteVaulted: Boolean(prefs.muteVaulted ?? gs.muteVaulted ?? true),
         wallHunterMode: Boolean(prefs.wallHunterMode ?? gs.wallHunterMode ?? false),
         liveDigestEnabled: Boolean(prefs.liveDigestEnabled ?? gs.liveDigestEnabled ?? true),
-        singlesAlertsEnabled: false,
-        favoritePokemonWatchlist: favs,
+        singlesAlertsEnabled: false, favoritePokemonWatchlist: favs,
         minSinglesTrackPrice: Number(prefs.minSinglesTrackPrice ?? gs.minSinglesTrackPrice ?? 15)
     };
 }
@@ -288,9 +312,9 @@ function saveMarketBaselineSync(syncedBaselines, updatedCache) {
 function loadStoresRegistry() {
     try {
         if (fs_1.default.existsSync(exports.STORES_PATH)) {
-            const parsed = JSON.parse(fs_1.default.readFileSync(exports.STORES_PATH, 'utf-8'));
-            if (Array.isArray(parsed))
-                return parsed;
+            const p = JSON.parse(fs_1.default.readFileSync(exports.STORES_PATH, 'utf-8'));
+            if (Array.isArray(p))
+                return p;
         }
     }
     catch { }

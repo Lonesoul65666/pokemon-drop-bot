@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDaysUntilRelease = getDaysUntilRelease;
 exports.isPreReleaseDate = isPreReleaseDate;
+exports.getLiveStoreOfferMedian = getLiveStoreOfferMedian;
 exports.computeRollingMarketMetrics = computeRollingMarketMetrics;
 exports.computeAutoPilotTarget = computeAutoPilotTarget;
 exports.evaluateSkuTrendAndTiming = evaluateSkuTrendAndTiming;
@@ -14,12 +15,14 @@ const DAILY_SNAPSHOTS_PATH = path_1.default.resolve(process.cwd(), 'dailySnapsho
 const WEEKLY_CHECKPOINTS_PATH = path_1.default.resolve(process.cwd(), 'weeklyCheckpoints.json');
 const MARKET_CACHE_PATH = path_1.default.resolve(process.cwd(), 'marketCache.json');
 const SALES_HISTORY_PATH = path_1.default.resolve(process.cwd(), 'salesHistory.json');
-const CACHE_TTL_MS = 45 * 1000;
+const STORE_OFFERS_CACHE_PATH = path_1.default.resolve(process.cwd(), 'storeOffersCache.json');
+const CACHE_TTL_MS = 30 * 1000;
 let lastDiskLoadTs = 0;
 let cachedDaily = {};
 let cachedWeekly = {};
 let cachedMarket = {};
 let cachedSales = [];
+let cachedStoreOffers = {};
 function ensureHistoricalDataLoaded(now = Date.now()) {
     if (now - lastDiskLoadTs < CACHE_TTL_MS && Object.keys(cachedMarket).length > 0)
         return;
@@ -37,6 +40,11 @@ function ensureHistoricalDataLoaded(now = Date.now()) {
     try {
         if (fs_1.default.existsSync(MARKET_CACHE_PATH))
             cachedMarket = JSON.parse(fs_1.default.readFileSync(MARKET_CACHE_PATH, 'utf-8')) || {};
+    }
+    catch { }
+    try {
+        if (fs_1.default.existsSync(STORE_OFFERS_CACHE_PATH))
+            cachedStoreOffers = JSON.parse(fs_1.default.readFileSync(STORE_OFFERS_CACHE_PATH, 'utf-8')) || {};
     }
     catch { }
     try {
@@ -60,19 +68,37 @@ function isPreReleaseDate(releaseDate, nowTs = Date.now()) {
 }
 const round2 = (n) => Math.round(n * 100) / 100;
 const round1 = (n) => Math.round(n * 10) / 10;
-function meanOf(vals, fallback) {
+const meanOf = (vals, fallback) => {
     const valid = vals.filter(v => Number.isFinite(v) && v > 0);
     return valid.length === 0 ? round2(fallback) : round2(valid.reduce((a, b) => a + b, 0) / valid.length);
-}
-function minOf(vals, fallback) {
+};
+const minOf = (vals, fallback) => {
     const valid = vals.filter(v => Number.isFinite(v) && v > 0);
     return valid.length === 0 ? round2(fallback) : round2(Math.min(...valid));
+};
+function getLiveStoreOfferMedian(skuId, minPlausible = 18, nowTs = Date.now(), maxPlausible = 99999) {
+    ensureHistoricalDataLoaded(nowTs);
+    const offersMap = cachedStoreOffers[skuId] || {};
+    let prices = Object.values(offersMap).map(o => Number(o?.price || o?.dropPrice || o?.landedPrice || 0)).filter(p => Number.isFinite(p) && p >= minPlausible && p <= maxPlausible).sort((a, b) => a - b);
+    if (prices.length < 2) {
+        const recentSales = cachedSales.filter(s => s && s.targetId === skuId).map(s => Number(s.price || s.landedPrice || 0)).filter(p => Number.isFinite(p) && p >= minPlausible && p <= maxPlausible);
+        prices = [...prices, ...recentSales].sort((a, b) => a - b);
+    }
+    if (prices.length < 2)
+        return null;
+    const slice = prices.slice(0, Math.min(5, prices.length));
+    const mid = Math.floor(slice.length / 2);
+    return round2(slice.length % 2 === 1 ? slice[mid] : (slice[mid - 1] + slice[mid]) / 2);
 }
 function computeRollingMarketMetrics(skuId, fallbackMarket = 60, fallbackMsrp = 54.99, nowTs = Date.now()) {
     ensureHistoricalDataLoaded(nowTs);
-    const mktEntry = cachedMarket[skuId] || {};
-    const currentMarket = round2(Number(mktEntry.rollingAverage && mktEntry.rollingAverage > 0 ? mktEntry.rollingAverage : fallbackMarket) || fallbackMsrp);
     const minPlausible = Math.max(15, round2(fallbackMsrp * 0.45));
+    const maxPlausible = fallbackMarket > 0 ? round2(fallbackMarket * 1.35) : 99999;
+    const mktEntry = cachedMarket[skuId] || {};
+    const liveMedian = getLiveStoreOfferMedian(skuId, minPlausible, nowTs, maxPlausible);
+    const rawMcAvg = Number(mktEntry.rollingAverage && mktEntry.rollingAverage > 0 ? mktEntry.rollingAverage : fallbackMarket);
+    const sanitizedFallback = ((rawMcAvg === 115 || rawMcAvg === 1150 || rawMcAvg > maxPlausible) && fallbackMarket !== 115 && fallbackMarket > 0) ? fallbackMarket : rawMcAvg;
+    const currentMarket = round2(liveMedian !== null ? liveMedian : (sanitizedFallback || fallbackMsrp));
     const dailyList = Array.isArray(cachedDaily[skuId]) ? cachedDaily[skuId] : [];
     const weeklyList = Array.isArray(cachedWeekly[skuId]) ? cachedWeekly[skuId] : [];
     const skuSales = cachedSales.filter(s => s && s.targetId === skuId);
@@ -112,7 +138,7 @@ function computeRollingMarketMetrics(skuId, fallbackMarket = 60, fallbackMsrp = 
         return x - Math.floor(x);
     };
     const earliestWeeklyMkt = weeklyList.length > 0 && Number(weeklyList[0].marketPrice) > 0 ? Number(weeklyList[0].marketPrice) : currentMarket;
-    const cachedLow = Number(mktEntry.lowestPrice && mktEntry.lowestPrice >= minPlausible ? mktEntry.lowestPrice : currentMarket * 0.92);
+    const cachedLow = Number(mktEntry.lowestPrice && mktEntry.lowestPrice >= minPlausible && mktEntry.lowestPrice !== 115 ? mktEntry.lowestPrice : currentMarket * 0.92);
     const dayMs = 24 * 60 * 60 * 1000;
     const series90d = [];
     for (let dAgo = 89; dAgo >= 0; dAgo--) {
@@ -154,15 +180,11 @@ function computeRollingMarketMetrics(skuId, fallbackMarket = 60, fallbackMsrp = 
 function computeAutoPilotTarget(params) {
     const { skuId, msrpCeiling, policyMaxBuy, marketBaseline, autoPilotEnabled = true, lowestShelfPrice = 0, activeStoreCount = 0, wallOwned = false, dadRipOwned = false, loganRipOwned = false } = params;
     const rolling = params.rolling || computeRollingMarketMetrics(skuId, marketBaseline, msrpCeiling);
-    const compCount = params.completionCount !== undefined
-        ? params.completionCount
-        : (wallOwned ? 1 : 0) + (dadRipOwned ? 1 : 0) + (loganRipOwned ? 1 : 0);
+    const compCount = params.completionCount !== undefined ? params.completionCount : (wallOwned ? 1 : 0) + (dadRipOwned ? 1 : 0) + (loganRipOwned ? 1 : 0);
     const fullyConquered = params.fullyConquered !== undefined ? params.fullyConquered : compCount >= 3;
     const isRipHuntMode = Boolean((wallOwned || compCount >= 1) && !fullyConquered);
     const isDestinedOrSoftening = /destined-rivals/i.test(skuId) && (lowestShelfPrice > msrpCeiling * 1.35 || rolling.delta14dPct <= -2);
-    const isBleedingDown = Boolean(rolling.delta14dPct <= -5 ||
-        (activeStoreCount >= 8 && rolling.delta14dPct <= -2.5) ||
-        isDestinedOrSoftening);
+    const isBleedingDown = Boolean(rolling.delta14dPct <= -5 || (activeStoreCount >= 8 && rolling.delta14dPct <= -2.5) || isDestinedOrSoftening);
     const isSupplyTightening = Boolean(!isBleedingDown && rolling.change60dPct >= 8 && activeStoreCount <= 5);
     let autoPilotCeiling = policyMaxBuy;
     let autoPilotModeLabel = '60D ELASTIC DIP FLOAT';
@@ -187,10 +209,7 @@ function computeAutoPilotTarget(params) {
     const baseMaxBuy = autoPilotEnabled ? Math.max(msrpCeiling, isBleedingDown ? Math.min(policyMaxBuy, autoPilotCeiling) : Math.max(policyMaxBuy, autoPilotCeiling)) : Math.max(msrpCeiling, policyMaxBuy);
     const ripHuntCeiling = round2(Math.min(baseMaxBuy, Math.max(msrpCeiling * 1.18, (rolling.low60d || msrpCeiling) * 1.03)));
     const effectiveTargetCeiling = isRipHuntMode ? ripHuntCeiling : baseMaxBuy;
-    return {
-        autoPilotEnabled, autoPilotCeiling, effectiveTargetCeiling, ripHuntCeiling,
-        isRipHuntMode, isBleedingDown, isSupplyTightening, autoPilotModeLabel, autoPilotBadge
-    };
+    return { autoPilotEnabled, autoPilotCeiling, effectiveTargetCeiling, ripHuntCeiling, isRipHuntMode, isBleedingDown, isSupplyTightening, autoPilotModeLabel, autoPilotBadge };
 }
 function evaluateSkuTrendAndTiming(params) {
     const { skuId, formFactor = 'ETB', dropPrice, landedPrice, estimatedShipping = Math.max(0, landedPrice - dropPrice), policyMaxBuy, msrpCeiling, marketBaseline, releaseDate, owned = false, wallOwned = owned, dadRipOwned = false, loganRipOwned = false, completionCount, fullyConquered, autoPilotEnabled = true, activeStoreCount = 0, lowestShelfPrice = dropPrice, isCloseCall = false, isMarketplace3P = false, nowTs = Date.now() } = params;
@@ -199,7 +218,7 @@ function evaluateSkuTrendAndTiming(params) {
     const isPreLaunchWindow = daysUntilRelease !== null && daysUntilRelease >= -7 && daysUntilRelease <= 120;
     const rolling = computeRollingMarketMetrics(skuId, marketBaseline, msrpCeiling, nowTs);
     const ap = computeAutoPilotTarget({
-        skuId, msrpCeiling, policyMaxBuy, marketBaseline, rolling, autoPilotEnabled,
+        skuId, msrpCeiling, policyMaxBuy, marketBaseline: rolling.currentMarket, rolling, autoPilotEnabled,
         lowestShelfPrice, activeStoreCount, wallOwned, dadRipOwned, loganRipOwned, completionCount, fullyConquered
     });
     const mktFloorRef = Math.abs(rolling.currentMarket - 100) <= 1.5 ? 100 : Math.round(rolling.currentMarket || marketBaseline || policyMaxBuy);
@@ -213,19 +232,11 @@ function evaluateSkuTrendAndTiming(params) {
     const shelfUndercutPct = mktFloorRef > 0 ? Math.round(((mktFloorRef - dropPrice) / mktFloorRef) * 100) : 0;
     const undercutMarketPct = landedUndercutPct >= 8 ? landedUndercutPct : (canUseShelfPrice && dropPrice <= targetRef ? Math.max(landedUndercutPct, shelfUndercutPct) : landedUndercutPct);
     const makeResult = (trendSignal, trendVerdictLabel, opts) => ({
-        trendSignal, trendVerdictLabel,
-        isElasticDip: Boolean(opts?.isElasticDip),
-        qualifiesForElasticDipAlert: Boolean(opts?.qualifiesForElasticDipAlert),
-        isRunawayUptrendDeal: Boolean(opts?.isRunawayUptrendDeal),
-        isBleedingDown: ap.isBleedingDown,
-        isSupplyTightening: ap.isSupplyTightening,
-        autoPilotCeiling: ap.autoPilotCeiling,
-        effectiveTargetCeiling: ap.effectiveTargetCeiling,
-        ripHuntCeiling: ap.ripHuntCeiling,
-        isRipHuntMode: ap.isRipHuntMode,
-        isPreRelease, daysUntilRelease,
-        preReleaseStatusTag: opts?.preReleaseStatusTag,
-        undercutMarketPct, rolling
+        trendSignal, trendVerdictLabel, isElasticDip: Boolean(opts?.isElasticDip),
+        qualifiesForElasticDipAlert: Boolean(opts?.qualifiesForElasticDipAlert), isRunawayUptrendDeal: Boolean(opts?.isRunawayUptrendDeal),
+        isBleedingDown: ap.isBleedingDown, isSupplyTightening: ap.isSupplyTightening, autoPilotCeiling: ap.autoPilotCeiling,
+        effectiveTargetCeiling: ap.effectiveTargetCeiling, ripHuntCeiling: ap.ripHuntCeiling, isRipHuntMode: ap.isRipHuntMode,
+        isPreRelease, daysUntilRelease, preReleaseStatusTag: opts?.preReleaseStatusTag, undercutMarketPct, rolling
     });
     if (isPreRelease || isPreLaunchWindow) {
         if (beatsOrCloseCall && undercutMarketPct >= 8) {

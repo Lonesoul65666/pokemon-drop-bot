@@ -1,6 +1,35 @@
 {
   "trophies": [
     {
+      "id": "trophy-me-delta-reign-etb-1794237410816",
+      "skuId": "me-delta-reign-etb",
+      "productName": "Mega Evolution: Delta Rayquaza (Delta Reign) ETB",
+      "formFactor": "ETB",
+      "store": "Target",
+      "conqueredAt": "2026-11-09T15:16:50.816Z",
+      "deliveryWindow": "Nov. 6– Nov. 10.  2026",
+      "orderRef": "",
+      "landedPrice": 54.99,
+      "marketValueAtCapture": 93.58,
+      "discountPct": 41,
+      "packCount": 9,
+      "pricePerPack": 6.11,
+      "isRipValueLeader": false,
+      "discordAlertSnapshot": {
+        "headline": "SNIPED: Mega Evolution: Delta Rayquaza (Delta Reign) ETB @ $91.98",
+        "triggerReason": "Captured @ $54.99 from Target",
+        "badgeText": "CONQUERED VAULT TROPHY",
+        "capturedFrom": "DropBot Commander Live Radar"
+      },
+      "ruleOf3Status": {
+        "ripped": false,
+        "onWall": false,
+        "subsidized": false,
+        "sealedCase": true
+      },
+      "memoryNote": "First one for the wall at retail!!!! Let's Goooo"
+    },
+    {
       "id": "trophy-30th-celebration-etb-case-001",
       "skuId": "me-30th-celebration-etb-case",
       "productName": "Pokémon 30th Celebration ETB Sealed Case (10 ETBs)",
@@ -22,7 +51,7 @@
         "capturedFrom": "DropBot Commander Live Radar"
       },
       "ruleOf3Status": {
-        "ripped": false,
+        "ripped": true,
         "onWall": true,
         "subsidized": false,
         "sealedCase": true
@@ -55,10 +84,10 @@
         "ripped": true,
         "onWall": true,
         "subsidized": false,
-        "sealedCase": false
+        "sealedCase": true
       },
       "memoryNote": "First live V4 Defcon-1 MSRP Override catch! Sniped at 10:53 PM from Cooperstown Cards to rip with Logan!"
     }
   ],
-  "updatedAt": "2026-10-18T05:47:26.529Z"
+  "updatedAt": "2026-11-09T15:45:59.491Z"
 }

@@ -49,6 +49,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 275,
+      "avgClearPrice": 194,
+      "lowestDrop": 275,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
     }
   ],
   "me-discovery-booster-case": [
@@ -95,6 +105,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1290,
+      "avgClearPrice": 1161,
+      "lowestDrop": 1290,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1290,
       "avgClearPrice": 1161,
       "lowestDrop": 1290,
@@ -153,6 +173,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 115,
+      "avgClearPrice": 86,
+      "lowestDrop": 115,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
     }
   ],
   "me-discovery-etb-case": [
@@ -199,6 +229,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1150,
+      "avgClearPrice": 855,
+      "lowestDrop": 1150,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1150,
       "avgClearPrice": 855,
       "lowestDrop": 1150,
@@ -257,6 +297,16 @@
       "clearedCount": 0,
       "topStore": "The Awesome Card Shop",
       "wowDeltaPct": -1.5
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 187.89,
+      "avgClearPrice": 164.99,
+      "lowestDrop": 164.99,
+      "clearedCount": 0,
+      "topStore": "CardPop USA",
+      "wowDeltaPct": 0.6
     }
   ],
   "me-pitch-black-booster-case": [
@@ -309,6 +359,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 1199.95,
+      "avgClearPrice": 945,
+      "lowestDrop": 1099.75,
+      "clearedCount": 0,
+      "topStore": "Black Wolf Collectibles",
+      "wowDeltaPct": 9.1
     }
   ],
   "me-pitch-black-etb": [
@@ -361,6 +421,16 @@
       "clearedCount": 10,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 1.6
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 75.38,
+      "avgClearPrice": 62.5,
+      "lowestDrop": 46.88,
+      "clearedCount": 2,
+      "topStore": "AVA TCG",
+      "wowDeltaPct": -2.2
     }
   ],
   "me-pitch-black-etb-case": [
@@ -413,6 +483,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": -4
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 799.95,
+      "avgClearPrice": 677,
+      "lowestDrop": 729.92,
+      "clearedCount": 0,
+      "topStore": "Black Wolf Collectibles",
+      "wowDeltaPct": 9.6
     }
   ],
   "me-phantasmal-flames-booster-box": [
@@ -465,6 +545,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 404.67,
+      "avgClearPrice": 221,
+      "lowestDrop": 275,
+      "clearedCount": 0,
+      "topStore": "Stomping Grounds",
+      "wowDeltaPct": 47.2
     }
   ],
   "me-phantasmal-flames-booster-case": [
@@ -511,6 +601,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1470,
+      "avgClearPrice": 1323,
+      "lowestDrop": 1470,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1470,
       "avgClearPrice": 1323,
       "lowestDrop": 1470,
@@ -569,6 +669,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 158.05,
+      "avgClearPrice": 95,
+      "lowestDrop": 105,
+      "clearedCount": 0,
+      "topStore": "MinMaxGames",
+      "wowDeltaPct": 50.5
     }
   ],
   "me-phantasmal-flames-etb-case": [
@@ -621,6 +731,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 1599.95,
+      "avgClearPrice": 945,
+      "lowestDrop": 1542.99,
+      "clearedCount": 0,
+      "topStore": "Black Wolf Collectibles",
+      "wowDeltaPct": -3.7
     }
   ],
   "me-perfect-order-booster-box": [
@@ -673,6 +793,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 181.95,
+      "avgClearPrice": 151,
+      "lowestDrop": 158,
+      "clearedCount": 0,
+      "topStore": "Mystic TCG",
+      "wowDeltaPct": 6.1
     }
   ],
   "me-perfect-order-booster-case": [
@@ -725,6 +855,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0.2
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 1229.66,
+      "avgClearPrice": 891,
+      "lowestDrop": 1049.99,
+      "clearedCount": 0,
+      "topStore": "Rip N Ship Arena",
+      "wowDeltaPct": -8.4
     }
   ],
   "me-perfect-order-etb": [
@@ -777,6 +917,16 @@
       "clearedCount": 10,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 4.2
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 73.24,
+      "avgClearPrice": 58.86,
+      "lowestDrop": 58.29,
+      "clearedCount": 3,
+      "topStore": "Derium and Wifey",
+      "wowDeltaPct": -3.2
     }
   ],
   "me-perfect-order-etb-case": [
@@ -829,6 +979,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 799.95,
+      "avgClearPrice": 558,
+      "lowestDrop": 799.95,
+      "clearedCount": 0,
+      "topStore": "Black Wolf Collectibles",
+      "wowDeltaPct": -15.8
     }
   ],
   "me-chaos-rising-booster-box": [
@@ -881,6 +1041,16 @@
       "clearedCount": 0,
       "topStore": "Double Infinity Gaming",
       "wowDeltaPct": -0.6
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 190.81,
+      "avgClearPrice": 161,
+      "lowestDrop": 165,
+      "clearedCount": 0,
+      "topStore": "Card Shop Live",
+      "wowDeltaPct": -0.9
     }
   ],
   "me-chaos-rising-booster-case": [
@@ -933,6 +1103,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 1323.41,
+      "avgClearPrice": 918,
+      "lowestDrop": 1049.99,
+      "clearedCount": 0,
+      "topStore": "Rip N Ship Arena",
+      "wowDeltaPct": -17.3
     }
   ],
   "me-chaos-rising-etb": [
@@ -985,6 +1165,16 @@
       "clearedCount": 17,
       "topStore": "JBs Emporium",
       "wowDeltaPct": 1.6
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 78.01,
+      "avgClearPrice": 71.99,
+      "lowestDrop": 54.99,
+      "clearedCount": 1,
+      "topStore": "Top Shop Collectibles",
+      "wowDeltaPct": 4.5
     }
   ],
   "me-chaos-rising-etb-case": [
@@ -1037,6 +1227,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 1199.95,
+      "avgClearPrice": 665,
+      "lowestDrop": 738.71,
+      "clearedCount": 0,
+      "topStore": "Black Wolf Collectibles",
+      "wowDeltaPct": 23
     }
   ],
   "me-delta-reign-booster-box": [
@@ -1089,6 +1289,16 @@
       "clearedCount": 3,
       "topStore": "Collector Store",
       "wowDeltaPct": -4.4
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 223.6,
+      "avgClearPrice": 179.99,
+      "lowestDrop": 161.64,
+      "clearedCount": 0,
+      "topStore": "CardPop USA",
+      "wowDeltaPct": -1.1
     }
   ],
   "me-delta-reign-booster-case": [
@@ -1141,6 +1351,16 @@
       "clearedCount": 1,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": -4.6
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 1259.99,
+      "avgClearPrice": 1259.99,
+      "lowestDrop": 1243.88,
+      "clearedCount": 0,
+      "topStore": "AllPokeTCG",
+      "wowDeltaPct": -6.3
     }
   ],
   "me-delta-reign-etb": [
@@ -1193,6 +1413,16 @@
       "clearedCount": 1,
       "topStore": "Card Shop Live",
       "wowDeltaPct": -9.8
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 93.66,
+      "avgClearPrice": 85.86,
+      "lowestDrop": 50,
+      "clearedCount": 3,
+      "topStore": "PokeGirl CC",
+      "wowDeltaPct": 1.9
     }
   ],
   "me-delta-reign-etb-case": [
@@ -1245,6 +1475,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 943.72,
+      "avgClearPrice": 855,
+      "lowestDrop": 879.99,
+      "clearedCount": 0,
+      "topStore": "AllPokeTCG",
+      "wowDeltaPct": -37.1
     }
   ],
   "me-ascended-heroes-etb": [
@@ -1297,6 +1537,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 7.6
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 157.8,
+      "avgClearPrice": 61,
+      "lowestDrop": 95,
+      "clearedCount": 0,
+      "topStore": "AVA TCG",
+      "wowDeltaPct": 39.7
     }
   ],
   "me-ascended-heroes-etb-case": [
@@ -1349,6 +1599,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": -0.8
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 1799.95,
+      "avgClearPrice": 499,
+      "lowestDrop": 499,
+      "clearedCount": 1,
+      "topStore": "Black Wolf Collectibles",
+      "wowDeltaPct": 15.8
     }
   ],
   "me-ascended-heroes-bundle": [
@@ -1401,6 +1661,16 @@
       "clearedCount": 0,
       "topStore": "CardDog TCG",
       "wowDeltaPct": 3.3
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 87.46,
+      "avgClearPrice": 40,
+      "lowestDrop": 74.99,
+      "clearedCount": 0,
+      "topStore": "CardDog TCG",
+      "wowDeltaPct": 12.9
     }
   ],
   "me-30th-celebration-etb": [
@@ -1453,6 +1723,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 1.9
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 133.24,
+      "avgClearPrice": 77,
+      "lowestDrop": 95.97,
+      "clearedCount": 0,
+      "topStore": "Top Shop Collectibles",
+      "wowDeltaPct": 21.1
     }
   ],
   "me-30th-celebration-etb-case": [
@@ -1505,6 +1785,16 @@
       "clearedCount": 56,
       "topStore": "Paladin Cards",
       "wowDeltaPct": -13.2
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 1318.72,
+      "avgClearPrice": 1174.78,
+      "lowestDrop": 999.99,
+      "clearedCount": 6,
+      "topStore": "AllPokeTCG",
+      "wowDeltaPct": -7.9
     }
   ],
   "me-30th-celebration-bundle": [
@@ -1557,6 +1847,16 @@
       "clearedCount": 14,
       "topStore": "Paladin Cards",
       "wowDeltaPct": 6.5
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 77.72,
+      "avgClearPrice": 56.66,
+      "lowestDrop": 41,
+      "clearedCount": 3,
+      "topStore": "Paladin Cards",
+      "wowDeltaPct": 8.9
     }
   ],
   "sv-base-booster-box": [
@@ -1609,6 +1909,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 332.81,
+      "avgClearPrice": 131,
+      "lowestDrop": 275,
+      "clearedCount": 0,
+      "topStore": "PKMN Colosseum",
+      "wowDeltaPct": 21
     }
   ],
   "sv-base-booster-case": [
@@ -1655,6 +1965,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 870,
+      "avgClearPrice": 783,
+      "lowestDrop": 870,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 870,
       "avgClearPrice": 783,
       "lowestDrop": 870,
@@ -1713,6 +2033,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 115,
+      "avgClearPrice": 47,
+      "lowestDrop": 115,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
     }
   ],
   "sv-base-koraidon-etb-case": [
@@ -1759,6 +2089,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1150,
+      "avgClearPrice": 468,
+      "lowestDrop": 1150,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1150,
       "avgClearPrice": 468,
       "lowestDrop": 1150,
@@ -1817,6 +2157,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 115,
+      "avgClearPrice": 47,
+      "lowestDrop": 115,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
     }
   ],
   "sv-base-miraidon-etb-case": [
@@ -1863,6 +2213,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1150,
+      "avgClearPrice": 468,
+      "lowestDrop": 1150,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1150,
       "avgClearPrice": 468,
       "lowestDrop": 1150,
@@ -1921,6 +2281,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 452.24,
+      "avgClearPrice": 189,
+      "lowestDrop": 275,
+      "clearedCount": 0,
+      "topStore": "PKMN Colosseum",
+      "wowDeltaPct": 64.5
     }
   ],
   "sv-paldea-evolved-booster-case": [
@@ -1967,6 +2337,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1260,
+      "avgClearPrice": 1134,
+      "lowestDrop": 1260,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1260,
       "avgClearPrice": 1134,
       "lowestDrop": 1260,
@@ -2025,6 +2405,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 217.45,
+      "avgClearPrice": 61,
+      "lowestDrop": 68,
+      "clearedCount": 0,
+      "topStore": "Common Lands",
+      "wowDeltaPct": 219.8
     }
   ],
   "sv-paldea-evolved-etb-case": [
@@ -2077,6 +2467,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 2174.99,
+      "avgClearPrice": 612,
+      "lowestDrop": 680,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 219.9
     }
   ],
   "sv-obsidian-flames-booster-box": [
@@ -2129,6 +2529,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 395.25,
+      "avgClearPrice": 158,
+      "lowestDrop": 275,
+      "clearedCount": 0,
+      "topStore": "Common Lands",
+      "wowDeltaPct": 43.7
     }
   ],
   "sv-obsidian-flames-booster-case": [
@@ -2181,6 +2591,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": -0.1
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 2374.95,
+      "avgClearPrice": 945,
+      "lowestDrop": 1050,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": -1
     }
   ],
   "sv-obsidian-flames-etb": [
@@ -2233,6 +2653,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 271.83,
+      "avgClearPrice": 59,
+      "lowestDrop": 100,
+      "clearedCount": 0,
+      "topStore": "Common Lands",
+      "wowDeltaPct": 171.8
     }
   ],
   "sv-obsidian-flames-etb-case": [
@@ -2279,6 +2709,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 650,
+      "avgClearPrice": 585,
+      "lowestDrop": 650,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 650,
       "avgClearPrice": 585,
       "lowestDrop": 650,
@@ -2337,6 +2777,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 75,
+      "avgClearPrice": 75,
+      "lowestDrop": 75,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": -57.1
     }
   ],
   "sv-151-etb-case": [
@@ -2383,6 +2833,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1750,
+      "avgClearPrice": 1575,
+      "lowestDrop": 1750,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1750,
       "avgClearPrice": 1575,
       "lowestDrop": 1750,
@@ -2441,6 +2901,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 169,
+      "avgClearPrice": 56,
+      "lowestDrop": 80,
+      "clearedCount": 0,
+      "topStore": "PKMN Colosseum",
+      "wowDeltaPct": 111.3
     }
   ],
   "sv-paradox-rift-booster-box": [
@@ -2493,6 +2963,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": -3.1
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 301.85,
+      "avgClearPrice": 131,
+      "lowestDrop": 265,
+      "clearedCount": 0,
+      "topStore": "PKMN Colosseum",
+      "wowDeltaPct": 13.2
     }
   ],
   "sv-paradox-rift-booster-case": [
@@ -2539,6 +3019,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1599.91,
+      "avgClearPrice": 783,
+      "lowestDrop": 870,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1599.91,
       "avgClearPrice": 783,
       "lowestDrop": 870,
@@ -2597,6 +3087,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 115,
+      "avgClearPrice": 68,
+      "lowestDrop": 115,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
     }
   ],
   "sv-paradox-rift-roaring-etb-case": [
@@ -2643,6 +3143,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1150,
+      "avgClearPrice": 1150,
+      "lowestDrop": 1150,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1150,
       "avgClearPrice": 1150,
       "lowestDrop": 1150,
@@ -2701,6 +3211,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 115,
+      "avgClearPrice": 68,
+      "lowestDrop": 115,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
     }
   ],
   "sv-paradox-rift-valiant-etb-case": [
@@ -2747,6 +3267,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1150,
+      "avgClearPrice": 1150,
+      "lowestDrop": 1150,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1150,
       "avgClearPrice": 1150,
       "lowestDrop": 1150,
@@ -2805,6 +3335,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 60,
+      "avgClearPrice": 60,
+      "lowestDrop": 60,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": -47.8
     }
   ],
   "sv-paldean-fates-etb-case": [
@@ -2851,6 +3391,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1150,
+      "avgClearPrice": 1035,
+      "lowestDrop": 1150,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1150,
       "avgClearPrice": 1035,
       "lowestDrop": 1150,
@@ -2909,6 +3459,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 175.64,
+      "avgClearPrice": 43,
+      "lowestDrop": 80,
+      "clearedCount": 0,
+      "topStore": "PokeGirl CC",
+      "wowDeltaPct": 119.5
     }
   ],
   "sv-temporal-forces-booster-box": [
@@ -2961,6 +3521,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 327.65,
+      "avgClearPrice": 144,
+      "lowestDrop": 275,
+      "clearedCount": 0,
+      "topStore": "AVA TCG",
+      "wowDeltaPct": 19.1
     }
   ],
   "sv-temporal-forces-booster-case": [
@@ -3007,6 +3577,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1974.98,
+      "avgClearPrice": 864,
+      "lowestDrop": 960,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1974.98,
       "avgClearPrice": 864,
       "lowestDrop": 960,
@@ -3065,6 +3645,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 115,
+      "avgClearPrice": 68,
+      "lowestDrop": 115,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
     }
   ],
   "sv-temporal-forces-wake-etb-case": [
@@ -3111,6 +3701,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1150,
+      "avgClearPrice": 1150,
+      "lowestDrop": 1150,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1150,
       "avgClearPrice": 1150,
       "lowestDrop": 1150,
@@ -3169,6 +3769,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 115,
+      "avgClearPrice": 68,
+      "lowestDrop": 115,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
     }
   ],
   "sv-temporal-forces-leaves-etb-case": [
@@ -3215,6 +3825,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1150,
+      "avgClearPrice": 1141,
+      "lowestDrop": 1150,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1150,
       "avgClearPrice": 1141,
       "lowestDrop": 1150,
@@ -3273,6 +3893,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 346.31,
+      "avgClearPrice": 194,
+      "lowestDrop": 275,
+      "clearedCount": 0,
+      "topStore": "Collector Store",
+      "wowDeltaPct": 25.9
     }
   ],
   "sv-twilight-masquerade-booster-case": [
@@ -3320,6 +3950,16 @@
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
       "marketPrice": 2040.16,
+      "avgClearPrice": 1161,
+      "lowestDrop": 1290,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 2040,
       "avgClearPrice": 1161,
       "lowestDrop": 1290,
       "clearedCount": 0,
@@ -3377,6 +4017,16 @@
       "clearedCount": 2,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": -0.9
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 108.27,
+      "avgClearPrice": 93,
+      "lowestDrop": 86.99,
+      "clearedCount": 0,
+      "topStore": "Collector Store",
+      "wowDeltaPct": 2.8
     }
   ],
   "sv-twilight-masquerade-etb-case": [
@@ -3429,6 +4079,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 1.1
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 1197.47,
+      "avgClearPrice": 558,
+      "lowestDrop": 1134.75,
+      "clearedCount": 0,
+      "topStore": "Collectors Cafe",
+      "wowDeltaPct": -8.8
     }
   ],
   "sv-shrouded-fable-etb": [
@@ -3481,6 +4141,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 8.6
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 126.24,
+      "avgClearPrice": 43,
+      "lowestDrop": 105.75,
+      "clearedCount": 0,
+      "topStore": "CardsHQ",
+      "wowDeltaPct": 9.9
     }
   ],
   "sv-shrouded-fable-etb-case": [
@@ -3527,6 +4197,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1374.69,
+      "avgClearPrice": 432,
+      "lowestDrop": 480,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1374.69,
       "avgClearPrice": 432,
       "lowestDrop": 480,
@@ -3585,6 +4265,16 @@
       "clearedCount": 4,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0.3
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 60.96,
+      "avgClearPrice": 54,
+      "lowestDrop": 46,
+      "clearedCount": 0,
+      "topStore": "Common Lands",
+      "wowDeltaPct": -0.4
     }
   ],
   "sv-stellar-crown-booster-box": [
@@ -3637,6 +4327,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 316.35,
+      "avgClearPrice": 140,
+      "lowestDrop": 275,
+      "clearedCount": 0,
+      "topStore": "Oaks Poke Box",
+      "wowDeltaPct": 15
     }
   ],
   "sv-stellar-crown-booster-case": [
@@ -3684,6 +4384,16 @@
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
       "marketPrice": 1848.68,
+      "avgClearPrice": 837,
+      "lowestDrop": 930,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 1848.64,
       "avgClearPrice": 837,
       "lowestDrop": 930,
       "clearedCount": 0,
@@ -3741,6 +4451,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 157.49,
+      "avgClearPrice": 49,
+      "lowestDrop": 54,
+      "clearedCount": 0,
+      "topStore": "Mystic TCG",
+      "wowDeltaPct": 191.6
     }
   ],
   "sv-stellar-crown-etb-case": [
@@ -3793,6 +4513,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0.6
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 1679.97,
+      "avgClearPrice": 486,
+      "lowestDrop": 540,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": -0.6
     }
   ],
   "sv-surging-sparks-booster-box": [
@@ -3845,6 +4575,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 303.55,
+      "avgClearPrice": 212,
+      "lowestDrop": 275,
+      "clearedCount": 0,
+      "topStore": "CardsHQ",
+      "wowDeltaPct": 10.4
     }
   ],
   "sv-surging-sparks-booster-case": [
@@ -3897,6 +4637,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": -1.5
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 1939.76,
+      "avgClearPrice": 1269,
+      "lowestDrop": 1410,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0.6
     }
   ],
   "sv-surging-sparks-etb": [
@@ -3949,6 +4699,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 1.7
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 128.15,
+      "avgClearPrice": 74,
+      "lowestDrop": 110,
+      "clearedCount": 0,
+      "topStore": "Collector Store",
+      "wowDeltaPct": 14.6
     }
   ],
   "sv-surging-sparks-etb-case": [
@@ -4001,6 +4761,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0.2
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 1299.95,
+      "avgClearPrice": 738,
+      "lowestDrop": 1299.95,
+      "clearedCount": 0,
+      "topStore": "Black Wolf Collectibles",
+      "wowDeltaPct": -6.7
     }
   ],
   "sv-prismatic-evolutions-etb": [
@@ -4053,6 +4823,16 @@
       "clearedCount": 3,
       "topStore": "Nova Break",
       "wowDeltaPct": -2.7
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 142.56,
+      "avgClearPrice": 114.74,
+      "lowestDrop": 50,
+      "clearedCount": 2,
+      "topStore": "Collector Store",
+      "wowDeltaPct": 2
     }
   ],
   "sv-prismatic-evolutions-etb-case": [
@@ -4105,6 +4885,16 @@
       "clearedCount": 8,
       "topStore": "Black Wolf Collectibles",
       "wowDeltaPct": 13.3
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 1499.95,
+      "avgClearPrice": 1094.25,
+      "lowestDrop": 499,
+      "clearedCount": 4,
+      "topStore": "Black Wolf Collectibles",
+      "wowDeltaPct": 1.7
     }
   ],
   "sv-prismatic-evolutions-bundle": [
@@ -4157,6 +4947,16 @@
       "clearedCount": 17,
       "topStore": "Card Shop Live",
       "wowDeltaPct": -3.5
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 88.52,
+      "avgClearPrice": 69.99,
+      "lowestDrop": 60,
+      "clearedCount": 0,
+      "topStore": "Common Lands",
+      "wowDeltaPct": 18.5
     }
   ],
   "sv-journey-together-booster-box": [
@@ -4209,6 +5009,16 @@
       "clearedCount": 0,
       "topStore": "CardsHQ",
       "wowDeltaPct": 1.7
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 241.88,
+      "avgClearPrice": 189.99,
+      "lowestDrop": 185.99,
+      "clearedCount": 0,
+      "topStore": "CardPop USA",
+      "wowDeltaPct": 6.4
     }
   ],
   "sv-journey-together-booster-case": [
@@ -4261,6 +5071,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 1549.97,
+      "avgClearPrice": 1053,
+      "lowestDrop": 1225,
+      "clearedCount": 0,
+      "topStore": "Black Wolf Collectibles",
+      "wowDeltaPct": -3.9
     }
   ],
   "sv-journey-together-etb": [
@@ -4313,6 +5133,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 134.75,
+      "avgClearPrice": 65,
+      "lowestDrop": 72,
+      "clearedCount": 0,
+      "topStore": "Oaks Poke Box",
+      "wowDeltaPct": 87.2
     }
   ],
   "sv-journey-together-etb-case": [
@@ -4365,6 +5195,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 1399.95,
+      "avgClearPrice": 648,
+      "lowestDrop": 1399.95,
+      "clearedCount": 0,
+      "topStore": "Black Wolf Collectibles",
+      "wowDeltaPct": -6.7
     }
   ],
   "sv-destined-rivals-booster-box": [
@@ -4417,6 +5257,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 438.33,
+      "avgClearPrice": 221,
+      "lowestDrop": 275,
+      "clearedCount": 0,
+      "topStore": "Collector Store",
+      "wowDeltaPct": 59.4
     }
   ],
   "sv-destined-rivals-booster-case": [
@@ -4469,6 +5319,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": -2.5
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 2999.95,
+      "avgClearPrice": 1323,
+      "lowestDrop": 2196.99,
+      "clearedCount": 0,
+      "topStore": "Black Wolf Collectibles",
+      "wowDeltaPct": 20.7
     }
   ],
   "sv-destined-rivals-etb": [
@@ -4521,6 +5381,16 @@
       "clearedCount": 29,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0.4
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 119.99,
+      "avgClearPrice": 102.16,
+      "lowestDrop": 97,
+      "clearedCount": 1,
+      "topStore": "Stomping Grounds",
+      "wowDeltaPct": 7.9
     }
   ],
   "sv-destined-rivals-etb-case": [
@@ -4573,6 +5443,16 @@
       "clearedCount": 21,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 3.2
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 1499.95,
+      "avgClearPrice": 1124.99,
+      "lowestDrop": 1000,
+      "clearedCount": 4,
+      "topStore": "Black Wolf Collectibles",
+      "wowDeltaPct": -1.8
     }
   ],
   "swsh-battle-styles-booster-box": [
@@ -4625,6 +5505,16 @@
       "clearedCount": 0,
       "topStore": "Oaks Poke Box",
       "wowDeltaPct": 0.6
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 298.11,
+      "avgClearPrice": 149,
+      "lowestDrop": 267.04,
+      "clearedCount": 0,
+      "topStore": "PKMN Colosseum",
+      "wowDeltaPct": -1.9
     }
   ],
   "swsh-battle-styles-booster-case": [
@@ -4677,6 +5567,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": -0.1
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 1843.98,
+      "avgClearPrice": 1080,
+      "lowestDrop": 1199.99,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": -0.8
     }
   ],
   "swsh-battle-styles-single-etb": [
@@ -4723,6 +5623,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 131.42,
+      "avgClearPrice": 118,
+      "lowestDrop": 131.42,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 131.42,
       "avgClearPrice": 118,
       "lowestDrop": 131.42,
@@ -4781,6 +5691,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 1314,
+      "avgClearPrice": 1183,
+      "lowestDrop": 1314,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
     }
   ],
   "swsh-battle-styles-rapid-etb": [
@@ -4827,6 +5747,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 133.94,
+      "avgClearPrice": 121,
+      "lowestDrop": 133.94,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 133.94,
       "avgClearPrice": 121,
       "lowestDrop": 133.94,
@@ -4885,6 +5815,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 1339,
+      "avgClearPrice": 1205,
+      "lowestDrop": 1339,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
     }
   ],
   "swsh-chilling-reign-booster-box": [
@@ -4937,6 +5877,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0.1
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 472.79,
+      "avgClearPrice": 414,
+      "lowestDrop": 425,
+      "clearedCount": 0,
+      "topStore": "Double Infinity Gaming",
+      "wowDeltaPct": -1.3
     }
   ],
   "swsh-chilling-reign-booster-case": [
@@ -4983,6 +5933,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1150,
+      "avgClearPrice": 1035,
+      "lowestDrop": 1150,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1150,
       "avgClearPrice": 1035,
       "lowestDrop": 1150,
@@ -5041,6 +6001,16 @@
       "clearedCount": 0,
       "topStore": "PKMN Colosseum",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 146.99,
+      "avgClearPrice": 132,
+      "lowestDrop": 146.99,
+      "clearedCount": 0,
+      "topStore": "PKMN Colosseum",
+      "wowDeltaPct": 0
     }
   ],
   "swsh-chilling-reign-shadow-etb-case": [
@@ -5087,6 +6057,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1518,
+      "avgClearPrice": 1366,
+      "lowestDrop": 1518,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1518,
       "avgClearPrice": 1366,
       "lowestDrop": 1518,
@@ -5145,6 +6125,16 @@
       "clearedCount": 0,
       "topStore": "PKMN Colosseum",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 145.3,
+      "avgClearPrice": 126,
+      "lowestDrop": 139.99,
+      "clearedCount": 0,
+      "topStore": "PKMN Colosseum",
+      "wowDeltaPct": 0.2
     }
   ],
   "swsh-chilling-reign-ice-etb-case": [
@@ -5191,6 +6181,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1414,
+      "avgClearPrice": 1273,
+      "lowestDrop": 1414,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1414,
       "avgClearPrice": 1273,
       "lowestDrop": 1414,
@@ -5249,6 +6249,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 2499.99,
+      "avgClearPrice": 1125,
+      "lowestDrop": 1600,
+      "clearedCount": 0,
+      "topStore": "PKMN Colosseum",
+      "wowDeltaPct": 56.2
     }
   ],
   "swsh-evolving-skies-booster-case": [
@@ -5301,6 +6311,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 17747.5,
+      "avgClearPrice": 1035,
+      "lowestDrop": 1150,
+      "clearedCount": 0,
+      "topStore": "PKMN Colosseum",
+      "wowDeltaPct": 1443.3
     }
   ],
   "swsh-evolving-skies-etb": [
@@ -5353,6 +6373,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": -1.6
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 544.95,
+      "avgClearPrice": 212,
+      "lowestDrop": 419.99,
+      "clearedCount": 0,
+      "topStore": "1st Edition Collectibles",
+      "wowDeltaPct": 23.9
     }
   ],
   "swsh-evolving-skies-etb-case": [
@@ -5399,6 +6429,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 2200,
+      "avgClearPrice": 675,
+      "lowestDrop": 2200,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 2200,
       "avgClearPrice": 675,
       "lowestDrop": 2200,
@@ -5457,6 +6497,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 3.4
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 359.59,
+      "avgClearPrice": 315,
+      "lowestDrop": 295.99,
+      "clearedCount": 0,
+      "topStore": "PKMN Colosseum",
+      "wowDeltaPct": -4
     }
   ],
   "swsh-celebrations-etb-case": [
@@ -5503,6 +6553,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1150,
+      "avgClearPrice": 1035,
+      "lowestDrop": 1150,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1150,
       "avgClearPrice": 1035,
       "lowestDrop": 1150,
@@ -5561,6 +6621,16 @@
       "clearedCount": 0,
       "topStore": "PKMN Colosseum",
       "wowDeltaPct": -1.1
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 965.99,
+      "avgClearPrice": 869,
+      "lowestDrop": 924.13,
+      "clearedCount": 0,
+      "topStore": "PKMN Colosseum",
+      "wowDeltaPct": 0
     }
   ],
   "swsh-fusion-strike-booster-case": [
@@ -5607,6 +6677,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1150,
+      "avgClearPrice": 1035,
+      "lowestDrop": 1150,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1150,
       "avgClearPrice": 1035,
       "lowestDrop": 1150,
@@ -5665,6 +6745,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": -1
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 370.61,
+      "avgClearPrice": 314.99,
+      "lowestDrop": 314.99,
+      "clearedCount": 1,
+      "topStore": "Zulus Games",
+      "wowDeltaPct": 0.2
     }
   ],
   "swsh-fusion-strike-etb-case": [
@@ -5711,6 +6801,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 980,
+      "avgClearPrice": 980,
+      "lowestDrop": 980,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 980,
       "avgClearPrice": 980,
       "lowestDrop": 980,
@@ -5769,6 +6869,16 @@
       "clearedCount": 0,
       "topStore": "PKMN Colosseum",
       "wowDeltaPct": 4
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 705.45,
+      "avgClearPrice": 508,
+      "lowestDrop": 552.99,
+      "clearedCount": 0,
+      "topStore": "Spankys Card Shop",
+      "wowDeltaPct": 3.5
     }
   ],
   "swsh-brilliant-stars-booster-case": [
@@ -5815,6 +6925,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1150,
+      "avgClearPrice": 1035,
+      "lowestDrop": 1150,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1150,
       "avgClearPrice": 1035,
       "lowestDrop": 1150,
@@ -5873,6 +6993,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": -2
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 196.09,
+      "avgClearPrice": 61,
+      "lowestDrop": 154.9,
+      "clearedCount": 0,
+      "topStore": "1st Edition Collectibles",
+      "wowDeltaPct": 3.5
     }
   ],
   "swsh-brilliant-stars-etb-case": [
@@ -5920,6 +7050,16 @@
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
       "marketPrice": 1918.74,
+      "avgClearPrice": 585,
+      "lowestDrop": 680,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 1918.73,
       "avgClearPrice": 585,
       "lowestDrop": 680,
       "clearedCount": 0,
@@ -5977,6 +7117,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 15.4
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 415,
+      "avgClearPrice": 212,
+      "lowestDrop": 390,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": -13.2
     }
   ],
   "swsh-astral-radiance-booster-case": [
@@ -6029,6 +7179,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 2999.99,
+      "avgClearPrice": 2259,
+      "lowestDrop": 2509.86,
+      "clearedCount": 0,
+      "topStore": "PKMN Colosseum",
+      "wowDeltaPct": 19.5
     }
   ],
   "swsh-astral-radiance-etb": [
@@ -6081,6 +7241,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": -18.5
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 132.99,
+      "avgClearPrice": 119,
+      "lowestDrop": 119,
+      "clearedCount": 4,
+      "topStore": "PKMN Colosseum",
+      "wowDeltaPct": 0.6
     }
   ],
   "swsh-astral-radiance-etb-case": [
@@ -6127,6 +7297,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1799.99,
+      "avgClearPrice": 540,
+      "lowestDrop": 580,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1799.99,
       "avgClearPrice": 540,
       "lowestDrop": 580,
@@ -6185,6 +7365,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": -6.6
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 189.21,
+      "avgClearPrice": 144,
+      "lowestDrop": 156.47,
+      "clearedCount": 0,
+      "topStore": "PKMN Colosseum",
+      "wowDeltaPct": 1.6
     }
   ],
   "swsh-pokemon-go-etb-case": [
@@ -6237,6 +7427,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0.9
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 2169.98,
+      "avgClearPrice": 580,
+      "lowestDrop": 580,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
     }
   ],
   "swsh-lost-origin-booster-box": [
@@ -6289,6 +7489,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 15.7
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 727.86,
+      "avgClearPrice": 675,
+      "lowestDrop": 714.98,
+      "clearedCount": 0,
+      "topStore": "Spankys Card Shop",
+      "wowDeltaPct": -19.7
     }
   ],
   "swsh-lost-origin-booster-case": [
@@ -6335,6 +7545,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1150,
+      "avgClearPrice": 1035,
+      "lowestDrop": 1150,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1150,
       "avgClearPrice": 1035,
       "lowestDrop": 1150,
@@ -6393,6 +7613,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 2.4
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 220,
+      "avgClearPrice": 198,
+      "lowestDrop": 175,
+      "clearedCount": 0,
+      "topStore": "1st Edition Collectibles",
+      "wowDeltaPct": 1.6
     }
   ],
   "swsh-lost-origin-etb-case": [
@@ -6445,6 +7675,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": -0.3
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 2199,
+      "avgClearPrice": 630,
+      "lowestDrop": 720,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0.3
     }
   ],
   "swsh-silver-tempest-booster-box": [
@@ -6497,6 +7737,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0.1
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 518.58,
+      "avgClearPrice": 463,
+      "lowestDrop": 484.79,
+      "clearedCount": 0,
+      "topStore": "Collectors Cafe",
+      "wowDeltaPct": -2.9
     }
   ],
   "swsh-silver-tempest-booster-case": [
@@ -6549,6 +7799,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 3349.75,
+      "avgClearPrice": 1035,
+      "lowestDrop": 1150,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 191.3
     }
   ],
   "swsh-silver-tempest-etb": [
@@ -6601,6 +7861,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0.1
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 176.56,
+      "avgClearPrice": 144,
+      "lowestDrop": 144.99,
+      "clearedCount": 0,
+      "topStore": "PKMN Colosseum",
+      "wowDeltaPct": -1.4
     }
   ],
   "swsh-silver-tempest-etb-case": [
@@ -6647,6 +7917,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1469.95,
+      "avgClearPrice": 540,
+      "lowestDrop": 580,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1469.95,
       "avgClearPrice": 540,
       "lowestDrop": 580,
@@ -6705,6 +7985,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 180,
+      "avgClearPrice": 104,
+      "lowestDrop": 115,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 56.5
     }
   ],
   "swsh-crown-zenith-etb-case": [
@@ -6751,6 +8041,16 @@
     {
       "weekEnding": "2026-11-01",
       "timestamp": 1793596151953,
+      "marketPrice": 1150,
+      "avgClearPrice": 675,
+      "lowestDrop": 1150,
+      "clearedCount": 0,
+      "topStore": "TCGPlayer / LGS Baseline",
+      "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
       "marketPrice": 1150,
       "avgClearPrice": 675,
       "lowestDrop": 1150,
@@ -6809,6 +8109,16 @@
       "clearedCount": 0,
       "topStore": "TCGPlayer / LGS Baseline",
       "wowDeltaPct": 0
+    },
+    {
+      "weekEnding": "2026-11-08",
+      "timestamp": 1794203685699,
+      "marketPrice": 213.4,
+      "avgClearPrice": 49,
+      "lowestDrop": 80,
+      "clearedCount": 0,
+      "topStore": "Elite4 TCG",
+      "wowDeltaPct": 166.8
     }
   ]
 }

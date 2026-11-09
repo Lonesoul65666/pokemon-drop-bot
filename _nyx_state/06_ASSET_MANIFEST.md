@@ -10,11 +10,12 @@
 | :--- | :---: | :--- |
 | `index.ts` (`index.js`) | 29 | PM2 daemon entrypoint for `pokemon-drop-bot`; boots 90-store LGS poller, 15s Tier-1 Fast Poller, Big-Box poller, MarketSync, MarketTape, and 09:00/18:00 Roundup Digest scheduler. |
 | `listener.ts` (`listener.js`) | 85 | Receives `RawRestockItem` via `processIncomingDrop()`, invokes `evaluateItem()`, and dispatches `sendAlert()`. |
-| `src/config/configManager.ts` (`.js`) | 336 | `< 350` lines; merges `config/catalog.json` + `config/userPreferences.json` + `marketCache.json`; Rule of 3 Family Completion slots (`wallOwned`, `dadRipOwned`, `loganRipOwned`, `autoPilotEnabled`) & `updateSkuFamilySlotsFromUi()`. |
-| `src/engine/trendAdvisor.ts` (`.js`) | 336 | `< 350` lines; 14d/30d/60d/90d Rolling Market Analytics, `computeAutoPilotTarget()`, `BLEEDING DOWN`, `SUPPLY TIGHTENING`, & `ELASTIC_DIP`. |
-| `src/engine/singlesSniper.ts` (`.js`) | 291 | `< 350` lines; Quiet Singles & Gyarados Offload Radar (`singlesCache.json`) with 100% silent alert rule enforced (`singlesAlertsEnabled: false`). |
-| `src/pollers/bigBoxRetailPoller.ts` (`.js`) | 326 | `< 350` lines; Honest 7-retailer Big-Box 1P poller (Target RedSky 1P, Walmart, Best Buy, Pokémon Center, Costco, Sam's Club, GameStop). |
-| `src/pollers/fastTier1Poller.ts` (`.js`) | 297 | `< 350` lines; 15-second Tier-1 Fast Shopify restock delta poller (`26` Tier-1 stores, `?limit=50`). |
+| `src/config/configManager.ts` (`.js`) | 335 | `< 350` lines; merges `config/catalog.json` + `config/userPreferences.json` + `marketCache.json` + live store-offer median (`computeLiveStoreOfferMedian`); Rule of 3 Family Completion slots (`wallOwned`, `dadRipOwned`, `loganRipOwned`, `autoPilotEnabled`) & `updateSkuFamilySlotsFromUi()`. |
+| `src/engine/trendAdvisor.ts` (`.js`) | 312 | `< 350` lines; 14d/30d/60d/90d Rolling Market Analytics, `getLiveStoreOfferMedian()`, `computeAutoPilotTarget()`, `BLEEDING DOWN`, `SUPPLY TIGHTENING`, & `ELASTIC_DIP`. |
+| `src/engine/singlesSniper.ts` (`.js`) | 323 | `< 350` lines; Quiet Singles & Gyarados Offload Radar (`singlesCache.json`) with 100% silent alert rule enforced (`singlesAlertsEnabled: false`). |
+| `src/pollers/wafBrowserBridge.ts` (`.js`) | 231 | `< 250` lines; 100% invisible (`headless: true`, `--headless=new`, `--disable-gpu`, `--no-startup-window`) WAF session bridge with `150s` cycle, persistent cookies in `data/wafSessionCookies.json`, and Queue-It waiting room detector (`◈ ⟦ POKÉMON CENTER QUEUE ACTIVE — ENTER LINE NOW ⟧`). |
+| `src/pollers/bigBoxRetailPoller.ts` (`.js`) | 296 | `< 350` lines; Honest 7-retailer Big-Box 1P poller (Target RedSky 1P, Walmart, Best Buy, Pokémon Center, Costco, Sam's Club, GameStop) integrated with `wafBrowserBridge.ts`. |
+| `src/pollers/fastTier1Poller.ts` (`.js`) | 336 | `< 350` lines; 15-second Tier-1 Fast Shopify restock delta poller (`26` Tier-1 stores, `?limit=50`). |
 | `policies.ts` (`policies.js`) | 485 | Loads & hot-watches merged policies, enforces `isSingleCardOrNonSealed()` + positive sealed container gate, dynamic `getMaxPlausiblePriceCeiling()`, and `reloadWatchPolicies()`. |
 | `evaluator.ts` (`evaluator.js`) | 1,355 | Evaluates drops against `WATCH_POLICIES`, Rule of 3 Rip Hunt Mode (`1/3` & `2/3` + `◈ ⟦ RIP PAIR READY (QTY 2+) ⟧`), `3/3 COMPLETE` mute, 1P Big-Box/PC Retail MSRP Flip Bypass, and `buildShopifyDirectCartLinks()`. |
 | `lgsPoller.ts` (`lgsPoller.js`) | 612 | Polls 90 active verified Shopify LGS storefronts from `config/stores.json`, routes singles to `singlesSniper.ts`, and writes `storeHealth.json`. |

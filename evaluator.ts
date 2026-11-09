@@ -27,11 +27,12 @@ import {
 import {
   evaluateSkuTrendAndTiming,
   computeAutoPilotTarget,
+  getLiveStoreOfferMedian,
   isPreReleaseDate,
   TrendSignal
 } from './src/engine/trendAdvisor';
 
-export { isPreReleaseDate, TrendSignal, computeAutoPilotTarget };
+export { isPreReleaseDate, TrendSignal, computeAutoPilotTarget, getLiveStoreOfferMedian };
 
 export function isVerified1PBigBoxOrPc(retailer?: string, url?: string, isMarketplace3P = false): boolean {
   if (isMarketplace3P) return false;
@@ -1194,9 +1195,31 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
     );
 
     const liveTelPre = getTelemetry()[rule.id];
-    const currentMarketRef = (liveTelPre && liveTelPre.rollingAverage > 0)
-      ? Math.min(maxCeiling, liveTelPre.rollingAverage)
-      : Math.min(maxCeiling, rule.estimatedMarketValue || rule.msrpCeiling);
+    const maxMedianPlausible = rule.estimatedMarketValue > 0
+      ? Math.min(maxCeiling, Math.round(rule.estimatedMarketValue * 1.35 * 100) / 100)
+      : maxCeiling;
+    const cachedSkuOffers = Object.values(storeOffersCacheMem[rule.id] || {})
+      .map((o: any) => Number(o?.price || o?.landedPrice || 0))
+      .filter((p) => Number.isFinite(p) && p >= minFloor && p <= maxMedianPlausible)
+      .sort((a, b) => a - b);
+    let liveStoreOfferMedian: number | null = null;
+    if (cachedSkuOffers.length >= 2) {
+      const lowSlice = cachedSkuOffers.slice(0, Math.min(5, cachedSkuOffers.length));
+      const midIdx = Math.floor(lowSlice.length / 2);
+      liveStoreOfferMedian = lowSlice.length % 2 === 1
+        ? lowSlice[midIdx]
+        : Math.round(((lowSlice[midIdx - 1] + lowSlice[midIdx]) / 2) * 100) / 100;
+    } else {
+      liveStoreOfferMedian = getLiveStoreOfferMedian(rule.id, minFloor, Date.now(), maxMedianPlausible);
+    }
+    const rawTelRoll = (liveTelPre && liveTelPre.rollingAverage > 0 && liveTelPre.rollingAverage !== 115 && liveTelPre.rollingAverage <= maxMedianPlausible)
+      ? liveTelPre.rollingAverage
+      : 0;
+    const currentMarketRef = liveStoreOfferMedian !== null
+      ? Math.min(maxCeiling, liveStoreOfferMedian)
+      : (rawTelRoll > 0
+          ? Math.min(maxCeiling, rawTelRoll)
+          : Math.min(maxCeiling, rule.estimatedMarketValue || rule.msrpCeiling));
 
     const policyMaxBuy = Math.max(rule.msrpCeiling, rule.maxMarketBuyPrice);
     // V5 Slice 3: Never lower Scott's explicit maxMarketBuyPrice slider down to msrpCeiling * 1.05 on pre-orders!

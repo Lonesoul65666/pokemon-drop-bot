@@ -46,9 +46,23 @@ class MarketSyncService {
             const cases = policies.filter(p => p.formFactor === 'Master Case' || p.formFactor === 'ETB Case');
             const basePriceMap = new Map();
             let updatedCount = 0;
-            // Pass 1: Sync all single boxes, ETBs, and bundles via TCGPlayer API
+            // Pass 1: Sync all single boxes, ETBs, and bundles (preferring live store-offer median when 2+ LGS offers exist)
             for (const p of singles) {
                 try {
+                    const liveStoreMed = (0, configManager_1.computeLiveStoreOfferMedian)(p.id, Math.max(18, (p.msrpCeiling || 50) * 0.45));
+                    if (liveStoreMed !== null && liveStoreMed > 0) {
+                        p.estimatedMarketValue = liveStoreMed;
+                        basePriceMap.set(p.id, liveStoreMed);
+                        const existing = cache[p.id] || {};
+                        cache[p.id] = {
+                            ...existing,
+                            rollingAverage: liveStoreMed,
+                            estimatedMarketValue: liveStoreMed,
+                            lastUpdated: new Date().toISOString()
+                        };
+                        updatedCount++;
+                        continue;
+                    }
                     const q = cleanSearchQuery(p.name);
                     const url = `https://mp-search-api.tcgplayer.com/v1/search/request?q=${encodeURIComponent(q)}&isList=false`;
                     const body = {
@@ -76,11 +90,16 @@ class MarketSyncService {
                         });
                     }
                     const results = res.data?.results?.[0]?.results || [];
+                    const matchRegexes = Array.isArray(p.matchers) ? p.matchers.map((m) => m instanceof RegExp ? m : new RegExp(String(m), 'i')) : [];
                     for (const item of results) {
                         if (item.customAttributes?.number)
                             continue;
-                        const rawTitle = item.productName || '';
+                        const rawTitle = `${item.productName || ''} ${item.setName || ''} ${item.productUrlName || ''}`.trim();
                         const title = rawTitle.toLowerCase();
+                        if (/set of 2|pair|both|pokemon center|pokémon center|pc exclusive/i.test(title))
+                            continue;
+                        if (matchRegexes.length > 0 && !matchRegexes.some((rx) => rx.test(rawTitle)))
+                            continue;
                         if (!(0, marketComps_1.isValidCompTitle)(rawTitle, p.name, p.formFactor, undefined, p.id))
                             continue;
                         const isMatch = (p.formFactor === 'Booster Box' && title.includes('booster box')) ||
@@ -90,6 +109,8 @@ class MarketSyncService {
                             const mkt = parseFloat(item.marketPrice || item.lowestPrice || 0);
                             if (mkt > 10) {
                                 const baselineRef = p.estimatedMarketValue || p.msrpCeiling || 50;
+                                if (p.formFactor === 'ETB' && baselineRef <= 65 && mkt > 90)
+                                    continue;
                                 const rounded = (0, marketComps_1.applySyncSanityGuard)(mkt, p.formFactor, undefined, {
                                     sampleCount: results.length,
                                     ruleId: p.id,

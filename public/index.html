@@ -2038,64 +2038,66 @@
       <!-- =================================================================== -->
       <!-- VIEW 3: CONQUERED VAULT (38-SET ETB WALL FIRST + TROPHY LOG BELOW)  -->
       <!-- =================================================================== -->
-      <section id="view_CONQUERED_VAULT" class="hidden space-y-8">
-        <!-- SECTION 1 (TOP): 38-SET ETB WALL DISPLAY CHECKLIST -->
-        <div class="glass-card machined-card rounded-2xl p-5 space-y-5 border border-cyan-400/35">
-          <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4 pb-4 border-b border-white/10">
-            <div class="space-y-1">
+      <!-- VIEW 3: CONQUERED VAULT (TROPHY ROOM TOP-NAV + 38-SET ETB WALL)     -->
+      <!-- =================================================================== -->
+      <section id="view_CONQUERED_VAULT" class="hidden space-y-6">
+        <!-- SECTION 1 (TOP HEADER): TROPHY ROOM / CONQUERED SHOWCASE & QUICK FILTER PILLS -->
+        <div class="glass-card machined-card rounded-2xl p-5 space-y-4 border border-amber-400/40">
+          <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-white/10">
+            <div>
               <div class="flex items-center gap-2.5 flex-wrap">
-                <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_10px_#00F0FF]"></span>
-                <h2 class="text-lg font-black uppercase tracking-wider text-white">38-Set ETB Master Wall Display Checklist</h2>
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_10px_#FACC15]"></span>
+                <h2 class="text-lg font-black uppercase tracking-wider text-white">Trophy Room &amp; Conquered Showcase</h2>
+                <span id="vaultRankHeaderBadge" class="pokedex-badge px-3 py-0.5 rounded-full text-xs font-mono-num font-extrabold bg-amber-500/20 text-amber-300 border border-amber-500/40">Case Commander</span>
                 <span id="vaultWallProgressBadge" class="pokedex-badge px-3 py-0.5 rounded-full text-xs font-mono-num font-black bg-cyan-500/20 text-cyan-200 border border-cyan-400/45">8 / 38 ETB Sets Conquered (21%)</span>
               </div>
-              <p class="text-xs text-slate-300">
-                Primary Collector Goal: <strong class="text-white">1 of every Elite Trainer Box set (38 sets across Mega Evolution, Scarlet &amp; Violet, and Sword &amp; Shield)</strong> on the physical display wall. Missing sets show live lowest landed store offers for 1-click sniping.
-              </p>
+              <p class="text-xs text-slate-300 mt-1">Verified floor snipes, sealed 10-ETB cases, and Rule-of-3 family progress (<strong class="text-cyan-300">[WALL]</strong>, <strong class="text-purple-300">[DAD RIP]</strong>, <strong class="text-amber-300">[LOGAN RIP]</strong>).</p>
             </div>
-
-            <!-- Visual Progress Bar Box -->
-            <div class="xl:w-80 bg-[#0B0914]/90 border border-white/10 rounded-xl p-3 space-y-1.5 shrink-0">
-              <div class="flex items-center justify-between text-[11px] font-mono-num">
-                <span class="font-pokedex text-slate-300 font-semibold">Physical ETB Wall Completion</span>
-                <span id="vaultWallFractionText" class="text-cyan-300 font-extrabold">8 Owned • 30 Still Needed</span>
+            <div class="flex items-center gap-3 flex-wrap">
+              <!-- Visual Progress Bar Box -->
+              <div class="w-64 bg-[#0B0914]/90 border border-white/10 rounded-xl p-2.5 space-y-1 shrink-0">
+                <div class="flex items-center justify-between text-[10px] font-mono-num">
+                  <span class="font-pokedex text-slate-300 font-semibold">Physical ETB Wall</span>
+                  <span id="vaultWallFractionText" class="text-cyan-300 font-extrabold">8 Owned • 30 Still Needed</span>
+                </div>
+                <div class="w-full h-2 bg-slate-900 rounded-full overflow-hidden border border-white/10">
+                  <div id="vaultWallProgressBar" class="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-emerald-400 rounded-full transition-all duration-300" style="width: 21%"></div>
+                </div>
               </div>
-              <div class="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-white/10">
-                <div id="vaultWallProgressBar" class="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-emerald-400 rounded-full transition-all duration-300" style="width: 21%"></div>
-              </div>
+              <button onclick="openClaimModal()" class="pokedex-badge px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 text-xs font-extrabold shadow-lg">
+                + Log Manual Trophy
+              </button>
             </div>
           </div>
 
-          <!-- Instant Filter Pills for the 38-Set ETB Wall -->
+          <!-- Top-Nav Quick Filter Pills -->
           <div class="flex items-center gap-2 flex-wrap">
-            <button onclick="setVaultChecklistFilter('ALL')" id="vchk_ALL" class="pokedex-badge px-3 py-1.5 rounded-xl text-xs font-extrabold bg-cyan-500 text-slate-950 transition">All 38 ETB Sets</button>
-            <button onclick="setVaultChecklistFilter('NEEDED')" id="vchk_NEEDED" class="pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-amber-300 border border-amber-500/35 hover:bg-amber-500/20 transition">Still Needed (30)</button>
-            <button onclick="setVaultChecklistFilter('OWNED')" id="vchk_OWNED" class="pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-emerald-300 border border-emerald-500/35 hover:bg-emerald-500/20 transition">On The Wall (8)</button>
-            <button onclick="setVaultChecklistFilter('MEGA')" id="vchk_MEGA" class="pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-purple-300 border border-purple-500/35 hover:bg-purple-500/20 transition">Mega Evolution</button>
-            <button onclick="setVaultChecklistFilter('SV')" id="vchk_SV" class="pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-cyan-300 border border-cyan-500/35 hover:bg-cyan-500/20 transition">Scarlet &amp; Violet</button>
-            <button onclick="setVaultChecklistFilter('SWSH')" id="vchk_SWSH" class="pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-orange-300 border border-orange-500/35 hover:bg-orange-500/20 transition">Sword &amp; Shield</button>
+            <button onclick="setVaultChecklistFilter('ALL')" id="vchk_ALL" class="pokedex-badge px-3 py-1.5 rounded-xl text-xs font-extrabold bg-cyan-500 text-slate-950 transition">ALL SETS</button>
+            <button onclick="setVaultChecklistFilter('NEEDED')" id="vchk_NEEDED" class="pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-amber-300 border border-amber-500/35 hover:bg-amber-500/20 transition">NEED WALL (0/3)</button>
+            <button onclick="setVaultChecklistFilter('NEED_RIP')" id="vchk_NEED_RIP" class="pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-purple-300 border border-purple-500/35 hover:bg-purple-500/20 transition">NEED RIP PAIR (1/3–2/3)</button>
+            <button onclick="setVaultChecklistFilter('OWNED')" id="vchk_OWNED" class="pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-emerald-300 border border-emerald-500/35 hover:bg-emerald-500/20 transition">TROPHY ROOM (ON WALL)</button>
+            <button onclick="setVaultChecklistFilter('COMPLETE_3OF3')" id="vchk_COMPLETE_3OF3" class="pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-cyan-200 border border-cyan-400/40 hover:bg-cyan-500/20 transition">3/3 COMPLETE</button>
+            <span class="text-white/20 text-xs mx-1">|</span>
+            <button onclick="setVaultChecklistFilter('MEGA')" id="vchk_MEGA" class="pokedex-badge px-2.5 py-1 rounded-xl text-[11px] font-bold bg-[#161329]/85 text-purple-300 border border-purple-500/35 hover:bg-purple-500/20 transition">Mega Evolution</button>
+            <button onclick="setVaultChecklistFilter('SV')" id="vchk_SV" class="pokedex-badge px-2.5 py-1 rounded-xl text-[11px] font-bold bg-[#161329]/85 text-cyan-300 border border-cyan-500/35 hover:bg-cyan-500/20 transition">Scarlet &amp; Violet</button>
+            <button onclick="setVaultChecklistFilter('SWSH')" id="vchk_SWSH" class="pokedex-badge px-2.5 py-1 rounded-xl text-[11px] font-bold bg-[#161329]/85 text-orange-300 border border-orange-500/35 hover:bg-orange-500/20 transition">Sword &amp; Shield</button>
           </div>
 
-          <!-- Era-Grouped 38-Set ETB Collector Cards Container -->
-          <div id="wallChecklistGrid" class="space-y-6"></div>
+          <!-- Trophy Room Plaques Grid at the Top -->
+          <div id="conqueredPlaquesGrid" class="grid grid-cols-1 xl:grid-cols-2 gap-4"></div>
         </div>
 
-        <!-- SECTION 2 (BELOW THE ETB WALL): SNIPE TROPHY & SEALED HOLD LOG -->
-        <div class="space-y-4">
-          <div class="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <div class="flex items-center gap-2.5">
-                <span class="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_#FACC15]"></span>
-                <h2 class="text-lg font-black uppercase tracking-wider text-white">Snipe Trophy &amp; Sealed Hold Log</h2>
-                <span id="vaultRankHeaderBadge" class="pokedex-badge px-3 py-0.5 rounded-full text-xs font-mono-num font-extrabold bg-amber-500/20 text-amber-300 border border-amber-500/40">Case Commander</span>
-              </div>
-              <p class="text-xs text-slate-300 mt-0.5">Verified floor snipes, sealed 10-ETB cases, and Defcon-1 MSRP catches with collector fate tags (<strong class="text-cyan-300">On ETB Wall</strong>, <strong class="text-purple-300">Rip with Logan</strong>, <strong class="text-amber-300">Sealed Hold</strong>)</p>
+        <!-- SECTION 2: 38-SET ETB MASTER WALL DISPLAY CHECKLIST -->
+        <div class="glass-card machined-card rounded-2xl p-5 space-y-5 border border-cyan-400/35">
+          <div class="flex items-center justify-between gap-2 pb-3 border-b border-white/10">
+            <div class="flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_10px_#00F0FF]"></span>
+              <h2 class="text-base font-black uppercase tracking-wider text-white">38-Set ETB Master Wall Checklist &amp; Rule-of-3 Slots</h2>
             </div>
-            <button onclick="openClaimModal()" class="pokedex-badge px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 text-xs font-extrabold shadow-lg">
-              + Log Manual Trophy
-            </button>
+            <span class="text-[11px] font-mono-num text-slate-300">Toggle <strong class="text-cyan-300">[WALL]</strong>, <strong class="text-purple-300">[DAD RIP]</strong>, or <strong class="text-amber-300">[LOGAN RIP]</strong> directly on any card</span>
           </div>
-
-          <div id="conqueredPlaquesGrid" class="grid grid-cols-1 xl:grid-cols-2 gap-5"></div>
+          <!-- Era-Grouped 38-Set ETB Collector Cards Container -->
+          <div id="wallChecklistGrid" class="space-y-6"></div>
         </div>
       </section>
 
@@ -2103,6 +2105,20 @@
       <!-- VIEW 4: TARGET MATRIX & CONFIG (COMPACT ACCORDION LEDGER + CARDS)   -->
       <!-- =================================================================== -->
       <section id="view_TARGET_MATRIX" class="hidden space-y-4">
+        <!-- Top-Nav Trophy Room & Rule-of-3 Quick Filter Header -->
+        <div class="glass-card machined-card rounded-2xl p-3.5 border border-amber-400/35 flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_#FACC15]"></span>
+            <span class="font-pokedex text-xs font-black uppercase tracking-wider text-amber-300">Trophy Room &amp; Rule-of-3 Quick Nav:</span>
+            <button onclick="setFilter('ALL')" class="pill-btn active px-2.5 py-1 rounded-xl text-[11px] font-extrabold bg-cyan-500 text-slate-950" data-filter="ALL" id="matrixPillAll">ALL SETS (131)</button>
+            <button onclick="setFilter('NEED_VAULT')" class="pill-btn px-2.5 py-1 rounded-xl text-[11px] font-bold bg-[#161329]/85 text-amber-300 border border-amber-500/35" data-filter="NEED_VAULT">NEED WALL (0/3)</button>
+            <button onclick="setFilter('NEED_RIP_PAIR')" class="pill-btn px-2.5 py-1 rounded-xl text-[11px] font-bold bg-[#161329]/85 text-purple-300 border border-purple-500/35" data-filter="NEED_RIP_PAIR">NEED RIP PAIR (1/3–2/3)</button>
+            <button onclick="setFilter('TROPHY_ON_WALL')" class="pill-btn px-2.5 py-1 rounded-xl text-[11px] font-bold bg-[#161329]/85 text-emerald-300 border border-emerald-500/35" data-filter="TROPHY_ON_WALL">TROPHY ROOM (ON WALL)</button>
+            <button onclick="setFilter('COMPLETE_3OF3')" class="pill-btn px-2.5 py-1 rounded-xl text-[11px] font-bold bg-[#161329]/85 text-cyan-200 border border-cyan-400/40" data-filter="COMPLETE_3OF3">3/3 COMPLETE</button>
+          </div>
+          <button onclick="switchMainView('CONQUERED_VAULT')" class="pokedex-badge px-3 py-1 rounded-xl bg-amber-500/20 hover:bg-amber-500 hover:text-slate-950 text-amber-200 border border-amber-400/45 text-[11px] font-extrabold transition">Open Full Trophy Room ↗</button>
+        </div>
+
         <!-- Universal Calibrate & Admin Bar -->
         <div class="matrix-card glass-card machined-card rounded-2xl p-4 space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-3">
@@ -2156,9 +2172,7 @@
         <!-- Era / Format Filters -->
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div class="flex flex-wrap items-center gap-1.5" id="filterPills">
-            <button onclick="setFilter('ALL')" id="matrixPillAll" class="pill-btn active px-3 py-1.5 rounded-xl text-xs font-bold bg-cyan-500 text-slate-950" data-filter="ALL">All (131)</button>
             <button onclick="setFilter('INSTOCK')" id="inStockPillBtn" class="pill-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-950/60 text-emerald-400 border border-emerald-700/50" data-filter="INSTOCK">● In-Stock Now (0)</button>
-            <button onclick="setFilter('NEED_VAULT')" class="pill-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-purple-950/60 text-purple-300 border border-purple-700/50" data-filter="NEED_VAULT">Needed ETBs</button>
             <button onclick="setFilter('Master Case')" class="pill-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#161329]/80 text-slate-300 border border-white/10" data-filter="Master Case">6-Box Cases</button>
             <button onclick="setFilter('ETB Case')" class="pill-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#161329]/80 text-slate-300 border border-white/10" data-filter="ETB Case">10-ETB Cases</button>
             <button onclick="setFilter('Booster Box')" class="pill-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#161329]/80 text-slate-300 border border-white/10" data-filter="Booster Box">36-Pack Boxes</button>
@@ -2454,6 +2468,57 @@
       }
     };
 
+    let latestStatusData = null;
+
+    function getEffectiveMarketValue(polOrId, fallbackVal) {
+      const pol = (typeof polOrId === 'string') ? policies.find(p => p.id === polOrId) : polOrId;
+      const skuId = pol ? pol.id : String(polOrId || '');
+      const tel = telemetry[skuId];
+      const polMkt = Number(pol && pol.estimatedMarketValue ? pol.estimatedMarketValue : 0);
+      if (polMkt > 0 && polMkt !== 115 && polMkt !== 1150) return polMkt;
+      const telAvg = Number(tel && tel.rollingAverage > 0 ? tel.rollingAverage : 0);
+      if (telAvg > 0 && telAvg !== 115 && telAvg !== 1150) return telAvg;
+      return Number(polMkt || fallbackVal || (pol && pol.msrpCeiling) || 54.99);
+    }
+
+    function renderCardMetricsDrawerHtml(skuId, itemOrPol, extraNoteHtml) {
+      const pol = policies.find(p => p.id === skuId) || itemOrPol || {};
+      const tel = telemetry[skuId] || {};
+      const tEntry = (marketTape && marketTape.targets && marketTape.targets[skuId]) || {};
+      const mkt = getEffectiveMarketValue(pol, itemOrPol && itemOrPol.marketValue);
+      const msrp = Number((itemOrPol && itemOrPol.msrp) || pol.msrpCeiling || 54.99);
+      const landed = Number((itemOrPol && (itemOrPol.landedPrice || itemOrPol.price)) || tel.lowestPrice || mkt);
+      const packCnt = Number((itemOrPol && itemOrPol.packCount) || pol.packCount || (String(pol.formFactor || '').includes('Box') ? 36 : 9));
+      const ppp = packCnt > 0 ? (landed / packCnt) : 0;
+      const avg14 = Number(tEntry.avg14d || tel.avg14d || mkt).toFixed(2);
+      const avg30 = Number(tEntry.avg30d || tel.avg30d || mkt).toFixed(2);
+      const avg60 = Number(tEntry.avg60d || tel.avg60d || (mkt * 1.03)).toFixed(2);
+      const avg90 = Number(tEntry.avg90d || tel.avg90d || (mkt * 1.05)).toFixed(2);
+      const lowFloor = Number(tEntry.staleFloorPrice || tel.lowestPrice || Math.min(landed, mkt)).toFixed(2);
+      const floorStore = String(tEntry.lastClearStore || tel.lowestStore || (itemOrPol && (itemOrPol.retailer || itemOrPol.store)) || 'Verified LGS');
+      return (
+        '<details class="mt-2 pt-1.5 border-t border-white/10 text-[10px] font-mono-num text-slate-300" onclick="event.stopPropagation()">' +
+          '<summary class="cursor-pointer select-none text-cyan-300 hover:text-cyan-200 font-pokedex font-bold flex items-center justify-between gap-2">' +
+            '<span>[+ METRICS // 14D–90D ROLLING &amp; FLOOR]</span>' +
+            '<span class="text-[9px] font-mono-num text-slate-400">$' + ppp.toFixed(2) + '/pk • Mkt $' + mkt.toFixed(0) + '</span>' +
+          '</summary>' +
+          '<div class="mt-1.5 p-2 rounded-lg bg-black/45 border border-white/10 space-y-1">' +
+            '<div class="grid grid-cols-4 gap-1 text-center">' +
+              '<div class="p-1 rounded bg-white/5"><div class="text-[8px] text-slate-400">14D AVG</div><div class="font-bold text-white">$' + avg14 + '</div></div>' +
+              '<div class="p-1 rounded bg-white/5"><div class="text-[8px] text-slate-400">30D AVG</div><div class="font-bold text-cyan-200">$' + avg30 + '</div></div>' +
+              '<div class="p-1 rounded bg-white/5"><div class="text-[8px] text-slate-400">60D AVG</div><div class="font-bold text-amber-200">$' + avg60 + '</div></div>' +
+              '<div class="p-1 rounded bg-white/5"><div class="text-[8px] text-slate-400">90D AVG</div><div class="font-bold text-purple-200">$' + avg90 + '</div></div>' +
+            '</div>' +
+            '<div class="flex items-center justify-between gap-2 pt-1 text-[10px]">' +
+              '<span>Low Floor: <strong class="text-emerald-300">$' + lowFloor + '</strong> (' + floorStore + ')</span>' +
+              '<span>MSRP: <strong class="text-slate-200">$' + msrp.toFixed(2) + '</strong> (' + packCnt + 'p)</span>' +
+            '</div>' +
+            (extraNoteHtml || '') +
+          '</div>' +
+        '</details>'
+      );
+    }
+
     async function loadAllState() {
       try {
         const [polRes, telRes, lsRes, drRes, trRes, cvRes, mtRes, stRes, statRes, engRes, advRes] = await Promise.all([
@@ -2485,6 +2550,7 @@
         if (stRes.ok) botSettings = await stRes.json();
         if (statRes && statRes.ok) {
           const statData = await statRes.json();
+          latestStatusData = statData;
           if (statData && statData.storeTelemetry) {
             liveStoreTelemetry = { ...liveStoreTelemetry, ...statData.storeTelemetry };
           }
@@ -2577,12 +2643,15 @@
       const autoPilotCeiling = Number(pol.autoPilotCeiling || pol.effectiveTargetCeiling || pol.maxMarketBuyPrice || pol.msrpCeiling || 54.99);
       let statusLabel = '0/3 (NEED WALL)';
       let statusCls = 'bg-amber-500/20 text-amber-300 border-amber-400/45';
+      let cardGlowCls = '';
       if (fullyConquered) {
         statusLabel = '3/3 (COMPLETE)';
-        statusCls = 'bg-emerald-500/25 text-emerald-200 border-emerald-400/60';
+        statusCls = 'bg-emerald-500/25 text-emerald-200 border-emerald-400/60 shadow-[0_0_10px_rgba(16,185,129,0.3)]';
+        cardGlowCls = 'ring-1 ring-emerald-400/60 shadow-[0_0_18px_rgba(16,185,129,0.22)]';
       } else if (completionCount >= 1) {
         statusLabel = completionCount + '/3 (' + (wallOwned ? 'WALL LOCKED // NEED RIP' : 'NEED WALL') + ')';
-        statusCls = 'bg-cyan-500/20 text-cyan-200 border-cyan-400/50';
+        statusCls = 'bg-cyan-500/20 text-cyan-200 border-cyan-400/50 shadow-[0_0_8px_rgba(0,240,255,0.22)]';
+        cardGlowCls = 'ring-1 ring-cyan-400/45 shadow-[0_0_14px_rgba(0,240,255,0.16)]';
       }
       return {
         wallOwned,
@@ -2593,12 +2662,12 @@
         autoPilotEnabled,
         autoPilotCeiling,
         statusLabel,
-        statusCls
+        statusCls,
+        cardGlowCls
       };
     }
 
-    function renderFamilySlotsPillsHtml(skuId, fallbackObj, compact) {
-      if (!skuId) return '';
+    function renderFamilySlotsPillsInnerHtml(skuId, fallbackObj, compact) {
       const st = getSkuFamilyState(skuId, fallbackObj);
       const safeId = String(skuId).replace(/'/g, "\\'");
       const padCls = compact ? 'px-1.5 py-0.5 text-[9px]' : 'px-2 py-0.5 text-[10px]';
@@ -2606,19 +2675,129 @@
         const cls = active
           ? activeStyle
           : 'bg-black/45 text-slate-400 border-white/15 hover:text-white hover:border-white/30';
-        return '<button onclick="toggleSkuFamilySlot(\'' + safeId + '\', \'' + slotKey + '\', ' + (!active) + ', event)" title="Toggle ' + label + ' slot for Rule of 3 Family Completion" class="font-pokedex font-extrabold rounded border transition whitespace-nowrap ' + padCls + ' ' + cls + '">[' + label + (active ? ' ✓' : '') + ']</button>';
+        return '<button type="button" onclick="toggleSkuFamilySlot(\'' + safeId + '\', \'' + slotKey + '\', ' + (!active) + ', event)" title="Toggle ' + label + ' slot for Rule of 3 Family Completion" class="font-pokedex font-extrabold rounded border transition whitespace-nowrap ' + padCls + ' ' + cls + '">[' + label + (active ? ' ✓' : '') + ']</button>';
       };
       const allBtnCls = st.fullyConquered
         ? 'bg-emerald-500 text-slate-950 border-emerald-300 shadow-[0_0_8px_rgba(16,185,129,0.4)]'
         : 'bg-white/5 text-slate-300 border-white/15 hover:bg-emerald-500/25 hover:text-emerald-200';
       return (
-        '<div class="inline-flex items-center gap-1 flex-wrap" onclick="event.stopPropagation()">' +
-          mkBtn('wallOwned', 'WALL', st.wallOwned, 'bg-cyan-500/25 text-cyan-200 border-cyan-400/60') +
-          mkBtn('dadRipOwned', 'DAD RIP', st.dadRipOwned, 'bg-purple-500/25 text-purple-200 border-purple-400/60') +
-          mkBtn('loganRipOwned', 'LOGAN RIP', st.loganRipOwned, 'bg-amber-500/25 text-amber-200 border-amber-400/60') +
-          '<button onclick="toggleSkuFamilySlot(\'' + safeId + '\', \'ALL\', ' + (!st.fullyConquered) + ', event)" title="Toggle all 3 Family Slots (3/3 Complete)" class="font-mono-num font-black rounded border transition whitespace-nowrap ' + padCls + ' ' + allBtnCls + '">[' + st.completionCount + '/3 ALL]</button>' +
+        mkBtn('wallOwned', 'WALL', st.wallOwned, 'bg-cyan-500/25 text-cyan-200 border-cyan-400/60 shadow-[0_0_8px_rgba(34,211,238,0.3)]') +
+        mkBtn('dadRipOwned', 'DAD RIP', st.dadRipOwned, 'bg-purple-500/25 text-purple-200 border-purple-400/60 shadow-[0_0_8px_rgba(168,85,247,0.3)]') +
+        mkBtn('loganRipOwned', 'LOGAN RIP', st.loganRipOwned, 'bg-amber-500/25 text-amber-200 border-amber-400/60 shadow-[0_0_8px_rgba(245,158,11,0.3)]') +
+        '<button type="button" onclick="toggleSkuFamilySlot(\'' + safeId + '\', \'ALL\', ' + (!st.fullyConquered) + ', event)" title="Toggle all 3 Family Slots (3/3 Complete)" class="font-mono-num font-black rounded border transition whitespace-nowrap ' + padCls + ' ' + allBtnCls + '">[' + st.completionCount + '/3 ALL]</button>'
+      );
+    }
+
+    function renderFamilySlotsPillsHtml(skuId, fallbackObj, compact) {
+      if (!skuId) return '';
+      const safeAttr = String(skuId).replace(/"/g, '&quot;');
+      return (
+        '<div data-family-slots-sku="' + safeAttr + '" data-family-slots-compact="' + (compact ? '1' : '0') + '" class="inline-flex items-center gap-1 flex-wrap" onclick="event.stopPropagation()">' +
+          renderFamilySlotsPillsInnerHtml(skuId, fallbackObj, compact) +
         '</div>'
       );
+    }
+
+    function syncSingleSkuDomInPlace(skuId) {
+      if (!skuId) return;
+      const pol = policies.find(p => p.id === skuId);
+      const st = getSkuFamilyState(skuId, pol);
+
+      // 1. Update all [WALL] [DAD RIP] [LOGAN RIP] [X/3 ALL] pill groups for this SKU across the entire DOM
+      document.querySelectorAll('[data-family-slots-sku]').forEach(el => {
+        if (el.getAttribute('data-family-slots-sku') === skuId) {
+          const isCompact = el.getAttribute('data-family-slots-compact') === '1';
+          el.innerHTML = renderFamilySlotsPillsInnerHtml(skuId, pol, isCompact);
+        }
+      });
+
+      // 2. Update all 0/3 -> 1/3 -> 2/3 -> 3/3 status badges for this SKU
+      document.querySelectorAll('[data-sku-status-badge]').forEach(el => {
+        if (el.getAttribute('data-sku-status-badge') === skuId) {
+          el.textContent = st.statusLabel;
+          el.className = 'pokedex-badge text-[9px] font-mono-num font-extrabold px-2 py-0.5 rounded border transition ' + st.statusCls;
+        }
+      });
+
+      // 3. Update card border glow in-place
+      document.querySelectorAll('[data-sku-card]').forEach(cardEl => {
+        if (cardEl.getAttribute('data-sku-card') === skuId) {
+          cardEl.classList.remove(
+            'ring-1', 'ring-emerald-400/60', 'shadow-[0_0_18px_rgba(16,185,129,0.22)]',
+            'ring-cyan-400/45', 'shadow-[0_0_14px_rgba(0,240,255,0.16)]',
+            'vault-card-owned', 'vault-card-needed'
+          );
+          if (cardEl.classList.contains('vault-unified-card')) {
+            cardEl.classList.add(st.wallOwned ? 'vault-card-owned' : 'vault-card-needed');
+          }
+          if (st.cardGlowCls) {
+            st.cardGlowCls.split(' ').filter(Boolean).forEach(c => cardEl.classList.add(c));
+          }
+        }
+      });
+
+      // 4. Sync Target Matrix row if visible
+      const idx = policies.findIndex(p => p.id === skuId);
+      if (idx !== -1) updateMatrixItemDomInPlace(idx);
+    }
+
+    function applyFamilySlotStateToMemory(skuId, nextState) {
+      const pol = policies.find(p => p.id === skuId);
+      const wallOwned = Boolean(nextState.wallOwned);
+      const dadRipOwned = Boolean(nextState.dadRipOwned);
+      const loganRipOwned = Boolean(nextState.loganRipOwned);
+      const completionCount = (wallOwned ? 1 : 0) + (dadRipOwned ? 1 : 0) + (loganRipOwned ? 1 : 0);
+      const fullyConquered = Boolean(wallOwned && dadRipOwned && loganRipOwned);
+      if (pol) {
+        pol.wallOwned = wallOwned;
+        pol.owned = wallOwned;
+        pol.inVault = wallOwned;
+        pol.dadRipOwned = dadRipOwned;
+        pol.loganRipOwned = loganRipOwned;
+        pol.completionCount = completionCount;
+        pol.fullyConquered = fullyConquered;
+        if (nextState.autoPilotEnabled !== undefined) {
+          pol.autoPilotEnabled = Boolean(nextState.autoPilotEnabled);
+        }
+      }
+      if (bestCurrentOffersMap && bestCurrentOffersMap[skuId]) {
+        bestCurrentOffersMap[skuId].owned = wallOwned;
+        bestCurrentOffersMap[skuId].wallOwned = wallOwned;
+        bestCurrentOffersMap[skuId].dadRipOwned = dadRipOwned;
+        bestCurrentOffersMap[skuId].loganRipOwned = loganRipOwned;
+        bestCurrentOffersMap[skuId].completionCount = completionCount;
+        bestCurrentOffersMap[skuId].fullyConquered = fullyConquered;
+      }
+      if (latestStatusData) {
+        if (latestStatusData.bestCurrentOffers && latestStatusData.bestCurrentOffers[skuId]) {
+          latestStatusData.bestCurrentOffers[skuId].owned = wallOwned;
+          latestStatusData.bestCurrentOffers[skuId].wallOwned = wallOwned;
+          latestStatusData.bestCurrentOffers[skuId].dadRipOwned = dadRipOwned;
+          latestStatusData.bestCurrentOffers[skuId].loganRipOwned = loganRipOwned;
+          latestStatusData.bestCurrentOffers[skuId].completionCount = completionCount;
+          latestStatusData.bestCurrentOffers[skuId].fullyConquered = fullyConquered;
+        }
+        const etbPols = policies.filter(p => isEtbPolicy(p));
+        latestStatusData.familyProgress = {
+          wallEtbsConquered: etbPols.filter(p => Boolean(p.wallOwned ?? p.owned)).length,
+          totalEtbSets: etbPols.length || 38,
+          totalWallOwned: policies.filter(p => Boolean(p.wallOwned ?? p.owned)).length,
+          totalDadRipOwned: policies.filter(p => Boolean(p.dadRipOwned)).length,
+          totalLoganRipOwned: policies.filter(p => Boolean(p.loganRipOwned)).length,
+          total3of3Complete: policies.filter(p => Boolean(p.fullyConquered)).length
+        };
+      }
+      if (nextBuyAdvisorData && Array.isArray(nextBuyAdvisorData.topBuys)) {
+        nextBuyAdvisorData.topBuys.forEach(tb => {
+          if (tb && tb.skuId === skuId) {
+            tb.wallOwned = wallOwned;
+            tb.dadRipOwned = dadRipOwned;
+            tb.loganRipOwned = loganRipOwned;
+            tb.completionCount = completionCount;
+            tb.fullyConquered = fullyConquered;
+          }
+        });
+      }
     }
 
     function renderDirectCartButtonsHtml(item, primaryLabel) {
@@ -2641,14 +2820,37 @@
       if (ev) ev.stopPropagation();
       if (spectatorLocked) return;
       const pol = policies.find(p => p.id === skuId);
+      const cur = getSkuFamilyState(skuId, pol);
       const payload = {};
+      const optimisticState = {
+        wallOwned: cur.wallOwned,
+        dadRipOwned: cur.dadRipOwned,
+        loganRipOwned: cur.loganRipOwned,
+        autoPilotEnabled: cur.autoPilotEnabled
+      };
       if (slotKey === 'ALL') {
-        payload.toggleAll = Boolean(newVal);
+        const targetAll = Boolean(newVal);
+        payload.toggleAll = targetAll;
+        optimisticState.wallOwned = targetAll;
+        optimisticState.dadRipOwned = targetAll;
+        optimisticState.loganRipOwned = targetAll;
       } else if (slotKey === 'autoPilotEnabled') {
         payload.autoPilotEnabled = Boolean(newVal);
+        optimisticState.autoPilotEnabled = Boolean(newVal);
       } else {
         payload[slotKey] = Boolean(newVal);
+        optimisticState[slotKey] = Boolean(newVal);
       }
+
+      // STEP 1: Instant 0ms Optimistic UI & In-Memory State Update before POST completes!
+      applyFamilySlotStateToMemory(skuId, optimisticState);
+      syncSingleSkuDomInPlace(skuId);
+      updateGlobalBadgesAndKPIs();
+      renderCapitalAdvisorBar();
+      const instantSt = getSkuFamilyState(skuId, pol);
+      showCommanderToast((pol ? pol.name : skuId) + ' -> ' + instantSt.statusLabel);
+
+      // STEP 2: Persist to backend & seamlessly sync server-authoritative SKU policy + counters without reload
       try {
         const res = await fetch('/api/policies/' + encodeURIComponent(skuId) + '/family-slots', {
           method: 'POST',
@@ -2656,23 +2858,22 @@
           body: JSON.stringify(payload)
         });
         const data = await res.json();
-        if (data && data.policy && pol) {
-          pol.wallOwned = Boolean(data.policy.wallOwned);
-          pol.owned = Boolean(data.policy.wallOwned);
-          pol.inVault = Boolean(data.policy.wallOwned);
-          pol.dadRipOwned = Boolean(data.policy.dadRipOwned);
-          pol.loganRipOwned = Boolean(data.policy.loganRipOwned);
-          pol.completionCount = Number(data.policy.completionCount || 0);
-          pol.fullyConquered = Boolean(data.policy.fullyConquered);
-          if (data.policy.autoPilotEnabled !== undefined) {
-            pol.autoPilotEnabled = Boolean(data.policy.autoPilotEnabled);
-          }
+        const srvPol = data && (data.policy || data.sku);
+        if (srvPol) {
+          applyFamilySlotStateToMemory(skuId, srvPol);
         }
-        const advRes = await fetch('/api/advisor/next-buy?budget=' + activeAdvisorBudget);
-        if (advRes.ok) nextBuyAdvisorData = await advRes.json();
-        renderAllActiveViews();
-        const st = getSkuFamilyState(skuId, pol);
-        showCommanderToast((pol ? pol.name : skuId) + ' -> ' + st.statusLabel);
+        if (data && data.nextBuyAdvisor) {
+          nextBuyAdvisorData = data.nextBuyAdvisor;
+        }
+        if (data && data.familyProgress && latestStatusData) {
+          latestStatusData.familyProgress = data.familyProgress;
+        }
+        syncSingleSkuDomInPlace(skuId);
+        updateGlobalBadgesAndKPIs();
+        renderCapitalAdvisorBar();
+        if (activeMainView === 'CONQUERED_VAULT' && vaultChecklistFilter !== 'ALL') {
+          renderWallChecklistGrid();
+        }
       } catch (e) {}
     }
 
@@ -3047,7 +3248,7 @@
         if (!pol) return;
         const key = ruleId + '__' + ls.retailer;
         seenRuleStores.add(key);
-        const mktVal = Number((telemetry[pol.id]?.rollingAverage > 0) ? telemetry[pol.id].rollingAverage : (pol.estimatedMarketValue || 60));
+        const mktVal = getEffectiveMarketValue(pol, 60);
         const landedVal = Number(ls.landedPrice || ls.price || 0);
         const packCnt = Number(ls.packCount || pol.packCount || (pol.formFactor === 'Booster Box' ? 36 : 9));
         const ppp = Number(ls.pricePerPack || pol.pricePerPack || (packCnt > 0 ? landedVal / packCnt : 0));
@@ -3094,7 +3295,7 @@
         if (seenRuleStores.has(key)) return;
         seenRuleStores.add(key);
         const landedVal = Number(d.landedPrice || d.price || 0);
-        const mktVal = Number(d.marketValue || (pol ? ((telemetry[pol.id]?.rollingAverage > 0) ? telemetry[pol.id].rollingAverage : pol.estimatedMarketValue) : 60));
+        const mktVal = getEffectiveMarketValue(pol, d.marketValue || 60);
         const ff = d.formFactor || (pol ? pol.formFactor : 'ETB');
         const packCnt = Number(d.packCount || (pol ? pol.packCount : (String(ff).includes('Box') ? 36 : 9)));
         const ppp = Number(d.pricePerPack || (pol ? pol.pricePerPack : (packCnt > 0 ? landedVal / packCnt : 5.67)));
@@ -3142,7 +3343,7 @@
       policies.filter(p => isPolicyInStockNow(p)).forEach(pol => {
         if (items.some(x => x.skuId === pol.id)) return;
         const offer = getBestLiveOfferForPolicy(pol);
-        const mktVal = Number((telemetry[pol.id]?.rollingAverage > 0) ? telemetry[pol.id].rollingAverage : (pol.estimatedMarketValue || 60));
+        const mktVal = getEffectiveMarketValue(pol, 60);
         const landedVal = Number(offer.price || pol.maxMarketBuyPrice || 54.99);
         const packCnt = Number(pol.packCount || (pol.formFactor === 'Booster Box' ? 36 : 9));
         const ppp = Number(pol.pricePerPack || (packCnt > 0 ? landedVal / packCnt : 0));
@@ -3327,11 +3528,17 @@
       if (vaultBarEl) vaultBarEl.style.width = etbWallPct + '%';
 
       const vchkAllBtn = document.getElementById('vchk_ALL');
-      if (vchkAllBtn) vchkAllBtn.innerText = 'All ' + totalEtbCount + ' ETB Sets';
+      if (vchkAllBtn) vchkAllBtn.innerText = 'ALL SETS (' + totalEtbCount + ')';
       const vchkNeededBtn = document.getElementById('vchk_NEEDED');
-      if (vchkNeededBtn) vchkNeededBtn.innerText = 'Still Needed (' + neededEtbs.length + ')';
+      if (vchkNeededBtn) vchkNeededBtn.innerText = 'NEED WALL (0/3) (' + neededEtbs.length + ')';
+      const ripPairEtbs = etbs.filter(p => { const st = getSkuFamilyState(p.id, p); return st.completionCount >= 1 && st.completionCount <= 2; });
+      const complete3Etbs = etbs.filter(p => getSkuFamilyState(p.id, p).fullyConquered);
+      const vchkNeedRipBtn = document.getElementById('vchk_NEED_RIP');
+      if (vchkNeedRipBtn) vchkNeedRipBtn.innerText = 'NEED RIP PAIR (1/3–2/3) (' + ripPairEtbs.length + ')';
       const vchkOwnedBtn = document.getElementById('vchk_OWNED');
-      if (vchkOwnedBtn) vchkOwnedBtn.innerText = 'On The Wall (' + ownedEtbs.length + ')';
+      if (vchkOwnedBtn) vchkOwnedBtn.innerText = 'TROPHY ROOM (ON WALL) (' + ownedEtbs.length + ')';
+      const vchk3of3Btn = document.getElementById('vchk_COMPLETE_3OF3');
+      if (vchk3of3Btn) vchk3of3Btn.innerText = '3/3 COMPLETE (' + complete3Etbs.length + ')';
 
       const navVault = document.getElementById('navVaultBadge');
       if (navVault) navVault.innerText = ownedEtbs.length + '/' + totalEtbCount;
@@ -3343,7 +3550,7 @@
       if (calibAllOpt) calibAllOpt.innerText = 'Scope: All ' + (policies.length || 131) + ' Targets';
 
       const matrixAllPill = document.getElementById('matrixPillAll');
-      if (matrixAllPill) matrixAllPill.innerText = 'All (' + (policies.length || 131) + ')';
+      if (matrixAllPill) matrixAllPill.innerText = 'ALL SETS (' + (policies.length || 131) + ')';
 
       const rankTitle = stripEmojiClutter(conqueredVault.collectorRank?.title || 'Case Commander');
       const sbRank = document.getElementById('sidebarRankBadge');
@@ -3625,7 +3832,7 @@
         missingWallEtbs.forEach(pol => {
           if (filteredItems.some(x => x.skuId === pol.id)) return;
           const offer = getBestLiveOfferForPolicy(pol);
-          const mktVal = Number((telemetry[pol.id]?.rollingAverage > 0) ? telemetry[pol.id].rollingAverage : (pol.estimatedMarketValue || offer.price || 60));
+          const mktVal = getEffectiveMarketValue(pol, offer.price || 60);
           const packCnt = Number(pol.packCount || 9);
           const ppp = packCnt > 0 ? (offer.price / packCnt) : 6.0;
           filteredItems.push({
@@ -3680,15 +3887,16 @@
         const packPill = getPackBadgeHtml(item.pricePerPack, item.packCount, item.isRipValueLeader);
         const formatTag = formatShortTag(item.formFactor);
         const preBleedBadge = renderTrendVerdictPillHtml(item);
+        const statusPill = renderShelfStatusPillHtml(item);
+        const primaryVerdictBadge = preBleedBadge || statusPill;
 
         const spreadPill = discPct > 0
           ? '<span class="font-mono-num text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/35">-' + discPct + '% Under Mkt (Save $' + saveDollars.toFixed(0) + ')</span>'
           : '<span class="font-mono-num text-[10px] font-bold px-2 py-0.5 rounded-md bg-white/10 text-slate-300 border border-white/15">At Mkt ($' + mktVal.toFixed(0) + ')</span>';
 
-        const statusPill = renderShelfStatusPillHtml(item);
         const triggerPill = isNearMiss
-          ? '<span class="font-mono-num text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-200 border border-orange-400/40">Trigger: $' + trigVal.toFixed(0) + ' (+$' + Number(item.gapDollars || (landed - trigVal)).toFixed(2) + ' / +' + Number(item.gapPct || 0).toFixed(1) + '%)</span>'
-          : '<span class="font-mono-num text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-200 border border-purple-400/30">Trigger: $' + trigVal.toFixed(0) + '</span>';
+          ? '<span class="font-mono-num text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-200 border border-orange-400/40">Target: $' + trigVal.toFixed(0) + ' (+$' + Number(item.gapDollars || (landed - trigVal)).toFixed(2) + ')</span>'
+          : '<span class="font-mono-num text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-200 border border-purple-400/30">Target: $' + trigVal.toFixed(0) + '</span>';
 
         const isPreDropStaging = Boolean(item.isPreDropStaging || item.alertType === 'PRE_DROP_STAGING');
         const statusBadge = isNearMiss
@@ -3709,19 +3917,19 @@
         if (!resolvedShipText && isMarketplaceSeller) {
           if (item.shippingPrice !== undefined && Number(item.shippingPrice) > 0) {
             resolvedShipText = effItemPrice < 35
-              ? ('$' + effItemPrice.toFixed(2) + ' + $' + Number(item.shippingPrice).toFixed(2) + ' Ship ($' + landed.toFixed(2) + ' Landed — Under $35 Threshold, 2x May Unlock Free Ship)')
+              ? ('$' + effItemPrice.toFixed(2) + ' + $' + Number(item.shippingPrice).toFixed(2) + ' Ship ($' + landed.toFixed(2) + ' Landed — Under $35 Threshold)')
               : ('$' + effItemPrice.toFixed(2) + ' + $' + Number(item.shippingPrice).toFixed(2) + ' Ship ($' + landed.toFixed(2) + ' Landed)');
           } else if (item.shippingPrice === 0) {
             resolvedShipText = '+FREE Shipping (Confirmed $0.00 Ship)';
           } else if (effItemPrice < 35) {
-            resolvedShipText = '+Est. Ship / Check Cart — Under $35 Threshold, 2x May Unlock Free Ship';
+            resolvedShipText = '+Est. Ship / Check Cart — Under $35 Threshold';
           } else {
             resolvedShipText = '+FREE Shipping (Over $35 Threshold)';
           }
         }
-        const shipNoteLineHtml = resolvedShipText
-          ? '<div class="mt-1 text-[10px] font-mono-num ' + (/under\s*\$35|est\.?\s*ship|staging/i.test(resolvedShipText) ? 'text-amber-300' : 'text-cyan-200/90') + ' truncate" title="' + resolvedShipText.replace(/"/g, '') + '">' + resolvedShipText + '</div>'
-          : '';
+        const extraDrawerHtml =
+          '<div class="flex items-center gap-1.5 flex-wrap pt-1">' + spreadPill + packPill + '</div>' +
+          (resolvedShipText ? '<div class="text-[9px] text-cyan-200/90 truncate">' + resolvedShipText + '</div>' : '');
 
         const c1 = item.cart1xUrl || (item.url && item.url.includes('/cart/') ? item.url : null);
         const c2 = item.cart2xUrl || (c1 ? c1.replace(/:1$/, ':2') : null);
@@ -3745,42 +3953,39 @@
 
         const priceColorCls = isNearMiss ? 'text-orange-300' : (isMsrpDefcon ? 'text-[#00F0FF]' : 'text-[#10B981]');
         const famSt = getSkuFamilyState(item.skuId, item);
-        const ownedBadge = '<span class="text-[9px] font-mono-num font-bold px-1.5 py-0.5 rounded border ' + famSt.statusCls + '">' + famSt.statusLabel + '</span>';
+        const safeSkuAttr = String(item.skuId || '').replace(/"/g, '&quot;');
+        const ownedBadge = '<span data-sku-status-badge="' + safeSkuAttr + '" class="pokedex-badge text-[9px] font-mono-num font-extrabold px-2 py-0.5 rounded border transition ' + famSt.statusCls + '">' + famSt.statusLabel + '</span>';
 
         return (
-          '<div class="deal-card glass-card rounded-2xl p-4" style="display:flex;flex-direction:column;justify-content:space-between;min-height:242px;">' +
+          '<div data-sku-card="' + safeSkuAttr + '" class="deal-card glass-card rounded-2xl p-4 ' + (famSt.cardGlowCls || '') + '" style="display:flex;flex-direction:column;justify-content:space-between;min-height:220px;">' +
             '<div>' +
-              '<div class="flex items-center justify-between gap-2 mb-3">' +
+              '<div class="flex items-center justify-between gap-2 mb-2.5">' +
                 '<span class="text-[11px] font-bold text-slate-300 truncate">' + item.retailer + ' • <span class="text-slate-400 font-mono-num">' + item.timeStr + '</span></span>' +
                 statusBadge +
               '</div>' +
-              '<div style="display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:center;">' +
-                '<div onclick="openPriceHistoryModal(\'' + item.skuId + '\')" title="Click to open TCGPlayer Price History Chart &amp; Comps" class="art-pedestal rounded-xl p-2 flex flex-col items-center justify-between relative overflow-hidden cursor-pointer group" style="width:96px;height:96px;">' +
-                  '<img src="' + imgPath + '" class="w-[82px] h-[68px] object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)] group-hover:scale-110 transition-transform" alt="Art" />' +
-                  '<span class="pokedex-badge text-[9px] font-mono-num font-extrabold uppercase tracking-wider px-1.5 py-0.2 rounded bg-black/75 text-slate-200 border border-white/10 leading-tight">' + formatTag + '</span>' +
+              '<div style="display:grid;grid-template-columns:88px 1fr;gap:12px;align-items:center;">' +
+                '<div onclick="openPriceHistoryModal(\'' + item.skuId + '\')" title="Click to open TCGPlayer Price History Chart &amp; Comps" class="art-pedestal rounded-xl p-1.5 flex flex-col items-center justify-between relative overflow-hidden cursor-pointer group" style="width:88px;height:88px;">' +
+                  '<img src="' + imgPath + '" class="w-[76px] h-[62px] object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)] group-hover:scale-110 transition-transform" alt="Art" />' +
+                  '<span class="pokedex-badge text-[8px] font-mono-num font-extrabold uppercase tracking-wider px-1.5 py-0.2 rounded bg-black/75 text-slate-200 border border-white/10 leading-tight">' + formatTag + '</span>' +
                 '</div>' +
                 '<div class="min-w-0">' +
-                  '<div onclick="openPriceHistoryModal(\'' + item.skuId + '\')" title="Click to open TCGPlayer Price History Chart &amp; Comps" class="set-title-pokedex text-[15px] font-extrabold text-white hover:text-cyan-300 cursor-pointer transition leading-snug line-clamp-2" style="min-height:40px;">' + item.title + '</div>' +
-                  '<div class="flex items-baseline gap-2 mt-1.5 flex-wrap">' +
-                    '<span class="text-[24px] leading-none font-black font-mono-num ' + priceColorCls + '">$' + landed.toFixed(2) + '</span>' +
-                    '<span class="text-xs font-mono-num text-slate-300">Mkt: <strong class="text-amber-300">$' + mktVal.toFixed(2) + '</strong></span>' +
+                  '<div onclick="openPriceHistoryModal(\'' + item.skuId + '\')" title="Click to open TCGPlayer Price History Chart &amp; Comps" class="set-title-pokedex text-sm font-extrabold text-white hover:text-cyan-300 cursor-pointer transition leading-snug line-clamp-2">' + item.title + '</div>' +
+                  '<div class="flex items-baseline gap-2 mt-1 flex-wrap">' +
+                    '<span class="text-[22px] leading-none font-black font-mono-num ' + priceColorCls + '">$' + landed.toFixed(2) + '</span>' +
+                    triggerPill +
                     ownedBadge +
                   '</div>' +
-                  shipNoteLineHtml +
                   '<div class="mt-1.5 flex items-center gap-1.5 flex-wrap">' +
-                    statusPill +
-                    spreadPill +
-                    packPill +
-                    triggerPill +
-                    preBleedBadge +
+                    primaryVerdictBadge +
                   '</div>' +
                   '<div class="mt-1.5">' +
                     renderFamilySlotsPillsHtml(item.skuId, item, true) +
                   '</div>' +
                 '</div>' +
               '</div>' +
+              renderCardMetricsDrawerHtml(item.skuId, item, extraDrawerHtml) +
             '</div>' +
-            '<div style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding-top:12px;margin-top:12px;border-top:1px solid rgba(255,255,255,0.08);flex-wrap:nowrap;">' +
+            '<div style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding-top:10px;margin-top:10px;border-top:1px solid rgba(255,255,255,0.08);flex-wrap:nowrap;">' +
               checkoutBtns +
               '<div class="flex items-center gap-1.5 shrink-0">' +
                 '<button onclick="openPriceHistoryModal(\'' + item.skuId + '\')" class="px-2 py-1 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/35 text-[11px] font-pokedex font-extrabold whitespace-nowrap shrink-0 transition" title="Open 24H/7D/30D/90D Price Chart &amp; Store Comps">⟦ CHART ⟧</button>' +
@@ -4083,61 +4288,60 @@
               const shipSubLabel = opt.shippingNote || (opt.landedPrice > opt.price + 0.05 ? ('+ $' + (opt.landedPrice - opt.price).toFixed(2) + ' Ship') : '+ FREE Ship');
               const pol = policies.find(p => p.id === opt.skuId);
               const trigPrice = Number(opt.triggerPrice || (pol ? (pol.maxMarketBuyPrice || pol.msrpCeiling) : opt.msrp) || 54.99);
-              const verdictColHtml = '<div class="flex flex-col gap-1 items-start">' +
-                renderShelfStatusPillHtml({
-                  ...opt,
-                  triggerPrice: trigPrice,
-                  owned: pol ? Boolean(pol.owned) : Boolean(opt.owned)
-                }) +
-                renderTrendVerdictPillHtml({
-                  trendSignal: opt.trendSignal || (pol ? pol.trendSignal : undefined),
-                  trendVerdictLabel: opt.trendVerdictLabel || opt.preReleaseStatusTag || (pol ? (pol.trendVerdictLabel || pol.preReleaseStatusTag) : undefined)
-                }) +
-              '</div>';
+              const trendPillHtml = renderTrendVerdictPillHtml({
+                trendSignal: opt.trendSignal || (pol ? pol.trendSignal : undefined),
+                trendVerdictLabel: opt.trendVerdictLabel || opt.preReleaseStatusTag || (pol ? (pol.trendVerdictLabel || pol.preReleaseStatusTag) : undefined)
+              });
+              const shelfPillHtml = renderShelfStatusPillHtml({
+                ...opt,
+                triggerPrice: trigPrice,
+                owned: pol ? Boolean(pol.owned) : Boolean(opt.owned)
+              });
+              const primaryVerdictHtml = trendPillHtml || shelfPillHtml;
               const spreadBadgeHtml = Number(opt.discountPct || 0) > 0
                 ? '<span class="px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/35 text-emerald-300 font-mono-num text-[10px] font-extrabold">-' + opt.discountPct + '% Spread</span>'
                 : '<span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-400 font-mono-num text-[10px] font-bold">At Market</span>';
-              const multiCartBtns = (opt.cart2xUrl || opt.cart3xUrl)
-                ? '<div class="flex items-center gap-1">' +
-                    (opt.cart2xUrl ? '<a href="' + opt.cart2xUrl + '" target="_blank" class="px-2 py-1.5 rounded-lg bg-white/5 hover:bg-white/15 border border-white/15 text-[10px] font-mono-num font-bold text-slate-200 transition">2x</a>' : '') +
-                    (opt.cart3xUrl ? '<a href="' + opt.cart3xUrl + '" target="_blank" class="px-2 py-1.5 rounded-lg bg-white/5 hover:bg-white/15 border border-white/15 text-[10px] font-mono-num font-bold text-slate-200 transition">3x</a>' : '') +
-                  '</div>'
-                : '';
+              const famSt = getSkuFamilyState(opt.skuId, pol || opt);
+              const safeSkuAttr = String(opt.skuId || '').replace(/"/g, '&quot;');
+              const extraDrawer = '<div class="flex items-center gap-1.5 flex-wrap pt-1">' +
+                spreadBadgeHtml +
+                getPackBadgeHtml(opt.pricePerPack, opt.packCount, opt.isRipValueLeader) +
+                '<span class="text-[9px] text-cyan-200">' + shipSubLabel + '</span>' +
+              '</div>';
 
               return (
-                '<div class="bg-black/45 border border-white/10 hover:border-cyan-400/45 transition" style="padding:14px 18px;border-radius:12px;display:grid;grid-template-columns:44px 72px 1.6fr 1fr 1fr 1.1fr auto;align-items:center;gap:16px;min-width:860px;">' +
-                  '<span class="w-10 h-10 rounded-xl bg-white/10 border border-white/15 font-pokedex text-sm font-black text-cyan-300 flex items-center justify-center">#' + opt.rank + '</span>' +
-                  '<div onclick="openPriceHistoryModal(\'' + opt.skuId + '\')" class="w-16 h-16 art-pedestal rounded-xl p-1.5 flex items-center justify-center shrink-0 cursor-pointer group">' +
-                    '<img src="' + imgPath + '" class="max-h-full max-w-full object-contain group-hover:scale-110 transition-transform" alt="Art" />' +
-                  '</div>' +
-                  '<div class="min-w-0 space-y-1">' +
-                    '<div onclick="openPriceHistoryModal(\'' + opt.skuId + '\')" class="text-[15px] font-extrabold text-white hover:text-cyan-300 cursor-pointer transition truncate">' + opt.productName + '</div>' +
-                    '<div class="flex items-center gap-2 flex-wrap">' +
-                      '<span class="px-2 py-0.5 rounded bg-purple-500/20 border border-purple-400/30 text-[10px] font-pokedex font-bold text-purple-200 uppercase">' + eraLabel + '</span>' +
-                      '<button onclick="filterBountyByStore(\'' + safeStoreClick + '\')" title="Filter scoreboard by ' + cleanStoreSource + '" class="px-2 py-0.5 rounded bg-cyan-500/15 hover:bg-cyan-500/30 border border-cyan-400/35 text-[11px] font-semibold text-cyan-200 transition truncate max-w-[240px]">' + cleanStoreSource + '</button>' +
-                      '<button onclick="openPriceHistoryModal(\'' + opt.skuId + '\')" class="px-2 py-0.5 rounded bg-indigo-500/20 hover:bg-indigo-500 text-[10px] font-pokedex font-bold text-indigo-200 hover:text-white transition">⟦ CHART ⟧</button>' +
+                '<div data-sku-card="' + safeSkuAttr + '" class="bg-black/45 border border-white/10 hover:border-cyan-400/45 transition ' + (famSt.cardGlowCls || '') + '" style="padding:14px 18px;border-radius:12px;">' +
+                  '<div style="display:grid;grid-template-columns:44px 72px 1.8fr 1.1fr 1.1fr auto;align-items:center;gap:14px;min-width:780px;">' +
+                    '<span class="w-10 h-10 rounded-xl bg-white/10 border border-white/15 font-pokedex text-sm font-black text-cyan-300 flex items-center justify-center">#' + opt.rank + '</span>' +
+                    '<div onclick="openPriceHistoryModal(\'' + opt.skuId + '\')" class="w-16 h-16 art-pedestal rounded-xl p-1.5 flex items-center justify-center shrink-0 cursor-pointer group">' +
+                      '<img src="' + imgPath + '" class="max-h-full max-w-full object-contain group-hover:scale-110 transition-transform" alt="Art" />' +
                     '</div>' +
-                    '<div class="pt-0.5">' +
-                      renderFamilySlotsPillsHtml(opt.skuId, pol || opt, true) +
+                    '<div class="min-w-0 space-y-1">' +
+                      '<div class="flex items-center gap-2">' +
+                        '<div onclick="openPriceHistoryModal(\'' + opt.skuId + '\')" class="text-[15px] font-extrabold text-white hover:text-cyan-300 cursor-pointer transition truncate">' + opt.productName + '</div>' +
+                        '<span data-sku-status-badge="' + safeSkuAttr + '" class="pokedex-badge text-[9px] font-mono-num font-extrabold px-2 py-0.5 rounded border transition shrink-0 ' + famSt.statusCls + '">' + famSt.statusLabel + '</span>' +
+                      '</div>' +
+                      '<div class="flex items-center gap-2 flex-wrap">' +
+                        '<span class="px-2 py-0.5 rounded bg-purple-500/20 border border-purple-400/30 text-[10px] font-pokedex font-bold text-purple-200 uppercase">' + eraLabel + '</span>' +
+                        '<button onclick="filterBountyByStore(\'' + safeStoreClick + '\')" title="Filter scoreboard by ' + cleanStoreSource + '" class="px-2 py-0.5 rounded bg-cyan-500/15 hover:bg-cyan-500/30 border border-cyan-400/35 text-[11px] font-semibold text-cyan-200 transition truncate max-w-[240px]">' + cleanStoreSource + '</button>' +
+                        '<button onclick="openPriceHistoryModal(\'' + opt.skuId + '\')" class="px-2 py-0.5 rounded bg-indigo-500/20 hover:bg-indigo-500 text-[10px] font-pokedex font-bold text-indigo-200 hover:text-white transition">⟦ CHART ⟧</button>' +
+                      '</div>' +
+                      '<div class="pt-0.5">' +
+                        renderFamilySlotsPillsHtml(opt.skuId, pol || opt, true) +
+                      '</div>' +
+                    '</div>' +
+                    '<div class="font-mono-num">' +
+                      '<div class="font-pokedex text-xl font-black text-emerald-400">$' + Number(opt.landedPrice).toFixed(2) + '</div>' +
+                      '<div class="text-[11px] font-semibold text-purple-200">Target: $' + trigPrice.toFixed(0) + '</div>' +
+                    '</div>' +
+                    '<div>' +
+                      primaryVerdictHtml +
+                    '</div>' +
+                    '<div class="flex items-center gap-1.5 shrink-0">' +
+                      renderDirectCartButtonsHtml(opt, 'Buy Now ↗') +
                     '</div>' +
                   '</div>' +
-                  '<div class="font-mono-num">' +
-                    '<div class="font-pokedex text-xl font-black text-emerald-400">$' + Number(opt.landedPrice).toFixed(2) + '</div>' +
-                    '<div class="text-[11px] font-semibold text-slate-300">' + shipSubLabel + '</div>' +
-                  '</div>' +
-                  '<div class="space-y-1">' +
-                    '<div class="text-xs font-mono-num text-slate-300">Market: <strong class="text-amber-300">$' + Number(opt.marketValue).toFixed(2) + '</strong></div>' +
-                    '<div class="flex items-center gap-1.5 flex-wrap">' +
-                      spreadBadgeHtml +
-                      getPackBadgeHtml(opt.pricePerPack, opt.packCount, opt.isRipValueLeader) +
-                    '</div>' +
-                  '</div>' +
-                  '<div>' +
-                    verdictColHtml +
-                  '</div>' +
-                  '<div class="flex items-center gap-1.5 shrink-0">' +
-                    renderDirectCartButtonsHtml(opt, 'Buy Now ↗') +
-                  '</div>' +
+                  renderCardMetricsDrawerHtml(opt.skuId, opt, extraDrawer) +
                 '</div>'
               );
             }).join('');
@@ -4150,13 +4354,13 @@
     }
 
     // =========================================================================
-    // 6. VIEW 3: THE CONQUERED VAULT (UNIFIED STUDIO SHOWCASE: 38-ETB WALL + TROPHY PLAQUES)
+    // 6. VIEW 3: THE CONQUERED VAULT (UNIFIED STUDIO SHOWCASE: TROPHY ROOM TOP + 38-ETB WALL)
     // =========================================================================
     function renderConqueredVaultView() {
-      // Section 1 (Top): 38-Set ETB Master Wall Checklist
+      // Section 1: 38-Set ETB Master Wall Checklist
       renderWallChecklistGrid();
 
-      // Section 2 (Bottom): Snipe Trophy & Sealed Hold Log (Unified Card Geometry + 100x100 Art Wells)
+      // Section 2: Snipe Trophy & Sealed Hold Log (At Top of Conquered Vault)
       const grid = document.getElementById('conqueredPlaquesGrid');
       const trophies = conqueredVault.trophies || [];
 
@@ -4179,9 +4383,10 @@
             const dotCls = active ? 'bg-emerald-400 shadow-[0_0_6px_#10B981]' : 'bg-slate-600';
             return '<button onclick="toggleTrophyPip(\'' + t.id + '\', \'' + field + '\', ' + (!active) + ')" class="pokedex-badge px-3 py-1.5 rounded-xl border text-[11px] font-extrabold transition inline-flex items-center gap-1.5 ' + cls + '"><span class="w-1.5 h-1.5 rounded-full ' + dotCls + '"></span>[ ' + label + ' ]</button>';
           };
+          const safeSkuAttr = String(t.skuId || '').replace(/"/g, '&quot;');
 
           return (
-            '<div class="vault-unified-card ' + cardStateCls + ' p-5 flex flex-col justify-between gap-4">' +
+            '<div data-sku-card="' + safeSkuAttr + '" class="vault-unified-card ' + cardStateCls + ' p-5 flex flex-col justify-between gap-4">' +
               '<div class="space-y-3.5">' +
                 '<div class="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-white/10">' +
                   '<div class="flex items-center gap-2">' +
@@ -4204,8 +4409,7 @@
                     '</div>' +
                     priceNoteHtml +
                     '<div class="flex items-center gap-2 pt-1 flex-wrap">' +
-                      getPackBadgeHtml(t.pricePerPack, t.packCount, t.isRipValueLeader) +
-                      (t.orderRef ? '<span class="font-mono-num text-[10px] text-slate-400 bg-black/40 px-2 py-0.5 rounded border border-white/10">Order #' + t.orderRef + '</span>' : '') +
+                      renderFamilySlotsPillsHtml(t.skuId, null, false) +
                     '</div>' +
                   '</div>' +
                 '</div>' +
@@ -4281,10 +4485,12 @@
       const filterButtons = [
         { key: 'ALL', idleCls: 'pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-slate-200 border border-white/15 hover:text-white transition' },
         { key: 'NEEDED', idleCls: 'pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-amber-300 border border-amber-500/35 hover:bg-amber-500/20 transition' },
+        { key: 'NEED_RIP', idleCls: 'pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-purple-300 border border-purple-500/35 hover:bg-purple-500/20 transition' },
         { key: 'OWNED', idleCls: 'pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-emerald-300 border border-emerald-500/35 hover:bg-emerald-500/20 transition' },
-        { key: 'MEGA', idleCls: 'pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-purple-300 border border-purple-500/35 hover:bg-purple-500/20 transition' },
-        { key: 'SV', idleCls: 'pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-cyan-300 border border-cyan-500/35 hover:bg-cyan-500/20 transition' },
-        { key: 'SWSH', idleCls: 'pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-orange-300 border border-orange-500/35 hover:bg-orange-500/20 transition' }
+        { key: 'COMPLETE_3OF3', idleCls: 'pokedex-badge px-3 py-1.5 rounded-xl text-xs font-bold bg-[#161329]/85 text-cyan-200 border border-cyan-400/40 hover:bg-cyan-500/20 transition' },
+        { key: 'MEGA', idleCls: 'pokedex-badge px-2.5 py-1 rounded-xl text-[11px] font-bold bg-[#161329]/85 text-purple-300 border border-purple-500/35 hover:bg-purple-500/20 transition' },
+        { key: 'SV', idleCls: 'pokedex-badge px-2.5 py-1 rounded-xl text-[11px] font-bold bg-[#161329]/85 text-cyan-300 border border-cyan-500/35 hover:bg-cyan-500/20 transition' },
+        { key: 'SWSH', idleCls: 'pokedex-badge px-2.5 py-1 rounded-xl text-[11px] font-bold bg-[#161329]/85 text-orange-300 border border-orange-500/35 hover:bg-orange-500/20 transition' }
       ];
       filterButtons.forEach(({ key, idleCls }) => {
         const btn = document.getElementById('vchk_' + key);
@@ -4306,8 +4512,11 @@
       const allEtbs = policies.filter(p => isEtbPolicy(p));
       const filtered = allEtbs.filter(p => {
         const eraStr = String(p.era || p.name || '');
-        if (vaultChecklistFilter === 'NEEDED') return !p.owned;
-        if (vaultChecklistFilter === 'OWNED') return Boolean(p.owned);
+        const famSt = getSkuFamilyState(p.id, p);
+        if (vaultChecklistFilter === 'NEEDED') return !famSt.wallOwned;
+        if (vaultChecklistFilter === 'NEED_RIP') return famSt.completionCount >= 1 && famSt.completionCount <= 2;
+        if (vaultChecklistFilter === 'OWNED') return Boolean(famSt.wallOwned);
+        if (vaultChecklistFilter === 'COMPLETE_3OF3') return Boolean(famSt.fullyConquered);
         if (vaultChecklistFilter === 'MEGA') return /mega/i.test(eraStr);
         if (vaultChecklistFilter === 'SV') return /scarlet|violet/i.test(eraStr);
         if (vaultChecklistFilter === 'SWSH') return /sword|shield/i.test(eraStr);
@@ -4341,46 +4550,35 @@
       const renderEtbCard = (p) => {
         const idx = policies.findIndex(x => x.id === p.id);
         const imgPath = '/art/' + p.id + '.jpg?v=' + cacheBuster;
-        const isOwned = Boolean(p.owned);
-        const mVal = Number((telemetry[p.id]?.rollingAverage > 0) ? telemetry[p.id].rollingAverage : (p.estimatedMarketValue || 60));
+        const famSt = getSkuFamilyState(p.id, p);
+        const isOwned = Boolean(famSt.wallOwned);
+        const mVal = getEffectiveMarketValue(p, 56);
         const targetBuy = Number(p.maxMarketBuyPrice || p.msrpCeiling || 54.99);
         const bestOffer = getBestLiveOfferForPolicy(p);
+        const safeSkuAttr = String(p.id || '').replace(/"/g, '&quot;');
 
-        const cardStateCls = isOwned ? 'vault-card-owned' : 'vault-card-needed';
+        const cardStateCls = (isOwned ? 'vault-card-owned ' : 'vault-card-needed ') + (famSt.cardGlowCls || '');
+        const statusBadge = '<span data-sku-status-badge="' + safeSkuAttr + '" class="pokedex-badge text-[9px] font-mono-num font-extrabold px-2 py-0.5 rounded border transition ' + famSt.statusCls + '">' + famSt.statusLabel + '</span>';
 
-        const statusBadge = isOwned
-          ? '<button onclick="toggleOwned(' + idx + ', false)" title="Click to mark as Still Needed" class="pokedex-badge px-2.5 py-0.5 rounded-full bg-emerald-500/25 hover:bg-emerald-500/35 text-emerald-200 border border-emerald-400/60 text-[10px] font-black uppercase tracking-wider transition">ON THE WALL ✓</button>'
-          : '<button onclick="toggleOwned(' + idx + ', true)" title="Click to lock onto your Physical ETB Wall" class="pokedex-badge px-2.5 py-0.5 rounded-full bg-amber-500/20 hover:bg-emerald-500/30 text-amber-300 hover:text-emerald-200 border border-amber-400/45 text-[10px] font-black uppercase tracking-wider transition">NEEDED FOR WALL</button>';
+        const bodyDetailsHtml =
+          '<div class="space-y-1 mt-1">' +
+            '<div class="flex items-baseline justify-between gap-2 text-xs font-mono-num">' +
+              '<a href="' + bestOffer.url + '" target="_blank" class="font-black text-cyan-300 hover:text-cyan-200 hover:underline truncate">$' + bestOffer.price.toFixed(2) + ' @ ' + bestOffer.store + ' ↗</a>' +
+              '<span class="text-[10px] text-purple-200 shrink-0">Target: $' + targetBuy.toFixed(0) + '</span>' +
+            '</div>' +
+          '</div>';
 
-        const bodyDetailsHtml = isOwned
-          ? '<div class="space-y-1 mt-1.5">' +
-              '<div class="text-xs font-mono-num text-slate-200">Market Value: <strong class="text-emerald-300 text-sm font-black">$' + mVal.toFixed(2) + '</strong></div>' +
-              '<div class="text-[11px] font-mono-num text-slate-400">MSRP Baseline: $' + Number(p.msrpCeiling || 49.99).toFixed(2) + '</div>' +
-              '<div class="pt-0.5">' + getPackBadgeHtml(p.pricePerPack || (mVal / 9), p.packCount || 9, false) + '</div>' +
-            '</div>'
-          : '<div class="space-y-1 mt-1.5">' +
-              '<div class="text-[11px] font-mono-num text-slate-300">Best Offer Right Now:</div>' +
-              '<a href="' + bestOffer.url + '" target="_blank" class="inline-flex items-center gap-1 text-xs font-mono-num font-black text-cyan-300 hover:text-cyan-200 hover:underline leading-tight">' +
-                '<span>$' + bestOffer.price.toFixed(2) + ' @ ' + bestOffer.store + ' ↗</span>' +
-              '</a>' +
-              '<div class="flex items-center justify-between gap-2 text-[11px] font-mono-num text-slate-400 pt-0.5">' +
-                '<span>Target Buy: <strong class="text-amber-300">$' + targetBuy.toFixed(0) + '</strong></span>' +
-                '<span>Mkt: $' + mVal.toFixed(0) + '</span>' +
-              '</div>' +
-            '</div>';
-
-        const footerHtml = isOwned
-          ? '<div class="pt-2.5 mt-2.5 border-t border-white/10 flex items-center justify-between gap-2">' +
-              '<span class="pokedex-badge text-[11px] font-bold text-emerald-300 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#10B981]"></span>Conquered Set</span>' +
-              '<button onclick="toggleOwned(' + idx + ', false)" class="pokedex-badge px-2.5 py-1 rounded-lg bg-white/5 hover:bg-rose-500/20 text-slate-300 hover:text-rose-200 border border-white/10 text-[11px] font-semibold transition">Remove</button>' +
-            '</div>'
-          : '<div class="pt-2.5 mt-2.5 border-t border-white/10 flex items-center justify-between gap-2">' +
-              '<a href="' + bestOffer.url + '" target="_blank" class="pokedex-badge flex-1 text-center py-1.5 px-2.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-200 border border-cyan-400/45 text-[11px] font-extrabold transition whitespace-nowrap">Buy Best Offer ↗</a>' +
-              '<button onclick="toggleOwned(' + idx + ', true)" class="pokedex-badge py-1.5 px-2.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/35 text-[11px] font-extrabold transition whitespace-nowrap">+ Wall</button>' +
-            '</div>';
+        const footerHtml =
+          '<div class="pt-2.5 mt-2 border-t border-white/10 space-y-2">' +
+            renderFamilySlotsPillsHtml(p.id, p, false) +
+            '<div class="flex items-center justify-between gap-2">' +
+              renderDirectCartButtonsHtml({ url: bestOffer.url }, 'Buy Best Offer ↗') +
+              '<button onclick="openPriceHistoryModal(\'' + p.id + '\')" class="px-2 py-1 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/35 text-[10px] font-pokedex font-extrabold transition">⟦ CHART ⟧</button>' +
+            '</div>' +
+          '</div>';
 
         return (
-          '<div class="vault-unified-card ' + cardStateCls + ' p-4 flex flex-col justify-between">' +
+          '<div data-sku-card="' + safeSkuAttr + '" class="vault-unified-card ' + cardStateCls + ' p-4 flex flex-col justify-between">' +
             '<div>' +
               '<div class="flex items-center justify-between gap-2 mb-2.5">' +
                 '<span class="pokedex-badge text-[10px] font-bold uppercase tracking-wider text-slate-400">ETB WALL SET</span>' +
@@ -4393,11 +4591,9 @@
                 '<div class="min-w-0 flex-1">' +
                   '<div onclick="openModalByIndex(' + idx + ')" class="set-title-pokedex text-sm font-extrabold text-white hover:text-cyan-300 cursor-pointer transition leading-snug line-clamp-2">' + p.name.replace(' Elite Trainer Box', ' ETB') + '</div>' +
                   bodyDetailsHtml +
-                  '<div class="mt-1.5">' +
-                    renderFamilySlotsPillsHtml(p.id, p, true) +
-                  '</div>' +
                 '</div>' +
               '</div>' +
+              renderCardMetricsDrawerHtml(p.id, { landedPrice: bestOffer.price, marketValue: mVal, msrp: p.msrpCeiling, store: bestOffer.store }) +
             '</div>' +
             footerHtml +
           '</div>'
@@ -4406,7 +4602,7 @@
 
       const sectionsHtml = eraGroups.map(group => {
         const eraAll = allEtbs.filter(group.matcher);
-        const eraOwned = eraAll.filter(p => p.owned);
+        const eraOwned = eraAll.filter(p => Boolean(p.wallOwned ?? p.owned));
         const eraFiltered = filtered.filter(group.matcher);
         if (eraFiltered.length === 0) return '';
         return (
@@ -4521,8 +4717,8 @@
     // =========================================================================
     let matrixViewMode = 'LEDGER';
     let expandedMatrixGroups = {
+      CONQUERED_ETBS: true,
       NEEDED_ETBS: true,
-      CONQUERED_ETBS: false,
       BOOSTER_BOXES: false,
       MASTER_CASES: false,
       BOOSTER_BUNDLES: false,
@@ -4547,7 +4743,8 @@
 
     function getMatrixGroupIdForPolicy(p) {
       const ff = String(p?.formFactor || '').toLowerCase();
-      if (ff === 'etb') return p.owned ? 'CONQUERED_ETBS' : 'NEEDED_ETBS';
+      const wallOwned = Boolean(p?.wallOwned ?? p?.owned);
+      if (ff === 'etb') return wallOwned ? 'CONQUERED_ETBS' : 'NEEDED_ETBS';
       if (ff === 'booster box') return 'BOOSTER_BOXES';
       if (ff.includes('case')) return 'MASTER_CASES';
       if (ff.includes('bundle')) return 'BOOSTER_BUNDLES';
@@ -4556,8 +4753,8 @@
 
     function getMatrixCategoryGroups(filteredPolicies) {
       const defs = [
-        { id: 'NEEDED_ETBS', title: '◈ ⟦ STILL NEEDED WALL ETBS ⟧', accent: 'text-amber-300 border-amber-500/35 bg-amber-500/10' },
-        { id: 'CONQUERED_ETBS', title: '✦ ⟦ CONQUERED WALL ETBS ⟧', accent: 'text-emerald-300 border-emerald-500/35 bg-emerald-500/10' },
+        { id: 'CONQUERED_ETBS', title: '✦ ⟦ TROPHY ROOM // CONQUERED WALL ETBS ⟧', accent: 'text-emerald-300 border-emerald-500/35 bg-emerald-500/10' },
+        { id: 'NEEDED_ETBS', title: '◈ ⟦ STILL NEEDED WALL ETBS (0/3) ⟧', accent: 'text-amber-300 border-amber-500/35 bg-amber-500/10' },
         { id: 'BOOSTER_BOXES', title: '▲ ⟦ 36-PACK BOOSTER BOXES ⟧', accent: 'text-cyan-300 border-cyan-500/35 bg-cyan-500/10' },
         { id: 'MASTER_CASES', title: '❖ ⟦ SEALED MASTER CASES — 10-ETB & 6-BOX ⟧', accent: 'text-purple-300 border-purple-500/35 bg-purple-500/10' },
         { id: 'BOOSTER_BUNDLES', title: '◆ ⟦ 6-PACK BOOSTER BUNDLES ⟧', accent: 'text-indigo-300 border-indigo-500/35 bg-indigo-500/10' },
@@ -4615,8 +4812,7 @@
       filtered.forEach(p => {
         const idx = policies.findIndex(x => x.id === p.id);
         if (idx === -1) return;
-        const tel = telemetry[p.id];
-        const mktVal = (tel && tel.rollingAverage > 0) ? tel.rollingAverage : (p.estimatedMarketValue || 50);
+        const mktVal = getEffectiveMarketValue(p, 50);
         const msrp = p.msrpCeiling || 54.99;
 
         if (action === 'ENABLE_ALL') policies[idx].active = true;
@@ -4638,8 +4834,12 @@
       const selectedEra = document.getElementById('eraFilter')?.value || 'ALL_ERAS';
       return policies.filter(p => {
         let matchesType = true;
+        const famSt = getSkuFamilyState(p.id, p);
         if (activeFilter === 'INSTOCK') matchesType = isPolicyInStockNow(p);
-        else if (activeFilter === 'NEED_VAULT') matchesType = (p.formFactor === 'ETB' && !p.owned);
+        else if (activeFilter === 'NEED_VAULT') matchesType = (p.formFactor === 'ETB' && !famSt.wallOwned);
+        else if (activeFilter === 'NEED_RIP_PAIR') matchesType = (famSt.completionCount >= 1 && famSt.completionCount <= 2);
+        else if (activeFilter === 'TROPHY_ON_WALL') matchesType = Boolean(famSt.wallOwned);
+        else if (activeFilter === 'COMPLETE_3OF3') matchesType = Boolean(famSt.fullyConquered);
         else if (activeFilter !== 'ALL') matchesType = (p.formFactor === activeFilter);
         const matchesEra = (selectedEra === 'ALL_ERAS') || ((p.era || 'General Releases') === selectedEra);
         const matchesQuery = p.name.toLowerCase().includes(query) || (p.era && p.era.toLowerCase().includes(query));
@@ -4659,8 +4859,12 @@
       if (type === 'Booster Box') expandedMatrixGroups.BOOSTER_BOXES = true;
       else if (type === 'Master Case' || type === 'ETB Case') expandedMatrixGroups.MASTER_CASES = true;
       else if (type === 'Booster Bundle') expandedMatrixGroups.BOOSTER_BUNDLES = true;
-      else if (type === 'ETB') { expandedMatrixGroups.NEEDED_ETBS = true; expandedMatrixGroups.CONQUERED_ETBS = true; }
-      else if (type === 'NEED_VAULT') expandedMatrixGroups.NEEDED_ETBS = true;
+      else if (type === 'ETB' || type === 'TROPHY_ON_WALL' || type === 'COMPLETE_3OF3' || type === 'NEED_RIP_PAIR') {
+        expandedMatrixGroups.CONQUERED_ETBS = true;
+        expandedMatrixGroups.NEEDED_ETBS = true;
+      } else if (type === 'NEED_VAULT') {
+        expandedMatrixGroups.NEEDED_ETBS = true;
+      }
       renderMatrixCatalog();
     }
 
@@ -4680,8 +4884,8 @@
 
       if (sortMode !== 'ERA') {
         filtered.sort((a, b) => {
-          const mA = (telemetry[a.id]?.rollingAverage > 0) ? telemetry[a.id].rollingAverage : a.estimatedMarketValue;
-          const mB = (telemetry[b.id]?.rollingAverage > 0) ? telemetry[b.id].rollingAverage : b.estimatedMarketValue;
+          const mA = getEffectiveMarketValue(a, 50);
+          const mB = getEffectiveMarketValue(b, 50);
           if (sortMode === 'VALUE_DESC') return mB - mA;
           if (sortMode === 'VALUE_ASC') return mA - mB;
           if (sortMode === 'SPREAD_DESC') {
@@ -4746,8 +4950,7 @@
 
     function renderMatrixLedgerRow(p) {
       const index = policies.findIndex(x => x.id === p.id);
-      const tel = telemetry[p.id];
-      const marketVal = (tel && tel.rollingAverage > 0) ? tel.rollingAverage : (p.estimatedMarketValue || 50);
+      const marketVal = getEffectiveMarketValue(p, 50);
       const buyVal = Number(p.maxMarketBuyPrice || 0);
       const msrpVal = Number(p.msrpCeiling || 54.99);
       const diffPct = Math.round(((marketVal - buyVal) / marketVal) * 100);
@@ -4770,19 +4973,18 @@
         : (isNearTrigger ? 'text-orange-300' : 'text-slate-200');
 
       const rowOpacityCls = p.active === false ? 'opacity-50' : '';
+      const famSt = getSkuFamilyState(p.id, p);
+      const safeSkuAttr = String(p.id || '').replace(/"/g, '&quot;');
 
       return (
-        '<div id="matrixRowWrap_' + index + '" class="px-3.5 py-2 bg-[#0D0B18]/65 hover:bg-white/[0.04] transition grid grid-cols-1 lg:grid-cols-[96px_44px_minmax(220px,1.5fr)_78px_82px_minmax(175px,1.1fr)_minmax(290px,1.6fr)] items-center gap-2.5 min-h-[52px] ' + rowOpacityCls + '">' +
-          '<!-- Col 1: Active Toggle + Vaulted Check -->' +
-          '<div class="flex items-center gap-2.5">' +
+        '<div id="matrixRowWrap_' + index + '" data-sku-card="' + safeSkuAttr + '" class="px-3.5 py-2 bg-[#0D0B18]/65 hover:bg-white/[0.04] transition grid grid-cols-1 lg:grid-cols-[96px_44px_minmax(220px,1.5fr)_78px_82px_minmax(175px,1.1fr)_minmax(290px,1.6fr)] items-center gap-2.5 min-h-[52px] ' + rowOpacityCls + '">' +
+          '<!-- Col 1: Active Toggle + Status Badge -->' +
+          '<div class="flex items-center gap-2">' +
             '<label class="relative inline-flex items-center cursor-pointer" title="Enable/Mute sniper alerts for this SKU">' +
               '<input type="checkbox" id="activeCheckbox_' + index + '" ' + (p.active !== false ? 'checked' : '') + ' onchange="toggleActive(' + index + ', this.checked)" ' + disabledAttr + ' class="sr-only peer">' +
               '<div class="w-7 h-4 bg-slate-800 rounded-full peer peer-checked:after:translate-x-3 after:content-[\'\'] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-emerald-500"></div>' +
             '</label>' +
-            '<label id="ownedLabel_' + index + '" class="flex items-center gap-1 text-[10px] font-bold ' + (p.owned ? 'text-emerald-400' : 'text-slate-400') + ' cursor-pointer select-none" title="Toggle Wall Vaulted status">' +
-              '<input type="checkbox" id="ownedCheckbox_' + index + '" ' + (p.owned ? 'checked' : '') + ' onchange="toggleOwned(' + index + ', this.checked)" class="rounded bg-slate-900 border-white/20 text-emerald-500 focus:ring-0 w-3.5 h-3.5">' +
-              '<span>' + (p.owned ? 'Wall' : 'Need') + '</span>' +
-            '</label>' +
+            '<span data-sku-status-badge="' + safeSkuAttr + '" class="pokedex-badge text-[8px] font-mono-num font-extrabold px-1.5 py-0.5 rounded border transition ' + famSt.statusCls + '">' + famSt.completionCount + '/3</span>' +
           '</div>' +
 
           '<!-- Col 2: 40px Art Thumb -->' +
@@ -4849,8 +5051,7 @@
 
     function renderMatrixCard(p) {
       const index = policies.findIndex(x => x.id === p.id);
-      const tel = telemetry[p.id];
-      const marketVal = (tel && tel.rollingAverage > 0) ? tel.rollingAverage : (p.estimatedMarketValue || 50);
+      const marketVal = getEffectiveMarketValue(p, 50);
       const buyVal = p.maxMarketBuyPrice || 0;
       const diffPct = Math.round(((marketVal - buyVal) / marketVal) * 100);
       const spreadLabel = diffPct >= 0 ? (diffPct + '% Under Market') : (Math.abs(diffPct) + '% Above Market');
@@ -4858,33 +5059,27 @@
       const sliderMax = Math.ceil(Math.max(marketVal * 1.5, buyVal * 1.2, 100));
       const disabledAttr = spectatorLocked ? 'disabled' : '';
 
-      const packPill = getPackBadgeHtml(p.pricePerPack, p.packCount, p.isRipValueLeader);
       const offer = getBestLiveOfferForPolicy(p);
-      const preBleedBadge = '<div class="mt-1">' + renderTrendVerdictPillHtml({
+      const preBleedBadge = renderTrendVerdictPillHtml({
         trendSignal: offer.trendSignal || p.trendSignal,
         trendVerdictLabel: offer.trendVerdictLabel || p.trendVerdictLabel || p.preReleaseStatusTag
-      }) + '</div>';
+      });
       const bestOfferPrice = Number(offer.price || marketVal);
       const bestOfferStore = offer.store || 'TCGPlayer Verified';
       const bestOfferUrl = offer.url || '#';
-
-      const vaultToggle =
-        '<label id="ownedLabel_' + index + '" class="flex items-center gap-1.5 text-[11px] font-bold ' + (p.owned ? 'text-emerald-400' : 'text-slate-400') + ' cursor-pointer">' +
-          '<input type="checkbox" id="ownedCheckbox_' + index + '" ' + (p.owned ? 'checked' : '') + ' onchange="toggleOwned(' + index + ', this.checked)" class="rounded bg-slate-900 border-white/20 text-emerald-500 focus:ring-0">' +
-          '<span>Vaulted</span>' +
-        '</label>';
+      const famSt = getSkuFamilyState(p.id, p);
+      const safeSkuAttr = String(p.id || '').replace(/"/g, '&quot;');
 
       return (
-        '<div id="matrixRowWrap_' + index + '" class="matrix-card glass-card rounded-2xl p-5 flex flex-col justify-between ' + (p.active === false ? 'opacity-50' : '') + '">' +
+        '<div id="matrixRowWrap_' + index + '" data-sku-card="' + safeSkuAttr + '" class="matrix-card glass-card rounded-2xl p-4 flex flex-col justify-between ' + (famSt.cardGlowCls || '') + ' ' + (p.active === false ? 'opacity-50' : '') + '">' +
           '<div>' +
-            '<div class="flex justify-between items-center mb-3 gap-2">' +
+            '<div class="flex justify-between items-center mb-2.5 gap-2">' +
               '<div class="flex items-center gap-1.5 flex-wrap">' +
                 '<span class="text-[10px] font-mono-num font-bold uppercase px-2 py-0.5 rounded bg-white/5 text-cyan-300 border border-white/10">' + p.formFactor + '</span>' +
-                packPill +
-                '<button onclick="inspectLiveComps(' + index + ')" class="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500 hover:text-white">Comps</button>' +
+                '<span data-sku-status-badge="' + safeSkuAttr + '" class="pokedex-badge text-[9px] font-mono-num font-extrabold px-2 py-0.5 rounded border transition ' + famSt.statusCls + '">' + famSt.statusLabel + '</span>' +
               '</div>' +
-              '<div class="flex items-center gap-3">' +
-                vaultToggle +
+              '<div class="flex items-center gap-2">' +
+                '<button onclick="inspectLiveComps(' + index + ')" class="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500 hover:text-white">⟦ CHART ⟧</button>' +
                 '<label class="relative inline-flex items-center cursor-pointer">' +
                   '<input type="checkbox" id="activeCheckbox_' + index + '" ' + (p.active !== false ? 'checked' : '') + ' onchange="toggleActive(' + index + ', this.checked)" ' + disabledAttr + ' class="sr-only peer">' +
                   '<div class="w-8 h-4 bg-slate-800 rounded-full peer peer-checked:after:translate-x-full after:content-[\'\'] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-emerald-500"></div>' +
@@ -4892,52 +5087,44 @@
               '</div>' +
             '</div>' +
 
-            '<div class="flex items-center gap-3.5 mb-3.5">' +
-              '<div onclick="openModalByIndex(' + index + ')" class="w-20 h-20 art-pedestal rounded-xl flex items-center justify-center p-1.5 shrink-0 cursor-pointer group">' +
+            '<div class="flex items-center gap-3 mb-3">' +
+              '<div onclick="openModalByIndex(' + index + ')" class="w-16 h-16 art-pedestal rounded-xl flex items-center justify-center p-1.5 shrink-0 cursor-pointer group">' +
                 '<img src="' + imgPath + '" class="max-h-full max-w-full object-contain transition-transform duration-200 group-hover:scale-110" alt="Art" />' +
               '</div>' +
-              '<div class="min-w-0">' +
-                '<h3 onclick="openPriceHistoryModal(\'' + p.id + '\')" class="text-sm font-extrabold text-white hover:text-cyan-300 cursor-pointer transition leading-snug">' + p.name + '</h3>' +
-                '<div class="text-[11px] font-mono-num text-slate-400 mt-0.5">Retail MSRP: $' + (p.msrpCeiling ? p.msrpCeiling.toFixed(2) : '0.00') + '</div>' +
-                preBleedBadge +
+              '<div class="min-w-0 flex-1">' +
+                '<h3 onclick="openPriceHistoryModal(\'' + p.id + '\')" class="text-sm font-extrabold text-white hover:text-cyan-300 cursor-pointer transition leading-snug line-clamp-2">' + p.name + '</h3>' +
+                '<div class="mt-1">' + preBleedBadge + '</div>' +
                 '<div class="mt-1.5">' +
                   renderFamilySlotsPillsHtml(p.id, p, true) +
                 '</div>' +
               '</div>' +
             '</div>' +
 
-            '<div class="mb-3 px-3 py-2 bg-black/40 border border-white/10 rounded-xl flex items-center justify-between gap-2 text-xs">' +
+            '<div class="mb-2.5 px-3 py-2 bg-black/40 border border-white/10 rounded-xl flex items-center justify-between gap-2 text-xs">' +
               '<div class="min-w-0">' +
-                '<div class="text-[10px] font-bold uppercase text-slate-400">Best Current Offer</div>' +
-                '<div class="font-mono-num font-extrabold text-white truncate">$' + bestOfferPrice.toFixed(2) + ' <span class="text-slate-400 font-sans font-normal">via ' + bestOfferStore + '</span></div>' +
+                '<div class="text-[9px] font-bold uppercase text-slate-400">Best Landed Offer</div>' +
+                '<div class="font-mono-num font-extrabold text-emerald-400 truncate">$' + bestOfferPrice.toFixed(2) + ' <span class="text-slate-400 font-sans font-normal text-[10px]">@ ' + bestOfferStore + '</span></div>' +
               '</div>' +
-              '<a href="' + bestOfferUrl + '" target="_blank" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 text-[11px] font-extrabold shrink-0 transition">Best Offer ↗</a>' +
-            '</div>' +
-
-            '<div class="bg-black/40 border border-white/10 rounded-xl p-3 grid grid-cols-2 gap-2 mb-3.5 items-center">' +
-              '<div>' +
-                '<div class="text-[10px] uppercase font-bold text-slate-400">Market Value</div>' +
-                '<div class="text-sm font-black font-mono-num text-amber-300">$' + marketVal.toFixed(2) + '</div>' +
-              '</div>' +
-              '<div>' +
-                '<div class="text-[10px] uppercase font-bold text-slate-400 mb-0.5">Max Buy Trigger ($)</div>' +
-                '<div class="flex items-center bg-[#08070E] border border-white/15 focus-within:border-emerald-400 rounded-lg px-2 py-0.5">' +
-                  '<span class="text-emerald-400 font-mono-num font-extrabold text-xs mr-1">$</span>' +
-                  '<input type="number" step="1" id="priceInput_' + index + '" value="' + buyVal + '" ' + disabledAttr + ' onchange="onDirectPriceInput(' + index + ', this.value, ' + marketVal + ')" class="w-full bg-transparent text-sm font-mono-num font-extrabold text-emerald-400 focus:outline-none" />' +
-                '</div>' +
-              '</div>' +
+              renderDirectCartButtonsHtml({ url: bestOfferUrl }, 'Best Offer ↗') +
             '</div>' +
 
             '<div class="mb-2">' +
-              '<div class="flex justify-between text-xs mb-1">' +
-                '<span class="text-slate-400 font-medium">Alert Threshold</span>' +
-                '<span class="font-mono-num font-bold ' + (diffPct >= 15 ? 'text-emerald-400' : (diffPct >= 0 ? 'text-cyan-300' : 'text-amber-400')) + '" id="spreadDisplay_' + index + '">' + spreadLabel + '</span>' +
+              '<div class="flex items-center justify-between text-xs mb-1 gap-2">' +
+                '<div class="flex items-center gap-1.5">' +
+                  '<span class="text-slate-400 text-[11px]">Target:</span>' +
+                  '<div class="flex items-center bg-[#08070E] border border-white/15 focus-within:border-emerald-400 rounded-lg px-1.5 py-0.5 w-20">' +
+                    '<span class="text-emerald-400 font-mono-num font-extrabold text-xs mr-0.5">$</span>' +
+                    '<input type="number" step="1" id="priceInput_' + index + '" value="' + buyVal + '" ' + disabledAttr + ' onchange="onDirectPriceInput(' + index + ', this.value, ' + marketVal + ')" class="w-full bg-transparent text-xs font-mono-num font-extrabold text-emerald-400 focus:outline-none" />' +
+                  '</div>' +
+                '</div>' +
+                '<span class="font-mono-num text-[11px] font-bold ' + (diffPct >= 15 ? 'text-emerald-400' : (diffPct >= 0 ? 'text-cyan-300' : 'text-amber-400')) + '" id="spreadDisplay_' + index + '">' + spreadLabel + '</span>' +
               '</div>' +
               '<input type="range" id="slider_' + index + '" min="' + Math.floor((p.msrpCeiling || 20) * 0.8) + '" max="' + sliderMax + '" step="1" value="' + buyVal + '" ' + disabledAttr + ' oninput="onSliderMove(' + index + ', this.value, ' + marketVal + ')" class="w-full h-1.5 bg-slate-800 rounded-lg cursor-pointer" />' +
             '</div>' +
+            renderCardMetricsDrawerHtml(p.id, { landedPrice: bestOfferPrice, marketValue: marketVal, msrp: p.msrpCeiling, store: bestOfferStore }) +
           '</div>' +
 
-          '<div class="grid grid-cols-4 gap-1.5 pt-3 border-t border-white/10 font-mono-num">' +
+          '<div class="grid grid-cols-4 gap-1.5 pt-2.5 mt-2 border-t border-white/10 font-mono-num">' +
             '<button onclick="setPreset(' + index + ', ' + p.msrpCeiling + ')" ' + disabledAttr + ' class="py-1 rounded-lg text-[10px] font-bold bg-white/5 text-cyan-300 hover:bg-cyan-500 hover:text-slate-950">MSRP</button>' +
             '<button onclick="setPreset(' + index + ', ' + Math.round(marketVal * 0.85) + ')" ' + disabledAttr + ' class="py-1 rounded-lg text-[10px] font-bold bg-white/5 text-emerald-400 hover:bg-emerald-500 hover:text-slate-950">-15%</button>' +
             '<button onclick="setPreset(' + index + ', ' + Math.round(marketVal * 0.90) + ')" ' + disabledAttr + ' class="py-1 rounded-lg text-[10px] font-bold bg-white/5 text-slate-300 hover:bg-white/20">-10%</button>' +
@@ -4953,8 +5140,7 @@
     function updateMatrixItemDomInPlace(index) {
       const p = policies[index];
       if (!p) return;
-      const tel = telemetry[p.id];
-      const marketVal = (tel && tel.rollingAverage > 0) ? tel.rollingAverage : (p.estimatedMarketValue || 50);
+      const marketVal = getEffectiveMarketValue(p, 50);
       const buyVal = Number(p.maxMarketBuyPrice || 0);
       const diffPct = Math.round(((marketVal - buyVal) / marketVal) * 100);
       const spreadText = matrixViewMode === 'LEDGER'
@@ -5030,11 +5216,7 @@
     function toggleOwned(index, state) {
       if (spectatorLocked) return;
       if (!policies[index]) return;
-      policies[index].owned = state;
-      updateMatrixItemDomInPlace(index);
-      updateGlobalBadgesAndKPIs();
-      if (activeMainView === 'CONQUERED_VAULT') renderWallChecklistGrid();
-      debouncedSave();
+      toggleSkuFamilySlot(policies[index].id, 'wallOwned', Boolean(state));
     }
 
     function getTargetSetForCalibration() {
@@ -5047,8 +5229,7 @@
       const targets = getTargetSetForCalibration();
       targets.forEach(p => {
         const idx = policies.findIndex(x => x.id === p.id);
-        const tel = telemetry[p.id];
-        const m = (tel && tel.rollingAverage > 0) ? tel.rollingAverage : (p.estimatedMarketValue || 50);
+        const m = getEffectiveMarketValue(p, 50);
         const msrp = p.msrpCeiling || 30;
         if (mode === 'MKT5') p.maxMarketBuyPrice = Math.round(m * 0.95);
         else if (mode === 'MKT10') p.maxMarketBuyPrice = Math.round(m * 0.90);

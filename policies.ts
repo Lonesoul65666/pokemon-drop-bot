@@ -464,10 +464,14 @@ export const BOOSTER_BOX_EXCLUSION_TERMS = [
 
 export const PC_EXCLUSIVE_EXCLUSION_TERMS = [
   'pokemon center',
+  'pokemon-center',
   'pokémon center',
   'pkmn center',
+  'pkmn-center',
   'pc exclusive',
+  'pc-exclusive',
   'pc etb',
+  'pc-etb',
   'center exclusive',
   'stamped'
 ];
@@ -624,7 +628,7 @@ export function isValidSkuForFormFactor(
     }
   }
 
-  if ((formFactor === 'ETB' || formFactor === 'Booster Box' || formFactor === 'Booster Bundle') && /\b(case|cases|master case|sealed case|x6|6x|x10|10x)\b/i.test(title)) {
+  if ((formFactor === 'ETB' || formFactor === 'Booster Box' || formFactor === 'Booster Bundle') && /\b(case|cases|master case|sealed case|set of [2-9]|pair of|both styles|x2|2x|x4|4x|x6|6x|x10|10x)\b/i.test(title)) {
     return false;
   }
 

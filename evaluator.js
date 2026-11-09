@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.STORE_SHIPPING_RULES = exports.MSRP_TROPHIES_PATH = exports.computeAutoPilotTarget = exports.isPreReleaseDate = void 0;
+exports.STORE_SHIPPING_RULES = exports.MSRP_TROPHIES_PATH = exports.getLiveStoreOfferMedian = exports.computeAutoPilotTarget = exports.isPreReleaseDate = void 0;
 exports.isVerified1PBigBoxOrPc = isVerified1PBigBoxOrPc;
 exports.buildShopifyDirectCartLinks = buildShopifyDirectCartLinks;
 exports.getCloseCallGraceBuffer = getCloseCallGraceBuffer;
@@ -31,6 +31,7 @@ const marketTape_1 = require("./marketTape");
 const configManager_1 = require("./src/config/configManager");
 const trendAdvisor_1 = require("./src/engine/trendAdvisor");
 Object.defineProperty(exports, "computeAutoPilotTarget", { enumerable: true, get: function () { return trendAdvisor_1.computeAutoPilotTarget; } });
+Object.defineProperty(exports, "getLiveStoreOfferMedian", { enumerable: true, get: function () { return trendAdvisor_1.getLiveStoreOfferMedian; } });
 Object.defineProperty(exports, "isPreReleaseDate", { enumerable: true, get: function () { return trendAdvisor_1.isPreReleaseDate; } });
 function isVerified1PBigBoxOrPc(retailer, url, isMarketplace3P = false) {
     if (isMarketplace3P)
@@ -890,9 +891,32 @@ function evaluateItem(item) {
         const isPcExclusiveRetailDrop = isEtbRule && ((isPcSource && (item.price === undefined || item.price <= 75)) ||
             (hasPcTerm && item.price !== undefined && item.price <= 69.99));
         const liveTelPre = (0, marketTelemetry_1.getTelemetry)()[rule.id];
-        const currentMarketRef = (liveTelPre && liveTelPre.rollingAverage > 0)
-            ? Math.min(maxCeiling, liveTelPre.rollingAverage)
-            : Math.min(maxCeiling, rule.estimatedMarketValue || rule.msrpCeiling);
+        const maxMedianPlausible = rule.estimatedMarketValue > 0
+            ? Math.min(maxCeiling, Math.round(rule.estimatedMarketValue * 1.35 * 100) / 100)
+            : maxCeiling;
+        const cachedSkuOffers = Object.values(storeOffersCacheMem[rule.id] || {})
+            .map((o) => Number(o?.price || o?.landedPrice || 0))
+            .filter((p) => Number.isFinite(p) && p >= minFloor && p <= maxMedianPlausible)
+            .sort((a, b) => a - b);
+        let liveStoreOfferMedian = null;
+        if (cachedSkuOffers.length >= 2) {
+            const lowSlice = cachedSkuOffers.slice(0, Math.min(5, cachedSkuOffers.length));
+            const midIdx = Math.floor(lowSlice.length / 2);
+            liveStoreOfferMedian = lowSlice.length % 2 === 1
+                ? lowSlice[midIdx]
+                : Math.round(((lowSlice[midIdx - 1] + lowSlice[midIdx]) / 2) * 100) / 100;
+        }
+        else {
+            liveStoreOfferMedian = (0, trendAdvisor_1.getLiveStoreOfferMedian)(rule.id, minFloor, Date.now(), maxMedianPlausible);
+        }
+        const rawTelRoll = (liveTelPre && liveTelPre.rollingAverage > 0 && liveTelPre.rollingAverage !== 115 && liveTelPre.rollingAverage <= maxMedianPlausible)
+            ? liveTelPre.rollingAverage
+            : 0;
+        const currentMarketRef = liveStoreOfferMedian !== null
+            ? Math.min(maxCeiling, liveStoreOfferMedian)
+            : (rawTelRoll > 0
+                ? Math.min(maxCeiling, rawTelRoll)
+                : Math.min(maxCeiling, rule.estimatedMarketValue || rule.msrpCeiling));
         const policyMaxBuy = Math.max(rule.msrpCeiling, rule.maxMarketBuyPrice);
         // V5 Slice 3: Never lower Scott's explicit maxMarketBuyPrice slider down to msrpCeiling * 1.05 on pre-orders!
         let effectiveCeiling = policyMaxBuy;

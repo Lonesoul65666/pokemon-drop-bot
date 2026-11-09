@@ -989,9 +989,7 @@ function computeNearMissesAndBestOffers() {
     if (triggerPrice <= 0) continue;
 
     const tel = cache[ruleId];
-    const marketValue = (tel && tel.rollingAverage > 0)
-      ? Number(tel.rollingAverage)
-      : Number(pol.estimatedMarketValue || triggerPrice);
+    const marketValue = Number(pol.estimatedMarketValue || (tel && tel.rollingAverage > 0 ? tel.rollingAverage : triggerPrice));
 
     let cand = rawBestOffers[ruleId];
     const skuMergedList = Object.values(mergedBySku[ruleId] || {}).filter(o => o && o.landedPrice > 0);
@@ -1299,7 +1297,7 @@ function buildNextBestBuyAdvisorPayload(requestedBudget) {
     const bestOffer = offersList[0] || null;
 
     const msrp = Number(pol.msrpCeiling || 54.99);
-    const mkt = Number((telemetry[skuId]?.rollingAverage > 0) ? telemetry[skuId].rollingAverage : (pol.estimatedMarketValue || msrp));
+    const mkt = Number(pol.estimatedMarketValue || (telemetry[skuId]?.rollingAverage > 0 ? telemetry[skuId].rollingAverage : msrp));
     const policyMaxBuy = Math.max(msrp, Number(pol.maxMarketBuyPrice || msrp));
     const rolling = computeRollingMarketMetrics(skuId, mkt, msrp);
     const lowestPrice = bestOffer ? Number(bestOffer.price || bestOffer.landedPrice) : Number(telemetry[skuId]?.lowestPrice || mkt);
@@ -1552,7 +1550,7 @@ function loadMergedStoreOffersBySku() {
     const pol = polById.get(skuId);
     if (!pol) continue;
     const bucket = ensureSkuBucket(skuId);
-    const mkt = Number((telemetry[skuId]?.rollingAverage > 0) ? telemetry[skuId].rollingAverage : (pol.estimatedMarketValue || pol.msrpCeiling || 54.99));
+    const mkt = Number(pol.estimatedMarketValue || (telemetry[skuId]?.rollingAverage > 0 ? telemetry[skuId].rollingAverage : (pol.msrpCeiling || 54.99)));
     const trig = Math.max(Number(pol.maxMarketBuyPrice || 0), Number(pol.msrpCeiling || 0));
     for (const [storeKey, rec] of Object.entries(storeMap)) {
       if (!rec || !rec.landedPrice || rec.landedPrice <= 0) continue;
@@ -1686,7 +1684,7 @@ function loadMergedStoreOffersBySku() {
     const storeKey = cleanStore.replace(/\s*\(TCGPlayer.*?\)$/i, ' (TCGPlayer)').trim();
     const bucket = ensureSkuBucket(skuId);
     if (bucket[storeKey] && bucket[storeKey].landedPrice <= landed) return;
-    const mkt = Number((telemetry[skuId]?.rollingAverage > 0) ? telemetry[skuId].rollingAverage : (pol.estimatedMarketValue || pol.msrpCeiling || 54.99));
+    const mkt = Number(pol.estimatedMarketValue || (telemetry[skuId]?.rollingAverage > 0 ? telemetry[skuId].rollingAverage : (pol.msrpCeiling || 54.99)));
     const trig = Math.max(Number(pol.maxMarketBuyPrice || 0), Number(pol.msrpCeiling || 0));
     const rawPrice = Math.round(Number(item.price || landed) * 100) / 100;
     const rawShip = Math.round(Number(item.shippingPrice || Math.max(0, landed - rawPrice)) * 100) / 100;
@@ -1959,6 +1957,9 @@ app.get('/api/engine-room', (req, res) => {
         cadence: item.cadence || cfg.defaultCadence,
         engineMethod,
         mode: engineMethod,
+        bridgeMode: item.bridgeMode || undefined,
+        queueActive: Boolean(item.queueActive),
+        queueBanner: item.queueBanner || undefined,
         strictFilter: item.strictFilter || cfg.defaultStrictFilter,
         itemsParsed,
         productsParsed: itemsParsed,
@@ -2081,6 +2082,8 @@ app.get('/api/engine-room', (req, res) => {
       },
       northStar5,
       bigBoxStores: northStar5,
+      bigBoxHealth: storeTel.bigBoxHealth,
+      wafBridge: storeTel.bigBoxHealth?.wafBridge || null,
       lgsStores
     });
   } catch (e) {
@@ -2132,7 +2135,7 @@ app.get(['/api/sku-history/:skuId', '/api/price-history/:skuId'], (req, res) => 
 
     const tel = telemetry[skuId] || {};
     const msrp = Number(pol.msrpCeiling || 54.99);
-    const marketPrice = Number((tel.rollingAverage > 0) ? tel.rollingAverage : (pol.estimatedMarketValue || msrp));
+    const marketPrice = Number(pol.estimatedMarketValue || ((tel.rollingAverage > 0 && tel.rollingAverage !== 115) ? tel.rollingAverage : msrp));
     const maxBuyThreshold = Number(pol.maxMarketBuyPrice || msrp);
     const packCount = getPackCountForSku(skuId, pol.formFactor, pol.name);
 
@@ -2800,6 +2803,7 @@ app.post(['/api/policies/:skuId/family-slots', '/api/policies/:skuId/slots'], (r
     const advisor = buildNextBestBuyAdvisorPayload(200);
     return res.json({
       ok: true,
+      policy: updatedSku,
       sku: updatedSku,
       familyProgress: advisor.familyProgress,
       nextBuyAdvisor: advisor

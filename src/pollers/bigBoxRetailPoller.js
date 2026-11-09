@@ -12,26 +12,14 @@ const axios_1 = __importDefault(require("axios"));
 const lgsPoller_1 = require("../../lgsPoller");
 const listener_1 = require("../../listener");
 const policies_1 = require("../../policies");
+const wafBrowserBridge_1 = require("./wafBrowserBridge");
 exports.BIG_BOX_STORES = [
-    'Target',
-    'Best Buy',
-    'Pokémon Center',
-    'Walmart',
-    'Amazon',
-    'GameStop',
-    'Costco',
-    "Sam's Club",
-    'Barnes & Noble'
+    'Target', 'Best Buy', 'Pokémon Center', 'Walmart', 'Amazon', 'GameStop', 'Costco', "Sam's Club", 'Barnes & Noble'
 ];
 const TARGET_REDSKY_QUERIES = [
-    'pokemon elite trainer box',
-    'pokemon booster bundle',
-    'pokemon booster box',
-    'pokemon prismatic evolutions',
-    'pokemon destined rivals',
-    'pokemon scarlet violet 151',
-    'pokemon mega evolution',
-    'pokemon surging sparks'
+    'pokemon elite trainer box', 'pokemon booster bundle', 'pokemon booster box',
+    'pokemon prismatic evolutions', 'pokemon destined rivals', 'pokemon scarlet violet 151',
+    'pokemon mega evolution', 'pokemon surging sparks'
 ];
 const POKEMON_CENTER_URLS = [
     'https://www.pokemoncenter.com/en-us/category/elite-trainer-box',
@@ -48,7 +36,6 @@ const seenBigBoxOffers = new Map();
 const seenPcProductSlugs = new Set();
 let targetCursor = 0;
 let pcFeedCursor = 0;
-let pcCookieHeader = '';
 let lastPcPollAt = 0;
 let lastPcQueueAlertAt = 0;
 let isPollingBigBox = false;
@@ -58,13 +45,7 @@ async function httpGetWithProxyFallback(url, headers, timeoutMs = 7000) {
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), timeoutMs);
         try {
-            return await axios_1.default.get(url, {
-                timeout: timeoutMs,
-                signal: controller.signal,
-                httpsAgent,
-                headers,
-                validateStatus: (s) => s >= 200 && s < 500
-            });
+            return await axios_1.default.get(url, { timeout: timeoutMs, signal: controller.signal, httpsAgent, headers, validateStatus: (s) => s >= 200 && s < 500 });
         }
         finally {
             clearTimeout(timer);
@@ -87,12 +68,12 @@ async function httpGetWithProxyFallback(url, headers, timeoutMs = 7000) {
     }
 }
 function formatHonestSensorBadge(itemsExtracted, wafType) {
-    if (wafType === 'IMPERVA') {
+    if (wafType === 'IMPERVA')
         return { status: 'WAF_CHALLENGE_IMPERVA', lastStatus: 'WAF_CHALLENGE_IMPERVA', statusCode: 'WAF_CHALLENGE_IMPERVA' };
-    }
-    if (wafType === 'PX') {
+    if (wafType === 'PX')
         return { status: 'WAF_CHALLENGE_PX', lastStatus: 'WAF_CHALLENGE_PX', statusCode: 'WAF_CHALLENGE_PX' };
-    }
+    if (wafType === 'CF')
+        return { status: 'WAF_CHALLENGE_CF', lastStatus: 'WAF_CHALLENGE_CF', statusCode: 'WAF_CHALLENGE_CF' };
     if (itemsExtracted > 0) {
         const label = `200 OK // ${itemsExtracted} PARSED`;
         return { status: label, lastStatus: label, statusCode: '200_OK_PARSED' };
@@ -101,17 +82,7 @@ function formatHonestSensorBadge(itemsExtracted, wafType) {
 }
 function buildSensorNode(name, cadence, engineMethod, strictFilter, itemsExtracted, wafType, extra) {
     const badge = formatHonestSensorBadge(itemsExtracted, wafType);
-    return {
-        name,
-        cadence,
-        engineMethod,
-        strictFilter,
-        itemsExtracted,
-        itemsParsed: itemsExtracted,
-        ...badge,
-        ...(extra || {}),
-        lastCheckedAt: Date.now()
-    };
+    return { name, cadence, engineMethod, strictFilter, itemsExtracted, itemsParsed: itemsExtracted, ...badge, ...(extra || {}), lastCheckedAt: Date.now() };
 }
 async function pollPokemonCenterDirectMsrp(force = false) {
     const now = Date.now();
@@ -121,20 +92,8 @@ async function pollPokemonCenterDirectMsrp(force = false) {
     const pcUrl = POKEMON_CENTER_URLS[pcFeedCursor % POKEMON_CENTER_URLS.length];
     pcFeedCursor = (pcFeedCursor + 1) % POKEMON_CENTER_URLS.length;
     try {
-        const reqHeaders = { ...BROWSER_HEADERS };
-        if (pcCookieHeader)
-            reqHeaders['Cookie'] = pcCookieHeader;
-        const res = await httpGetWithProxyFallback(pcUrl, reqHeaders, 7000);
-        const setCookies = res.headers?.['set-cookie'];
-        if (Array.isArray(setCookies) && setCookies.length > 0) {
-            pcCookieHeader = setCookies.map((c) => c.split(';')[0]).join('; ');
-        }
-        const rawBody = typeof res.data === 'string' ? res.data : JSON.stringify(res.data || '');
-        const headerDump = JSON.stringify(res.headers || {});
-        const isQueueActive = /virtual\s+waiting\s+room|you\s+are\s+now\s+in\s+line|queue-it\.net|incap_wr|waiting-room/i.test(rawBody) ||
-            /incap_wr|x-queue-it|queue-it/i.test(headerDump);
-        const isImpervaBlocked = res.status === 403 || /_Incapsula_Resource|Pardon Our Interruption|incapsula|Request unsuccessful/i.test(rawBody);
-        if (isQueueActive && (now - lastPcQueueAlertAt > 2 * 60 * 60 * 1000)) {
+        const sweep = await (0, wafBrowserBridge_1.sweepWafProtectedTarget)('pokemoncenter', pcUrl, force);
+        if (sweep.isQueueActive && (now - lastPcQueueAlertAt > 2 * 60 * 60 * 1000)) {
             lastPcQueueAlertAt = now;
             await (0, listener_1.processIncomingDrop)({
                 title: 'Mega Evolution: Chaos Rising Pokémon Center Exclusive Elite Trainer Box (Pre-Order / Queue Live)',
@@ -146,14 +105,16 @@ async function pollPokemonCenterDirectMsrp(force = false) {
                 isPreOrder: true,
                 freeShipping: true,
                 isBigBoxRestockRadar: true,
-                shippingNoteOverride: '◈ ⟦ POKEMON CENTER QUEUE / MSRP DROP RADAR ⟧ Security Queue Active — Check $59.99 PC Exclusive ETB Drop Now!'
+                shippingNoteOverride: `${sweep.queueBadge || '◈ ⟦ POKÉMON CENTER QUEUE ACTIVE — ENTER LINE NOW ⟧'} — Check $59.99 PC Exclusive ETB Drop Now!`
             });
         }
-        if (isImpervaBlocked && !isQueueActive) {
-            const node = buildSensorNode('Pokémon Center', '90s Direct + Queue-It Radar', '1P PokemonCenter.com + Queue-It Detector', '$59.99 Exclusive / 1P MSRP Only', 0, 'IMPERVA', { queueState: 'NORMAL', lastUrlChecked: pcUrl });
-            (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ pokemonCenterStatus: node.statusCode, northStar5: { pokemonCenter: node } });
+        const wafMeta = { headless: true, args: ['--headless=new', '--disable-gpu', '--no-startup-window'], intervalSec: 150, sessionCacheFile: 'data/wafSessionCookies.json' };
+        if (sweep.isWafChallenged && !sweep.isQueueActive) {
+            const node = buildSensorNode('Pokémon Center', '150s WAF Bridge + Queue-It Radar', 'Headless Session Cookie Cache + Queue-It Detector', '$59.99 Exclusive / 1P MSRP Only', 0, 'IMPERVA', { queueState: 'NORMAL', queueActive: false, bridgeMode: sweep.fromSessionCache ? 'SESSION_COOKIE_CACHE_150S' : 'HEADLESS_NEW_BRIDGE_150S', lastUrlChecked: pcUrl });
+            (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ pokemonCenterStatus: node.statusCode, wafBridge: wafMeta, northStar5: { pokemonCenter: node } });
             return;
         }
+        const rawBody = sweep.html || '';
         const productMatches = [...rawBody.matchAll(/\/product\/(\d+-\d+)\/([a-z0-9-]+)/gi)];
         let itemsExtracted = 0;
         for (const m of productMatches) {
@@ -186,11 +147,11 @@ async function pollPokemonCenterDirectMsrp(force = false) {
                 });
             }
         }
-        const node = buildSensorNode('Pokémon Center', '90s Direct + Queue-It Radar', '1P PokemonCenter.com + Queue-It Detector', '$59.99 Exclusive / 1P MSRP Only', itemsExtracted, undefined, { queueState: isQueueActive ? 'QUEUE_ACTIVE' : 'NORMAL', lastUrlChecked: pcUrl });
-        (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ pokemonCenterStatus: node.statusCode, northStar5: { pokemonCenter: node } });
+        const node = buildSensorNode('Pokémon Center', '150s WAF Bridge + Queue-It Radar', 'Headless Session Cookie Cache + Queue-It Detector', '$59.99 Exclusive / 1P MSRP Only', itemsExtracted, undefined, { queueState: sweep.isQueueActive ? 'QUEUE_ACTIVE' : 'NORMAL', queueActive: sweep.isQueueActive, queueBanner: sweep.queueBadge, bridgeMode: sweep.fromSessionCache ? 'SESSION_COOKIE_CACHE_150S' : 'HEADLESS_NEW_BRIDGE_150S', lastUrlChecked: pcUrl });
+        (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ pokemonCenterStatus: node.statusCode, wafBridge: wafMeta, northStar5: { pokemonCenter: node } });
     }
     catch {
-        const node = buildSensorNode('Pokémon Center', '90s Direct + Queue-It Radar', '1P PokemonCenter.com + Queue-It Detector', '$59.99 Exclusive / 1P MSRP Only', 0, 'IMPERVA', { queueState: 'NORMAL' });
+        const node = buildSensorNode('Pokémon Center', '150s WAF Bridge + Queue-It Radar', 'Headless Session Cookie Cache + Queue-It Detector', '$59.99 Exclusive / 1P MSRP Only', 0, 'IMPERVA', { queueState: 'NORMAL', queueActive: false, bridgeMode: 'HEADLESS_NEW_BRIDGE_150S' });
         (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ pokemonCenterStatus: node.statusCode, northStar5: { pokemonCenter: node } });
     }
 }
@@ -238,12 +199,21 @@ async function pollSecondaryBigBoxSensors() {
         const wmNode = buildSensorNode('Walmart (1P MSRP)', '45s 1P Facet Sweep', '1P Sold & Shipped by Walmart.com (<= $55 ETB)', 'Sold & Shipped by Walmart.com Only', 0, 'PX');
         (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ walmartStatus: wmNode.statusCode, northStar5: { walmart: wmNode } });
     }
-    // 2. Best Buy, Costco, Sam's Club, GameStop
+    // 2. GameStop via 150s WAF Session Bridge
+    const gsUrl = 'https://www.gamestop.com/search/?q=pokemon+elite+trainer+box&type=Primary&sort=BestMatch_Desc&p=1';
+    const gsSweep = await (0, wafBrowserBridge_1.sweepWafProtectedTarget)('gamestop', gsUrl, false);
+    let gsCount = 0;
+    if (gsSweep.ok && gsSweep.html) {
+        const gsLinks = [...gsSweep.html.matchAll(/href="(\/[^"]*pokemon[^"]*\.html)"[^>]*>([^<]{5,120})</gi)];
+        gsCount = gsLinks.filter((l) => !(0, policies_1.isSingleCardOrNonSealed)(l[2], undefined, l[1]) && (0, policies_1.hasMandatorySealedContainerKeyword)(l[2])).length;
+    }
+    const gsNode = buildSensorNode('GameStop', '150s WAF Session Bridge', 'GameStop.com Sealed TCG Availability', '1P Retail MSRP Sealed Boxes & ETBs', gsCount, gsSweep.isWafChallenged ? 'CF' : undefined, { bridgeMode: gsSweep.fromSessionCache ? 'SESSION_COOKIE_CACHE_150S' : 'HEADLESS_NEW_BRIDGE_150S', queueActive: gsSweep.isQueueActive });
+    (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ gamestopStatus: gsNode.statusCode, northStar5: { gamestop: gsNode } });
+    // 3. Best Buy, Costco, Sam's Club
     const checks = [
         { key: 'bestBuy', statusKey: 'bestBuyStatus', name: 'Best Buy', cadence: '60s SKU Availability JSON', method: 'SKU Search & ButtonState (SoldOut vs AddToCart)', filter: '1P Retail MSRP ($49.99–$54.99 ETB / $26.99 Bundle)', url: 'https://www.bestbuy.com/site/searchpage.jsp?st=pokemon+elite+trainer+box+booster+bundle&id=pcat17071' },
         { key: 'costco', statusKey: 'costcoStatus', name: 'Costco Wholesale', cadence: '60s CatalogSearch', method: 'CatalogSearch Online Stock Check (InStock vs SoldOut)', filter: '$39.99–$64.99 Member Pallet Multi-Packs', url: 'https://www.costco.com/CatalogSearch?dept=All&keyword=pokemon+cards' },
-        { key: 'samsClub', statusKey: 'samsClubStatus', name: "Sam's Club", cadence: '60s Club Pallet Search', method: 'SamsClub.com Online Inventory Check', filter: 'Member Exclusive Sealed Multi-Packs', url: 'https://www.samsclub.com/s/pokemon%20cards' },
-        { key: 'gamestop', statusKey: 'gamestopStatus', name: 'GameStop', cadence: '60s 1P Catalog Check', method: 'GameStop.com Sealed TCG Availability', filter: '1P Retail MSRP Sealed Boxes & ETBs', url: 'https://www.gamestop.com/search/?q=pokemon+elite+trainer+box&type=Primary&sort=BestMatch_Desc&p=1' }
+        { key: 'samsClub', statusKey: 'samsClubStatus', name: "Sam's Club", cadence: '60s Club Pallet Search', method: 'SamsClub.com Online Inventory Check', filter: 'Member Exclusive Sealed Multi-Packs', url: 'https://www.samsclub.com/s/pokemon%20cards' }
     ];
     for (const c of checks) {
         try {
@@ -320,8 +290,7 @@ async function pollBigBoxAggregators() {
             if (!prev || price < prev.price || (Date.now() - prev.timestamp) / 60000 >= 15) {
                 seenBigBoxOffers.set(offerKey, { price, timestamp: Date.now() });
                 await (0, listener_1.processIncomingDrop)({
-                    title: rawTitle,
-                    retailer: is3pSeller ? 'Target Plus (Under Trigger)' : 'Target (RedSky Live 1P MSRP)',
+                    title: rawTitle, retailer: is3pSeller ? 'Target Plus (Under Trigger)' : 'Target (RedSky Live 1P MSRP)',
                     url: buyUrl, productUrl: buyUrl, price, itemId: offerKey,
                     isPreOrder: /pre-?order|pre-?sale/i.test(rawTitle), freeShipping: price >= 35
                 });

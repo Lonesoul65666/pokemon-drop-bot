@@ -3,7 +3,7 @@ import path from 'path';
 import axios from 'axios';
 import { isValidCompTitle, applySyncSanityGuard } from '../marketComps';
 import { getNextProxy } from '../lgsPoller';
-import { loadMergedPoliciesRaw, saveMarketBaselineSync } from './config/configManager';
+import { loadMergedPoliciesRaw, saveMarketBaselineSync, computeLiveStoreOfferMedian } from './config/configManager';
 
 const CACHE_PATH = path.resolve(process.cwd(), 'marketCache.json');
 const SYNC_INTERVAL_MS = 1000 * 60 * 60 * 6; // Refresh every 6 hours (4x daily)
@@ -43,9 +43,24 @@ export class MarketSyncService {
       const basePriceMap = new Map<string, number>();
       let updatedCount = 0;
 
-      // Pass 1: Sync all single boxes, ETBs, and bundles via TCGPlayer API
+      // Pass 1: Sync all single boxes, ETBs, and bundles (preferring live store-offer median when 2+ LGS offers exist)
       for (const p of singles) {
         try {
+          const liveStoreMed = computeLiveStoreOfferMedian(p.id, Math.max(18, (p.msrpCeiling || 50) * 0.45));
+          if (liveStoreMed !== null && liveStoreMed > 0) {
+            p.estimatedMarketValue = liveStoreMed;
+            basePriceMap.set(p.id, liveStoreMed);
+            const existing = cache[p.id] || {};
+            cache[p.id] = {
+              ...existing,
+              rollingAverage: liveStoreMed,
+              estimatedMarketValue: liveStoreMed,
+              lastUpdated: new Date().toISOString()
+            };
+            updatedCount++;
+            continue;
+          }
+
           const q = cleanSearchQuery(p.name);
           const url = `https://mp-search-api.tcgplayer.com/v1/search/request?q=${encodeURIComponent(q)}&isList=false`;
           const body = {
@@ -74,10 +89,13 @@ export class MarketSyncService {
           }
 
           const results = res.data?.results?.[0]?.results || [];
+          const matchRegexes = Array.isArray(p.matchers) ? p.matchers.map((m: any) => m instanceof RegExp ? m : new RegExp(String(m), 'i')) : [];
           for (const item of results) {
             if (item.customAttributes?.number) continue;
-            const rawTitle = item.productName || '';
+            const rawTitle = `${item.productName || ''} ${item.setName || ''} ${item.productUrlName || ''}`.trim();
             const title = rawTitle.toLowerCase();
+            if (/set of 2|pair|both|pokemon center|pokémon center|pc exclusive/i.test(title)) continue;
+            if (matchRegexes.length > 0 && !matchRegexes.some((rx: RegExp) => rx.test(rawTitle))) continue;
             if (!isValidCompTitle(rawTitle, p.name, p.formFactor, undefined, p.id)) continue;
 
             const isMatch =
@@ -89,6 +107,7 @@ export class MarketSyncService {
               const mkt = parseFloat(item.marketPrice || item.lowestPrice || 0);
               if (mkt > 10) {
                 const baselineRef = p.estimatedMarketValue || p.msrpCeiling || 50;
+                if (p.formFactor === 'ETB' && baselineRef <= 65 && mkt > 90) continue;
                 const rounded = applySyncSanityGuard(mkt, p.formFactor, undefined, {
                   sampleCount: results.length,
                   ruleId: p.id,

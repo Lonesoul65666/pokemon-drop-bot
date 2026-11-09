@@ -82,9 +82,20 @@ function recordObservation(policyId, price, store, url, msrp) {
         current.rollingAverage = Math.min(maxCeiling, computeTrimmedAverage(current.samples));
     }
     telemetryMap[policyId] = current;
-    // Debounced atomic write to disk every 3 seconds
+    // Debounced atomic write to disk every 3 seconds (merging disk baselines so external syncs are never clobbered)
     if (!saveTimeout) {
         saveTimeout = setTimeout(() => {
+            try {
+                if (fs.existsSync(CACHE_PATH)) {
+                    const onDisk = JSON.parse(fs.readFileSync(CACHE_PATH, 'utf-8')) || {};
+                    for (const [k, v] of Object.entries(onDisk)) {
+                        if (!telemetryMap[k] || (telemetryMap[k].rollingAverage === 115 && v?.rollingAverage !== 115)) {
+                            telemetryMap[k] = v;
+                        }
+                    }
+                }
+            }
+            catch (e) { }
             (0, policies_1.atomicWriteJson)(CACHE_PATH, telemetryMap);
             saveTimeout = null;
         }, 3000);

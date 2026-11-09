@@ -1,0 +1,18 @@
+{
+  "pokemoncenter": {
+    "domain": "pokemoncenter",
+    "cookieHeader": "visid_incap_2682446=rKANNAx8Tsuhj+sws8FeK8j18WoAAAAAQUIPAAAAAABKqTnVufM8OTJDOJiqAhnV; incap_ses_957_2682446=+q/beiFmS1QalOumgPJHDcj18WoAAAAAEu6m5dTyPvD+roiZo5QViQ==",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+    "updatedAt": 1794242811989,
+    "lastStatus": "WAF_CHALLENGE_IMPERVA",
+    "queueActive": false
+  },
+  "gamestop": {
+    "domain": "gamestop",
+    "cookieHeader": "__cf_bm=qYBTPk_pEuIRaQQmhmK51LPnakMV3RC48s81PTmToH8-1794241995.8594108-1.0.1.1-qNx9o2OVOhGSo7i.Tzzj8tropEyWJOpuyTbH0ka3aHqzbCfUv47F5dyL6VGCwZYICyrFj5juWqjznh0CC8QY3lx2HYdjLGEG0g_8gW6htaAvM5YApu9bHYy.V_FDGDOP",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+    "updatedAt": 1794242817179,
+    "lastStatus": "WAF_CHALLENGE_CF",
+    "queueActive": false
+  }
+}
