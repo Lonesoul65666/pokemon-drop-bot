@@ -1990,9 +1990,30 @@ app.get('/api/engine-room', (req, res) => {
       {
         id: 'gamestop',
         name: 'GameStop',
-        defaultCadence: '60s 1P Catalog Check',
-        defaultMethod: 'GameStop.com Sealed TCG Availability',
+        aliases: ['gamestop'],
+        defaultCadence: '160s Playwright WAF Bridge',
+        defaultMethod: 'Invisible Playwright + InStock JSON-LD',
         defaultStrictFilter: '1P Retail MSRP Sealed Boxes & ETBs',
+        defaultStatus: '200 OK // 0 IN STOCK',
+        defaultCount: 0
+      },
+      {
+        id: 'amazon',
+        name: 'Amazon (1P MSRP)',
+        aliases: ['amazon', 'amazon (1p msrp)'],
+        defaultCadence: '45s ATVPDKIKX0DER Sweep',
+        defaultMethod: 'smid=ATVPDKIKX0DER + 1-Tap Cart Add',
+        defaultStrictFilter: 'Ships & Sold by Amazon.com (<= MSRP*1.08)',
+        defaultStatus: '200 OK // 0 IN STOCK',
+        defaultCount: 0
+      },
+      {
+        id: 'barnesNoble',
+        name: 'Barnes & Noble',
+        aliases: ['barnes & noble', 'barnes and noble'],
+        defaultCadence: '160s Playwright WAF Bridge',
+        defaultMethod: 'Invisible Playwright + InStock JSON-LD',
+        defaultStrictFilter: '1P Retail MSRP ETBs & Booster Bundles',
         defaultStatus: '200 OK // 0 IN STOCK',
         defaultCount: 0
       }
@@ -2004,9 +2025,21 @@ app.get('/api/engine-room', (req, res) => {
       const rawStatus = String(item.lastStatus || item.status || cfg.defaultStatus);
       let humanStatus = rawStatus;
       if (/^ARMED/i.test(rawStatus) || rawStatus === 'HEALTHY' || /Checked|Monitored/i.test(rawStatus)) {
-        humanStatus = itemsParsed > 0 ? `200 OK // ${itemsParsed} PARSED` : cfg.defaultStatus;
+        humanStatus = itemsParsed > 0 ? `200 OK // ${itemsParsed} IN STOCK` : cfg.defaultStatus;
       }
-      const matched = offersByStoreKey.get(cfg.name.toLowerCase()) || offersByStoreKey.get(cfg.id.toLowerCase()) || [];
+      const matchKeys = [cfg.name.toLowerCase(), cfg.id.toLowerCase(), ...((cfg.aliases || []).map(a => a.toLowerCase()))];
+      if (cfg.id === 'pokemonCenter') matchKeys.push('pokemon center', 'pokémon center');
+      if (cfg.id === 'target') matchKeys.push('target');
+      if (cfg.id === 'walmart') matchKeys.push('walmart');
+      if (cfg.id === 'costco') matchKeys.push('costco');
+      const seenOfferUrls = new Set();
+      const matched = [];
+      for (const mk of matchKeys) {
+        for (const o of (offersByStoreKey.get(mk) || [])) {
+          const ok = `${o.skuId}::${o.url}`;
+          if (!seenOfferUrls.has(ok)) { seenOfferUrls.add(ok); matched.push(o); }
+        }
+      }
       matched.sort((a, b) => a.landedPrice - b.landedPrice);
       const hasUnderTrigger = matched.some(o => o.underTrigger);
       let coreTier = 'SLEEPING_CORE';

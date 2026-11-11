@@ -20,7 +20,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "me-discovery-booster-case",
@@ -43,7 +45,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "me-discovery-etb",
@@ -67,7 +71,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "me-discovery-etb-case",
@@ -94,7 +100,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "me-pitch-black-booster-box",
@@ -116,8 +124,10 @@
     "targetTcin": null,
     "walmartItemId": null,
     "bestBuySku": null,
-    "pcSlug": null,
-    "tcgProductId": null
+    "pcSlug": "pokemon-tcg-mega-evolution-pitch-black-booster-display-box-36-packs",
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": "Pokemon Mega Evolution Pitch Black Booster Box"
   },
   {
     "id": "me-pitch-black-booster-case",
@@ -140,7 +150,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "me-pitch-black-etb",
@@ -162,8 +174,10 @@
     "targetTcin": null,
     "walmartItemId": null,
     "bestBuySku": null,
-    "pcSlug": null,
-    "tcgProductId": null
+    "pcSlug": "pokemon-tcg-mega-evolution-pitch-black-pokemon-center-elite-trainer-box",
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": "Pokemon Mega Evolution Pitch Black Elite Trainer Box"
   },
   {
     "id": "me-pitch-black-etb-case",
@@ -188,7 +202,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "me-phantasmal-flames-booster-box",
@@ -211,7 +227,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "me-phantasmal-flames-booster-case",
@@ -234,7 +252,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "me-phantasmal-flames-etb",
@@ -257,7 +277,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "me-phantasmal-flames-etb-case",
@@ -282,7 +304,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "me-perfect-order-booster-box",
@@ -305,7 +329,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "me-perfect-order-booster-case",
@@ -328,7 +354,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "me-perfect-order-etb",
@@ -351,7 +379,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "me-perfect-order-etb-case",
@@ -376,7 +406,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "me-chaos-rising-booster-box",
@@ -398,8 +430,10 @@
     "targetTcin": null,
     "walmartItemId": null,
     "bestBuySku": null,
-    "pcSlug": null,
-    "tcgProductId": null
+    "pcSlug": "pokemon-tcg-mega-evolution-chaos-rising-booster-display-box-36-packs",
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": "Pokemon Mega Evolution Chaos Rising Booster Box"
   },
   {
     "id": "me-chaos-rising-booster-case",
@@ -422,7 +456,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "me-chaos-rising-etb",
@@ -444,8 +480,10 @@
     "targetTcin": null,
     "walmartItemId": null,
     "bestBuySku": null,
-    "pcSlug": null,
-    "tcgProductId": null
+    "pcSlug": "pokemon-tcg-mega-evolution-chaos-rising-pokemon-center-elite-trainer-box",
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": "Pokemon Mega Evolution Chaos Rising Elite Trainer Box"
   },
   {
     "id": "me-chaos-rising-etb-case",
@@ -470,7 +508,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "me-delta-reign-booster-box",
@@ -492,8 +532,10 @@
     "targetTcin": null,
     "walmartItemId": null,
     "bestBuySku": null,
-    "pcSlug": null,
-    "tcgProductId": null
+    "pcSlug": "pokemon-tcg-mega-evolution-delta-reign-booster-display-box-36-packs",
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": "Pokemon Mega Evolution Delta Reign Booster Box"
   },
   {
     "id": "me-delta-reign-booster-case",
@@ -516,7 +558,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "me-delta-reign-etb",
@@ -538,8 +582,10 @@
     "targetTcin": null,
     "walmartItemId": null,
     "bestBuySku": null,
-    "pcSlug": null,
-    "tcgProductId": null
+    "pcSlug": "pokemon-tcg-mega-evolution-delta-reign-pokemon-center-elite-trainer-box",
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": "Pokemon Mega Evolution Delta Reign Elite Trainer Box"
   },
   {
     "id": "me-delta-reign-etb-case",
@@ -563,7 +609,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": 712103
+    "tcgProductId": 712103,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "me-ascended-heroes-etb",
@@ -585,8 +633,10 @@
     "targetTcin": null,
     "walmartItemId": null,
     "bestBuySku": null,
-    "pcSlug": null,
-    "tcgProductId": null
+    "pcSlug": "pokemon-tcg-mega-evolution-ascended-heroes-pokemon-center-elite-trainer-box",
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": "Pokemon Mega Evolution Ascended Heroes Elite Trainer Box"
   },
   {
     "id": "me-ascended-heroes-etb-case",
@@ -611,7 +661,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "me-ascended-heroes-bundle",
@@ -633,8 +685,10 @@
     "targetTcin": null,
     "walmartItemId": null,
     "bestBuySku": null,
-    "pcSlug": null,
-    "tcgProductId": null
+    "pcSlug": "pokemon-tcg-mega-evolution-ascended-heroes-booster-bundle",
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": "Pokemon Mega Evolution Ascended Heroes Booster Bundle"
   },
   {
     "id": "me-30th-celebration-etb",
@@ -657,7 +711,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "me-30th-celebration-etb-case",
@@ -682,7 +738,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "me-30th-celebration-bundle",
@@ -705,7 +763,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-base-booster-box",
@@ -728,7 +788,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-base-booster-case",
@@ -751,7 +813,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-base-koraidon-etb",
@@ -775,7 +839,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-base-koraidon-etb-case",
@@ -800,7 +866,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-base-miraidon-etb",
@@ -824,7 +892,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-base-miraidon-etb-case",
@@ -849,7 +919,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-paldea-evolved-booster-box",
@@ -872,7 +944,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-paldea-evolved-booster-case",
@@ -895,7 +969,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-paldea-evolved-etb",
@@ -918,7 +994,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-paldea-evolved-etb-case",
@@ -943,7 +1021,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-obsidian-flames-booster-box",
@@ -966,7 +1046,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-obsidian-flames-booster-case",
@@ -989,7 +1071,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-obsidian-flames-etb",
@@ -1012,7 +1096,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-obsidian-flames-etb-case",
@@ -1037,7 +1123,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-151-etb",
@@ -1056,11 +1144,13 @@
     "priority": "GRAIL",
     "cooldownMins": 30,
     "defaultMarketBaseline": 175,
-    "targetTcin": null,
-    "walmartItemId": null,
-    "bestBuySku": null,
-    "pcSlug": null,
-    "tcgProductId": null
+    "targetTcin": "88897899",
+    "walmartItemId": "2859365702",
+    "bestBuySku": "6546809",
+    "pcSlug": "290-85315/pokemon-tcg-scarlet-and-violet-151-pokemon-center-elite-trainer-box",
+    "tcgProductId": null,
+    "amazonAsin": "B0C8YPH4L3",
+    "retailSearchQuery": "Pokemon Scarlet Violet 151 Elite Trainer Box"
   },
   {
     "id": "sv-151-etb-case",
@@ -1085,7 +1175,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-151-bundle",
@@ -1104,11 +1196,13 @@
     "priority": "GRAIL",
     "cooldownMins": 45,
     "defaultMarketBaseline": 80,
-    "targetTcin": null,
-    "walmartItemId": null,
-    "bestBuySku": null,
-    "pcSlug": null,
-    "tcgProductId": null
+    "targetTcin": "88897904",
+    "walmartItemId": "2125870989",
+    "bestBuySku": "6546812",
+    "pcSlug": "290-85321/pokemon-tcg-scarlet-and-violet-151-booster-bundle",
+    "tcgProductId": null,
+    "amazonAsin": "B0C8YPKN6H",
+    "retailSearchQuery": "Pokemon Scarlet Violet 151 Booster Bundle"
   },
   {
     "id": "sv-paradox-rift-booster-box",
@@ -1131,7 +1225,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-paradox-rift-booster-case",
@@ -1154,7 +1250,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-paradox-rift-roaring-etb",
@@ -1179,7 +1277,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-paradox-rift-roaring-etb-case",
@@ -1204,7 +1304,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-paradox-rift-valiant-etb",
@@ -1228,7 +1330,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-paradox-rift-valiant-etb-case",
@@ -1253,7 +1357,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-paldean-fates-etb",
@@ -1272,11 +1378,13 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "defaultMarketBaseline": 58,
-    "targetTcin": null,
+    "targetTcin": "89952647",
     "walmartItemId": null,
-    "bestBuySku": null,
-    "pcSlug": null,
-    "tcgProductId": null
+    "bestBuySku": "6568033",
+    "pcSlug": "290-85609/pokemon-tcg-scarlet-and-violet-paldean-fates-pokemon-center-elite-trainer-box",
+    "tcgProductId": null,
+    "amazonAsin": "B0CNS11X95",
+    "retailSearchQuery": "Pokemon Paldean Fates Elite Trainer Box"
   },
   {
     "id": "sv-paldean-fates-etb-case",
@@ -1301,7 +1409,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-paldean-fates-bundle",
@@ -1320,11 +1430,13 @@
     "priority": "GRAIL",
     "cooldownMins": 45,
     "defaultMarketBaseline": 80,
-    "targetTcin": null,
+    "targetTcin": "89952652",
     "walmartItemId": null,
-    "bestBuySku": null,
-    "pcSlug": null,
-    "tcgProductId": null
+    "bestBuySku": "6568036",
+    "pcSlug": "290-85616/pokemon-tcg-scarlet-and-violet-paldean-fates-booster-bundle",
+    "tcgProductId": null,
+    "amazonAsin": "B0CNS1T81Y",
+    "retailSearchQuery": "Pokemon Paldean Fates Booster Bundle"
   },
   {
     "id": "sv-temporal-forces-booster-box",
@@ -1347,7 +1459,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-temporal-forces-booster-case",
@@ -1370,7 +1484,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-temporal-forces-wake-etb",
@@ -1395,7 +1511,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-temporal-forces-wake-etb-case",
@@ -1420,7 +1538,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-temporal-forces-leaves-etb",
@@ -1444,7 +1564,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-temporal-forces-leaves-etb-case",
@@ -1469,7 +1591,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-twilight-masquerade-booster-box",
@@ -1492,7 +1616,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-twilight-masquerade-booster-case",
@@ -1515,7 +1641,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-twilight-masquerade-etb",
@@ -1538,7 +1666,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-twilight-masquerade-etb-case",
@@ -1563,7 +1693,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-shrouded-fable-etb",
@@ -1586,7 +1718,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-shrouded-fable-etb-case",
@@ -1611,7 +1745,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-shrouded-fable-bundle",
@@ -1634,7 +1770,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-stellar-crown-booster-box",
@@ -1657,7 +1795,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-stellar-crown-booster-case",
@@ -1680,7 +1820,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-stellar-crown-etb",
@@ -1703,7 +1845,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-stellar-crown-etb-case",
@@ -1728,7 +1872,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-surging-sparks-booster-box",
@@ -1749,9 +1895,11 @@
     "defaultMarketBaseline": 275,
     "targetTcin": null,
     "walmartItemId": null,
-    "bestBuySku": null,
-    "pcSlug": null,
-    "tcgProductId": null
+    "bestBuySku": "6598559",
+    "pcSlug": "699-85947/pokemon-tcg-scarlet-and-violet-surging-sparks-booster-display-box-36-packs",
+    "tcgProductId": null,
+    "amazonAsin": "B0DG1KMS4H",
+    "retailSearchQuery": "Pokemon Surging Sparks Booster Box"
   },
   {
     "id": "sv-surging-sparks-booster-case",
@@ -1774,7 +1922,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-surging-sparks-etb",
@@ -1793,11 +1943,13 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "defaultMarketBaseline": 82,
-    "targetTcin": null,
+    "targetTcin": "91619922",
     "walmartItemId": null,
-    "bestBuySku": null,
-    "pcSlug": null,
-    "tcgProductId": null
+    "bestBuySku": "6598557",
+    "pcSlug": "290-85950/pokemon-tcg-scarlet-and-violet-surging-sparks-pokemon-center-elite-trainer-box",
+    "tcgProductId": null,
+    "amazonAsin": "B0DG1L221F",
+    "retailSearchQuery": "Pokemon Surging Sparks Elite Trainer Box"
   },
   {
     "id": "sv-surging-sparks-etb-case",
@@ -1822,7 +1974,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-prismatic-evolutions-etb",
@@ -1841,11 +1995,13 @@
     "priority": "GRAIL",
     "cooldownMins": 30,
     "defaultMarketBaseline": 135,
-    "targetTcin": null,
+    "targetTcin": "93954435",
     "walmartItemId": null,
-    "bestBuySku": null,
-    "pcSlug": null,
-    "tcgProductId": null
+    "bestBuySku": "6611394",
+    "pcSlug": "100-10019/pokemon-tcg-scarlet-and-violet-prismatic-evolutions-pokemon-center-elite-trainer-box",
+    "tcgProductId": null,
+    "amazonAsin": "B0DLQ2J85C",
+    "retailSearchQuery": "Pokemon Prismatic Evolutions Elite Trainer Box"
   },
   {
     "id": "sv-prismatic-evolutions-etb-case",
@@ -1870,7 +2026,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-prismatic-evolutions-bundle",
@@ -1889,11 +2047,13 @@
     "priority": "GRAIL",
     "cooldownMins": 45,
     "defaultMarketBaseline": 69.61,
-    "targetTcin": null,
+    "targetTcin": "93954446",
     "walmartItemId": null,
-    "bestBuySku": null,
-    "pcSlug": null,
-    "tcgProductId": null
+    "bestBuySku": "6611398",
+    "pcSlug": "100-10025/pokemon-tcg-scarlet-and-violet-prismatic-evolutions-booster-bundle",
+    "tcgProductId": null,
+    "amazonAsin": "B0DLQ49642",
+    "retailSearchQuery": "Pokemon Prismatic Evolutions Booster Bundle"
   },
   {
     "id": "sv-journey-together-booster-box",
@@ -1914,9 +2074,11 @@
     "defaultMarketBaseline": 208.63,
     "targetTcin": null,
     "walmartItemId": null,
-    "bestBuySku": null,
-    "pcSlug": null,
-    "tcgProductId": null
+    "bestBuySku": "6614269",
+    "pcSlug": "100-10336/pokemon-tcg-scarlet-and-violet-journey-together-booster-display-box-36-packs",
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": "Pokemon Journey Together Booster Box"
   },
   {
     "id": "sv-journey-together-booster-case",
@@ -1939,7 +2101,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-journey-together-etb",
@@ -1958,11 +2122,13 @@
     "priority": "STANDARD",
     "cooldownMins": 30,
     "defaultMarketBaseline": 58,
-    "targetTcin": null,
+    "targetTcin": "94300067",
     "walmartItemId": null,
-    "bestBuySku": null,
-    "pcSlug": null,
-    "tcgProductId": null
+    "bestBuySku": "6614267",
+    "pcSlug": "100-10339/pokemon-tcg-scarlet-and-violet-journey-together-pokemon-center-elite-trainer-box",
+    "tcgProductId": null,
+    "amazonAsin": "B0DT97W3F5",
+    "retailSearchQuery": "Pokemon Journey Together Elite Trainer Box"
   },
   {
     "id": "sv-journey-together-etb-case",
@@ -1987,7 +2153,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-destined-rivals-booster-box",
@@ -2009,8 +2177,10 @@
     "targetTcin": null,
     "walmartItemId": null,
     "bestBuySku": null,
-    "pcSlug": null,
-    "tcgProductId": null
+    "pcSlug": "pokemon-tcg-scarlet-and-violet-destined-rivals-booster-display-box-36-packs",
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": "Pokemon Destined Rivals Booster Box"
   },
   {
     "id": "sv-destined-rivals-booster-case",
@@ -2033,7 +2203,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "sv-destined-rivals-etb",
@@ -2052,11 +2224,13 @@
     "priority": "GRAIL",
     "cooldownMins": 30,
     "defaultMarketBaseline": 95,
-    "targetTcin": null,
+    "targetTcin": "94636863",
     "walmartItemId": null,
     "bestBuySku": null,
-    "pcSlug": null,
-    "tcgProductId": null
+    "pcSlug": "pokemon-tcg-scarlet-and-violet-destined-rivals-pokemon-center-elite-trainer-box",
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": "Pokemon Destined Rivals Elite Trainer Box"
   },
   {
     "id": "sv-destined-rivals-etb-case",
@@ -2081,7 +2255,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-battle-styles-booster-box",
@@ -2104,7 +2280,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-battle-styles-booster-case",
@@ -2127,7 +2305,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-battle-styles-single-etb",
@@ -2151,7 +2331,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-battle-styles-single-etb-case",
@@ -2176,7 +2358,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-battle-styles-rapid-etb",
@@ -2200,7 +2384,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-battle-styles-rapid-etb-case",
@@ -2225,7 +2411,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-chilling-reign-booster-box",
@@ -2248,7 +2436,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-chilling-reign-booster-case",
@@ -2271,7 +2461,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-chilling-reign-shadow-etb",
@@ -2294,7 +2486,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-chilling-reign-shadow-etb-case",
@@ -2319,7 +2513,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-chilling-reign-ice-etb",
@@ -2342,7 +2538,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-chilling-reign-ice-etb-case",
@@ -2367,7 +2565,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-evolving-skies-booster-box",
@@ -2390,7 +2590,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-evolving-skies-booster-case",
@@ -2413,7 +2615,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-evolving-skies-etb",
@@ -2436,7 +2640,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-evolving-skies-etb-case",
@@ -2461,7 +2667,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-celebrations-etb",
@@ -2484,7 +2692,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-celebrations-etb-case",
@@ -2509,7 +2719,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-fusion-strike-booster-box",
@@ -2532,7 +2744,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-fusion-strike-booster-case",
@@ -2555,7 +2769,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-fusion-strike-etb",
@@ -2578,7 +2794,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-fusion-strike-etb-case",
@@ -2603,7 +2821,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-brilliant-stars-booster-box",
@@ -2626,7 +2846,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-brilliant-stars-booster-case",
@@ -2649,7 +2871,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-brilliant-stars-etb",
@@ -2672,7 +2896,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-brilliant-stars-etb-case",
@@ -2697,7 +2923,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-astral-radiance-booster-box",
@@ -2720,7 +2948,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-astral-radiance-booster-case",
@@ -2743,7 +2973,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-astral-radiance-etb",
@@ -2766,7 +2998,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-astral-radiance-etb-case",
@@ -2791,7 +3025,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-pokemon-go-etb",
@@ -2814,7 +3050,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-pokemon-go-etb-case",
@@ -2839,7 +3077,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-lost-origin-booster-box",
@@ -2862,7 +3102,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-lost-origin-booster-case",
@@ -2885,7 +3127,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-lost-origin-etb",
@@ -2908,7 +3152,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-lost-origin-etb-case",
@@ -2933,7 +3179,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-silver-tempest-booster-box",
@@ -2956,7 +3204,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-silver-tempest-booster-case",
@@ -2979,7 +3229,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-silver-tempest-etb",
@@ -3002,7 +3254,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-silver-tempest-etb-case",
@@ -3027,7 +3281,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-crown-zenith-etb",
@@ -3051,7 +3307,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-crown-zenith-etb-case",
@@ -3078,7 +3336,9 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   },
   {
     "id": "swsh-crown-zenith-bundle",
@@ -3101,6 +3361,8 @@
     "walmartItemId": null,
     "bestBuySku": null,
     "pcSlug": null,
-    "tcgProductId": null
+    "tcgProductId": null,
+    "amazonAsin": null,
+    "retailSearchQuery": null
   }
 ]

@@ -3,8 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.PC_WAITING_ROOM_COOLDOWN_MS = void 0;
 exports.enqueueDiscordWebhook = enqueueDiscordWebhook;
 exports.recordPreDropStagingEvent = recordPreDropStagingEvent;
+exports.sendPokemonCenterQueueAlert = sendPokemonCenterQueueAlert;
 exports.sendAlert = sendAlert;
 exports.markAlertSoldOut = markAlertSoldOut;
 exports.sendStockDigestCard = sendStockDigestCard;
@@ -268,6 +270,68 @@ async function patchTelegramAlertFast(messageId, textHtml) {
         await axios_1.default.post(`https://api.telegram.org/bot${botToken}/editMessageText`, { chat_id: chatId, message_id: messageId, text: textHtml, parse_mode: 'HTML', disable_web_page_preview: true }, { timeout: 6000 });
     }
     catch (e) { }
+}
+let lastPcWaitingRoomAlertTs = 0;
+exports.PC_WAITING_ROOM_COOLDOWN_MS = 30 * 60 * 1000;
+async function sendPokemonCenterQueueAlert(params) {
+    const now = Date.now();
+    if (!params?.force && now - lastPcWaitingRoomAlertTs < exports.PC_WAITING_ROOM_COOLDOWN_MS) {
+        return false;
+    }
+    lastPcWaitingRoomAlertTs = now;
+    const targetUrl = 'https://www.pokemoncenter.com';
+    const banner = '◈ ⟦ POKÉMON CENTER WAITING ROOM LIVE — JOIN QUEUE NOW ⟧';
+    try {
+        let history = [];
+        if (fs_1.default.existsSync(DROPS_HISTORY_PATH)) {
+            history = JSON.parse(fs_1.default.readFileSync(DROPS_HISTORY_PATH, 'utf-8'));
+        }
+        history.unshift({
+            timestamp: now,
+            timeStr: `${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • QUEUE LIVE`,
+            title: banner,
+            rawTitle: banner,
+            retailer: 'Pokémon Center',
+            price: 0,
+            landedPrice: 0,
+            msrp: 59.99,
+            freeShipNote: 'Virtual Waiting Room Active — Enter Line Immediately',
+            url: targetUrl,
+            productUrl: targetUrl,
+            formFactor: 'Queue Radar',
+            ruleId: '',
+            alertType: 'PC_QUEUE_LIVE',
+            isPreDropStaging: true,
+            isQueueAlert: true,
+            soldOut: false
+        });
+        if (history.length > 25)
+            history = history.slice(0, 25);
+        (0, policies_1.atomicWriteJson)(DROPS_HISTORY_PATH, history);
+    }
+    catch (e) { }
+    const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+    const embed = {
+        title: banner,
+        description: `**Queue-It Virtual Waiting Room detected on Pokémon Center!**\n` +
+            `Open the homepage immediately on mobile + desktop to secure your queue position before sealed TCG allocations drop.\n\n` +
+            `[**⟦ ⚡ ENTER POKÉMON CENTER QUEUE NOW ↗ ⟧**](${targetUrl})`,
+        url: targetUrl,
+        color: 0x00F0FF,
+        fields: [
+            { name: '◈ TARGET URL', value: targetUrl, inline: true },
+            { name: '◆ COOLDOWN', value: '30m Queue Dedup Active', inline: true }
+        ],
+        footer: { text: 'DropBot Commander v6.0 • Honest Queue-It Radar (Zero Fake SKU Stub)' },
+        timestamp: new Date().toISOString()
+    };
+    await Promise.all([
+        webhookUrl
+            ? enqueueDiscordWebhook(`${webhookUrl}?wait=true`, { content: `@everyone ${banner} — ${targetUrl}`, embeds: [embed] }, 'POST', true)
+            : Promise.resolve(null),
+        sendTelegramAlertFast(`<b>${banner}</b>\n<a href="${targetUrl}">⚡ JOIN POKÉMON CENTER QUEUE NOW ↗</a>`)
+    ]);
+    return true;
 }
 async function sendAlert(drop) {
     // Hard Rule (V5 Slice 6): Single cards and slabs NEVER fire notifications (singlesAlertsEnabled: false enforced)

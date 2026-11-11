@@ -38,7 +38,7 @@ export function isVerified1PBigBoxOrPc(retailer?: string, url?: string, isMarket
   if (isMarketplace3P) return false;
   const hay = `${retailer || ''} ${url || ''}`.toLowerCase();
   if (/tcgplayer|ebay|target\s*plus|3rd[-\s]*party|marketplace/i.test(hay)) return false;
-  return /pok[eé]mon\s*center|pokemoncenter\.com|\btarget\b|target\.com|\bwalmart\b|walmart\.com|best\s*buy|bestbuy\.com|\bcostco\b|costco\.com|sam'?s\s*club|samsclub\.com|\bgamestop\b|gamestop\.com/i.test(hay);
+  return /pok[eé]mon\s*center|pokemoncenter\.com|\btarget\b|target\.com|\bwalmart\b|walmart\.com|best\s*buy|bestbuy\.com|\bamazon\b|amazon\.com|\bcostco\b|costco\.com|sam'?s\s*club|samsclub\.com|\bgamestop\b|gamestop\.com|barnes\s*(&|and)\s*noble|barnesandnoble\.com/i.test(hay);
 }
 
 export function buildShopifyDirectCartLinks(params: {
@@ -53,7 +53,7 @@ export function buildShopifyDirectCartLinks(params: {
 }): { cart1xUrl?: string; cart2xUrl?: string; cart3xUrl?: string } {
   const { url = '', productUrl = '', cart1xUrl, cart2xUrl, cart3xUrl, itemId, stock, retailer = '' } = params;
   const hay = `${retailer} ${url} ${productUrl}`.toLowerCase();
-  if (/tcgplayer|ebay|target\.com|walmart\.com|bestbuy\.com|costco\.com|samsclub\.com|gamestop\.com|pokemoncenter\.com|reddit\.com/i.test(hay)) {
+  if (/tcgplayer|ebay|target\.com|walmart\.com|bestbuy\.com|amazon\.com|costco\.com|samsclub\.com|gamestop\.com|barnesandnoble\.com|pokemoncenter\.com|reddit\.com/i.test(hay)) {
     return { cart1xUrl, cart2xUrl, cart3xUrl };
   }
   let baseRoot = '';
@@ -84,7 +84,7 @@ export function buildMobileRetailerLinks(params: {
   const idStr = params.itemId !== undefined ? String(params.itemId).trim() : '';
 
   if (hay.includes('target')) {
-    const tcinMatch = rawUrl.match(/A-(\d{8,10})/i) || idStr.match(/^(\d{8,10})$/);
+    const tcinMatch = rawUrl.match(/A-(\d{8,10})/i) || idStr.match(/^(?:target_)?(\d{8,10})$/i);
     if (tcinMatch) {
       const tcin = tcinMatch[1];
       const cleanTargetUrl = `https://www.target.com/p/-/A-${tcin}`;
@@ -97,7 +97,7 @@ export function buildMobileRetailerLinks(params: {
   }
 
   if (hay.includes('best buy') || hay.includes('bestbuy.com')) {
-    const skuMatch = rawUrl.match(/skuId=(\d{7})/i) || rawUrl.match(/\/(\d{7})\.p/i) || idStr.match(/^(\d{7})$/);
+    const skuMatch = rawUrl.match(/skuId=(\d{7})/i) || rawUrl.match(/\/(\d{7})(?:\.p|\/cart)/i) || idStr.match(/^(?:bestbuy_)?(\d{7})$/i);
     if (skuMatch) {
       const sku = skuMatch[1];
       const atcUrl = `https://api.bestbuy.com/click/-/${sku}/cart`;
@@ -111,7 +111,7 @@ export function buildMobileRetailerLinks(params: {
   }
 
   if (hay.includes('walmart')) {
-    const wmMatch = rawUrl.match(/\/ip\/(?:[^/?#]+\/)?(\d{8,14})/i) || rawUrl.match(/[?&]item(?:Id)?=(\d{8,14})/i) || idStr.match(/^(\d{8,14})$/);
+    const wmMatch = rawUrl.match(/\/ip\/(?:[^/?#]+\/)?(\d{8,14})/i) || rawUrl.match(/[?&](?:id|item(?:Id)?)=(\d{8,14})/i) || idStr.match(/^(?:walmart_)?(\d{8,14})$/i);
     if (wmMatch) {
       const wmId = wmMatch[1];
       const pacUrl = `https://www.walmart.com/pac?id=${wmId}&quantity=1`;
@@ -123,6 +123,61 @@ export function buildMobileRetailerLinks(params: {
         mobileActionMarkdown: `[**⟦ ⚡ WALMART 1-TAP CART ↗ ⟧**](${pacUrl})   •   [**⟦ BUY NOW ⟧**](${buyNowUrl})   •   [**⟦ 📱 APP ↗ ⟧**](${pdpUrl})`
       };
     }
+  }
+
+  if (hay.includes('amazon')) {
+    const asinMatch = rawUrl.match(/(?:\/dp\/|\/gp\/product\/|ASIN\.1=)(B0[A-Z0-9]{8})\b/i) || idStr.match(/^(?:amazon_)?(B0[A-Z0-9]{8})$/i);
+    if (asinMatch) {
+      const asin = asinMatch[1].toUpperCase();
+      const atcUrl = `https://www.amazon.com/gp/aws/cart/add.html?ASIN.1=${asin}&Quantity.1=1`;
+      const pdpUrl = `https://www.amazon.com/dp/${asin}?smid=ATVPDKIKX0DER`;
+      return {
+        primaryCheckoutUrl: atcUrl,
+        secondaryPdpUrl: pdpUrl,
+        mobileActionMarkdown: `[**⟦ ⚡ AMAZON 1P 1-TAP ATC ↗ ⟧**](${atcUrl})   •   [**⟦ 📱 1P OFFER (ATVPDKIKX0DER) ↗ ⟧**](${pdpUrl})`
+      };
+    }
+  }
+
+  if (hay.includes('pokemon center') || hay.includes('pokémon center') || hay.includes('pokemoncenter.com')) {
+    const pcUrl = rawUrl || 'https://www.pokemoncenter.com';
+    return {
+      primaryCheckoutUrl: pcUrl,
+      secondaryPdpUrl: pcUrl,
+      mobileActionMarkdown: `[**⟦ ⚡ POKÉMON CENTER DIRECT CHECKOUT ↗ ⟧**](${pcUrl})`
+    };
+  }
+
+  if (hay.includes('gamestop')) {
+    return {
+      primaryCheckoutUrl: rawUrl,
+      secondaryPdpUrl: rawUrl,
+      mobileActionMarkdown: `[**⟦ ⚡ GAMESTOP 1P CHECKOUT ↗ ⟧**](${rawUrl})`
+    };
+  }
+
+  if (hay.includes('barnes') || hay.includes('barnesandnoble.com')) {
+    return {
+      primaryCheckoutUrl: rawUrl,
+      secondaryPdpUrl: rawUrl,
+      mobileActionMarkdown: `[**⟦ ⚡ BARNES & NOBLE 1P CHECKOUT ↗ ⟧**](${rawUrl})`
+    };
+  }
+
+  if (hay.includes('costco')) {
+    return {
+      primaryCheckoutUrl: rawUrl,
+      secondaryPdpUrl: rawUrl,
+      mobileActionMarkdown: `[**⟦ ⚡ COSTCO MEMBER CHECKOUT ↗ ⟧**](${rawUrl})`
+    };
+  }
+
+  if (hay.includes("sam's club") || hay.includes('sams club') || hay.includes('samsclub.com')) {
+    return {
+      primaryCheckoutUrl: rawUrl,
+      secondaryPdpUrl: rawUrl,
+      mobileActionMarkdown: `[**⟦ ⚡ SAM'S CLUB CHECKOUT ↗ ⟧**](${rawUrl})`
+    };
   }
 
   return { primaryCheckoutUrl: rawUrl };

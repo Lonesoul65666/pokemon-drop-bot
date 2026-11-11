@@ -144,6 +144,26 @@ let bigBoxHealthTelemetry: Record<string, any> = {
       itemsParsed: 0,
       targetRule: '1P Retail MSRP Sealed Boxes & ETBs',
       lastCheckedAt: Date.now()
+    },
+    amazon: {
+      name: 'Amazon (1P MSRP)',
+      status: '200 OK // 0 IN STOCK',
+      lastStatus: '200 OK // 0 IN STOCK',
+      statusCode: '200_OK_0_IN_STOCK',
+      itemsExtracted: 0,
+      itemsParsed: 0,
+      targetRule: 'Ships & Sold by Amazon.com (smid=ATVPDKIKX0DER)',
+      lastCheckedAt: Date.now()
+    },
+    barnesNoble: {
+      name: 'Barnes & Noble',
+      status: '200 OK // 0 IN STOCK',
+      lastStatus: '200 OK // 0 IN STOCK',
+      statusCode: '200_OK_0_IN_STOCK',
+      itemsExtracted: 0,
+      itemsParsed: 0,
+      targetRule: '1P Retail MSRP ETBs & Booster Bundles',
+      lastCheckedAt: Date.now()
     }
   }
 };

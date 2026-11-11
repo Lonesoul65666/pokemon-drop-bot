@@ -137,7 +137,9 @@
     "completionCount": 0,
     "fullyConquered": false,
     "autoPilotEnabled": true,
-    "packCount": 36
+    "packCount": 36,
+    "pcSlug": "pokemon-tcg-mega-evolution-pitch-black-booster-display-box-36-packs",
+    "retailSearchQuery": "Pokemon Mega Evolution Pitch Black Booster Box"
   },
   {
     "id": "me-pitch-black-booster-case",
@@ -191,7 +193,9 @@
     "completionCount": 3,
     "fullyConquered": true,
     "autoPilotEnabled": true,
-    "packCount": 9
+    "packCount": 9,
+    "pcSlug": "pokemon-tcg-mega-evolution-pitch-black-pokemon-center-elite-trainer-box",
+    "retailSearchQuery": "Pokemon Mega Evolution Pitch Black Elite Trainer Box"
   },
   {
     "id": "me-pitch-black-etb-case",
@@ -372,7 +376,7 @@
     "minStock": 1,
     "msrpCeiling": 970,
     "maxMarketBuyPrice": 993,
-    "estimatedMarketValue": 1299.97,
+    "estimatedMarketValue": 1174.99,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true,
@@ -455,7 +459,7 @@
     "minStock": 1,
     "msrpCeiling": 161.64,
     "maxMarketBuyPrice": 161.64,
-    "estimatedMarketValue": 174.99,
+    "estimatedMarketValue": 172.25,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
@@ -467,7 +471,9 @@
     "completionCount": 0,
     "fullyConquered": false,
     "autoPilotEnabled": true,
-    "packCount": 36
+    "packCount": 36,
+    "pcSlug": "pokemon-tcg-mega-evolution-chaos-rising-booster-display-box-36-packs",
+    "retailSearchQuery": "Pokemon Mega Evolution Chaos Rising Booster Box"
   },
   {
     "id": "me-chaos-rising-booster-case",
@@ -521,7 +527,9 @@
     "completionCount": 3,
     "fullyConquered": true,
     "autoPilotEnabled": true,
-    "packCount": 9
+    "packCount": 9,
+    "pcSlug": "pokemon-tcg-mega-evolution-chaos-rising-pokemon-center-elite-trainer-box",
+    "retailSearchQuery": "Pokemon Mega Evolution Chaos Rising Elite Trainer Box"
   },
   {
     "id": "me-chaos-rising-etb-case",
@@ -578,7 +586,9 @@
     "fullyConquered": false,
     "autoPilotEnabled": true,
     "packCount": 36,
-    "releaseDate": "2026-11-06"
+    "releaseDate": "2026-11-06",
+    "pcSlug": "pokemon-tcg-mega-evolution-delta-reign-booster-display-box-36-packs",
+    "retailSearchQuery": "Pokemon Mega Evolution Delta Reign Booster Box"
   },
   {
     "id": "me-delta-reign-booster-case",
@@ -634,7 +644,9 @@
     "fullyConquered": false,
     "autoPilotEnabled": true,
     "packCount": 9,
-    "releaseDate": "2026-11-06"
+    "releaseDate": "2026-11-06",
+    "pcSlug": "pokemon-tcg-mega-evolution-delta-reign-pokemon-center-elite-trainer-box",
+    "retailSearchQuery": "Pokemon Mega Evolution Delta Reign Elite Trainer Box"
   },
   {
     "id": "me-delta-reign-etb-case",
@@ -691,7 +703,9 @@
     "completionCount": 3,
     "fullyConquered": true,
     "autoPilotEnabled": true,
-    "packCount": 9
+    "packCount": 9,
+    "pcSlug": "pokemon-tcg-mega-evolution-ascended-heroes-pokemon-center-elite-trainer-box",
+    "retailSearchQuery": "Pokemon Mega Evolution Ascended Heroes Elite Trainer Box"
   },
   {
     "id": "me-ascended-heroes-etb-case",
@@ -747,7 +761,9 @@
     "completionCount": 0,
     "fullyConquered": false,
     "autoPilotEnabled": true,
-    "packCount": 6
+    "packCount": 6,
+    "pcSlug": "pokemon-tcg-mega-evolution-ascended-heroes-booster-bundle",
+    "retailSearchQuery": "Pokemon Mega Evolution Ascended Heroes Booster Bundle"
   },
   {
     "id": "me-30th-celebration-etb",
@@ -1245,7 +1261,13 @@
     "completionCount": 0,
     "fullyConquered": false,
     "autoPilotEnabled": true,
-    "packCount": 9
+    "packCount": 9,
+    "targetTcin": "88897899",
+    "walmartItemId": "2859365702",
+    "bestBuySku": "6546809",
+    "amazonAsin": "B0C8YPH4L3",
+    "pcSlug": "290-85315/pokemon-tcg-scarlet-and-violet-151-pokemon-center-elite-trainer-box",
+    "retailSearchQuery": "Pokemon Scarlet Violet 151 Elite Trainer Box"
   },
   {
     "id": "sv-151-etb-case",
@@ -1301,7 +1323,13 @@
     "completionCount": 0,
     "fullyConquered": false,
     "autoPilotEnabled": true,
-    "packCount": 6
+    "packCount": 6,
+    "targetTcin": "88897904",
+    "walmartItemId": "2125870989",
+    "bestBuySku": "6546812",
+    "amazonAsin": "B0C8YPKN6H",
+    "pcSlug": "290-85321/pokemon-tcg-scarlet-and-violet-151-booster-bundle",
+    "retailSearchQuery": "Pokemon Scarlet Violet 151 Booster Bundle"
   },
   {
     "id": "sv-paradox-rift-booster-box",
@@ -1497,7 +1525,12 @@
     "completionCount": 0,
     "fullyConquered": false,
     "autoPilotEnabled": true,
-    "packCount": 9
+    "packCount": 9,
+    "targetTcin": "89952647",
+    "bestBuySku": "6568033",
+    "amazonAsin": "B0CNS11X95",
+    "pcSlug": "290-85609/pokemon-tcg-scarlet-and-violet-paldean-fates-pokemon-center-elite-trainer-box",
+    "retailSearchQuery": "Pokemon Paldean Fates Elite Trainer Box"
   },
   {
     "id": "sv-paldean-fates-etb-case",
@@ -1553,7 +1586,12 @@
     "completionCount": 0,
     "fullyConquered": false,
     "autoPilotEnabled": true,
-    "packCount": 6
+    "packCount": 6,
+    "targetTcin": "89952652",
+    "bestBuySku": "6568036",
+    "amazonAsin": "B0CNS1T81Y",
+    "pcSlug": "290-85616/pokemon-tcg-scarlet-and-violet-paldean-fates-booster-bundle",
+    "retailSearchQuery": "Pokemon Paldean Fates Booster Bundle"
   },
   {
     "id": "sv-temporal-forces-booster-box",
@@ -1930,7 +1968,7 @@
     "minStock": 1,
     "msrpCeiling": 161.64,
     "maxMarketBuyPrice": 269,
-    "estimatedMarketValue": 319.99,
+    "estimatedMarketValue": 316.87,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
@@ -2052,7 +2090,11 @@
     "completionCount": 0,
     "fullyConquered": false,
     "autoPilotEnabled": true,
-    "packCount": 36
+    "packCount": 36,
+    "bestBuySku": "6598559",
+    "amazonAsin": "B0DG1KMS4H",
+    "pcSlug": "699-85947/pokemon-tcg-scarlet-and-violet-surging-sparks-booster-display-box-36-packs",
+    "retailSearchQuery": "Pokemon Surging Sparks Booster Box"
   },
   {
     "id": "sv-surging-sparks-booster-case",
@@ -2106,7 +2148,12 @@
     "completionCount": 0,
     "fullyConquered": false,
     "autoPilotEnabled": true,
-    "packCount": 9
+    "packCount": 9,
+    "targetTcin": "91619922",
+    "bestBuySku": "6598557",
+    "amazonAsin": "B0DG1L221F",
+    "pcSlug": "290-85950/pokemon-tcg-scarlet-and-violet-surging-sparks-pokemon-center-elite-trainer-box",
+    "retailSearchQuery": "Pokemon Surging Sparks Elite Trainer Box"
   },
   {
     "id": "sv-surging-sparks-etb-case",
@@ -2150,7 +2197,7 @@
     "minStock": 1,
     "msrpCeiling": 54.99,
     "maxMarketBuyPrice": 121,
-    "estimatedMarketValue": 114.99,
+    "estimatedMarketValue": 119.99,
     "priority": "GRAIL",
     "cooldownMins": 30,
     "active": true,
@@ -2162,7 +2209,12 @@
     "completionCount": 2,
     "fullyConquered": false,
     "autoPilotEnabled": true,
-    "packCount": 9
+    "packCount": 9,
+    "targetTcin": "93954435",
+    "bestBuySku": "6611394",
+    "amazonAsin": "B0DLQ2J85C",
+    "pcSlug": "100-10019/pokemon-tcg-scarlet-and-violet-prismatic-evolutions-pokemon-center-elite-trainer-box",
+    "retailSearchQuery": "Pokemon Prismatic Evolutions Elite Trainer Box"
   },
   {
     "id": "sv-prismatic-evolutions-etb-case",
@@ -2218,7 +2270,12 @@
     "completionCount": 0,
     "fullyConquered": false,
     "autoPilotEnabled": true,
-    "packCount": 6
+    "packCount": 6,
+    "targetTcin": "93954446",
+    "bestBuySku": "6611398",
+    "amazonAsin": "B0DLQ49642",
+    "pcSlug": "100-10025/pokemon-tcg-scarlet-and-violet-prismatic-evolutions-booster-bundle",
+    "retailSearchQuery": "Pokemon Prismatic Evolutions Booster Bundle"
   },
   {
     "id": "sv-journey-together-booster-box",
@@ -2233,7 +2290,7 @@
     "minStock": 1,
     "msrpCeiling": 161.64,
     "maxMarketBuyPrice": 190,
-    "estimatedMarketValue": 201.75,
+    "estimatedMarketValue": 199.99,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
@@ -2245,7 +2302,10 @@
     "completionCount": 0,
     "fullyConquered": false,
     "autoPilotEnabled": true,
-    "packCount": 36
+    "packCount": 36,
+    "bestBuySku": "6614269",
+    "pcSlug": "100-10336/pokemon-tcg-scarlet-and-violet-journey-together-booster-display-box-36-packs",
+    "retailSearchQuery": "Pokemon Journey Together Booster Box"
   },
   {
     "id": "sv-journey-together-booster-case",
@@ -2260,7 +2320,7 @@
     "minStock": 1,
     "msrpCeiling": 970,
     "maxMarketBuyPrice": 1315,
-    "estimatedMarketValue": 1546.84,
+    "estimatedMarketValue": 1549.97,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true,
@@ -2299,7 +2359,12 @@
     "completionCount": 0,
     "fullyConquered": false,
     "autoPilotEnabled": true,
-    "packCount": 9
+    "packCount": 9,
+    "targetTcin": "94300067",
+    "bestBuySku": "6614267",
+    "amazonAsin": "B0DT97W3F5",
+    "pcSlug": "100-10339/pokemon-tcg-scarlet-and-violet-journey-together-pokemon-center-elite-trainer-box",
+    "retailSearchQuery": "Pokemon Journey Together Elite Trainer Box"
   },
   {
     "id": "sv-journey-together-etb-case",
@@ -2355,7 +2420,9 @@
     "completionCount": 0,
     "fullyConquered": false,
     "autoPilotEnabled": true,
-    "packCount": 36
+    "packCount": 36,
+    "pcSlug": "pokemon-tcg-scarlet-and-violet-destined-rivals-booster-display-box-36-packs",
+    "retailSearchQuery": "Pokemon Destined Rivals Booster Box"
   },
   {
     "id": "sv-destined-rivals-booster-case",
@@ -2409,7 +2476,10 @@
     "completionCount": 0,
     "fullyConquered": false,
     "autoPilotEnabled": true,
-    "packCount": 9
+    "packCount": 9,
+    "targetTcin": "94636863",
+    "pcSlug": "pokemon-tcg-scarlet-and-violet-destined-rivals-pokemon-center-elite-trainer-box",
+    "retailSearchQuery": "Pokemon Destined Rivals Elite Trainer Box"
   },
   {
     "id": "sv-destined-rivals-etb-case",
@@ -2453,7 +2523,7 @@
     "minStock": 1,
     "msrpCeiling": 143.64,
     "maxMarketBuyPrice": 253,
-    "estimatedMarketValue": 309.88,
+    "estimatedMarketValue": 319.75,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
@@ -2731,7 +2801,7 @@
     "minStock": 1,
     "msrpCeiling": 49.99,
     "maxMarketBuyPrice": 130,
-    "estimatedMarketValue": 139.99,
+    "estimatedMarketValue": 144.99,
     "priority": "STANDARD",
     "cooldownMins": 30,
     "active": true,
@@ -2760,7 +2830,7 @@
     "minStock": 1,
     "msrpCeiling": 499.9,
     "maxMarketBuyPrice": 1202,
-    "estimatedMarketValue": 1400,
+    "estimatedMarketValue": 1450,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true,

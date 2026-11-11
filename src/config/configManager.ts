@@ -26,7 +26,8 @@ export interface CatalogSkuDefinition {
   msrpCeiling: number; releaseDate?: string | null; matchers: string[]; image?: string;
   minStock: number; priority: 'GRAIL' | 'BULK_DEAL' | 'STANDARD'; cooldownMins: number;
   defaultMarketBaseline?: number; targetTcin?: string | null; walmartItemId?: string | null;
-  bestBuySku?: string | null; pcSlug?: string | null; tcgProductId?: string | number | null;
+  bestBuySku?: string | null; amazonAsin?: string | null; pcSlug?: string | null;
+  barnesNobleEan?: string | null; retailSearchQuery?: string | null; tcgProductId?: string | number | null;
 }
 
 export interface StoreRegistryEntry {
@@ -183,7 +184,10 @@ export function loadMergedPoliciesRaw(): any[] {
     if (cat.targetTcin) merged.targetTcin = cat.targetTcin;
     if (cat.walmartItemId) merged.walmartItemId = cat.walmartItemId;
     if (cat.bestBuySku) merged.bestBuySku = cat.bestBuySku;
+    if (cat.amazonAsin) merged.amazonAsin = cat.amazonAsin;
     if (cat.pcSlug) merged.pcSlug = cat.pcSlug;
+    if (cat.barnesNobleEan) merged.barnesNobleEan = cat.barnesNobleEan;
+    if (cat.retailSearchQuery) merged.retailSearchQuery = cat.retailSearchQuery;
     if (cat.tcgProductId) merged.tcgProductId = cat.tcgProductId;
     return merged;
   });

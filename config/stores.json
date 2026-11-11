@@ -1182,7 +1182,11 @@
   {
     "id": "target",
     "name": "Target",
-    "aliases": [],
+    "aliases": [
+      "Target (RedSky)",
+      "Target (RedSky Live 1P MSRP)",
+      "Target 1P"
+    ],
     "storeType": "BIG_BOX",
     "baseUrl": "https://www.target.com",
     "resolvedPath": "",
@@ -1195,7 +1199,10 @@
   {
     "id": "walmart",
     "name": "Walmart",
-    "aliases": [],
+    "aliases": [
+      "Walmart (1P MSRP)",
+      "Walmart.com"
+    ],
     "storeType": "BIG_BOX",
     "baseUrl": "https://www.walmart.com",
     "resolvedPath": "",
@@ -1208,7 +1215,10 @@
   {
     "id": "best-buy",
     "name": "Best Buy",
-    "aliases": [],
+    "aliases": [
+      "Best Buy (1P MSRP)",
+      "BestBuy"
+    ],
     "storeType": "BIG_BOX",
     "baseUrl": "https://www.bestbuy.com",
     "resolvedPath": "",
@@ -1221,7 +1231,11 @@
   {
     "id": "amazon",
     "name": "Amazon",
-    "aliases": [],
+    "aliases": [
+      "Amazon (1P MSRP)",
+      "Amazon.com",
+      "Amazon 1P (ATVPDKIKX0DER)"
+    ],
     "storeType": "BIG_BOX",
     "baseUrl": "https://www.amazon.com",
     "resolvedPath": "",
@@ -1234,7 +1248,10 @@
   {
     "id": "gamestop",
     "name": "GameStop",
-    "aliases": [],
+    "aliases": [
+      "GameStop (1P MSRP)",
+      "GameStop.com"
+    ],
     "storeType": "BIG_BOX",
     "baseUrl": "https://www.gamestop.com",
     "resolvedPath": "",
@@ -1247,7 +1264,10 @@
   {
     "id": "costco",
     "name": "Costco",
-    "aliases": [],
+    "aliases": [
+      "Costco Wholesale",
+      "Costco (Member Pallet)"
+    ],
     "storeType": "BIG_BOX",
     "baseUrl": "https://www.costco.com",
     "resolvedPath": "",
@@ -1261,7 +1281,8 @@
     "id": "sam-s-club",
     "name": "Sam's Club",
     "aliases": [
-      "sams club"
+      "sams club",
+      "Sam's Club (Member Drop)"
     ],
     "storeType": "BIG_BOX",
     "baseUrl": "https://www.samsclub.com",
@@ -1275,7 +1296,11 @@
   {
     "id": "barnes-noble",
     "name": "Barnes & Noble",
-    "aliases": [],
+    "aliases": [
+      "Barnes & Noble (1P MSRP)",
+      "Barnes and Noble",
+      "B&N"
+    ],
     "storeType": "BIG_BOX",
     "baseUrl": "https://www.barnesandnoble.com",
     "resolvedPath": "",
@@ -1289,7 +1314,9 @@
     "id": "pokemon-center",
     "name": "Pokemon Center",
     "aliases": [
-      "pokémon center"
+      "pokémon center",
+      "Pokémon Center",
+      "Pokémon Center ($59.99 MSRP Direct)"
     ],
     "storeType": "BIG_BOX",
     "baseUrl": "https://www.pokemoncenter.com",

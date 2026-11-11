@@ -30,6 +30,14 @@ export interface PolicyRule {
   fullyConquered?: boolean;
   autoPilotEnabled?: boolean;
   releaseDate?: string;
+  targetTcin?: string | null;
+  walmartItemId?: string | null;
+  bestBuySku?: string | null;
+  amazonAsin?: string | null;
+  pcSlug?: string | null;
+  barnesNobleEan?: string | null;
+  retailSearchQuery?: string | null;
+  tcgProductId?: string | number | null;
 }
 
 export function getPackCountForSku(skuId?: string, formFactor?: string, name?: string): number {

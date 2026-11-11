@@ -17,13 +17,13 @@
   - `public/js/stadium/stadium-ui.js` (`1,641` lines)
   - `scripts/watchdog.vbs` & `scripts/watchdog.ps1`
 - **Auto-Heal Watchdog:** Windows Scheduled Task `DropBot-PM2-Watchdog` runs `scripts/watchdog.vbs` -> `scripts/watchdog.ps1` every 5 minutes (hidden window `0`), checking `http://localhost:3000/api/status` and WMI `Win32_Process` for `index.js`/`server.js`.
-- **Proxy Routing:** Direct-first HTTP via `axios` (`AbortController` hard socket timeout `<= 8000ms`, `dns.setDefaultResultOrder('ipv4first')`) with automatic fallback to `WEBSHARE_PROXY_URL` (`HttpsProxyAgent`).
+- **Proxy & Headless WAF Routing:** Direct-first HTTP via `axios` (`AbortController` hard socket timeout `<= 8000ms`, `dns.setDefaultResultOrder('ipv4first')`) with automatic fallback to `WEBSHARE_PROXY_URL` (`HttpsProxyAgent`), paired with a real invisible Playwright Chromium worker (`src/pollers/wafBrowserBridge.ts`, `headless: true`, `--headless=new`, `waitUntil: 'domcontentloaded'`, hard `15000ms` timeout, `finally { await page.close() }`, persistent cookies in `data/wafSessionCookies.json` on a polite `160s` cycle) for `Pokémon Center`, `GameStop`, and `Barnes & Noble`.
 
 ---
 
 ## 2. Core Data Flow & Evaluation Pipeline
-1. **Ingestion (`lgsPoller.ts` & `vampirePoller.ts`):**
-   - Pollers fetch raw listings and pass `RawRestockItem` objects into `processIncomingDrop()` (`listener.ts`).
+1. **Ingestion (`lgsPoller.ts`, `fastTier1Poller.ts`, `bigBoxRetailPoller.ts`, `bigBoxAdapters.ts`, & `vampirePoller.ts`):**
+   - Pollers fetch raw listings across all `90` active Shopify LGS storefronts and all `9` Big-Box 1st-Party retailers (`Target` RedSky 1P TCIN/Search, `Walmart` `F55CDC31AB754BB68FE0B39041159D63` 1P, `Best Buy` 1P SKU availability, `Amazon` `smid=ATVPDKIKX0DER` 1P `<= MSRP*1.08`, `Pokémon Center` + `Queue-It` waiting room alert, `GameStop`, `Barnes & Noble` Shopify Hydrogen, `Costco`, and `Sam's Club`) and pass verified `RawRestockItem` objects into `processIncomingDrop()` (`listener.ts`).
    - Full 91-store Shopify sweep also prunes disappeared variant IDs via `pruneStoreMissingOffers()`.
 2. **Evaluation & Caching (`evaluator.ts`, `policies.ts`, & `src/config/configManager.ts`):**
    - `src/config/configManager.ts` (`347` lines) merges `config/catalog.json` (`131` static SKU definitions), `config/userPreferences.json` (Scott's untouchable personal sliders, `owned`/`inVault` flags, and global toggles), and `marketCache.json` (`estimatedMarketValue` / `rollingAverage` baselines) in memory.

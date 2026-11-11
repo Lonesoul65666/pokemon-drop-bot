@@ -194,8 +194,14 @@ function loadMergedPoliciesRaw() {
             merged.walmartItemId = cat.walmartItemId;
         if (cat.bestBuySku)
             merged.bestBuySku = cat.bestBuySku;
+        if (cat.amazonAsin)
+            merged.amazonAsin = cat.amazonAsin;
         if (cat.pcSlug)
             merged.pcSlug = cat.pcSlug;
+        if (cat.barnesNobleEan)
+            merged.barnesNobleEan = cat.barnesNobleEan;
+        if (cat.retailSearchQuery)
+            merged.retailSearchQuery = cat.retailSearchQuery;
         if (cat.tcgProductId)
             merged.tcgProductId = cat.tcgProductId;
         return merged;
