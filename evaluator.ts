@@ -59,7 +59,7 @@ export function buildShopifyDirectCartLinks(params: {
   let baseRoot = '';
   const candidateCart = cart1xUrl || (url.includes('/cart/') ? url : '');
   if (candidateCart && candidateCart.includes('/cart/')) {
-    baseRoot = candidateCart.replace(/:\d+$/, '');
+    baseRoot = candidateCart.split('?')[0].replace(/:\d+$/, '');
   } else if (itemId && /^\d{8,18}$/.test(String(itemId))) {
     const u = productUrl || url;
     const m = u.match(/^(https?:\/\/[^/]+)/i);
@@ -67,10 +67,65 @@ export function buildShopifyDirectCartLinks(params: {
   }
   if (!baseRoot) return { cart1xUrl, cart2xUrl, cart3xUrl };
   return {
-    cart1xUrl: `${baseRoot}:1`,
-    cart2xUrl: (stock === undefined || stock >= 2) ? `${baseRoot}:2` : undefined,
-    cart3xUrl: (stock === undefined || stock >= 3) ? `${baseRoot}:3` : undefined
+    cart1xUrl: `${baseRoot}:1?payment=shop_pay`,
+    cart2xUrl: (stock === undefined || stock >= 2) ? `${baseRoot}:2?payment=shop_pay` : undefined,
+    cart3xUrl: (stock === undefined || stock >= 3) ? `${baseRoot}:3?payment=shop_pay` : undefined
   };
+}
+
+export function buildMobileRetailerLinks(params: {
+  retailer?: string;
+  url?: string;
+  productUrl?: string;
+  itemId?: string | number;
+}): { primaryCheckoutUrl: string; secondaryPdpUrl?: string; mobileActionMarkdown?: string } {
+  const rawUrl = String(params.productUrl || params.url || '').trim();
+  const hay = `${params.retailer || ''} ${rawUrl}`.toLowerCase();
+  const idStr = params.itemId !== undefined ? String(params.itemId).trim() : '';
+
+  if (hay.includes('target')) {
+    const tcinMatch = rawUrl.match(/A-(\d{8,10})/i) || idStr.match(/^(\d{8,10})$/);
+    if (tcinMatch) {
+      const tcin = tcinMatch[1];
+      const cleanTargetUrl = `https://www.target.com/p/-/A-${tcin}`;
+      return {
+        primaryCheckoutUrl: cleanTargetUrl,
+        secondaryPdpUrl: cleanTargetUrl,
+        mobileActionMarkdown: `[**⟦ 📱 OPEN TARGET APP (A-${tcin}) ↗ ⟧**](${cleanTargetUrl})`
+      };
+    }
+  }
+
+  if (hay.includes('best buy') || hay.includes('bestbuy.com')) {
+    const skuMatch = rawUrl.match(/skuId=(\d{7})/i) || rawUrl.match(/\/(\d{7})\.p/i) || idStr.match(/^(\d{7})$/);
+    if (skuMatch) {
+      const sku = skuMatch[1];
+      const atcUrl = `https://api.bestbuy.com/click/-/${sku}/cart`;
+      const pdpUrl = `https://www.bestbuy.com/site/-/${sku}.p?skuId=${sku}`;
+      return {
+        primaryCheckoutUrl: atcUrl,
+        secondaryPdpUrl: pdpUrl,
+        mobileActionMarkdown: `[**⟦ ⚡ BEST BUY 1-TAP ATC ↗ ⟧**](${atcUrl})   •   [**⟦ 📱 APP PDP ↗ ⟧**](${pdpUrl})`
+      };
+    }
+  }
+
+  if (hay.includes('walmart')) {
+    const wmMatch = rawUrl.match(/\/ip\/(?:[^/?#]+\/)?(\d{8,14})/i) || rawUrl.match(/[?&]item(?:Id)?=(\d{8,14})/i) || idStr.match(/^(\d{8,14})$/);
+    if (wmMatch) {
+      const wmId = wmMatch[1];
+      const pacUrl = `https://www.walmart.com/pac?id=${wmId}&quantity=1`;
+      const buyNowUrl = `https://affil.walmart.com/cart/buynow?items=${wmId}`;
+      const pdpUrl = `https://www.walmart.com/ip/${wmId}`;
+      return {
+        primaryCheckoutUrl: pacUrl,
+        secondaryPdpUrl: pdpUrl,
+        mobileActionMarkdown: `[**⟦ ⚡ WALMART 1-TAP CART ↗ ⟧**](${pacUrl})   •   [**⟦ BUY NOW ⟧**](${buyNowUrl})   •   [**⟦ 📱 APP ↗ ⟧**](${pdpUrl})`
+      };
+    }
+  }
+
+  return { primaryCheckoutUrl: rawUrl };
 }
 
 export type BigBoxTier = 'MSRP_TIER_A' | 'PC_EXCLUSIVE_MSRP' | '3P_TIER_B' | 'BIG_BOX_RESTOCK_RADAR';
@@ -433,28 +488,44 @@ export interface StoreOfferRecord {
 
 let storeOffersCacheMem: Record<string, Record<string, StoreOfferRecord>> = {};
 let storeOffersFlushTimer: any = null;
+let storeOffersLastMtimeMs = 0;
 
-try {
-  if (fs.existsSync(STORE_OFFERS_CACHE_PATH)) {
-    const parsed = JSON.parse(fs.readFileSync(STORE_OFFERS_CACHE_PATH, 'utf-8'));
-    if (parsed && typeof parsed === 'object') {
-      storeOffersCacheMem = parsed;
+function syncStoreOffersFromDiskIfNewer(): void {
+  try {
+    if (!fs.existsSync(STORE_OFFERS_CACHE_PATH)) return;
+    const stat = fs.statSync(STORE_OFFERS_CACHE_PATH);
+    if (stat.mtimeMs > storeOffersLastMtimeMs) {
+      const parsed = JSON.parse(fs.readFileSync(STORE_OFFERS_CACHE_PATH, 'utf-8'));
+      if (parsed && typeof parsed === 'object') {
+        storeOffersCacheMem = parsed;
+        storeOffersLastMtimeMs = stat.mtimeMs;
+      }
     }
-  }
-} catch (e) {}
+  } catch (e) {}
+}
+
+function flushStoreOffersToDiskNow(): void {
+  try {
+    atomicWriteJson(STORE_OFFERS_CACHE_PATH, storeOffersCacheMem);
+    if (fs.existsSync(STORE_OFFERS_CACHE_PATH)) {
+      storeOffersLastMtimeMs = fs.statSync(STORE_OFFERS_CACHE_PATH).mtimeMs;
+    }
+  } catch (e) {}
+}
+
+syncStoreOffersFromDiskIfNewer();
 
 function scheduleStoreOffersFlush() {
   if (storeOffersFlushTimer) return;
   storeOffersFlushTimer = setTimeout(() => {
     storeOffersFlushTimer = null;
-    try {
-      atomicWriteJson(STORE_OFFERS_CACHE_PATH, storeOffersCacheMem);
-    } catch (e) {}
+    flushStoreOffersToDiskNow();
   }, 2000);
 }
 
 export function upsertStoreOfferCache(entry: Omit<StoreOfferRecord, 'firstSeenAt' | 'priceDelta' | 'isFreshRestock' | 'previousPrice'>) {
   if (!entry.skuId || !entry.storeName) return;
+  syncStoreOffersFromDiskIfNewer();
   const skuMap = storeOffersCacheMem[entry.skuId] || {};
   const cleanStoreKey = entry.storeName.replace(/\s*\(TCGPlayer.*?\)$/i, ' (TCGPlayer)').trim();
   const existing = skuMap[cleanStoreKey];
@@ -481,6 +552,7 @@ export function upsertStoreOfferCache(entry: Omit<StoreOfferRecord, 'firstSeenAt
 
 export function pruneStoreMissingOffers(storeName: string, activeItemIds: Set<string>) {
   if (!storeName) return;
+  syncStoreOffersFromDiskIfNewer();
   let mutated = false;
   for (const [skuId, skuOffers] of Object.entries(storeOffersCacheMem)) {
     if (!skuOffers || typeof skuOffers !== 'object') continue;
@@ -579,6 +651,7 @@ export function markAlertKeyOutOfStock(ruleIdOrItemId: string, retailer?: string
 
 export function refreshCachedStoreOffersStatus(): void {
   try {
+    syncStoreOffersFromDiskIfNewer();
     let muteVaulted = false;
     try {
       const settings = loadGlobalSettings();
@@ -647,7 +720,7 @@ export function refreshCachedStoreOffersStatus(): void {
         const candidateTitle = String(rec.rawTitle || rec.productName || '');
         const candidateFormFactor = rule?.formFactor || rec.formFactor;
         if (
-          isSingleCardOrNonSealed(candidateTitle, rec.url) ||
+          isSingleCardOrNonSealed(candidateTitle, undefined, rec.url) ||
           !hasMandatorySealedContainerKeyword(candidateTitle, candidateFormFactor)
         ) {
           delete skuOffers[storeKey];
@@ -756,9 +829,7 @@ export function refreshCachedStoreOffersStatus(): void {
       }
     }
     if (mutated) {
-      try {
-        atomicWriteJson(STORE_OFFERS_CACHE_PATH, storeOffersCacheMem);
-      } catch (e) {}
+      flushStoreOffersToDiskNow();
     }
 
     // Sync liveStock.json & __bestOffers with lowest storeOffersCacheMem offers & data-driven trendVerdictLabel
@@ -774,7 +845,7 @@ export function refreshCachedStoreOffersStatus(): void {
           const lsEntry = v as any;
           const t = String(lsEntry.title || '');
           const ff = String(lsEntry.formFactor || '');
-          if (isSingleCardOrNonSealed(t, lsEntry.url) || !hasMandatorySealedContainerKeyword(t, ff)) {
+          if (isSingleCardOrNonSealed(t, undefined, lsEntry.url) || !hasMandatorySealedContainerKeyword(t, ff)) {
             delete liveMap[k];
             liveMutated = true;
           }
@@ -784,7 +855,7 @@ export function refreshCachedStoreOffersStatus(): void {
           const boEntry = bVal as any;
           const t = String(boEntry.title || '');
           const ff = String(boEntry.formFactor || '');
-          if (isSingleCardOrNonSealed(t, boEntry.url) || !hasMandatorySealedContainerKeyword(t, ff)) {
+          if (isSingleCardOrNonSealed(t, undefined, boEntry.url) || !hasMandatorySealedContainerKeyword(t, ff)) {
             delete bestOffers[bKey];
             liveMutated = true;
           }
@@ -1146,7 +1217,7 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
   const hasPcTerm = hasPcExclusiveTerms(cleanTitle, handleAndUrl);
 
   // Layer 2 & Layer 3: Hard Anti-Singles / Slab / Loose-Pack Shield + Positive Sealed Container Gate
-  if (isSingleCardOrNonSealed(cleanTitle, handleAndUrl)) {
+  if (isSingleCardOrNonSealed(cleanTitle, undefined, handleAndUrl)) {
     return { action: 'IGNORE', reason: 'Blocked by V5 Sealed-Only / Anti-Singles Shield (Single Card, Slab, or Loose Pack).' };
   }
   if (!hasMandatorySealedContainerKeyword(cleanTitle)) {

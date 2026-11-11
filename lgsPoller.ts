@@ -250,6 +250,38 @@ export const LGS_STORES: MonitoredStore[] = loadActiveLgsStores();
 
 export const MONITORED_STORES: MonitoredStore[] = LGS_STORES;
 
+export const CAD_TO_USD_FX = Number(process.env.CAD_TO_USD_RATE || 0.73);
+const detectedStoreCurrencyMap = new Map<string, string>();
+const probedStoreCurrencySet = new Set<string>();
+
+export function resolveShopifyFxMultiplier(store: { name: string; baseUrl: string; currency?: string }): number {
+  const explicit = String(store.currency || '').toUpperCase();
+  if (explicit === 'CAD' || /\.ca(\/|$)/i.test(store.baseUrl) || detectedStoreCurrencyMap.get(store.name) === 'CAD') {
+    store.currency = 'CAD';
+    return CAD_TO_USD_FX;
+  }
+  if (!probedStoreCurrencySet.has(store.name) && store.baseUrl) {
+    probedStoreCurrencySet.add(store.name);
+    void axios
+      .get(`${store.baseUrl.replace(/\/$/, '')}/cart.js`, {
+        timeout: 4000,
+        headers: { Accept: 'application/json', 'User-Agent': 'Mozilla/5.0' }
+      })
+      .then((res) => {
+        const cur = String(res.data?.currency || '').toUpperCase();
+        if (cur) {
+          detectedStoreCurrencyMap.set(store.name, cur);
+          if (cur === 'CAD') {
+            store.currency = 'CAD';
+            console.log(`🍁 [FX RADAR] Runtime detected CAD currency on ${store.name} (${store.baseUrl}) -> applying ${CAD_TO_USD_FX} USD FX.`);
+          }
+        }
+      })
+      .catch(() => {});
+  }
+  return 1.0;
+}
+
 const INVALID_COLLECTION_SUBPATH_REGEX = /single|singles|graded|slab|slabs|psa|cgc|bgs|japanese|chinese|korean|event|local|lorcana|digimon|one-piece|magic|mtg|3d-cut|custom|break|bandai|indonesian|thai|spanish|french|german|italian|portuguese|figure|plush|toy|apparel|supply|sleeve|binder|accessories|codes|ptcgo|ptcgl/i;
 const NARROW_SUBCOLLECTION_HANDLE_REGEX = /booster-box|blister|elite-trainer|etb|pre-?order|sealed-cases|30th-pokemon|mega-evolution|a-great-place-to-begin|karls-krazy|modern-sealed/i;
 const SEALED_PRIORITY_COLLECTION_HANDLE_REGEX = /^(pokemon-sealed-in-stock|pokemon-sealed|all-pokemon-sealed|all-pokemon-sealed-products|all-pokemon-sealed-product|pokemon-sealed-products|pokemon-sealed-product|sealed-pokemon-collection|in-stock-pokemon-sealed)$/i;
@@ -571,7 +603,7 @@ async function pollSingleStore(store: MonitoredStore): Promise<{ hit: boolean; p
     storeHealthMap.set(store.name, health);
 
     const checkNow = Date.now();
-    const fxMultiplier = store.currency === 'CAD' ? 0.73 : 1.0;
+    const fxMultiplier = resolveShopifyFxMultiplier(store);
     const activeVariantIds = new Set<string>();
 
     for (const prod of products) {
@@ -628,9 +660,9 @@ async function pollSingleStore(store: MonitoredStore): Promise<{ hit: boolean; p
             const realQty = typeof variant.inventory_quantity === 'number' && variant.inventory_quantity > 0
               ? variant.inventory_quantity
               : undefined;
-            const cart1xUrl = `${store.baseUrl}/cart/${variant.id}:1`;
-            const cart2xUrl = (realQty === undefined || realQty >= 2) ? `${store.baseUrl}/cart/${variant.id}:2` : undefined;
-            const cart3xUrl = (realQty === undefined || realQty >= 3) ? `${store.baseUrl}/cart/${variant.id}:3` : undefined;
+            const cart1xUrl = `${store.baseUrl}/cart/${variant.id}:1?payment=shop_pay`;
+            const cart2xUrl = (realQty === undefined || realQty >= 2) ? `${store.baseUrl}/cart/${variant.id}:2?payment=shop_pay` : undefined;
+            const cart3xUrl = (realQty === undefined || realQty >= 3) ? `${store.baseUrl}/cart/${variant.id}:3?payment=shop_pay` : undefined;
             const productUrl = prod.handle ? `${store.baseUrl}/products/${prod.handle}` : store.baseUrl;
             const isPreOrder = /pre-?order|pre-?sale/i.test(`${fullTitle} ${tagsStr} ${prod.handle || ''}`);
 
@@ -673,7 +705,7 @@ async function pollSingleStore(store: MonitoredStore): Promise<{ hit: boolean; p
           if (isNewStagingUpload || isOosPriceSlashed) {
             const fullTitle = `${prod.title} ${variant.title !== 'Default Title' ? variant.title : ''}`.trim();
             const tagsStr = Array.isArray(prod.tags) ? prod.tags.join(' ') : String(prod.tags || '');
-            if (isSingleCardOrNonSealed(fullTitle, `${prod.handle || ''} ${tagsStr}`) || !hasMandatorySealedContainerKeyword(fullTitle)) {
+            if (isSingleCardOrNonSealed(fullTitle, prod.product_type, `${prod.handle || ''} ${tagsStr}`) || !hasMandatorySealedContainerKeyword(fullTitle)) {
               continue;
             }
             const matchedRule = matchTargetRuleForStaging(fullTitle, priceNum, store.name, `${prod.handle || ''} ${tagsStr}`);

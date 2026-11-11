@@ -2801,15 +2801,18 @@
     }
 
     function renderDirectCartButtonsHtml(item, primaryLabel) {
-      const c1 = item.cart1xUrl || (item.url && String(item.url).includes('/cart/') ? item.url : null);
-      const c2 = item.cart2xUrl || (c1 ? String(c1).replace(/:1$/, ':2') : null);
-      const c3 = item.cart3xUrl || (c1 ? String(c1).replace(/:1$/, ':3') : null);
+      const c1Raw = item.cart1xUrl || (item.url && String(item.url).includes('/cart/') ? item.url : null);
+      const c1 = c1Raw && String(c1Raw).includes('/cart/') && !String(c1Raw).includes('payment=shop_pay')
+        ? String(c1Raw) + (String(c1Raw).includes('?') ? '&payment=shop_pay' : '?payment=shop_pay')
+        : c1Raw;
+      const c2 = item.cart2xUrl || (c1 ? String(c1).replace(/:1(?=\?|$)/, ':2') : null);
+      const c3 = item.cart3xUrl || (c1 ? String(c1).replace(/:1(?=\?|$)/, ':3') : null);
       if (c1) {
         return (
           '<div class="inline-flex items-center rounded-lg overflow-hidden border border-emerald-500/45 bg-[#0D1518] shrink-0" onclick="event.stopPropagation()">' +
-            '<a href="' + c1 + '" target="_blank" class="px-2 py-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono-num text-[10px] font-black transition whitespace-nowrap">[CART 1X]</a>' +
-            (c2 ? '<a href="' + c2 + '" target="_blank" class="px-2 py-1 hover:bg-cyan-500/25 text-cyan-200 border-l border-white/10 font-mono-num text-[10px] font-extrabold transition whitespace-nowrap">[CART 2X]</a>' : '') +
-            (c3 ? '<a href="' + c3 + '" target="_blank" class="px-2 py-1 hover:bg-amber-500/25 text-amber-300 border-l border-white/10 font-mono-num text-[10px] font-extrabold transition whitespace-nowrap">[CART 3X]</a>' : '') +
+            '<a href="' + c1 + '" target="_blank" class="px-2 py-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono-num text-[10px] font-black transition whitespace-nowrap">[⚡ SHOP PAY 1X]</a>' +
+            (c2 ? '<a href="' + c2 + '" target="_blank" class="px-2 py-1 hover:bg-cyan-500/25 text-cyan-200 border-l border-white/10 font-mono-num text-[10px] font-extrabold transition whitespace-nowrap">[2X]</a>' : '') +
+            (c3 ? '<a href="' + c3 + '" target="_blank" class="px-2 py-1 hover:bg-amber-500/25 text-amber-300 border-l border-white/10 font-mono-num text-[10px] font-extrabold transition whitespace-nowrap">[3X]</a>' : '') +
           '</div>'
         );
       }

@@ -93,6 +93,16 @@ const SEED_GYARADOS_BENCHMARKS: SingleCardOfferRecord[] = [
   }
 ];
 
+function pruneCompBenchmarksLru(maxKeys = 500): boolean {
+  const entries = Object.entries(singlesCacheMem.compBenchmarks || {});
+  if (entries.length <= maxKeys) return false;
+  entries.sort((a, b) => Number(b[1]?.updatedAt || 0) - Number(a[1]?.updatedAt || 0));
+  const nextBench: typeof singlesCacheMem.compBenchmarks = {};
+  for (const [k, v] of entries.slice(0, maxKeys)) nextBench[k] = v;
+  singlesCacheMem.compBenchmarks = nextBench;
+  return true;
+}
+
 function loadSinglesCacheFromDisk(): void {
   try {
     if (fs.existsSync(SINGLES_CACHE_PATH)) {
@@ -106,14 +116,14 @@ function loadSinglesCacheFromDisk(): void {
       }
     }
   } catch {}
-  let seeded = false;
+  let mutated = pruneCompBenchmarksLru(500);
   for (const seed of SEED_GYARADOS_BENCHMARKS) {
     if (!singlesCacheMem.offers[seed.id]) {
       singlesCacheMem.offers[seed.id] = seed;
-      seeded = true;
+      mutated = true;
     }
   }
-  if (seeded) {
+  if (mutated) {
     try { atomicWriteJson(SINGLES_CACHE_PATH, singlesCacheMem); } catch {}
   }
 }
@@ -243,6 +253,9 @@ export function ingestSingleCardOffer(input: RawSingleCardOfferInput): SingleCar
     const trimmed: Record<string, SingleCardOfferRecord> = {};
     for (const item of allEntries.slice(0, 500)) trimmed[item.id] = item;
     singlesCacheMem.offers = trimmed;
+  }
+  if (Object.keys(singlesCacheMem.compBenchmarks).length > 500) {
+    pruneCompBenchmarksLru(500);
   }
 
   scheduleSinglesCacheFlush();

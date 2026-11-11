@@ -503,14 +503,14 @@
     "name": "Kanzen Games",
     "storeType": "SHOPIFY_LGS",
     "baseUrl": "https://kanzengames.com",
-    "resolvedPath": "/collections/pokemon-sealed-in-stock/products.json",
-    "flatShipping": 6.99,
-    "freeShipThreshold": 150,
-    "currency": "USD",
+    "resolvedPath": "/collections/pokemon-sealed-in-stock/products.json?limit=250",
+    "flatShipping": 9.99,
+    "freeShipThreshold": 175,
+    "currency": "CAD",
     "tier": "TIER1_FAST",
     "enabled": true,
     "additionalPaths": [
-      "/collections/pokemon-elite-trainer-box/products.json"
+      "/collections/pokemon-elite-trainer-box/products.json?limit=250"
     ]
   },
   {
@@ -567,9 +567,9 @@
     "storeType": "SHOPIFY_LGS",
     "baseUrl": "https://sportscardjunction.com",
     "resolvedPath": "/products.json?limit=250",
-    "flatShipping": 6.99,
-    "freeShipThreshold": 150,
-    "currency": "USD",
+    "flatShipping": 9.99,
+    "freeShipThreshold": 175,
+    "currency": "CAD",
     "tier": "TIER2_STANDARD",
     "enabled": true
   },

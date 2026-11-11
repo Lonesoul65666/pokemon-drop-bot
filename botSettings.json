@@ -1,10 +1,12 @@
 {
   "muteVaulted": true,
-  "wallHunterMode": false,
   "liveDigestEnabled": true,
+  "wallHunterMode": false,
   "singlesAlertsEnabled": false,
   "favoritePokemonWatchlist": [
     "Gyarados"
   ],
-  "minSinglesTrackPrice": 15
+  "minSinglesTrackPrice": 15,
+  "lastDigestSentAt": 1794355205008,
+  "lastDigestHash": "swsh-evolving-skies-etb:1st Edition Collectibles:455.00|me-perfect-order-booster-case:Rip N Ship Arena:1049.99|sv-base-booster-box:PKMN Colosseum:285.99|sv-surging-sparks-etb:Collector Store:114.99|me-delta-reign-booster-case:AllPokeTCG:1259.99|swsh-evolving-skies-etb:1st Edition Collectibles:455.00|sv-base-booster-box:PKMN Colosseum:285.99|sv-prismatic-evolutions-bundle:Collectors Cafe:69.99"
 }

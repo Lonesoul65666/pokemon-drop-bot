@@ -2139,7 +2139,8 @@
     "releaseDate": null,
     "matchers": [
       "battle styles.*single.*(etb|elite trainer)",
-      "single strike.*(etb|elite trainer)"
+      "single strike.*(etb|elite trainer)",
+      "battle styles.*(etb|elite trainer).*single"
     ],
     "image": "",
     "minStock": 1,
@@ -2187,7 +2188,8 @@
     "releaseDate": null,
     "matchers": [
       "battle styles.*rapid.*(etb|elite trainer)",
-      "rapid strike.*(etb|elite trainer)"
+      "rapid strike.*(etb|elite trainer)",
+      "battle styles.*(etb|elite trainer).*rapid"
     ],
     "image": "",
     "minStock": 1,

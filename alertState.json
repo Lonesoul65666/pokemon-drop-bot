@@ -91,9 +91,9 @@
   "Trading Card Market::me-perfect-order-booster-box": {
     "lastPrice": 168,
     "lowestAlertedPrice": 158,
-    "timestamp": 1794179340774,
-    "timeStr": "05:09 PM",
-    "alertCount": 8,
+    "timestamp": 1794320389258,
+    "timeStr": "08:19 AM",
+    "alertCount": 9,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "47422202708020"
   },
@@ -226,27 +226,27 @@
   "MinMaxGames::me-pitch-black-booster-box": {
     "lastPrice": 165,
     "lowestAlertedPrice": 165,
-    "timestamp": 1794178673752,
-    "timeStr": "04:57 PM",
-    "alertCount": 5,
+    "timestamp": 1794320307835,
+    "timeStr": "08:18 AM",
+    "alertCount": 6,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "47963258454190"
   },
   "CardPop USA::me-pitch-black-booster-box": {
     "lastPrice": 164.99,
     "lowestAlertedPrice": 164.99,
-    "timestamp": 1794178646403,
-    "timeStr": "04:57 PM",
-    "alertCount": 5,
+    "timestamp": 1794321963602,
+    "timeStr": "08:46 AM",
+    "alertCount": 6,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "53898766811500"
   },
   "Rip N Ship Arena::me-perfect-order-booster-box": {
     "lastPrice": 169.99,
     "lowestAlertedPrice": 169.99,
-    "timestamp": 1794179195227,
-    "timeStr": "05:06 PM",
-    "alertCount": 5,
+    "timestamp": 1794323592042,
+    "timeStr": "09:13 AM",
+    "alertCount": 6,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "47992702763235"
   },
@@ -262,9 +262,9 @@
   "Mystic TCG::me-perfect-order-booster-box": {
     "lastPrice": 169.99,
     "lowestAlertedPrice": 169.99,
-    "timestamp": 1794179409352,
-    "timeStr": "05:10 PM",
-    "alertCount": 5,
+    "timestamp": 1794321291851,
+    "timeStr": "08:34 AM",
+    "alertCount": 6,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "46541707772093"
   },
@@ -289,45 +289,45 @@
   "JBs Emporium::me-chaos-rising-etb": {
     "lastPrice": 54.99,
     "lowestAlertedPrice": 54.99,
-    "timestamp": 1794179369486,
-    "timeStr": "05:09 PM",
-    "alertCount": 5,
+    "timestamp": 1794321137947,
+    "timeStr": "08:32 AM",
+    "alertCount": 6,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "46198650863713"
   },
   "JBs Emporium::me-pitch-black-booster-box": {
     "lastPrice": 169.99,
     "lowestAlertedPrice": 169.99,
-    "timestamp": 1794179379426,
-    "timeStr": "05:09 PM",
-    "alertCount": 5,
+    "timestamp": 1794321149575,
+    "timeStr": "08:32 AM",
+    "alertCount": 6,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "46279270793313"
   },
   "MinMaxGames::me-chaos-rising-booster-box": {
     "lastPrice": 165,
     "lowestAlertedPrice": 165,
-    "timestamp": 1794179323784,
-    "timeStr": "05:08 PM",
-    "alertCount": 5,
+    "timestamp": 1794320295724,
+    "timeStr": "08:18 AM",
+    "alertCount": 6,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "47718207750318"
   },
   "Card Shop Live::me-chaos-rising-booster-box": {
     "lastPrice": 169.99,
     "lowestAlertedPrice": 169.99,
-    "timestamp": 1794179538011,
-    "timeStr": "05:12 PM",
-    "alertCount": 5,
+    "timestamp": 1794321222226,
+    "timeStr": "08:33 AM",
+    "alertCount": 6,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "47040247759017"
   },
   "Double Infinity Gaming::me-perfect-order-booster-box": {
     "lastPrice": 169.99,
     "lowestAlertedPrice": 169.99,
-    "timestamp": 1794179331425,
-    "timeStr": "05:08 PM",
-    "alertCount": 5,
+    "timestamp": 1794320299326,
+    "timeStr": "08:18 AM",
+    "alertCount": 6,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "52687216148796"
   },
@@ -361,18 +361,18 @@
   "Stomping Grounds::me-perfect-order-booster-box": {
     "lastPrice": 170,
     "lowestAlertedPrice": 170,
-    "timestamp": 1794179420179,
-    "timeStr": "05:10 PM",
-    "alertCount": 5,
+    "timestamp": 1794320388589,
+    "timeStr": "08:19 AM",
+    "alertCount": 6,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "56846080770208"
   },
   "MinMaxGames::me-perfect-order-booster-box": {
     "lastPrice": 170,
     "lowestAlertedPrice": 170,
-    "timestamp": 1794179338871,
-    "timeStr": "05:08 PM",
-    "alertCount": 5,
+    "timestamp": 1794320310087,
+    "timeStr": "08:18 AM",
+    "alertCount": 6,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "47464892760238"
   },
@@ -397,9 +397,9 @@
   "CardPop USA::me-perfect-order-booster-box": {
     "lastPrice": 164.99,
     "lowestAlertedPrice": 164.99,
-    "timestamp": 1794179295193,
-    "timeStr": "05:08 PM",
-    "alertCount": 5,
+    "timestamp": 1794321970710,
+    "timeStr": "08:46 AM",
+    "alertCount": 6,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "53330824593772"
   },
@@ -415,9 +415,9 @@
   "Pentix Games::me-perfect-order-booster-box": {
     "lastPrice": 164.99,
     "lowestAlertedPrice": 164.99,
-    "timestamp": 1794179371071,
-    "timeStr": "05:09 PM",
-    "alertCount": 5,
+    "timestamp": 1794321194888,
+    "timeStr": "08:33 AM",
+    "alertCount": 6,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "47959105437954"
   },
@@ -505,9 +505,9 @@
   "Rip N Ship Arena::me-perfect-order-booster-case": {
     "lastPrice": 1049.99,
     "lowestAlertedPrice": 1049.99,
-    "timestamp": 1794242471338,
-    "timeStr": "10:41 AM",
-    "alertCount": 4,
+    "timestamp": 1794329101082,
+    "timeStr": "10:45 AM",
+    "alertCount": 5,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "47992561008867"
   },
@@ -589,7 +589,7 @@
     "timestamp": 1794230134372,
     "timeStr": "07:15 AM",
     "alertCount": 5,
-    "wasOutOfStockSinceLastAlert": false,
+    "wasOutOfStockSinceLastAlert": true,
     "itemId": "43480937955537"
   },
   "AllPokeTCG::me-delta-reign-booster-box": {
@@ -658,18 +658,18 @@
   "AllPokeTCG::me-delta-reign-booster-case": {
     "lastPrice": 1259.99,
     "lowestAlertedPrice": 1259.99,
-    "timestamp": 1794242573451,
-    "timeStr": "10:42 AM",
-    "alertCount": 4,
+    "timestamp": 1794329500430,
+    "timeStr": "10:51 AM",
+    "alertCount": 5,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "68975097479410"
   },
   "Collector Store::me-perfect-order-booster-box": {
     "lastPrice": 164.99,
     "lowestAlertedPrice": 164.99,
-    "timestamp": 1794160594431,
-    "timeStr": "11:56 AM",
-    "alertCount": 3,
+    "timestamp": 1794333813968,
+    "timeStr": "12:03 PM",
+    "alertCount": 5,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "55323653210280"
   },
@@ -787,7 +787,7 @@
     "timestamp": 1794000914307,
     "timeStr": "03:35 PM",
     "alertCount": 1,
-    "wasOutOfStockSinceLastAlert": false,
+    "wasOutOfStockSinceLastAlert": true,
     "itemId": "68247375806595"
   },
   "MinMaxGames::me-pitch-black-etb": {
@@ -844,14 +844,14 @@
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "39491186130998"
   },
-  "__lastDigestSentAt": 1794236418789,
-  "__lastDigestHash": "me-chaos-rising-etb:JBs Emporium:54.99|sv-journey-together-booster-box:Collector Store:189.99|me-chaos-rising-booster-box:MinMaxGames:165.00|me-pitch-black-etb:CardPop USA:59.99|sv-prismatic-evolutions-bundle:Red Raccoon Games:69.99|sv-journey-together-booster-box:Collector Store:189.99|swsh-evolving-skies-etb:1st Edition Collectibles:455.00|me-chaos-rising-booster-box:MinMaxGames:165.00",
+  "__lastDigestSentAt": 1794355205008,
+  "__lastDigestHash": "swsh-evolving-skies-etb:1st Edition Collectibles:455.00|me-perfect-order-booster-case:Rip N Ship Arena:1049.99|sv-base-booster-box:PKMN Colosseum:285.99|sv-surging-sparks-etb:Collector Store:114.99|me-delta-reign-booster-case:AllPokeTCG:1259.99|swsh-evolving-skies-etb:1st Edition Collectibles:455.00|sv-base-booster-box:PKMN Colosseum:285.99|sv-prismatic-evolutions-bundle:Collectors Cafe:69.99",
   "PKMN Colosseum::swsh-chilling-reign-ice-etb": {
     "lastPrice": 139.99,
     "lowestAlertedPrice": 139.99,
-    "timestamp": 1794208645378,
-    "timeStr": "01:17 AM",
-    "alertCount": 3,
+    "timestamp": 1794320712982,
+    "timeStr": "08:25 AM",
+    "alertCount": 4,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "39491187572790"
   },
@@ -879,7 +879,7 @@
     "timestamp": 1794208749766,
     "timeStr": "01:19 AM",
     "alertCount": 3,
-    "wasOutOfStockSinceLastAlert": false,
+    "wasOutOfStockSinceLastAlert": true,
     "itemId": "46296401445003"
   },
   "CardPop USA::me-chaos-rising-etb": {
@@ -910,11 +910,11 @@
     "itemId": "47582292934708"
   },
   "Elite4 TCG::me-chaos-rising-booster-box": {
-    "lastPrice": 178,
-    "lowestAlertedPrice": 178,
-    "timestamp": 1794035983590,
-    "timeStr": "01:19 AM",
-    "alertCount": 1,
+    "lastPrice": 172.25,
+    "lowestAlertedPrice": 172.25,
+    "timestamp": 1794341697196,
+    "timeStr": "02:14 PM",
+    "alertCount": 2,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "45460494385328"
   },
@@ -1038,18 +1038,18 @@
   "Oaks Poke Box::sv-journey-together-etb": {
     "lastPrice": 120,
     "lowestAlertedPrice": 120,
-    "timestamp": 1794237846711,
+    "timestamp": 1794324256724,
     "timeStr": "09:24 AM",
-    "alertCount": 1,
+    "alertCount": 2,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "45665599848548"
   },
   "Collector Store::sv-surging-sparks-etb": {
     "lastPrice": 114.99,
     "lowestAlertedPrice": 114.99,
-    "timestamp": 1794237905201,
-    "timeStr": "09:25 AM",
-    "alertCount": 1,
+    "timestamp": 1794340067131,
+    "timeStr": "01:47 PM",
+    "alertCount": 2,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "50313323970728"
   },
@@ -1065,9 +1065,9 @@
   "PKMN Colosseum::sv-base-booster-box": {
     "lastPrice": 285.99,
     "lowestAlertedPrice": 285.99,
-    "timestamp": 1794237998382,
+    "timestamp": 1794324406114,
     "timeStr": "09:26 AM",
-    "alertCount": 1,
+    "alertCount": 2,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "40665634701366"
   },
@@ -1113,7 +1113,7 @@
     "timestamp": 1794241597779,
     "timeStr": "10:26 AM",
     "alertCount": 1,
-    "wasOutOfStockSinceLastAlert": false,
+    "wasOutOfStockSinceLastAlert": true,
     "itemId": "49060034216182"
   },
   "PKMN Colosseum::sv-paradox-rift-roaring-etb": {
@@ -1124,5 +1124,23 @@
     "alertCount": 1,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "47773885628470"
+  },
+  "Elite4 TCG::me-pitch-black-booster-box": {
+    "lastPrice": 168.25,
+    "lowestAlertedPrice": 168.25,
+    "timestamp": 1794341400167,
+    "timeStr": "02:10 PM",
+    "alertCount": 2,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "45465094389936"
+  },
+  "Elite4 TCG::me-perfect-order-booster-box": {
+    "lastPrice": 164,
+    "lowestAlertedPrice": 164,
+    "timestamp": 1794341699229,
+    "timeStr": "02:14 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "45148615213232"
   }
 }

@@ -74,10 +74,11 @@ async function processIncomingDrop(item) {
                 trendVerdictLabel: result.trendVerdictLabel,
                 isElasticDip: result.isElasticDip
             });
-            await Promise.race([
-                alertPromise,
-                new Promise((resolve) => setTimeout(resolve, 15000))
-            ]);
+            // Fire-and-forget dispatch: sendAlert synchronously records dropsHistory + enqueues Discord/Telegram in 0ms
+            // without head-of-line blocking subsequent variants in multi-SKU restocks!
+            void alertPromise.catch((err) => {
+                console.error(`[Listener] Async alert dispatch error: ${err?.message || err}`);
+            });
         }
         else if (result.rule && !result.reason.includes('Deduplicated')) {
             // Only log tracked Pokemon SKUs so you can see live store prices vs. your slider targets without non-Pokemon clutter!

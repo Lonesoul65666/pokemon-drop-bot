@@ -3,11 +3,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.variantStateMap = exports.MONITORED_STORES = exports.LGS_STORES = void 0;
+exports.variantStateMap = exports.CAD_TO_USD_FX = exports.MONITORED_STORES = exports.LGS_STORES = void 0;
 exports.getNextProxy = getNextProxy;
 exports.recordBigBoxCheckTelemetry = recordBigBoxCheckTelemetry;
 exports.recordFastTier1Telemetry = recordFastTier1Telemetry;
 exports.getFastTier1Telemetry = getFastTier1Telemetry;
+exports.resolveShopifyFxMultiplier = resolveShopifyFxMultiplier;
 exports.pollShopifyStores = pollShopifyStores;
 const axios_1 = __importDefault(require("axios"));
 const https_proxy_agent_1 = require("https-proxy-agent");
@@ -213,6 +214,36 @@ function flushStoreHealthToDisk() {
 }
 exports.LGS_STORES = (0, configManager_1.loadActiveLgsStores)();
 exports.MONITORED_STORES = exports.LGS_STORES;
+exports.CAD_TO_USD_FX = Number(process.env.CAD_TO_USD_RATE || 0.73);
+const detectedStoreCurrencyMap = new Map();
+const probedStoreCurrencySet = new Set();
+function resolveShopifyFxMultiplier(store) {
+    const explicit = String(store.currency || '').toUpperCase();
+    if (explicit === 'CAD' || /\.ca(\/|$)/i.test(store.baseUrl) || detectedStoreCurrencyMap.get(store.name) === 'CAD') {
+        store.currency = 'CAD';
+        return exports.CAD_TO_USD_FX;
+    }
+    if (!probedStoreCurrencySet.has(store.name) && store.baseUrl) {
+        probedStoreCurrencySet.add(store.name);
+        void axios_1.default
+            .get(`${store.baseUrl.replace(/\/$/, '')}/cart.js`, {
+            timeout: 4000,
+            headers: { Accept: 'application/json', 'User-Agent': 'Mozilla/5.0' }
+        })
+            .then((res) => {
+            const cur = String(res.data?.currency || '').toUpperCase();
+            if (cur) {
+                detectedStoreCurrencyMap.set(store.name, cur);
+                if (cur === 'CAD') {
+                    store.currency = 'CAD';
+                    console.log(`🍁 [FX RADAR] Runtime detected CAD currency on ${store.name} (${store.baseUrl}) -> applying ${exports.CAD_TO_USD_FX} USD FX.`);
+                }
+            }
+        })
+            .catch(() => { });
+    }
+    return 1.0;
+}
 const INVALID_COLLECTION_SUBPATH_REGEX = /single|singles|graded|slab|slabs|psa|cgc|bgs|japanese|chinese|korean|event|local|lorcana|digimon|one-piece|magic|mtg|3d-cut|custom|break|bandai|indonesian|thai|spanish|french|german|italian|portuguese|figure|plush|toy|apparel|supply|sleeve|binder|accessories|codes|ptcgo|ptcgl/i;
 const NARROW_SUBCOLLECTION_HANDLE_REGEX = /booster-box|blister|elite-trainer|etb|pre-?order|sealed-cases|30th-pokemon|mega-evolution|a-great-place-to-begin|karls-krazy|modern-sealed/i;
 const SEALED_PRIORITY_COLLECTION_HANDLE_REGEX = /^(pokemon-sealed-in-stock|pokemon-sealed|all-pokemon-sealed|all-pokemon-sealed-products|all-pokemon-sealed-product|pokemon-sealed-products|pokemon-sealed-product|sealed-pokemon-collection|in-stock-pokemon-sealed)$/i;
@@ -514,7 +545,7 @@ async function pollSingleStore(store) {
         health.resolvedPath = store.resolvedPath;
         storeHealthMap.set(store.name, health);
         const checkNow = Date.now();
-        const fxMultiplier = store.currency === 'CAD' ? 0.73 : 1.0;
+        const fxMultiplier = resolveShopifyFxMultiplier(store);
         const activeVariantIds = new Set();
         for (const prod of products) {
             if (/kanzen\s*games/i.test(store.name) &&
@@ -566,9 +597,9 @@ async function pollSingleStore(store) {
                         const realQty = typeof variant.inventory_quantity === 'number' && variant.inventory_quantity > 0
                             ? variant.inventory_quantity
                             : undefined;
-                        const cart1xUrl = `${store.baseUrl}/cart/${variant.id}:1`;
-                        const cart2xUrl = (realQty === undefined || realQty >= 2) ? `${store.baseUrl}/cart/${variant.id}:2` : undefined;
-                        const cart3xUrl = (realQty === undefined || realQty >= 3) ? `${store.baseUrl}/cart/${variant.id}:3` : undefined;
+                        const cart1xUrl = `${store.baseUrl}/cart/${variant.id}:1?payment=shop_pay`;
+                        const cart2xUrl = (realQty === undefined || realQty >= 2) ? `${store.baseUrl}/cart/${variant.id}:2?payment=shop_pay` : undefined;
+                        const cart3xUrl = (realQty === undefined || realQty >= 3) ? `${store.baseUrl}/cart/${variant.id}:3?payment=shop_pay` : undefined;
                         const productUrl = prod.handle ? `${store.baseUrl}/products/${prod.handle}` : store.baseUrl;
                         const isPreOrder = /pre-?order|pre-?sale/i.test(`${fullTitle} ${tagsStr} ${prod.handle || ''}`);
                         await (0, listener_1.processIncomingDrop)({
@@ -611,7 +642,7 @@ async function pollSingleStore(store) {
                     if (isNewStagingUpload || isOosPriceSlashed) {
                         const fullTitle = `${prod.title} ${variant.title !== 'Default Title' ? variant.title : ''}`.trim();
                         const tagsStr = Array.isArray(prod.tags) ? prod.tags.join(' ') : String(prod.tags || '');
-                        if ((0, policies_1.isSingleCardOrNonSealed)(fullTitle, `${prod.handle || ''} ${tagsStr}`) || !(0, policies_1.hasMandatorySealedContainerKeyword)(fullTitle)) {
+                        if ((0, policies_1.isSingleCardOrNonSealed)(fullTitle, prod.product_type, `${prod.handle || ''} ${tagsStr}`) || !(0, policies_1.hasMandatorySealedContainerKeyword)(fullTitle)) {
                             continue;
                         }
                         const matchedRule = (0, evaluator_1.matchTargetRuleForStaging)(fullTitle, priceNum, store.name, `${prod.handle || ''} ${tagsStr}`);

@@ -5,35 +5,37 @@
 ---
 
 ## 1. Live System Snapshot
-- **Current Phase:** **V5 Slice 7 Complete (Instant Optimistic UI for `[WALL / DAD / LOGAN]` Buttons, Trophy Room Top-Nav & `[Remove]` Replacement, Purge Fake `$115` ETB Market Placeholders, Card Visual Declutter, and Invisible `--headless=new` WAF Session Bridge for Pokémon Center & GameStop)**.
-- **Last Checkpoint Timestamp:** `2026-11-09 10:49 CST`
+- **Current Phase:** **V6 Slice 1 Complete (0ms Fire-Then-Enrich Alerts, 1-Tap `?payment=shop_pay` + Native Mobile Deep Links, Sealed-Container Matcher & 12-Store CAD FX Fixes, 100% `Math.sin` Synthetic History Purge + Hard Slider Ceiling Rule, Split-Brain `storeOffersCache` Stopgap, `mtimeMs` API Memoization `965ms -> 12.5ms`, and 500-Key `singlesCache` LRU)**.
+- **Last Checkpoint Timestamp:** `2026-11-10 23:20 CST`
 - **Git Branch:** `main`
-- **Parent Baseline Commit:** `2190c28` (`V5 Slice 7: Instant family slot UI, Trophy Room top nav, fix  ETB market placeholders, declutter cards, and add invisible headless WAF bridge`)
+- **Parent Baseline Commit:** `1b23a36` (`V6 Slice 1: 0ms Fire-Then-Enrich alerts, Shop Pay fast-lane, fix promo/pack matcher & CAD stores, purge Math.sin, and fix split-brain cache overwrite`)
 - **PM2 Process Status:**
-  - `pokemon-drop-bot` (id `0`, `index.js`): **ONLINE** (`0` crashes, all 90 active Shopify LGS stores healthy, 15s Tier-1 Fast Poller + Big-Box Poller + 150s WAF Session Bridge + 09:00/18:00 Roundup Digest active)
-  - `drop-bot-dashboard` (id `1`, `server.js` on `http://localhost:3000`): **ONLINE** (`HTTP 200 OK` across `/`, `/dashboard.html`, `/api/status`, `/api/advisor/next-buy`, `POST /api/digest/send-now`, `POST /api/policies/:skuId/family-slots`, `/api/singles`, and `/api/engine-room`)
+  - `pokemon-drop-bot` (id `0`, `index.js`): **ONLINE** (`0` crashes, all 90 active Shopify LGS stores healthy with 12-store CAD->USD `0.73` FX + auto-detection, 15s Tier-1 Fast Poller at `?limit=250` with `ETag`/O(1) variant diffing, Big-Box Poller, 150s WAF Session Bridge, and 0ms Fire-Then-Enrich Discord/Telegram dispatch)
+  - `drop-bot-dashboard` (id `1`, `server.js` on `http://localhost:3000`): **ONLINE** (`0%` idle CPU, `GET /api/status` warm latency `12.49ms` down from `965ms`, `GET /api/engine-room` `25.55ms`, zero split-brain `storeOffersCache.json` overwrites)
 - **Active Sensor & Cache Counts:**
-  - **Shopify LGS Pool (`config/stores.json`):** `90` active healthy stores (`100%` online, `0` blocked; `26` Tier-1 Fast 15s restock stores).
-  - **Big-Box Sensors (`src/pollers/bigBoxRetailPoller.ts` + `src/pollers/wafBrowserBridge.ts`):** `7` honest Big-Box / Official 1st-Party sensors (`Pokémon Center`, `Target`, `Walmart`, `Best Buy`, `Costco`, `Sam's Club`, `GameStop`) with zero fake `Math.max` floors and 150s persistent session caching in `data/wafSessionCookies.json`.
-  - **Target Matrix (`config/catalog.json` + `config/userPreferences.json` + `marketCache.json`):** `131` tracked sealed SKUs with Rule of 3 Family Completion slots (`wallOwned`, `dadRipOwned`, `loganRipOwned`, `autoPilotEnabled: true`) and accurate `$48–$60` S&V ETB baselines (0 fake `$115` placeholders).
+  - **Shopify LGS Pool (`config/stores.json`):** `90` active healthy stores (`100%` online, `0` blocked; `26` Tier-1 Fast 15s restock stores polling `?limit=250` + O(1) unchanged-variant diffing; `12` Canadian stores tagged `currency: "CAD"` + `/cart.js` runtime FX guard).
+  - **Big-Box Sensors (`src/pollers/bigBoxRetailPoller.ts` + `src/pollers/wafBrowserBridge.ts`):** `7` honest Big-Box / Official 1st-Party sensors (`Pokémon Center`, `Target`, `Walmart`, `Best Buy`, `Costco`, `Sam's Club`, `GameStop`) with Universal / 1-Tap ATC mobile deep links (`target.com/p/-/A-{tcin}`, `api.bestbuy.com/click/-/{sku}/cart`, `walmart.com/pac?id={id}&quantity=1`).
+  - **Target Matrix (`config/catalog.json` + `config/userPreferences.json` + `marketCache.json`):** `131` tracked sealed SKUs with Rule of 3 Family Completion slots (`wallOwned`, `dadRipOwned`, `loganRipOwned`, `autoPilotEnabled: true`), hard ceiling rule (`effectiveTargetCeiling <= policyMaxBuy`), and honest rolling timestamp history (`0` `Math.sin` synthetic curves).
 
 ---
 
-## 2. Module Status Across V5 Refactoring
+## 2. Module Status Across V5–V6 Refactoring
 
-| Module / File | Lines | Status | V5 Target Action |
+| Module / File | Lines | Status | V6 Active Role |
 | :--- | :---: | :--- | :--- |
-| `_nyx_state/01..06_*.md` | 6 files | **ACTIVE (V5 Step 0–Slice 7)** | Multi-agent continuity engine & Failure Graveyard |
+| `_nyx_state/01..07_*.md` | 7 files | **ACTIVE (V6 Slice 1)** | Multi-agent continuity engine, Failure Graveyard (`02`), & Deep System + Commercial Audit (`07`) |
 | `scripts/dropbot-cli.ps1` | 195 | **ACTIVE (V5 Step 0)** | Portable `dropbot save / undo / backup / next` CLI |
-| `src/config/configManager.ts` | 335 | **ACTIVE (V5 Slice 7)** | `< 350` lines; merges `catalog.json` + `userPreferences.json` + `marketCache.json` + live store-offer median (`computeLiveStoreOfferMedian`); Rule of 3 slots |
-| `src/engine/trendAdvisor.ts` | 312 | **ACTIVE (V5 Slice 7)** | `< 350` lines; 14d/30d/60d/90d Rolling Market Analytics, `getLiveStoreOfferMedian()`, `computeAutoPilotTarget()`, `BLEEDING DOWN`, `SUPPLY TIGHTENING`, & `ELASTIC_DIP` |
-| `src/engine/singlesSniper.ts` | 323 | **ACTIVE (V5 Slice 6)** | `< 350` lines; Quiet Singles & Gyarados Offload Radar (`singlesCache.json`) with 100% silent alert rule enforced |
-| `src/pollers/wafBrowserBridge.ts` | 231 | **ACTIVE (V5 Slice 7)** | `< 250` lines; 100% invisible `--headless=new` / session cookie bridge (`data/wafSessionCookies.json`, `150s` polite cycle) + Queue-It detector (`◈ ⟦ POKÉMON CENTER QUEUE ACTIVE — ENTER LINE NOW ⟧`) |
-| `src/pollers/bigBoxRetailPoller.ts` | 296 | **ACTIVE (V5 Slice 7)** | `< 350` lines; Honest 7-retailer Big-Box 1P poller integrated with `wafBrowserBridge.ts` |
-| `src/pollers/fastTier1Poller.ts` | 336 | **ACTIVE (V5 Slice 4A)** | `< 350` lines; 15-second Tier-1 Fast Shopify restock delta poller |
-| `evaluator.ts` | 1,870 | **ACTIVE (V5 Slice 7)** | Live store-offer median preference, Rule of 3 Rip Hunt Mode (`1/3` & `2/3` + `◈ ⟦ RIP PAIR READY (QTY 2+) ⟧`), `3/3 COMPLETE` mute, 1P Big-Box/PC Retail MSRP Flip Bypass, and `buildShopifyDirectCartLinks()` |
-| `notifier.ts` | 1,105 | **ACTIVE (V5 Slice 6)** | Hard silent-singles guard, `[CART 1X] / [CART 2X] / [CART 3X]` links, and twice-daily (`09:00` & `18:00`) 4-section Market & Deal Roundup Digest |
-| `policies.ts` | 760 | **ACTIVE (V5 Slice 7)** | Strict Sealed-Only Traffic Cop (`isSingleCardOrNonSealed()`), multi-box (`Set of 2`) & hyphenated `pokemon-center` firewalls, and `reloadWatchPolicies()` |
-| `server.js` | 2,861 | **ACTIVE (V5 Slice 7)** | Exposes `/api/advisor/next-buy`, `POST /api/policies/:skuId/family-slots` (returns `policy` + `sku`), `POST /api/digest/send-now`, `/api/singles`, and `/api/engine-room` with `wafBridge` telemetry |
-| `public/index.html` | 6,299 | **ACTIVE (V5 Slice 7)** | Instant 0ms optimistic UI on `[WALL] [DAD RIP] [LOGAN RIP] [3/3 ALL]`, Top Trophy Room & Quick Filter pills (`ALL SETS` \| `NEED WALL (0/3)` \| `NEED RIP PAIR (1/3–2/3)` \| `TROPHY ROOM (ON WALL)` \| `3/3 COMPLETE`), and collapsible `<details>` `[+ METRICS]` drawers |
+| `src/config/configManager.ts` | 335 | **ACTIVE (`< 350` lines)** | Merges `catalog.json` + `userPreferences.json` + `marketCache.json` + live store-offer median; Rule of 3 slots |
+| `src/engine/trendAdvisor.ts` | 328 | **ACTIVE (V6 Slice 1, `< 350`)** | Honest 14d/30d/60d/90d rolling metrics (`0` `Math.sin`), `sampleDaysCount` / `insufficientHistory`, & Hard Ceiling Rule (`effectiveTargetCeiling <= Math.max(msrpCeiling, policyMaxBuy)`) |
+| `src/engine/singlesSniper.ts` | 336 | **ACTIVE (V6 Slice 1, `< 350`)** | Quiet Singles & Gyarados Offload Radar (`singlesCache.json`) with 500-key LRU cap (`pruneCompBenchmarksLru`) & 100% silent alert rule |
+| `src/pollers/wafBrowserBridge.ts` | 231 | **ACTIVE (`< 250` lines)** | Session cookie bridge (`data/wafSessionCookies.json`, `150s` cycle) + Queue-It detector *(Playwright upgrade queued for V6 Slice 3)* |
+| `src/pollers/bigBoxRetailPoller.ts` | 296 | **ACTIVE (`< 350` lines)** | Honest 7-retailer Big-Box 1P poller integrated with `wafBrowserBridge.ts` |
+| `src/pollers/fastTier1Poller.ts` | 342 | **ACTIVE (V6 Slice 1, `< 350`)** | 15s Tier-1 Fast Shopify poller upgraded to `?limit=250` (`updated_at desc`), `ETag`/`304`, O(1) unchanged-variant diffing, `?payment=shop_pay`, & CAD->USD FX |
+| `evaluator.ts` | 1,941 | **ACTIVE (V6 Slice 1)** | `mtimeMs`-synced `storeOffersCacheMem`, `buildShopifyDirectCartLinks()` (`?payment=shop_pay`), `buildMobileRetailerLinks()` (Target/BestBuy/Walmart ATC), & Rule of 3 logic |
+| `notifier.ts` | 1,052 | **ACTIVE (V6 Slice 1)** | **0ms Fire-Then-Enrich** alert dispatch (`priorityFront = true` immediate send + background `getDualMarketComps()` `PATCH`), `embed.url` fast-lane handoff, & 09:00/18:00 Roundup Digest |
+| `listener.ts` | 92 | **ACTIVE (V6 Slice 1)** | Non-blocking `void sendAlert(...).catch(...)` handoff eliminating head-of-line blocking inside poller loops |
+| `lgsPoller.ts` | 816 | **ACTIVE (V6 Slice 1)** | 90-store Shopify poller with `resolveShopifyFxMultiplier()` (12 `CAD` stores + `/cart.js` auto-detect), `?payment=shop_pay` cart links, & 3-arg `isSingleCardOrNonSealed()` |
+| `policies.ts` | 717 | **ACTIVE (V6 Slice 1)** | Context-aware `isSingleCardOrNonSealed()` unblocking `\bpack\b/\bpromo\b/\bfoil\b/\bsingle\b` on valid sealed containers while blocking 100% of singles, slabs, loose packs, & partial-ETB traps |
+| `server.js` | 2,934 | **ACTIVE (V6 Slice 1)** | `mtimeMs`-backed `readJsonCached()` + memoized `/api/status` (`12.49ms`) & `/api/engine-room` (`25.55ms`), zero split-brain `storeOffersCache.json` writes, & honest `/api/sku-history/:skuId` |
+| `public/index.html` | 6,302 | **ACTIVE (V6 Slice 1)** | Instant 0ms Rule-of-3 UI, Top Trophy Room nav, collapsible `[+ METRICS]` drawers, and `?payment=shop_pay` `[CART 1X/2X/3X]` buttons |
 | `public/css/stadium.css` + `public/js/stadium/*.js` | 5 files | **HARD-FROZEN (V5 Slice 2)** | `git diff = 0 lines` verified |

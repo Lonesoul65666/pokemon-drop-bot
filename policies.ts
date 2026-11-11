@@ -109,109 +109,82 @@ export function computeRipMetrics(
   return { packCount, pricePerPack, isRipValueLeader };
 }
 
-export const GLOBAL_JUNK_EXCLUSIONS = [
+// Unconditional non-sealed / junk exclusions (always block even if a sealed container word appears)
+export const GLOBAL_JUNK_EXCLUSIONS: RegExp[] = [
   /empty/i,
-  /no packs/i,
-  /box only/i,
-  /case only/i,
-  /open case/i,
-  /open box/i,
-  /opened case/i,
-  /unsealed case/i,
-  /loose boxes/i,
-  /ripped\s*live|rip\s*(&|and|n)\s*ship|live\s*break|box\s*break|pack\s*break|personal\s*break/i,
-  /2-pack/i,
-  /2 pack/i,
-  /acrylic/i,
-  /protector/i,
-  /\bcode\b/i,
-  /code card/i,
-  /sleeves/i,
-  /deck box/i,
-  /playmat/i,
-  /\bdice\b/i,
+  /no\s*packs/i,
+  /\bbox\s*only\b/i,
+  /\bcase\s*only\b/i,
+  /\bcard\s*only\b/i,
+  /\bpacks?\s*only\b/i,
+  /\bpromos?\s*(cards?\s*)?only\b/i,
+  /open\s*(case|box)/i,
   /opened/i,
+  /unsealed/i,
+  /loose\s*boxes/i,
+  /ripped\s*live|rip\s*(&|and|n)\s*ship|live\s*break|box\s*break|pack\s*break|personal\s*break/i,
+  /\b2[- ]?pack\b/i,
+  /\b3[- ]?pack\b/i,
+  /\bthree\s*pack\b/i,
+  /acrylic/i,
+  /\bprotector\b/i,
+  /display\s*case/i,
   /damaged/i,
   /weighed/i,
-  /pack only/i,
-  /single pack/i,
+  /resealed/i,
+  /single\s*pack/i,
   /\b1\s*pack\b/i,
-  /loose pack/i,
-  /sample pack/i,
-  /fun pack/i,
+  /loose\s*pack/i,
+  /sample\s*pack/i,
+  /fun\s*pack/i,
   /1x\s*booster\s*pack/i,
-  /sleeved\s*booster/i,
-  /empty\s*box/i,
-  /empty\s*etb/i,
   /one\s*booster\s*pack/i,
   /single\s*booster/i,
-  /art set/i,
-  /3-pack/i,
-  /3 pack/i,
-  /three pack/i,
-  /blister/i,
-  /checklane/i,
-  /sleeved/i,
-  /\bbooster pack\b/i,
-  /\bpack\b(?!\s*box)/i,
+  /sleeved\s*booster/i,
+  /\bsleeved\b/i,
+  /art\s*set/i,
+  /\bblister\b/i,
+  /\bchecklane\b/i,
   /\btin\b/i,
-  /binder/i,
-  /portfolio/i,
-  /poster/i,
-  /illustration collection/i,
-  /collection box/i,
-  /build & battle/i,
-  /build and battle/i,
+  /\bbinder\b/i,
+  /\bportfolio\b/i,
+  /\bposter\b/i,
+  /illustration\s*collection/i,
+  /(?<!ultra[- ]premium\s+|super[- ]premium\s+)collection\s+box/i,
+  /build\s*(&|and)\s*battle/i,
   /\bcombo\b/i,
-  /\bsingle(s)?\b/i,
-  /single card/i,
-  /\bholo\b/i,
-  /\bholofoil\b/i,
-  /reverse holo/i,
-  /reverse holofoil/i,
-  /pokeball holo/i,
-  /masterball holo/i,
+  /\bsingles\b/i,
+  /single\s*cards?\b/i,
+  /\b\d{1,3}\s*\/\s*\d{1,3}\b(?!\s*\/\s*\d{2,4})/i,
   /\(\d{1,3}\/\d{1,3}\)/i,
   /\[[a-z]{2,4}\d*:/i,
-  /\bfoil\b/i,
-  /full art/i,
-  /alt art/i,
-  /alternate art/i,
-  /illustration rare/i,
-  /\bsir\b/i,
-  /\bir\b/i,
-  /hyper rare/i,
-  /secret rare/i,
-  /ultra rare/i,
-  /double rare/i,
-  /rainbow rare/i,
-  /gold star/i,
-  /near mint/i,
+  /pokeball\s*holo/i,
+  /masterball\s*holo/i,
+  /reverse\s*holo(foil)?/i,
+  /near\s*mint/i,
   /\bnm\b/i,
-  /lightly played/i,
+  /lightly\s*played/i,
   /\blp\b/i,
-  /moderately played/i,
+  /moderately\s*played/i,
   /\bmp\b/i,
-  /heavily played/i,
+  /heavily\s*played/i,
   /\bhp\b/i,
   /\bungraded\b/i,
-  /raw card/i,
-  /card only/i,
-  /\bpromo\b/i,
-  /black star/i,
+  /raw\s*card/i,
   /\bpsa\b/i,
   /\bcgc\b/i,
   /\bbgs\b/i,
   /\bbeckett\b/i,
   /\bsgc\b/i,
-  /gem mint/i,
+  /gem\s*mint/i,
   /mint\s*10\b/i,
   /mint\s*9\b/i,
   /pristine\s*10\b/i,
-  /\bslab(s)?\b/i,
+  /\bslab(s|bed)?\b/i,
   /\bgraded\b/i,
   /japanese/i,
   /\bjp\s/i,
+  /\bjpn\b/i,
   /korean/i,
   /chinese/i,
   /s-chinese/i,
@@ -219,9 +192,51 @@ export const GLOBAL_JUNK_EXCLUSIONS = [
   /spanish/i,
   /french/i,
   /german/i,
+  // Partial-ETB / promo-from-ETB / accessory-for-ETB traps even when container word appears:
+  /\b(etb|elite\s*trainer\s*box|upc|spc|booster\s*box|booster\s*bundle)\s+(sealed\s+|foil\s+|holo\s+|stamped\s+)*(promo|sleeves|playmat|deck\s*box|dice|dividers?|code\s*cards?|booster\s*pack)\b/i,
+  /\b(promo|sleeves|playmat|deck\s*box|dice|booster\s*pack)\s+from\s+(an?\s+)?(etb|elite\s*trainer|upc|spc|booster\s*box)\b/i,
 ];
 
-const SHOPIFY_BLOCKED_META_REGEX = /\b(single|singles|pokemon\s+singles|single\s+cards?|graded|slabs?|psa|cgc|bgs|loose\s+packs?|code\s+cards?|accessories)\b/i;
+// Context-sensitive descriptors: block unconditionally when NO valid sealed container is in title,
+// but allow on genuine sealed containers (e.g. "6-Pack Booster Bundle", "ETB (Includes Full-Art Foil Promo Card)", "Battle Styles Single Strike ETB", "Booster Box - Single Box")
+const CONTEXT_SENSITIVE_NON_SEALED_PATTERNS: RegExp[] = [
+  /\bbooster\s*pack\b/i,
+  /\bpack\b(?!\s*box)/i,
+  /\bpromo\b/i,
+  /black\s*star/i,
+  /\bfoil\b/i,
+  /full\s*art/i,
+  /alt\s*art/i,
+  /alternate\s*art/i,
+  /\bholo(foil)?\b/i,
+  /illustration\s*rare/i,
+  /\bsir\b/i,
+  /\bir\b/i,
+  /hyper\s*rare/i,
+  /secret\s*rare/i,
+  /ultra\s*rare/i,
+  /double\s*rare/i,
+  /rainbow\s*rare/i,
+  /gold\s*star/i,
+  /#[0-9]{1,4}\b/i,
+  /\b(tg|gg|svp|swshp)[0-9]{1,3}\b/i,
+  /\b(sv|swsh|sm|xy)[0-9]{3}\b/i,
+  /\b(sv|swsh|sm|xy)(1[3-9]|[2-9][0-9])\b/i,
+  /\bsingle\b(?!\s*(strike|box|bundle|etb|elite\s*trainer|display|collection|upc|spc))/i,
+];
+
+// Accessory words that must be blocked unless explicitly inside an "includes/with" contents clause of a sealed container
+const ACCESSORY_CONTENT_PATTERNS: RegExp[] = [
+  /\bcode\s*cards?\b/i,
+  /\bcode\b/i,
+  /\bsleeves\b/i,
+  /\bdeck\s*box\b/i,
+  /\bplaymat\b/i,
+  /\bdice\b/i,
+];
+
+const SHOPIFY_HARD_META_BLOCK_REGEX = /\b(singles|pokemon\s+singles|single\s+cards?|graded|slabs?|psa|cgc|bgs|loose\s+packs?|code\s+cards?|accessories)\b/i;
+const SHOPIFY_LOOSE_SINGLE_META_REGEX = /\bsingle\b(?!\s*(strike|box|bundle|etb|display))/i;
 
 export function isSingleOrNonSealedShopifyProduct(prod?: {
   product_type?: string | null;
@@ -230,101 +245,26 @@ export function isSingleOrNonSealedShopifyProduct(prod?: {
   handle?: string | null;
 }): boolean {
   if (!prod) return false;
+  const titleStr = String(prod.title || '').trim();
+  const hasSealedTitle = POSITIVE_SEALED_CONTAINER_ANY_REGEX.test(titleStr);
   const prodType = String(prod.product_type || '').trim();
   const tagsStr = Array.isArray(prod.tags) ? prod.tags.join(' ') : String(prod.tags || '');
-  if (SHOPIFY_BLOCKED_META_REGEX.test(prodType) || SHOPIFY_BLOCKED_META_REGEX.test(tagsStr)) {
+  if (SHOPIFY_HARD_META_BLOCK_REGEX.test(prodType) || SHOPIFY_HARD_META_BLOCK_REGEX.test(tagsStr)) {
+    return true;
+  }
+  if (!hasSealedTitle && (SHOPIFY_LOOSE_SINGLE_META_REGEX.test(prodType) || SHOPIFY_LOOSE_SINGLE_META_REGEX.test(tagsStr))) {
     return true;
   }
   const handleWords = String(prod.handle || '').replace(/-/g, ' ').trim();
-  if (handleWords && isSingleCardOrNonSealed(handleWords, prodType, tagsStr)) {
+  if (handleWords && isSingleCardOrNonSealed(titleStr ? `${titleStr} ${handleWords}` : handleWords, prodType, tagsStr)) {
     return true;
   }
   return false;
 }
 
-const SINGLE_CARD_OR_NON_SEALED_PATTERNS: RegExp[] = [
-  // Card Number / Set Number Patterns (excludes 3-part MM/DD/YYYY dates)
-  /\b\d{1,3}\s*\/\s*\d{1,3}\b(?!\s*\/\s*\d{2,4})/i,
-  /\(\d{1,3}\/\d{1,3}\)/i,
-  /\[[a-z]{2,4}\d*:/i,
-  /#[0-9]{1,4}\b/i,
-  /\b(tg|gg|svp)[0-9]{1,3}\b/i,
-  /\b(sv|swsh|sm|xy)[0-9]{3}\b/i,
-  /\b(sv|swsh|sm|xy)(1[3-9]|[2-9][0-9])\b/i,
-  // Single Card Rarity & Condition Terms
-  /\bsingle(s)?\b/i,
-  /single\s+cards?\b/i,
-  /\bholo\b/i,
-  /\bholofoil\b/i,
-  /reverse\s+holo/i,
-  /reverse\s+holofoil/i,
-  /pokeball\s+holo/i,
-  /masterball\s+holo/i,
-  /\bfoil\b/i,
-  /full\s+art/i,
-  /alt\s+art/i,
-  /alternate\s+art/i,
-  /illustration\s+rare/i,
-  /\bsir\b/i,
-  /\bir\b/i,
-  /hyper\s+rare/i,
-  /secret\s+rare/i,
-  /ultra\s+rare/i,
-  /double\s+rare/i,
-  /rainbow\s+rare/i,
-  /gold\s+star/i,
-  /near\s+mint/i,
-  /\bnm\b/i,
-  /lightly\s+played/i,
-  /\blp\b/i,
-  /moderately\s+played/i,
-  /\bmp\b/i,
-  /heavily\s+played/i,
-  /\bhp\b/i,
-  /\bdamaged\b/i,
-  /\bungraded\b/i,
-  /raw\s+card/i,
-  /card\s+only/i,
-  /\bpromo\b/i,
-  /black\s+star/i,
-  // Graded Slabs
-  /\bpsa\b/i,
-  /\bcgc\b/i,
-  /\bbgs\b/i,
-  /\bbeckett\b/i,
-  /\bsgc\b/i,
-  /gem\s+mint/i,
-  /mint\s*10\b/i,
-  /mint\s*9\b/i,
-  /pristine\s*10\b/i,
-  /\bslab(s)?\b/i,
-  /\bgraded\b/i,
-  // Loose Packs, Blisters & Empty/Accessory Junk
-  /single\s+pack/i,
-  /\b1\s*pack\b/i,
-  /loose\s+pack/i,
-  /sleeved\s+booster/i,
-  /\bblister\b/i,
-  /\bchecklane\b/i,
-  /\b3-pack\b/i,
-  /three\s+pack/i,
-  /art\s+set/i,
-  /sample\s+pack/i,
-  /fun\s+pack/i,
-  /empty\s+box/i,
-  /empty\s+etb/i,
-  /box\s+only/i,
-  /no\s+packs/i,
-  /code\s+card/i,
-  /\bsleeves\b/i,
-  /deck\s+box/i,
-  /\bbinder\b/i,
-  /\bplaymat\b/i,
-  /acrylic\s+case/i,
-  /\bprotector\b/i
-];
+const SINGLE_CARD_OR_NON_SEALED_PATTERNS: RegExp[] = GLOBAL_JUNK_EXCLUSIONS;
 
-const POSITIVE_SEALED_CONTAINER_ANY_REGEX = /\b(elite\s*trainer\s*box|etb|booster\s*(box|display|bundle)|ultra\s*premium\s*collection|super\s*premium\s*collection|upc|spc|booster\s*case|etb\s*case)\b/i;
+const POSITIVE_SEALED_CONTAINER_ANY_REGEX = /\b(elite\s*trainer\s*box|etb|booster\s*(box|display|bundle)|ultra[- ]*premium\s*collection|super[- ]*premium\s*collection|upc|spc|booster\s*case|etb\s*case)\b/i;
 
 const NON_CARD_JUNK_OR_PACK_REGEX = /\b(single\s*pack|1\s*pack|loose\s*packs?|sleeved|blister|checklane|3-pack|three\s*pack|sample\s*pack|fun\s*pack|empty\s*box|empty\s*etb|box\s*only|case\s*only|no\s*packs|code\s*cards?|sleeves|deck\s*box|binder|portfolio|playmat|acrylic\s*case|protector|dice|plush|figure|apparel)\b/i;
 
@@ -338,35 +278,52 @@ export function isSingleCardOrNonSealed(
   const clean = String(title || '').trim();
   if (!clean) return true;
 
+  const hasSealedContainer = POSITIVE_SEALED_CONTAINER_ANY_REGEX.test(clean);
   const prodTypeStr = String(productType || '').trim();
   const tagsStr = Array.isArray(tags) ? tags.join(' ') : String(tags || '').trim();
-  const metaCombined = `${prodTypeStr} ${tagsStr}`.trim();
+  const nonUrlMeta = `${prodTypeStr} ${tagsStr}`.replace(/https?:\/\/\S+/gi, ' ').trim();
 
-  if (metaCombined && SHOPIFY_BLOCKED_META_REGEX.test(metaCombined)) {
-    return true;
+  if (nonUrlMeta) {
+    if (SHOPIFY_HARD_META_BLOCK_REGEX.test(nonUrlMeta)) return true;
+    if (!hasSealedContainer && SHOPIFY_LOOSE_SINGLE_META_REGEX.test(nonUrlMeta)) return true;
+    if (/\b(psa-[0-9]|cgc-[0-9]|bgs-[0-9]|single-card|pokemon-singles|loose-pack|graded-card|holofoil)\b/i.test(nonUrlMeta)) {
+      return true;
+    }
   }
 
-  for (const rx of SINGLE_CARD_OR_NON_SEALED_PATTERNS) {
-    if (rx.test(clean)) return true;
-  }
-
-  if (/\b(sv|tg|gg|swsh|sm|xy)[0-9]{1,3}\b/i.test(clean) && !POSITIVE_SEALED_CONTAINER_ANY_REGEX.test(clean)) {
-    return true;
-  }
-
+  // 1. Always enforce unconditional hard exclusions (empty, box only, slabs, graded, NM/LP, blisters, loose packs, ETB promo/sleeves)
   for (const junkRegex of GLOBAL_JUNK_EXCLUSIONS) {
     if (junkRegex.test(clean)) return true;
   }
 
-  if (metaCombined && /\b(psa-[0-9]|cgc-[0-9]|bgs-[0-9]|single-card|pokemon-singles|loose-pack|graded-card|holofoil)\b/i.test(metaCombined)) {
+  // 2. Accessory words (sleeves, playmat, deck box, dice, code card) block unless inside an explicit "includes/with" contents list on a sealed box
+  const hasIncludesClause = hasSealedContainer && /\b(includes?|included|with|featuring|contains?)\b/i.test(clean);
+  if (!hasIncludesClause) {
+    for (const accRx of ACCESSORY_CONTENT_PATTERNS) {
+      if (accRx.test(clean)) return true;
+    }
+  }
+
+  // 3. Context-sensitive card/pack words (pack, promo, foil, full art, holo, #123, single) ONLY block when NO valid sealed container is present,
+  // OR when a standalone loose booster pack phrase ("Booster Pack" singular without plural/bundle/box/includes) is being sold.
+  if (!hasSealedContainer) {
+    for (const ctxRx of CONTEXT_SENSITIVE_NON_SEALED_PATTERNS) {
+      if (ctxRx.test(clean)) return true;
+    }
+  } else if (/\bbooster\s+pack\b(?!s)/i.test(clean) && !/\b(\d+[- ]*booster\s+pack|includes?|with|contains?)\b/i.test(clean)) {
     return true;
   }
 
-  const urlSlugMatch = `${clean} ${tagsStr}`.match(/\/products\/([a-z0-9-_]+)/i);
+  const urlSlugMatch = `${clean} ${prodTypeStr} ${tagsStr}`.match(/\/products\/([a-z0-9-_]+)/i);
   if (urlSlugMatch && urlSlugMatch[1]) {
     const slugText = urlSlugMatch[1].replace(/-/g, ' ');
-    for (const rx of SINGLE_CARD_OR_NON_SEALED_PATTERNS) {
-      if (rx.test(slugText)) return true;
+    for (const hardRx of GLOBAL_JUNK_EXCLUSIONS) {
+      if (hardRx.test(slugText)) return true;
+    }
+    if (!hasSealedContainer && !POSITIVE_SEALED_CONTAINER_ANY_REGEX.test(slugText)) {
+      for (const ctxRx of CONTEXT_SENSITIVE_NON_SEALED_PATTERNS) {
+        if (ctxRx.test(slugText)) return true;
+      }
     }
   }
 
@@ -417,7 +374,7 @@ export function hasMandatorySealedContainerKeyword(title?: string, formFactor?: 
   }
 
   if (ff === 'upc' || ff === 'spc') {
-    return /\b(ultra\s*premium\s*collection|super\s*premium\s*collection|upc|spc)\b/i.test(clean);
+    return /\b(ultra[- ]*premium\s*collection|super[- ]*premium\s*collection|upc|spc)\b/i.test(clean);
   }
 
   if (ff === 'etb_case') {
@@ -584,7 +541,7 @@ export function isValidSkuForFormFactor(
   const targetLower = `${options?.targetName || ''} ${options?.ruleId || ''}`.toLowerCase();
 
   // Layer 2: Single-Card / Slab / Loose-Pack / Accessory Hard Blacklist
-  if (isSingleCardOrNonSealed(title, options?.handle || options?.sourceUrl)) {
+  if (isSingleCardOrNonSealed(title, undefined, options?.handle || options?.sourceUrl)) {
     return false;
   }
 
@@ -716,7 +673,7 @@ export function matchProductToSku(
   if (!cleanTitle) return null;
 
   // Layer 2: Reject single cards, graded slabs, loose packs, blisters, and accessories immediately
-  if (isSingleCardOrNonSealed(cleanTitle, options?.handle || options?.sourceUrl)) {
+  if (isSingleCardOrNonSealed(cleanTitle, undefined, options?.handle || options?.sourceUrl)) {
     return null;
   }
 

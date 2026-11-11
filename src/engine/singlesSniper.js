@@ -52,6 +52,17 @@ const SEED_GYARADOS_BENCHMARKS = [
         url: 'https://overthebrick.com/collections/pokemon', itemId: 'm_gyarados_ex_115_122', stock: 1, updatedAt: Date.now()
     }
 ];
+function pruneCompBenchmarksLru(maxKeys = 500) {
+    const entries = Object.entries(singlesCacheMem.compBenchmarks || {});
+    if (entries.length <= maxKeys)
+        return false;
+    entries.sort((a, b) => Number(b[1]?.updatedAt || 0) - Number(a[1]?.updatedAt || 0));
+    const nextBench = {};
+    for (const [k, v] of entries.slice(0, maxKeys))
+        nextBench[k] = v;
+    singlesCacheMem.compBenchmarks = nextBench;
+    return true;
+}
 function loadSinglesCacheFromDisk() {
     try {
         if (fs_1.default.existsSync(exports.SINGLES_CACHE_PATH)) {
@@ -66,14 +77,14 @@ function loadSinglesCacheFromDisk() {
         }
     }
     catch { }
-    let seeded = false;
+    let mutated = pruneCompBenchmarksLru(500);
     for (const seed of SEED_GYARADOS_BENCHMARKS) {
         if (!singlesCacheMem.offers[seed.id]) {
             singlesCacheMem.offers[seed.id] = seed;
-            seeded = true;
+            mutated = true;
         }
     }
-    if (seeded) {
+    if (mutated) {
         try {
             (0, configManager_1.atomicWriteJson)(exports.SINGLES_CACHE_PATH, singlesCacheMem);
         }
@@ -207,6 +218,9 @@ function ingestSingleCardOffer(input) {
         for (const item of allEntries.slice(0, 500))
             trimmed[item.id] = item;
         singlesCacheMem.offers = trimmed;
+    }
+    if (Object.keys(singlesCacheMem.compBenchmarks).length > 500) {
+        pruneCompBenchmarksLru(500);
     }
     scheduleSinglesCacheFlush();
     // Hard Rule (V5 Slice 6): Single cards and slabs NEVER fire notifications (singlesAlertsEnabled = false enforced).

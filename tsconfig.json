@@ -20,6 +20,7 @@
     "marketTelemetry.ts",
     "src/config/configManager.ts",
     "src/marketSync.ts",
+    "src/**/*.ts",
     "vampirePoller.ts",
     "marketComps.ts",
     "marketTape.ts"

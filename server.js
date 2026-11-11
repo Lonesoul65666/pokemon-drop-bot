@@ -44,28 +44,100 @@ const {
 const {
   isSingleCardOrNonSealed,
   hasMandatorySealedContainerKeyword,
-  reloadWatchPolicies
+  reloadWatchPolicies,
+  getPackCountForSku: tsGetPackCount
 } = require('./policies');
 const {
-  buildShopifyDirectCartLinks,
-  refreshCachedStoreOffersStatus
+  buildShopifyDirectCartLinks
 } = require('./evaluator');
 const {
   querySinglesCache,
   updateSinglesWatchlist
 } = require('./src/engine/singlesSniper');
 
+const USER_PREFS_PATH = path.resolve(__dirname, 'config', 'userPreferences.json');
+const CATALOG_PATH = path.resolve(__dirname, 'config', 'catalog.json');
+const STORES_CFG_PATH = path.resolve(__dirname, 'config', 'stores.json');
+const _jsonFileCache = new Map();
+
+function readJsonCached(filePath, fallback) {
+  try {
+    if (!fs.existsSync(filePath)) return fallback;
+    const stat = fs.statSync(filePath);
+    const hit = _jsonFileCache.get(filePath);
+    if (hit && hit.mtimeMs === stat.mtimeMs) {
+      return hit.data;
+    }
+    const parsed = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    const val = parsed !== null && parsed !== undefined ? parsed : fallback;
+    _jsonFileCache.set(filePath, { mtimeMs: stat.mtimeMs, data: val });
+    return val;
+  } catch (e) {
+    return fallback;
+  }
+}
+
+let _apiCacheGeneration = 0;
+let _cachedPoliciesMem = null;
+let _cachedPoliciesSig = '';
+let _cachedMergedOffersMem = null;
+let _cachedMergedOffersSig = '';
+let _cachedMergedOffersTs = 0;
+let _cachedStatusJson = null;
+let _cachedStatusSig = '';
+let _cachedStatusTs = 0;
+let _cachedEngineRoomJson = null;
+let _cachedEngineRoomSig = '';
+let _cachedEngineRoomTs = 0;
+
+function invalidateDashboardApiCaches() {
+  _apiCacheGeneration += 1;
+  _cachedPoliciesMem = null;
+  _cachedMergedOffersMem = null;
+  _cachedStatusJson = null;
+  _cachedEngineRoomJson = null;
+}
+
+function getFileMtimeFast(p) {
+  try { return fs.statSync(p).mtimeMs; } catch (e) { return 0; }
+}
+
+function getDashboardStateSignature() {
+  return [
+    _apiCacheGeneration,
+    getFileMtimeFast(USER_PREFS_PATH),
+    getFileMtimeFast(CATALOG_PATH),
+    getFileMtimeFast(STORES_CFG_PATH),
+    getFileMtimeFast(POLICIES_PATH),
+    getFileMtimeFast( path.resolve(__dirname, 'storeOffersCache.json') ),
+    getFileMtimeFast(LIVE_STOCK_PATH),
+    getFileMtimeFast(TELEMETRY_PATH),
+    getFileMtimeFast(STORE_HEALTH_PATH),
+    getFileMtimeFast(DROPS_PATH),
+    getFileMtimeFast(SALES_HISTORY_PATH),
+    getFileMtimeFast(CONQUERED_VAULT_PATH),
+    getFileMtimeFast(MSRP_TROPHIES_PATH),
+    getFileMtimeFast(SETTINGS_PATH)
+  ].join(':');
+}
+
 function getRuntimePolicies() {
+  const sig = `${_apiCacheGeneration}:${getFileMtimeFast(USER_PREFS_PATH)}:${getFileMtimeFast(CATALOG_PATH)}:${getFileMtimeFast(POLICIES_PATH)}`;
+  if (_cachedPoliciesMem && _cachedPoliciesSig === sig) {
+    return _cachedPoliciesMem;
+  }
   try {
     const merged = loadMergedPoliciesRaw();
-    if (Array.isArray(merged) && merged.length > 0) return merged;
-  } catch (e) {}
-  try {
-    if (fs.existsSync(POLICIES_PATH)) {
-      return JSON.parse(fs.readFileSync(POLICIES_PATH, 'utf-8')) || [];
+    if (Array.isArray(merged) && merged.length > 0) {
+      _cachedPoliciesMem = merged;
+      _cachedPoliciesSig = sig;
+      return merged;
     }
   } catch (e) {}
-  return [];
+  const fallback = readJsonCached(POLICIES_PATH, []);
+  _cachedPoliciesMem = Array.isArray(fallback) ? fallback : [];
+  _cachedPoliciesSig = sig;
+  return _cachedPoliciesMem;
 }
 
 function atomicWriteJson(filePath, data) {
@@ -81,12 +153,13 @@ function atomicWriteJson(filePath, data) {
     const fallbackTmp = `${filePath}.tmp`;
     fs.writeFileSync(fallbackTmp, JSON.stringify(data, null, 2), 'utf-8');
     fs.renameSync(fallbackTmp, filePath);
+  } finally {
+    invalidateDashboardApiCaches();
   }
 }
 
 function getPackCountForSku(skuId, formFactor, name) {
   try {
-    const { getPackCountForSku: tsGetPackCount } = require('./policies');
     if (typeof tsGetPackCount === 'function') {
       return tsGetPackCount(skuId, formFactor, name);
     }
@@ -918,21 +991,17 @@ function getDynamicStoreTelemetry() {
       gamestop: { name: 'GameStop', status: '200 OK // 0 IN STOCK', lastStatus: '200 OK // 0 IN STOCK', itemsParsed: 0, mode: '1P Retail MSRP Sealed Boxes & ETBs', lastChecked: Date.now() }
     }
   };
-  if (fs.existsSync(STORE_HEALTH_PATH)) {
-    try {
-      const rawHealth = JSON.parse(fs.readFileSync(STORE_HEALTH_PATH, 'utf-8'));
-      if (rawHealth && typeof rawHealth === 'object') {
-        if (rawHealth.__bigBoxHealth) {
-          bigBoxHealth = { ...bigBoxHealth, ...rawHealth.__bigBoxHealth };
-        }
-        if (rawHealth.__fastTier1Telemetry) {
-          fastTier1Poller = { ...fastTier1Poller, ...rawHealth.__fastTier1Telemetry };
-        }
-        for (const [k, v] of Object.entries(rawHealth)) {
-          if (!k.startsWith('__')) storeHealth[k] = v;
-        }
-      }
-    } catch (e) {}
+  const rawHealth = readJsonCached(STORE_HEALTH_PATH, null);
+  if (rawHealth && typeof rawHealth === 'object') {
+    if (rawHealth.__bigBoxHealth) {
+      bigBoxHealth = { ...bigBoxHealth, ...rawHealth.__bigBoxHealth };
+    }
+    if (rawHealth.__fastTier1Telemetry) {
+      fastTier1Poller = { ...fastTier1Poller, ...rawHealth.__fastTier1Telemetry };
+    }
+    for (const [k, v] of Object.entries(rawHealth)) {
+      if (!k.startsWith('__')) storeHealth[k] = v;
+    }
   }
 
   const lgsCount = lgsStores.length || Object.keys(storeHealth).length || 91;
@@ -964,15 +1033,10 @@ function getDynamicStoreTelemetry() {
 }
 
 function computeNearMissesAndBestOffers() {
-  let liveMap = {};
-  if (fs.existsSync(LIVE_STOCK_PATH)) {
-    try { liveMap = JSON.parse(fs.readFileSync(LIVE_STOCK_PATH, 'utf-8')); } catch (e) { liveMap = {}; }
-  }
+  const liveMap = readJsonCached(LIVE_STOCK_PATH, {});
   const policies = getRuntimePolicies();
-  let cache = {};
-  if (fs.existsSync(TELEMETRY_PATH)) {
-    try { cache = JSON.parse(fs.readFileSync(TELEMETRY_PATH, 'utf-8')); } catch (e) { cache = {}; }
-  }
+  const cache = readJsonCached(TELEMETRY_PATH, {});
+  const muteVaultedGlobal = Boolean(loadGlobalSettings()?.muteVaulted);
 
   const rawBestOffers = (liveMap && liveMap.__bestOffers && typeof liveMap.__bestOffers === 'object')
     ? liveMap.__bestOffers
@@ -1059,7 +1123,7 @@ function computeNearMissesAndBestOffers() {
       marketValue,
       formFactor: pol.formFactor,
       owned: Boolean(pol.owned || pol.inVault),
-      muteVaulted: Boolean(loadGlobalSettings()?.muteVaulted),
+      muteVaulted: muteVaultedGlobal,
       storeName: cand.retailer
     });
     const trendEval = evaluateSkuTrendAndTiming({
@@ -1266,10 +1330,7 @@ function buildNextBestBuyAdvisorPayload(requestedBudget) {
   const budgetCap = Number(requestedBudget || 200);
   const policies = getRuntimePolicies();
   const mergedBySku = loadMergedStoreOffersBySku();
-  let telemetry = {};
-  if (fs.existsSync(TELEMETRY_PATH)) {
-    try { telemetry = JSON.parse(fs.readFileSync(TELEMETRY_PATH, 'utf-8')) || {}; } catch (e) {}
-  }
+  const telemetry = readJsonCached(TELEMETRY_PATH, {});
 
   const etbPolicies = policies.filter(p => String(p.formFactor || '').toUpperCase() === 'ETB');
   const wallEtbsConquered = etbPolicies.filter(p => Boolean(p.wallOwned ?? p.owned)).length;
@@ -1319,9 +1380,9 @@ function buildNextBestBuyAdvisorPayload(requestedBudget) {
       fullyConquered
     });
 
-    if (ap.isBleedingDown || /destined-rivals/i.test(skuId)) {
-      if (cautionWaitList.length < 6 && (bestOffer || /destined-rivals/i.test(skuId))) {
-        const shownDelta = Math.min(-5, Math.round(rolling.delta14dPct || -6));
+    if (ap.isBleedingDown) {
+      if (cautionWaitList.length < 6 && bestOffer) {
+        const shownDelta = Math.round(rolling.delta14dPct);
         cautionWaitList.push({
           skuId,
           name: pol.name,
@@ -1333,10 +1394,10 @@ function buildNextBestBuyAdvisorPayload(requestedBudget) {
           autoPilotCeiling: ap.autoPilotCeiling,
           delta14dPct: shownDelta,
           activeStoreCount: offersList.length,
-          store: bestOffer ? bestOffer.store : 'Wide LGS Supply',
-          url: bestOffer ? bestOffer.url : `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(pol.name)}&view=grid`,
-          cautionBadge: `◈ ⟦ BLEEDING DOWN (${shownDelta}% 14D) // HOLD OFF ⟧`,
-          cautionReason: `Floor softening across ${Math.max(3, offersList.length)} stores — Auto-Pilot holding off until $${ap.autoPilotCeiling.toFixed(0)} support.`
+          store: bestOffer.store,
+          url: bestOffer.url,
+          cautionBadge: `◈ ⟦ BLEEDING DOWN (${shownDelta}% 14D • ${rolling.sampleDaysCount}D REAL) // HOLD OFF ⟧`,
+          cautionReason: `Floor softening across ${offersList.length} store(s) — Auto-Pilot holding off until $${ap.autoPilotCeiling.toFixed(0)} support.`
         });
       }
       if (landedPrice > ap.autoPilotCeiling) continue;
@@ -1459,15 +1520,20 @@ app.get('/api/advisor/next-buy', (req, res) => {
 
 app.get('/api/status', (req, res) => {
   try {
+    const now = Date.now();
+    const stateSig = getDashboardStateSignature();
+    if (_cachedStatusJson && _cachedStatusSig === stateSig && (now - _cachedStatusTs) < 15000) {
+      return res.type('json').send(_cachedStatusJson);
+    }
     const trophies = loadMsrpTrophies();
     const conqueredVault = loadConqueredVault();
     const storeTel = getDynamicStoreTelemetry();
     const { bestCurrentOffers, nearMisses } = computeNearMissesAndBestOffers();
     const shelfSpread = computeShelfSpreadDistribution();
     const nextBuyAdvisor = buildNextBestBuyAdvisorPayload(200);
-    res.json({
+    const payload = {
       ok: true,
-      timestamp: Date.now(),
+      timestamp: now,
       totalMsrpHits: trophies.totalMsrpHits,
       msrpTrophies: trophies,
       totalConquered: conqueredVault.totalConquered,
@@ -1496,7 +1562,11 @@ app.get('/api/status', (req, res) => {
       shelfSpread,
       nextBuyAdvisor,
       familyProgress: nextBuyAdvisor.familyProgress
-    });
+    };
+    _cachedStatusJson = JSON.stringify(payload);
+    _cachedStatusSig = stateSig;
+    _cachedStatusTs = now;
+    return res.type('json').send(_cachedStatusJson);
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });
   }
@@ -1511,31 +1581,20 @@ app.get('/api/near-misses', (req, res) => {
 });
 
 function loadMergedStoreOffersBySku() {
-  let rawCache = {};
-  if (fs.existsSync(STORE_OFFERS_CACHE_PATH)) {
-    try { rawCache = JSON.parse(fs.readFileSync(STORE_OFFERS_CACHE_PATH, 'utf-8')) || {}; } catch (e) { rawCache = {}; }
+  const now = Date.now();
+  const stateSig = getDashboardStateSignature();
+  if (_cachedMergedOffersMem && _cachedMergedOffersSig === stateSig && (now - _cachedMergedOffersTs) < 15000) {
+    return _cachedMergedOffersMem;
   }
+  const rawCache = readJsonCached(STORE_OFFERS_CACHE_PATH, {});
   const policies = getRuntimePolicies();
-  let liveMap = {};
-  if (fs.existsSync(LIVE_STOCK_PATH)) {
-    try { liveMap = JSON.parse(fs.readFileSync(LIVE_STOCK_PATH, 'utf-8')) || {}; } catch (e) { liveMap = {}; }
-  }
-  let telemetry = {};
-  if (fs.existsSync(TELEMETRY_PATH)) {
-    try { telemetry = JSON.parse(fs.readFileSync(TELEMETRY_PATH, 'utf-8')) || {}; } catch (e) { telemetry = {}; }
-  }
-  let salesArr = [];
-  if (fs.existsSync(SALES_HISTORY_PATH)) {
-    try { salesArr = JSON.parse(fs.readFileSync(SALES_HISTORY_PATH, 'utf-8')) || []; } catch (e) { salesArr = []; }
-  }
-  let dropsArr = [];
-  if (fs.existsSync(DROPS_PATH)) {
-    try { dropsArr = JSON.parse(fs.readFileSync(DROPS_PATH, 'utf-8')) || []; } catch (e) { dropsArr = []; }
-  }
+  const liveMap = readJsonCached(LIVE_STOCK_PATH, {});
+  const telemetry = readJsonCached(TELEMETRY_PATH, {});
+  const salesArr = readJsonCached(SALES_HISTORY_PATH, []);
+  const dropsArr = readJsonCached(DROPS_PATH, []);
 
   const polById = new Map(policies.map(p => [p.id, p]));
   const merged = {};
-  const now = Date.now();
 
   const ensureSkuBucket = (skuId) => {
     if (!merged[skuId]) merged[skuId] = {};
@@ -1788,9 +1847,9 @@ function loadMergedStoreOffersBySku() {
         landedPrice: s.landedPrice || s.price,
         url: s.url,
         productUrl: isCart ? String(s.url).split('/cart/')[0] : s.url,
-        cart1xUrl: isCart ? s.url : undefined,
-        cart2xUrl: isCart ? String(s.url).replace(/:\d+$/, ':2') : undefined,
-        cart3xUrl: isCart ? String(s.url).replace(/:\d+$/, ':3') : undefined,
+        cart1xUrl: isCart ? (String(s.url).includes('payment=shop_pay') ? s.url : `${s.url}${String(s.url).includes('?') ? '&' : '?'}payment=shop_pay`) : undefined,
+        cart2xUrl: isCart ? String(s.url).replace(/:\d+(?=\?|$)/, ':2') + (String(s.url).includes('payment=shop_pay') ? '' : `${String(s.url).includes('?') ? '&' : '?'}payment=shop_pay`) : undefined,
+        cart3xUrl: isCart ? String(s.url).replace(/:\d+(?=\?|$)/, ':3') + (String(s.url).includes('payment=shop_pay') ? '' : `${String(s.url).includes('?') ? '&' : '?'}payment=shop_pay`) : undefined,
         updatedAt: seenTs
       }, false);
     }
@@ -1831,6 +1890,9 @@ function loadMergedStoreOffersBySku() {
     }, true);
   }
 
+  _cachedMergedOffersMem = merged;
+  _cachedMergedOffersSig = stateSig;
+  _cachedMergedOffersTs = now;
   return merged;
 }
 
@@ -1844,6 +1906,11 @@ app.get('/api/store-offers', (req, res) => {
 
 app.get('/api/engine-room', (req, res) => {
   try {
+    const reqNow = Date.now();
+    const stateSig = getDashboardStateSignature();
+    if (_cachedEngineRoomJson && _cachedEngineRoomSig === stateSig && (reqNow - _cachedEngineRoomTs) < 15000) {
+      return res.type('json').send(_cachedEngineRoomJson);
+    }
     const storeTel = getDynamicStoreTelemetry();
     const mergedOffersBySku = loadMergedStoreOffersBySku();
 
@@ -2057,7 +2124,7 @@ app.get('/api/engine-room', (req, res) => {
       };
     });
 
-    res.json({
+    const enginePayload = {
       ok: true,
       timestamp: now,
       fastTier1Poller: storeTel.fastTier1Poller,
@@ -2085,7 +2152,11 @@ app.get('/api/engine-room', (req, res) => {
       bigBoxHealth: storeTel.bigBoxHealth,
       wafBridge: storeTel.bigBoxHealth?.wafBridge || null,
       lgsStores
-    });
+    };
+    _cachedEngineRoomJson = JSON.stringify(enginePayload);
+    _cachedEngineRoomSig = stateSig;
+    _cachedEngineRoomTs = now;
+    return res.type('json').send(_cachedEngineRoomJson);
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });
   }
@@ -2260,14 +2331,30 @@ app.get(['/api/sku-history/:skuId', '/api/price-history/:skuId'], (req, res) => 
       }
     });
 
-    let hashSeed = 0;
-    for (let i = 0; i < skuId.length; i++) {
-      hashSeed = ((hashSeed << 5) - hashSeed + skuId.charCodeAt(i)) | 0;
-    }
-    const pseudoRand = (idx) => {
-      const x = Math.sin(hashSeed * 0.13 + idx * 0.71) * 10000;
-      return x - Math.floor(x);
-    };
+    (weeklyChks[skuId] || []).forEach(wk => {
+      if (wk && wk.weekEnding && !snapMap.has(wk.weekEnding)) {
+        snapMap.set(wk.weekEnding, {
+          marketPrice: Number(wk.marketPrice || marketPrice),
+          lowestSeenPrice: Number(wk.lowestDrop || wk.avgClearPrice || wk.marketPrice || currentLowestOffer),
+          lowestStore: wk.topStore || 'Weekly Checkpoint'
+        });
+      }
+    });
+
+    (Array.isArray(dropsArr) ? dropsArr.filter(d => d && d.ruleId === skuId) : []).forEach(d => {
+      const ts = Number(d.timestamp || 0);
+      const dPrice = Number(d.landedPrice || d.price || 0);
+      if (!ts || dPrice <= 0) return;
+      const dKey = new Date(ts).toISOString().slice(0, 10);
+      const prev = snapMap.get(dKey);
+      if (!prev || dPrice < prev.lowestSeenPrice) {
+        snapMap.set(dKey, {
+          marketPrice: Number(d.marketValue || prev?.marketPrice || marketPrice),
+          lowestSeenPrice: dPrice,
+          lowestStore: d.retailer || prev?.lowestStore || 'Verified Store'
+        });
+      }
+    });
 
     const makePoint = (dateStr, labelStr, mktVal, lowVal, stName) => {
       const cleanMkt = Math.round(Number(mktVal || marketPrice) * 100) / 100;
@@ -2287,80 +2374,64 @@ app.get(['/api/sku-history/:skuId', '/api/price-history/:skuId'], (req, res) => 
       };
     };
 
+    // Zero synthetic sine curves: build trajectories ONLY from real recorded timestamps + today's live observation
     const nowMs = Date.now();
     const dayMs = 24 * 60 * 60 * 1000;
-    const hourMs = 60 * 60 * 1000;
-    const priceHistory90d = [];
+    const todayStr = new Date(nowMs).toISOString().slice(0, 10);
+    snapMap.set(todayStr, {
+      marketPrice,
+      lowestSeenPrice: currentLowestOffer,
+      lowestStore: currentOffers[0]?.store || tel.lowestStore || 'Live Radar'
+    });
 
-    for (let dAgo = 89; dAgo >= 0; dAgo--) {
-      const dt = new Date(nowMs - dAgo * dayMs);
-      const dateStr = dt.toISOString().slice(0, 10);
-      const label = dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const sortedDates = [...snapMap.keys()].sort((a, b) => a.localeCompare(b));
+    const filterWithinDays = (days) => sortedDates
+      .filter(dStr => {
+        const ts = Date.parse(`${dStr}T00:00:00Z`) || 0;
+        return ts > 0 && (nowMs - ts) <= days * dayMs;
+      })
+      .map(dStr => {
+        const rec = snapMap.get(dStr);
+        const dt = new Date(`${dStr}T12:00:00Z`);
+        const label = dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        return makePoint(dStr, label, rec.marketPrice, rec.lowestSeenPrice, rec.lowestStore);
+      });
 
-      if (dAgo === 0) {
-        priceHistory90d.push(makePoint(dateStr, label, marketPrice, currentLowestOffer, currentOffers[0]?.store || tel.lowestStore || 'Live Radar'));
-        continue;
+    const priceHistory90d = filterWithinDays(90);
+    const priceHistory30d = filterWithinDays(30);
+    const priceHistory7d = filterWithinDays(7);
+
+    // Build 24H trajectory strictly from real timestamped events in the last 24h + live point
+    const realEvents24h = [];
+    skuSales.forEach(s => {
+      const ts = Number(s.lastSeenAt || s.restockedAt || 0);
+      const pVal = Number(s.landedPrice || s.price || 0);
+      if (ts > 0 && pVal > 0 && (nowMs - ts) <= dayMs) {
+        realEvents24h.push({ ts, mkt: Number(s.marketPrice || marketPrice), low: pVal, store: s.store });
       }
-
-      const realSnap = snapMap.get(dateStr);
-      if (realSnap) {
-        priceHistory90d.push(makePoint(dateStr, label, realSnap.marketPrice, realSnap.lowestSeenPrice, realSnap.lowestStore));
-        continue;
+    });
+    currentOffers.forEach(o => {
+      const ts = Number(o.updatedAt || 0);
+      if (ts > 0 && o.landedPrice > 0 && (nowMs - ts) <= dayMs) {
+        realEvents24h.push({ ts, mkt: marketPrice, low: o.landedPrice, store: o.store });
       }
+    });
+    realEvents24h.sort((a, b) => a.ts - b.ts);
 
-      const progress = (90 - dAgo) / 90;
-      const wave = Math.sin((dAgo / 9.5) + (hashSeed % 7)) * 0.035 + (pseudoRand(dAgo) - 0.5) * 0.022;
-      const drift = (1 - progress) * ((hashSeed % 2 === 0) ? 0.04 : -0.03);
-      const synthMkt = Math.max(msrp * 0.9, Math.round(marketPrice * (1 + drift + wave) * 100) / 100);
+    const priceHistory24h = realEvents24h.map(ev => {
+      const lbl = new Date(ev.ts).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      return makePoint(lbl, lbl, ev.mkt, ev.low, ev.store);
+    });
+    const nowTimeLbl = new Date(nowMs).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    priceHistory24h.push(makePoint(nowTimeLbl, nowTimeLbl, marketPrice, currentLowestOffer, currentOffers[0]?.store || 'Live Radar'));
 
-      const baseLowAnchor = Math.min(marketPrice * 0.94, Math.max(allTimeLow.price, currentLowestOffer * 0.97));
-      const lowSpreadFactor = 0.92 + pseudoRand(dAgo + 200) * 0.06;
-      let synthLow = Math.round(Math.min(synthMkt, Math.max(allTimeLow.price, synthMkt * lowSpreadFactor, baseLowAnchor * (0.98 + pseudoRand(dAgo + 50) * 0.05))) * 100) / 100;
-      if (dAgo === 14 && allTimeLow.price < synthLow) {
-        synthLow = allTimeLow.price;
-      }
-
-      priceHistory90d.push(makePoint(
-        dateStr,
-        label,
-        synthMkt,
-        synthLow,
-        synthLow <= allTimeLow.price * 1.01 ? allTimeLow.store : (currentOffers[0]?.store || 'Verified LGS / TCGPlayer')
-      ));
-    }
-
-    const priceHistory30d = priceHistory90d.slice(-30);
-    const priceHistory7d = priceHistory90d.slice(-7);
-
-    // Build 24H hourly trajectory (24 hourly ticks ending now)
-    const priceHistory24h = [];
-    for (let hAgo = 23; hAgo >= 0; hAgo--) {
-      const dt = new Date(nowMs - hAgo * hourMs);
-      const timeLabel = dt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-      if (hAgo === 0) {
-        priceHistory24h.push(makePoint(timeLabel, timeLabel, marketPrice, currentLowestOffer, currentOffers[0]?.store || 'Live Radar'));
-        continue;
-      }
-      const microWave = Math.sin((hAgo / 4.2) + (hashSeed % 5)) * 0.008 + (pseudoRand(hAgo + 500) - 0.5) * 0.006;
-      const hrMkt = Math.round(marketPrice * (1 + microWave) * 100) / 100;
-      const hrLowShift = (hAgo > 6 && currentOffers[0]?.isFreshRestock && currentOffers[1])
-        ? currentOffers[1].landedPrice
-        : Math.round(currentLowestOffer * (1 + Math.max(0, microWave * 0.8)) * 100) / 100;
-      priceHistory24h.push(makePoint(
-        timeLabel,
-        timeLabel,
-        hrMkt,
-        Math.min(hrMkt, hrLowShift),
-        currentOffers[0]?.store || tel.lowestStore || 'Verified Store'
-      ));
-    }
-
-    // 4. Live TCGPlayer & eBay Marketplace Floor Summary (Never hangs!)
+    // 4. Live TCGPlayer & eBay Marketplace Floor Summary (Honest real comps only — zero fake 0.99x multipliers!)
     const tcgOffer = currentOffers.find(o => /tcgplayer/i.test(o.store));
+    const ebayOffer = currentOffers.find(o => /ebay/i.test(o.store));
     const tcgFloorPrice = tcgOffer ? tcgOffer.landedPrice : (tel.lowestPrice > 0 ? Number(tel.lowestPrice) : marketPrice);
-    const ebayFloorPrice = Math.round(Math.max(tcgFloorPrice * 0.99, marketPrice * 0.97) * 100) / 100;
+    const ebayFloorPrice = ebayOffer ? Math.round(ebayOffer.landedPrice * 100) / 100 : null;
     const tcgSearchUrl = (tcgOffer && tcgOffer.url) || tel.lowestUrl || `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(pol.name)}&view=grid`;
-    const ebaySearchUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent('Pokemon ' + pol.name + ' Sealed')}&LH_BIN=1&_sop=15`;
+    const ebaySearchUrl = (ebayOffer && ebayOffer.url) || `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent('Pokemon ' + pol.name + ' Sealed')}&LH_BIN=1&_sop=15`;
     const liveMarketplaceFloor = {
       tcgPlayerLowestLanded: Math.round(tcgFloorPrice * 100) / 100,
       ebayBuyItNowFloor: ebayFloorPrice,
@@ -2374,7 +2445,7 @@ app.get(['/api/sku-history/:skuId', '/api/price-history/:skuId'], (req, res) => 
       },
       ebay: {
         price: ebayFloorPrice,
-        shippingLabel: 'Live Buy-It-Now Floor Index',
+        shippingLabel: ebayOffer ? ebayOffer.shippingNote : 'Direct Live BIN Search ↗',
         url: ebaySearchUrl
       }
     };
@@ -2431,6 +2502,8 @@ app.get(['/api/sku-history/:skuId', '/api/price-history/:skuId'], (req, res) => 
       trendVerdictLabel: trendEval.trendVerdictLabel,
       isElasticDip: trendEval.isElasticDip,
       rollingMetrics,
+      sampleDaysCount: rollingMetrics.sampleDaysCount,
+      insufficientHistory: rollingMetrics.insufficientHistory,
       priceHistory: priceHistory30d,
       priceHistory24h,
       priceHistory7d,
@@ -2787,7 +2860,7 @@ app.get('/api/telemetry', (req, res) => {
 app.post('/api/policies', (req, res) => {
   try {
     saveUserPoliciesFromUi(req.body);
-    try { reloadWatchPolicies(); refreshCachedStoreOffersStatus(); } catch (e) {}
+    try { reloadWatchPolicies(); invalidateDashboardApiCaches(); } catch (e) {}
     res.json({ status: 'Saved to config/userPreferences.json and hot-synced.' });
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -2799,7 +2872,7 @@ app.post(['/api/policies/:skuId/family-slots', '/api/policies/:skuId/slots'], (r
     const skuId = String(req.params.skuId || '').trim();
     if (!skuId) return res.status(400).json({ ok: false, error: 'Missing skuId' });
     const updatedSku = updateSkuFamilySlotsFromUi(skuId, req.body || {});
-    try { reloadWatchPolicies(); refreshCachedStoreOffersStatus(); } catch (e) {}
+    try { reloadWatchPolicies(); invalidateDashboardApiCaches(); } catch (e) {}
     const advisor = buildNextBestBuyAdvisorPayload(200);
     return res.json({
       ok: true,

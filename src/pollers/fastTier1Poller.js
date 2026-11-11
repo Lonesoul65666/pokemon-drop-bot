@@ -35,11 +35,15 @@ function getJitter(min, max) {
 }
 function buildFastDeltaPath(resolvedPath) {
     const base = (resolvedPath || '/products.json?limit=250').trim();
+    // Curated sealed/boxes sub-collections keep their full 250-item feed; generic collections use root /products.json?limit=250 (sorted updated_at desc by Shopify core)
+    if (!/\/collections\/[^/]*(sealed|boxes|etb|bundle)/i.test(base)) {
+        return '/products.json?limit=250';
+    }
     if (/limit=\d+/i.test(base)) {
-        return base.replace(/limit=\d+/i, 'limit=50');
+        return base.replace(/limit=\d+/i, 'limit=250');
     }
     const sep = base.includes('?') ? '&' : '?';
-    return `${base}${sep}limit=50`;
+    return `${base}${sep}limit=250`;
 }
 async function fetchFastStoreDelta(store, httpMeta) {
     const deltaPath = buildFastDeltaPath(store.resolvedPath);
@@ -128,7 +132,7 @@ async function pollSingleTier1StoreFast(store) {
         return { polled: true, notModified304: true, variantsChecked: 0, deltaHits: 0, latencyMs };
     }
     const products = Array.isArray(res.products) ? res.products : [];
-    const fxMultiplier = store.currency === 'CAD' ? 0.73 : 1.0;
+    const fxMultiplier = (0, lgsPoller_1.resolveShopifyFxMultiplier)(store);
     const isStoreSeeded = seededFastStores.has(store.name);
     let variantsChecked = 0;
     let deltaHits = 0;
@@ -136,7 +140,7 @@ async function pollSingleTier1StoreFast(store) {
     for (const prod of products) {
         if (/kanzen\s*games/i.test(store.name) && prod.product_type && String(prod.product_type).trim().toLowerCase() !== 'pokemon sealed')
             continue;
-        const isMetaSingle = (0, policies_1.isSingleOrNonSealedShopifyProduct)(prod);
+        let isMetaSingle;
         for (const variant of prod.variants || []) {
             const variantId = Number(variant.id);
             if (!variantId)
@@ -144,15 +148,19 @@ async function pollSingleTier1StoreFast(store) {
             variantsChecked += 1;
             const rawPrice = parseFloat(variant.price);
             const priceNum = fxMultiplier !== 1.0 ? Math.round(rawPrice * fxMultiplier * 100) / 100 : rawPrice;
+            const safePrice = priceNum || 0;
             const isAvail = Boolean(variant.available);
             const prevFast = fastVariantSnapshotMap.get(variantId);
-            fastVariantSnapshotMap.set(variantId, {
-                available: isAvail,
-                price: priceNum || 0,
-                lastSeenAt: now
-            });
+            // O(1) Delta Short-Circuit: skip unchanged variants before string/regex work so limit=250 runs near-zero CPU!
+            if (prevFast && prevFast.available === isAvail && prevFast.price === safePrice) {
+                prevFast.lastSeenAt = now;
+                continue;
+            }
+            fastVariantSnapshotMap.set(variantId, { available: isAvail, price: safePrice, lastSeenAt: now });
             if (!isAvail || !priceNum || priceNum < 15)
                 continue;
+            if (isMetaSingle === undefined)
+                isMetaSingle = (0, policies_1.isSingleOrNonSealedShopifyProduct)(prod);
             const fullTitle = `${prod.title} ${variant.title !== 'Default Title' ? variant.title : ''}`.trim();
             const tagsStr = Array.isArray(prod.tags) ? prod.tags.join(' ') : String(prod.tags || '');
             const productUrl = prod.handle ? `${store.baseUrl}/products/${prod.handle}` : store.baseUrl;
@@ -188,10 +196,9 @@ async function pollSingleTier1StoreFast(store) {
                 const realQty = typeof variant.inventory_quantity === 'number' && variant.inventory_quantity > 0
                     ? variant.inventory_quantity
                     : undefined;
-                const cart1xUrl = `${store.baseUrl}/cart/${variant.id}:1`;
-                const cart2xUrl = (realQty === undefined || realQty >= 2) ? `${store.baseUrl}/cart/${variant.id}:2` : undefined;
-                const cart3xUrl = (realQty === undefined || realQty >= 3) ? `${store.baseUrl}/cart/${variant.id}:3` : undefined;
-                const productUrl = prod.handle ? `${store.baseUrl}/products/${prod.handle}` : store.baseUrl;
+                const cart1xUrl = `${store.baseUrl}/cart/${variant.id}:1?payment=shop_pay`;
+                const cart2xUrl = (realQty === undefined || realQty >= 2) ? `${store.baseUrl}/cart/${variant.id}:2?payment=shop_pay` : undefined;
+                const cart3xUrl = (realQty === undefined || realQty >= 3) ? `${store.baseUrl}/cart/${variant.id}:3?payment=shop_pay` : undefined;
                 const isPreOrder = /pre-?order|pre-?sale/i.test(`${fullTitle} ${tagsStr} ${prod.handle || ''}`);
                 await (0, listener_1.processIncomingDrop)({
                     title: fullTitle,
