@@ -285,3 +285,23 @@ All **Section 2**, **Section 3.1/3.2**, and **Section 3.3** defects have been re
    - `pokemon-drop-bot` CPU dropped from **`73.5%` -> `0%–2%`**, `out-0.log` dropped from **`588.0 MB` -> `9.82 KB`** (`0` `[SEEN]` spam lines).
 4. **Honest Engine Room Telemetry (`server.js` & `public/index.html`):**
    - `healthySensors: 88` (`healthyLgsSensors: 88`, `healthyBigBoxSensors: 0`), `0` fake `145` catalog counts, `0` fake deterministic latencies, and aligned crimson `WAF_CHALLENGE_*` vs amber `PARSER_BLIND (0 NODES)` Big-Box indicators ready for **Engine Repair Pass 2**.
+
+---
+
+## 6. Engine Repair Pass 2 — Post-Fix Live Verification Addendum (`2026-11-11 23:20 CST`)
+
+All **Section 1** Big-Box parser, transport, WAF classification, and `totalNodesFound` truth defects have been resolved across `src/pollers/wafBrowserBridge.ts` (`316` lines), `src/pollers/bigBoxAdapters.ts` (`342` lines), `src/pollers/bigBoxDomParsers.ts` (`301` lines), and `src/pollers/bigBoxRetailPoller.ts` (`252` lines) — all strictly `< 350` lines, with **`0` visible Chrome/Edge windows spawned** (`BASELINE_VISIBLE_BROWSER_WINDOWS: 0`, `NEW_VISIBLE_CHROME_WINDOWS_SPAWNED: 0`, `VISIBLE_WINDOWS_AFTER_PM2: 0`):
+
+| Retailer | Transport | HTTP Status | Total Shelf Nodes Found | In-Stock Sealed Matches | Final Engine Room Status |
+| :--- | :--- | :---: | :---: | :---: | :--- |
+| **Pokémon Center** | `Playwright (chrome-headless-new)` | `403` (`200` interstitial) | `0` | `0` | `WAF_CHALLENGE_IMPERVA` (`SHIELD_BLOCKED` crimson; Direct TLS `ERR_CERT` resolved via `ignoreHTTPSErrors: true` on `prod.ui.pokemoncenter.com`, `0` Webshare proxy fallback) |
+| **Target** | `Playwright Passive XHR (chrome-headless-new)` | `435` | `0` | `0` | `WAF_CHALLENGE_PX` (`SHIELD_BLOCKED` crimson; passive `page.on('response')` wire-tap on `plp_search_v2` `facetedValue=dq4mn`, `0` `axios` / `0` `page.evaluate` fetch injection) |
+| **Amazon 1P** | `Undici HTTP/2 fetch` (`+ Chrome fallback`) | `200` | **`5`** | `0` | **`200 OK // 0 IN STOCK`** (`ULTRA_CORE` emerald; outer `s-search-result` slice without `4,500B` cap, brand+`<h2>` title combine, non-strike `.a-offscreen` price, `rh=p_6:ATVPDKIKX0DER`) |
+| **Best Buy** | `Playwright (chrome-headless-new)` | `200` | **`16`** | `0` | **`200 OK // 0 IN STOCK`** (`ULTRA_CORE` emerald; Akamai `12s` `ERR_CANCELED` HTTP/1.1 tarpit eliminated via System Chrome HTTP/2 `.product-list-item` parser) |
+| **Walmart (1P MSRP)** | `Playwright (chrome-headless-new)` | `200->PX` *(unblocked `200` parses `27` `F55CDC31` items)* | `0` *(on PX `/blocked`)* | `0` | `WAF_CHALLENGE_PX` (`SHIELD_BLOCKED` crimson; `#__NEXT_DATA__` `itemStacks` locked to `F55CDC31AB754BB68FE0B39041159D63`, poisoned PX cookies auto-cleared) |
+| **Costco Wholesale** | `Playwright (chrome-headless-new)` | `200` | **`0`** | `0` | **`PARSER_BLIND_0_NODES`** (`SLEEPING_CORE` amber — false green eliminated when Kasada holds back `gdx-api.costco.com/catalog/search` tiles!) |
+| **Sam's Club** | `Playwright (chrome-headless-new)` | `200->PX` | `0` | `0` | `WAF_CHALLENGE_PX` (`SHIELD_BLOCKED` crimson; `/are-you-human` & `412` classified as `PX`, never `IMPERVA`) |
+| **GameStop** | `Playwright (chrome-headless-new)` | `200` | **`35`** | `0` *(4 live ETBs @ `$84.99–$99.99` properly filtered above `MSRP*1.08`)* | **`200 OK // 0 IN STOCK`** (`ULTRA_CORE` emerald; `[object Object]` nested `availability` bug fixed) |
+| **Barnes & Noble** | `Playwright (chrome-headless-new)` | `200` | **`24`** | `0` | **`200 OK // 0 IN STOCK`** (`ULTRA_CORE` emerald; `{0,1800}?` lookahead boundary fixed to index-slice all Hydrogen `/w/?ean=` cards) |
+
+- **Live `/api/engine-room` Verification:** `totalSensors: 99`, `healthySensors: 94` (`healthyLgsSensors: 90`, `healthyBigBoxSensors: 4` — up from `1` true green in Diagnostic Section 1.0, with `0` false greens!).

@@ -179,11 +179,11 @@
     "itemId": "44747290149061"
   },
   "Trading Card Market::me-delta-reign-etb": {
-    "lastPrice": 85,
-    "lowestAlertedPrice": 85,
-    "timestamp": 1794207543575,
-    "timeStr": "12:59 AM",
-    "alertCount": 5,
+    "lastPrice": 80,
+    "lowestAlertedPrice": 80,
+    "timestamp": 1794456428686,
+    "timeStr": "10:07 PM",
+    "alertCount": 6,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "48250019020852"
   },
@@ -541,9 +541,9 @@
   "PokeGirl CC::me-delta-reign-etb": {
     "lastPrice": 79.99,
     "lowestAlertedPrice": 74.99,
-    "timestamp": 1794202371566,
-    "timeStr": "11:32 PM",
-    "alertCount": 4,
+    "timestamp": 1794456591762,
+    "timeStr": "10:09 PM",
+    "alertCount": 5,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "51060807073931"
   },
@@ -1349,5 +1349,32 @@
     "alertCount": 1,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "51120892444840"
+  },
+  "Kanzen Games::swsh-evolving-skies-etb": {
+    "lastPrice": 381.18,
+    "lowestAlertedPrice": 381.18,
+    "timestamp": 1794456439519,
+    "timeStr": "10:07 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "42852074193111"
+  },
+  "Poke-Collect::me-delta-reign-etb": {
+    "lastPrice": 87.95,
+    "lowestAlertedPrice": 87.95,
+    "timestamp": 1794456797288,
+    "timeStr": "10:13 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "49049270517943"
+  },
+  "Pentix Games::sv-destined-rivals-etb": {
+    "lastPrice": 109.99,
+    "lowestAlertedPrice": 109.99,
+    "timestamp": 1794460888111,
+    "timeStr": "11:21 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "48104216035586"
   }
 }

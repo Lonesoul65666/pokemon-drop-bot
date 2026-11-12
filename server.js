@@ -2045,17 +2045,18 @@ app.get('/api/engine-room', (req, res) => {
       }
       matched.sort((a, b) => a.landedPrice - b.landedPrice);
       const hasUnderTrigger = matched.some(o => o.underTrigger);
-      const isWafOrNetBlocked = /WAF|SHIELD|CHALLENGE|403|412|435|ERR_|TIMEOUT|TARPIT|BLOCKED/i.test(humanStatus);
+      const isWafOrNetBlocked = /WAF|SHIELD|CHALLENGE|403|412|435|ERR_|TIMEOUT|TARPIT|BLOCKED|ROUTER_TLS_FILTER/i.test(humanStatus);
+      const isQueueOrDrop = /QUEUE|WAITING ROOM|DROP/i.test(humanStatus);
 
       let coreTier = 'SLEEPING_CORE';
       if (isWafOrNetBlocked) {
         coreTier = 'SHIELD_BLOCKED';
-      } else if (hasUnderTrigger || /QUEUE|DROP/i.test(humanStatus)) {
+      } else if (isQueueOrDrop || (totalNodesFound > 0 && hasUnderTrigger)) {
         coreTier = 'MASTER_CORE';
-      } else if (totalNodesFound > 0 || itemsParsed > 0 || matched.length > 0) {
+      } else if (totalNodesFound > 0 && !/PARSER_BLIND/i.test(humanStatus)) {
         coreTier = 'ULTRA_CORE';
       } else {
-        humanStatus = 'PARSER_BLIND (0 NODES)';
+        humanStatus = 'PARSER_BLIND_0_NODES';
         coreTier = 'SLEEPING_CORE';
       }
 

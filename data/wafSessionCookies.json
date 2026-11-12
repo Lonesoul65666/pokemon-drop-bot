@@ -1,22 +1,12 @@
 {
   "pokemoncenter": {
     "domain": "pokemoncenter",
-    "cookieHeader": "SSSC=855.G7706784604681857235.1|93877.2887360:95865.2927452:97267.2950488:97490.2954565:97633.2956052:97909.2960176; visid_incap_2682446=iA5SNOGMSniUMwKeSrApUcP/82oAAAAAQUIPAAAAAAA4vl9btrxgM9I4m4ies4CG; nlbi_2682446=n+CQC/PHqF0AGJCV6AZgOQAAAABD2Q640vkQVW056KX//v9B; SSID=CQA-cR0AAAAAAADE__Nq0-iCAsT_82oBAAAAAAAAAAAAxP_zagCo6A; SSRT=SAb0agQAAA; reese84=3:ilcIVdYb/6m/3x2qlPVTNQ==:D/wy6AnV0Y1XDM9J66Bpb+owWgZOiz4a7SEIa+ZJsubkCqbrROrJAMKhY2XpIkJe/1f7buW+P424vpy9Wwbv7CPbgl3sx6ycG5I+nD754SctuX+jsJdNm47eoMEYr74aVAFuqYzwSaK0LDVtoABaYA==:IaMO2mO9b5N++Eylrda+Kiwby7NmS86sSsxlRl0XmKw=:UAqOYOQBPPaqdq0S58mNHkAKjl82ZdL790D4q7Oanqzf8fwsnrGrpPLgdGQV+WFDy+fIKWoCYk8y3NAgJiKOeu1lCO5H+p9Py1wm/oUiFZEDDDvND8H8Rme09/vRoQj8tw+jVNkwnB5nPY3fIHY7EzKhrcnXxCBkBS8DhWLWrHxLLcBifrvRtBcB3FeGpTCsbG1OotM9EK2PT+xbkWSKmufFF5gIppk6Ry+FlLfYHt6mtHycJIYmzfiVbpxHanVCCfbCvl21owPgl8TEM8NWAORFKoKyW485usu/Vw7RDRJ0zvvmHO9cqmSsNhUSj3W7FyhmW+w1ofWhqtC27jf/bDEC4Irl0vb+v4uOgyj166+icH858Ro9Uj0=:; incap_ses_957_2682446=PMLAfvgjWmnTZ+q0gPJHDWbN9GoAAAAALgwVvUKKFZ8lL0Acygwphw==; nlbi_2682446_2147483392=GwMHa363jDKBoAXY6AZgOQAAAADd/+PEk2LBXQV2Ip0j923N; incap_sh_2682446=EDv1agAAAACI0A15BgAQkPbU1wZvGcItthhlGTIqOUrwjK6z",
+    "cookieHeader": "visid_incap_2682446=iA5SNOGMSniUMwKeSrApUcP/82oAAAAAQUIPAAAAAAA4vl9btrxgM9I4m4ies4CG; nlbi_2682446=n+CQC/PHqF0AGJCV6AZgOQAAAABD2Q640vkQVW056KX//v9B; incap_ses_957_2682446=PMLAfvgjWmnTZ+q0gPJHDWbN9GoAAAAALgwVvUKKFZ8lL0Acygwphw==; __cf_bm=zDh_HWhTHdXHPSuzyAMetNB4HBosg30V4e2mF1bd1ik-1794459884.6680846-1.0.1.1-3_aWuUKgn9Bljts9iEcSpEqbx7AIhnLvpNfXA6_2oig0EWlLiHfu5Yj_1ZJJZPft2TQA6ghFmuimaemEdDU7UCkVMeAAAMMObdG_Lz5ECXt4XyVvI68SByaIeodLy9RC; incap_sh_2682446=1kv1agAAAADsQxNQBgAQ1pfV1wah5PGWI8HbZ+yH1bwSVNp7; nlbi_2682446_2147483392=Io9CY/9Ajkp8Cf926AZgOQAAAABbyVR4qTXZhsi82PimvTz/; reese84=3:C3q5VlhTnFx/xiAYGeUDrg==:blqK1gbVEcENwTxZLEGMLr+WYD3aahHQEvKJ3Hi812xMypdYOAz/09QERkB1d4LJLfooWfjvmNx2PzXoieCiDKcaAekvG1VRpqHzrU9e4Bdzw1GU8X0YA1mVlu9oaNDh7cxb7bjMjeHaCkkRDdia0AyyiGF+mzgovyC74sBTftE=:BbklCe+zJDdQJq1nu2kH4S1Fq/BZFZtY5qNnJgBJXfw=:gjfyxBLh1aqSghzi6zzvQDd+N0WPliH6ZfWc8xVceiALfneX3z4Uie83aEB0mgaCczr7OQ+RyHIDUaWyJrKcU0h8K+EO3Ipw/5GZTFx53XNm427vxO1NMA6vB+YII7LiE+Ep0PQwhjcYWb8Bv98YgtY22jBaQS5eV0ygnbnC+G4RGnMdo9rNDj2lTOxuar413MlbJIcRQZcpJvdn2+XVgjfI6+tJvAoNhVsY0vTf2LZ0JiSA6IJTsk1Iw/aASDZZSzjGTyZzAZhm62bjWxRfrap0iqtmolgmDXom5CWIqSuB+Vj96ctkIqYvrt+VMQpTYaKgabKqPXPh+/VsolNmsf9I/Y9NIw5hcM9FuuJ7sCbwLrWVqtFF/g==:; SSID=CQAzix0AAAAAAADE__Nq0-iCAsT_82oCAAAAAAAAAAAAW0z1agCo6A; SSSC=855.G7706784604681857235.2|0.0; SSRT=I031agQAAA; datadome=7sBYFJhLzoXgH9p3vllYRuce5ojHFKK~H_QZ~V_BfaaS0z2_jicjBxIavybFg8rJyo_VkwDxbGfLLVWK5BrOBm_ZB4HSw~BUK9OKRNEGTwo_ge4hvV6yhFMNmJrWSns8",
     "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
-    "updatedAt": 1794456341148,
+    "updatedAt": 1794460963657,
     "lastStatus": "WAF_CHALLENGE_IMPERVA",
     "queueActive": false,
     "cookies": [
-      {
-        "name": "SSSC",
-        "value": "855.G7706784604681857235.1|93877.2887360:95865.2927452:97267.2950488:97490.2954565:97633.2956052:97909.2960176",
-        "domain": ".pokemoncenter.com",
-        "path": "/",
-        "expires": -1,
-        "httpOnly": false,
-        "secure": false,
-        "sameSite": "Lax"
-      },
       {
         "name": "visid_incap_2682446",
         "value": "iA5SNOGMSniUMwKeSrApUcP/82oAAAAAQUIPAAAAAAA4vl9btrxgM9I4m4ies4CG",
@@ -38,36 +28,6 @@
         "sameSite": "Lax"
       },
       {
-        "name": "SSID",
-        "value": "CQA-cR0AAAAAAADE__Nq0-iCAsT_82oBAAAAAAAAAAAAxP_zagCo6A",
-        "domain": ".pokemoncenter.com",
-        "path": "/",
-        "expires": 1825913288.851124,
-        "httpOnly": false,
-        "secure": false,
-        "sameSite": "Lax"
-      },
-      {
-        "name": "SSRT",
-        "value": "SAb0agQAAA",
-        "domain": ".pokemoncenter.com",
-        "path": "/",
-        "expires": 1825913288.851395,
-        "httpOnly": false,
-        "secure": false,
-        "sameSite": "Lax"
-      },
-      {
-        "name": "reese84",
-        "value": "3:ilcIVdYb/6m/3x2qlPVTNQ==:D/wy6AnV0Y1XDM9J66Bpb+owWgZOiz4a7SEIa+ZJsubkCqbrROrJAMKhY2XpIkJe/1f7buW+P424vpy9Wwbv7CPbgl3sx6ycG5I+nD754SctuX+jsJdNm47eoMEYr74aVAFuqYzwSaK0LDVtoABaYA==:IaMO2mO9b5N++Eylrda+Kiwby7NmS86sSsxlRl0XmKw=:UAqOYOQBPPaqdq0S58mNHkAKjl82ZdL790D4q7Oanqzf8fwsnrGrpPLgdGQV+WFDy+fIKWoCYk8y3NAgJiKOeu1lCO5H+p9Py1wm/oUiFZEDDDvND8H8Rme09/vRoQj8tw+jVNkwnB5nPY3fIHY7EzKhrcnXxCBkBS8DhWLWrHxLLcBifrvRtBcB3FeGpTCsbG1OotM9EK2PT+xbkWSKmufFF5gIppk6Ry+FlLfYHt6mtHycJIYmzfiVbpxHanVCCfbCvl21owPgl8TEM8NWAORFKoKyW485usu/Vw7RDRJ0zvvmHO9cqmSsNhUSj3W7FyhmW+w1ofWhqtC27jf/bDEC4Irl0vb+v4uOgyj166+icH858Ro9Uj0=:",
-        "domain": "www.pokemoncenter.com",
-        "path": "/",
-        "expires": 1797046250.431146,
-        "httpOnly": false,
-        "secure": false,
-        "sameSite": "Lax"
-      },
-      {
         "name": "incap_ses_957_2682446",
         "value": "PMLAfvgjWmnTZ+q0gPJHDWbN9GoAAAAALgwVvUKKFZ8lL0Acygwphw==",
         "domain": ".pokemoncenter.com",
@@ -78,8 +38,30 @@
         "sameSite": "Lax"
       },
       {
+        "name": "__cf_bm",
+        "value": "zDh_HWhTHdXHPSuzyAMetNB4HBosg30V4e2mF1bd1ik-1794459884.6680846-1.0.1.1-3_aWuUKgn9Bljts9iEcSpEqbx7AIhnLvpNfXA6_2oig0EWlLiHfu5Yj_1ZJJZPft2TQA6ghFmuimaemEdDU7UCkVMeAAAMMObdG_Lz5ECXt4XyVvI68SByaIeodLy9RC",
+        "domain": ".hcaptcha.com",
+        "path": "/",
+        "expires": 1794461684.669848,
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "None",
+        "partitionKey": "https://pokemoncenter.com",
+        "_crHasCrossSiteAncestor": true
+      },
+      {
+        "name": "incap_sh_2682446",
+        "value": "1kv1agAAAADsQxNQBgAQ1pfV1wah5PGWI8HbZ+yH1bwSVNp7",
+        "domain": "www.pokemoncenter.com",
+        "path": "/",
+        "expires": 1794464230.206278,
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "None"
+      },
+      {
         "name": "nlbi_2682446_2147483392",
-        "value": "GwMHa363jDKBoAXY6AZgOQAAAADd/+PEk2LBXQV2Ip0j923N",
+        "value": "Io9CY/9Ajkp8Cf926AZgOQAAAABbyVR4qTXZhsi82PimvTz/",
         "domain": ".pokemoncenter.com",
         "path": "/",
         "expires": -1,
@@ -88,29 +70,70 @@
         "sameSite": "Lax"
       },
       {
-        "name": "incap_sh_2682446",
-        "value": "EDv1agAAAACI0A15BgAQkPbU1wZvGcItthhlGTIqOUrwjK6z",
+        "name": "reese84",
+        "value": "3:C3q5VlhTnFx/xiAYGeUDrg==:blqK1gbVEcENwTxZLEGMLr+WYD3aahHQEvKJ3Hi812xMypdYOAz/09QERkB1d4LJLfooWfjvmNx2PzXoieCiDKcaAekvG1VRpqHzrU9e4Bdzw1GU8X0YA1mVlu9oaNDh7cxb7bjMjeHaCkkRDdia0AyyiGF+mzgovyC74sBTftE=:BbklCe+zJDdQJq1nu2kH4S1Fq/BZFZtY5qNnJgBJXfw=:gjfyxBLh1aqSghzi6zzvQDd+N0WPliH6ZfWc8xVceiALfneX3z4Uie83aEB0mgaCczr7OQ+RyHIDUaWyJrKcU0h8K+EO3Ipw/5GZTFx53XNm427vxO1NMA6vB+YII7LiE+Ep0PQwhjcYWb8Bv98YgtY22jBaQS5eV0ygnbnC+G4RGnMdo9rNDj2lTOxuar413MlbJIcRQZcpJvdn2+XVgjfI6+tJvAoNhVsY0vTf2LZ0JiSA6IJTsk1Iw/aASDZZSzjGTyZzAZhm62bjWxRfrap0iqtmolgmDXom5CWIqSuB+Vj96ctkIqYvrt+VMQpTYaKgabKqPXPh+/VsolNmsf9I/Y9NIw5hcM9FuuJ7sCbwLrWVqtFF/g==:",
         "domain": "www.pokemoncenter.com",
         "path": "/",
-        "expires": 1794459936.460365,
-        "httpOnly": true,
+        "expires": 1797052631.189215,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "SSID",
+        "value": "CQAzix0AAAAAAADE__Nq0-iCAsT_82oCAAAAAAAAAAAAW0z1agCo6A",
+        "domain": ".pokemoncenter.com",
+        "path": "/",
+        "expires": 1825996963.371229,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "SSSC",
+        "value": "855.G7706784604681857235.2|0.0",
+        "domain": ".pokemoncenter.com",
+        "path": "/",
+        "expires": -1,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "SSRT",
+        "value": "I031agQAAA",
+        "domain": ".pokemoncenter.com",
+        "path": "/",
+        "expires": 1825996963.371627,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "datadome",
+        "value": "7sBYFJhLzoXgH9p3vllYRuce5ojHFKK~H_QZ~V_BfaaS0z2_jicjBxIavybFg8rJyo_VkwDxbGfLLVWK5BrOBm_ZB4HSw~BUK9OKRNEGTwo_ge4hvV6yhFMNmJrWSns8",
+        "domain": ".pokemoncenter.com",
+        "path": "/",
+        "expires": 1825996963.506412,
+        "httpOnly": false,
         "secure": true,
-        "sameSite": "None"
+        "sameSite": "Lax"
       }
     ],
-    "browserChannel": "chrome-headless-new"
+    "browserChannel": "chrome-headless-new",
+    "nextEligibleAt": 1794461154190
   },
   "gamestop": {
     "domain": "gamestop",
-    "cookieHeader": "__cf_ob=%5B%22a592a3ae49c44862%22%2C%7B%22cb%22%3A%7B%22cC%22%3A0%2C%22xC%22%3A0%2C%22pC%22%3A0%2C%22sC%22%3A0%2C%22cL%22%3A%5B%5D%7D%2C%22f%22%3A%7B%22t%22%3A%5B%5D%2C%22s%22%3A%5B%5B0%2C0%2C1%2C1%2C0%2C2%2C1654.8000001907349%5D%2C%5B0%2C0%2C1%2C1%2C0%2C2%2C1705.6000001430511%5D%5D%7D%2C%22k%22%3A%7B%22t%22%3A%5B%5D%7D%2C%22n%22%3A%7B%22t%22%3A%5B%7B%22p%22%3A%22%2Fsearch-new%2F%22%2C%22t%22%3A%221dea3fde6ec89d44e1d7547092cbd93a%22%2C%22nT%22%3A%22navigate%22%2C%22r%22%3A%22%22%2C%22ts%22%3A1655.6000001430511%2C%22dw%22%3A50.09999990463257%7D%5D%7D%2C%22ptr%22%3A%7B%22pt%22%3A0%2C%22l%22%3A%5B%5D%2C%22tr%22%3Afalse%7D%2C%22v%22%3A%7B%22vH%22%3A0%2C%22vV%22%3A48.89999985694885%2C%22vC%22%3A0%2C%22fO%22%3A0%2C%22fI%22%3A0%7D%2C%22_to%22%3A1794456127353.2%2C%22_ti%22%3A%22f86a16cf-bc48-405e-ac3d-171d3c41bfdb%22%2C%22_tsrc%22%3A%22new%22%7D%5D; weird_get_top_level_domain=cookie; cc-nx-g_gamestop-us=hrm5GS7ZpEwQo-B9wfap-IdeuKTQOD17abGPKmoJPpk; usid_gamestop-us=0dc21824-41f4-47ef-98f5-0a89e5575c4c; dwanonymous_420142ceefb9f0c103b3815e84e9fcef=cdxy9abuLn4LOAebcMKOptnMOJ; visid_incap_2787253=CJSaQaa0RvWzo7Hm568htML/82oAAAAAQUIPAAAAAACPKYl4BYHGKSHLhuDhxByW; nlbi_2787253=Hzd6Rytg/hKEg4Ejvo/Z8AAAAACIwr5sU20tzBsRalRWkO8z; __cq_dnt=0; dw_dnt=0; cqcid=cdxy9abuLn4LOAebcMKOptnMOJ; cquid=||; _gcl_au=1.1.85109122.1794377037; ConstructorioID_client_id=f9d339e6-3ab9-47f9-8647-433382817f81; _ga=GA1.1.1662207234.1794377925; uuid=cdxy9abuLn4LOAebcMKOptnMOJ; __cq_uuid=cdxy9abuLn4LOAebcMKOptnMOJ; __cq_seg=0~0.00!1~0.00!2~0.00!3~0.00!4~0.00!5~0.00!6~0.00!7~0.00!8~0.00!9~0.00; IDE=AHWqTUkwVpXKFZbAgmoHbH2ZPb5HJPJW5eNkDUbZF_iDj1EGykSHggeNDuZ28iWJ; incap_ses_1781_2787253=7QdhHcIe3nVYgZuvymK3GIz59GoAAAAA8wmnW7m1ZGLeE5W/70ov3w==; dwsid=fxr2FA6FL-kcgdlWjxaH-GGYq645ljPmC-l4mIyKukgZYnECaoxrl_NcJV0Yx0OS6bE3riRUig2A4W3cC2xVvw==; dwac_a78eb5a11975e4c9cbc84f55ad=ZKmCIByEjbhaKdzInSw5bXor35orl5G3TUE%3D|dw-only|||USD|false|US%2FCentral|true; sid=ZKmCIByEjbhaKdzInSw5bXor35orl5G3TUE; incap_ses_656_2787253=C81lFxT2rmb6fjG3wJQaCdcR9WoAAAAAaFWIMKEFUjchs1jBeP94QA==; incap_ses_1785_2787253=QZ4uQppuhgDrz5HcepnFGOAl9WoAAAAAsRBtVcT5sU3MCYCdxjA+eg==; ConstructorioID_session_id=4; _ga_G3SVFK80WN=GS2.1.s1794451093$o9$g1$t1794453989$j60$l0$h0; ConstructorioID_session={\"sessionId\":4,\"lastTime\":1794453991026}; TAsessionID=74a5dbdf-c156-4256-862f-dee739f8952c|NEW; incap_ses_959_2787253=EE9RJgQMN35qvUUOfg1PDbY19WoAAAAAJwP337B86JL6tbNmI0zuSA==; cf_clearance=CpGuspHa_TBmCWDZEkHgEV8hw0F-HYHfbmy94YTzTdBnVr2GG7R59UcthIABT05w22GrRSVPM6wtaHjcAg0t5aoQqRJrxBwkFoffBOh22gmBK3xb2fcOhRoppaH8wHMzDKXNDyEEJUI0A0TEVgrunK65QwnljCjDucB0sdhmJxZM0x16vmTs9KuRwsPLVDGr852qVzMFsloxfog91npWO3qQFPtsuDX7iVH5YJOLBQ9QRyTyUnPYrdZVaH-nA5-DezEZLkdQLEihgoBqQyqzU95QZGGl2jMKqNYq8Lkt-sqHXlFT_Rx2fl6xJ54DTAdBgEHuHkGVZOFuwzBFQtlIuZoaTg1oULPHxWE8vHsTnJ-x9uAiKctDOoBqGvBycKv7VRaYYBodJxgmGStj0vNhcK2D8yoWutwBtIJwfVdBiwRUB2fmZWq_1d3BfJudKI3eYNq4LRbU3xzUnDWEOFEAfVXho756qT5hYerq-lEog8CGFeg2WPpWXqEevjnyqGsbAVtyiA0A4AtVBESapPjDVULzFhG2g62Jiw9XEoRCIPRB1UVr_Auu4ZytXEtHE-GdE5Ei; _cfuvid=qJh3DCJbyNkzvbLU78GFR0QPrpsrIMLWJ_UzkZDIFok-1794455903.0917873-1.0.1.1-fgq3qg5Dx.nkKa9lTcs4C_Nn94g37WNDW53TGjcPEmY; notice_behavior=implied,eu; forterToken=f04c29a8cce5400b8667e65c927f8b25_1794456302924__UDF43_25ck; __cf_bm=zvPOOl_4rm_cFKw0BX2VbXc_WnLmtpjpcM2Na3BIl94-1794456303.3766198-1.0.1.1-rXzZxK1kBM.QpuYML0E0TO3Uhu2YGSHmqphFFbzRW3OCtY.8HF0FImEtiK9m9lVG.HjuUsi5XgGFYiZ4olTPan6kMLJO3b9Nla6cJjN53QGNhz5r1emP1p_wpsyjstA3",
+    "cookieHeader": "__cf_ob=%5B%22a59319fe0b4d478c%22%2C%7B%22cb%22%3A%7B%22cC%22%3A0%2C%22xC%22%3A0%2C%22pC%22%3A0%2C%22sC%22%3A0%2C%22cL%22%3A%5B%5D%7D%2C%22f%22%3A%7B%22t%22%3A%5B%5D%2C%22s%22%3A%5B%5B0%2C0%2C1%2C1%2C0%2C2%2C1575.4000000953674%5D%5D%7D%2C%22k%22%3A%7B%22t%22%3A%5B%5D%7D%2C%22n%22%3A%7B%22t%22%3A%5B%7B%22p%22%3A%22%2Fsearch-new%2F%22%2C%22t%22%3A%221dea3fde6ec89d44e1d7547092cbd93a%22%2C%22nT%22%3A%22navigate%22%2C%22r%22%3A%22%22%2C%22ts%22%3A1574.9000000953674%2C%22dw%22%3A0.5999999046325684%7D%5D%7D%2C%22ptr%22%3A%7B%22pt%22%3A0%2C%22l%22%3A%5B%5D%2C%22tr%22%3Afalse%7D%2C%22v%22%3A%7B%22vH%22%3A0%2C%22vV%22%3A109%2C%22vC%22%3A0%2C%22fO%22%3A0%2C%22fI%22%3A0%7D%2C%22_to%22%3A1794460973547.9%2C%22_ti%22%3A%22839ba166-105b-4073-b1b0-5cfd33a27332%22%2C%22_tsrc%22%3A%22new%22%7D%5D; weird_get_top_level_domain=cookie; cc-nx-g_gamestop-us=hrm5GS7ZpEwQo-B9wfap-IdeuKTQOD17abGPKmoJPpk; usid_gamestop-us=0dc21824-41f4-47ef-98f5-0a89e5575c4c; dwanonymous_420142ceefb9f0c103b3815e84e9fcef=cdxy9abuLn4LOAebcMKOptnMOJ; visid_incap_2787253=CJSaQaa0RvWzo7Hm568htML/82oAAAAAQUIPAAAAAACPKYl4BYHGKSHLhuDhxByW; nlbi_2787253=Hzd6Rytg/hKEg4Ejvo/Z8AAAAACIwr5sU20tzBsRalRWkO8z; __cq_dnt=0; dw_dnt=0; cqcid=cdxy9abuLn4LOAebcMKOptnMOJ; cquid=||; _gcl_au=1.1.85109122.1794377037; ConstructorioID_client_id=f9d339e6-3ab9-47f9-8647-433382817f81; _ga=GA1.1.1662207234.1794377925; uuid=cdxy9abuLn4LOAebcMKOptnMOJ; __cq_uuid=cdxy9abuLn4LOAebcMKOptnMOJ; __cq_seg=0~0.00!1~0.00!2~0.00!3~0.00!4~0.00!5~0.00!6~0.00!7~0.00!8~0.00!9~0.00; IDE=AHWqTUkwVpXKFZbAgmoHbH2ZPb5HJPJW5eNkDUbZF_iDj1EGykSHggeNDuZ28iWJ; incap_ses_1781_2787253=7QdhHcIe3nVYgZuvymK3GIz59GoAAAAA8wmnW7m1ZGLeE5W/70ov3w==; dwsid=fxr2FA6FL-kcgdlWjxaH-GGYq645ljPmC-l4mIyKukgZYnECaoxrl_NcJV0Yx0OS6bE3riRUig2A4W3cC2xVvw==; dwac_a78eb5a11975e4c9cbc84f55ad=ZKmCIByEjbhaKdzInSw5bXor35orl5G3TUE%3D|dw-only|||USD|false|US%2FCentral|true; sid=ZKmCIByEjbhaKdzInSw5bXor35orl5G3TUE; ConstructorioID_session_id=5; incap_ses_959_2787253=zmbicpt6+DwG83YOfg1PDWlE9WoAAAAAOTgajx88pXzsQBuDjZYoRQ==; incap_ses_656_2787253=6+52a97H5Cc1YLK3wJQaCd1F9WoAAAAA/2zoe7PRLMb6Qguzsmvcxw==; _ga_G3SVFK80WN=GS2.1.s1794459784$o10$g1$t1794459784$j60$l0$h0; incap_ses_1785_2787253=FMFCW1JOByYIYrjcepnFGDZL9WoAAAAARzWP9kEbYl3dd6dmunOAJw==; _cfuvid=UiYD1X4Q6l1koOcNAPnT_crqLKZI_WZ83t6Db0UTqTA-1794460665.084296-1.0.1.1-OVm1nA.MI2.AFMewiWbVsrO3GWHgNPAyQqrhct8Yvjc; TAsessionID=58409f2d-5375-4e29-890a-4796ad815b4e|NEW; notice_behavior=implied,eu; cf_clearance=Cgj6VZXfi9znQX7ihADCoZctuilTi51vL0oCbGHVTwBdXm8CoTV4skEHpsGm2xypn6PhSZYxThv73WB3m1PQ0DywOsGM5Wb4FLK6zERdHO-FX1w-JWIGHQITMdmS6eF0OiqpB5dPFkdR3MnKooiQ_X7XcVtuBCCe2GbSEkM4_IASpePcXaGtUull-ySC0VjwktP1NeLPi_dnF6nJ95ohlSSJJoPY6N6SJr4Lser3tczMYk6ibW89hNqFj9IgBnozwSMViHFdBhCn71VJ6RGgNEIB8-hkut8HzZ0Tb2tiBL_oeYlul-e5C26JAZVCkqR53YgjkpYlpvLDQEMxfuhtlSlNgvvCyuk9J2V3LvwxmYPQ4qKT96kq3QHT0RACddkeG0-UjiVa2W4_O2KWkogrjP4k5fWRKf2u5GdOK1vSuTYmV08piAmtYKkGzz6LGf9BRmOPCC7ZaI7FDqJ_KFt1g8TTJZYfmEGR-_3GpY1vilmx8DSfOGlqa4-0uAj4eIJXuDLSnYdZDitU; __cf_bm=umIRjBActiAP1hqxskbhzBqi92NzWHpkWFsRNSZsJ9o-1794460975.1021197-1.0.1.1-H2pfluZ9Cvd03PRqPi4NWRe0RDnqwyG71MBIicEqI_a4e1gU1_AEwXwU9quiH5FDp7ZooxTtdqI9aFYSrsFnLooS.gH5xUP5CAtzdfXjPk0yDkwI9d_iiOP7jAE0Zl7i; ConstructorioID_session={\"sessionId\":5,\"lastTime\":1794460975279}; forterToken=f04c29a8cce5400b8667e65c927f8b25_1794460974490__UDF43_25ck_",
     "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
-    "updatedAt": 1794456303545,
+    "updatedAt": 1794460976499,
     "lastStatus": "200_OK",
     "queueActive": false,
     "cookies": [
       {
         "name": "__cf_ob",
-        "value": "%5B%22a592a3ae49c44862%22%2C%7B%22cb%22%3A%7B%22cC%22%3A0%2C%22xC%22%3A0%2C%22pC%22%3A0%2C%22sC%22%3A0%2C%22cL%22%3A%5B%5D%7D%2C%22f%22%3A%7B%22t%22%3A%5B%5D%2C%22s%22%3A%5B%5B0%2C0%2C1%2C1%2C0%2C2%2C1654.8000001907349%5D%2C%5B0%2C0%2C1%2C1%2C0%2C2%2C1705.6000001430511%5D%5D%7D%2C%22k%22%3A%7B%22t%22%3A%5B%5D%7D%2C%22n%22%3A%7B%22t%22%3A%5B%7B%22p%22%3A%22%2Fsearch-new%2F%22%2C%22t%22%3A%221dea3fde6ec89d44e1d7547092cbd93a%22%2C%22nT%22%3A%22navigate%22%2C%22r%22%3A%22%22%2C%22ts%22%3A1655.6000001430511%2C%22dw%22%3A50.09999990463257%7D%5D%7D%2C%22ptr%22%3A%7B%22pt%22%3A0%2C%22l%22%3A%5B%5D%2C%22tr%22%3Afalse%7D%2C%22v%22%3A%7B%22vH%22%3A0%2C%22vV%22%3A48.89999985694885%2C%22vC%22%3A0%2C%22fO%22%3A0%2C%22fI%22%3A0%7D%2C%22_to%22%3A1794456127353.2%2C%22_ti%22%3A%22f86a16cf-bc48-405e-ac3d-171d3c41bfdb%22%2C%22_tsrc%22%3A%22new%22%7D%5D",
+        "value": "%5B%22a59319fe0b4d478c%22%2C%7B%22cb%22%3A%7B%22cC%22%3A0%2C%22xC%22%3A0%2C%22pC%22%3A0%2C%22sC%22%3A0%2C%22cL%22%3A%5B%5D%7D%2C%22f%22%3A%7B%22t%22%3A%5B%5D%2C%22s%22%3A%5B%5B0%2C0%2C1%2C1%2C0%2C2%2C1575.4000000953674%5D%5D%7D%2C%22k%22%3A%7B%22t%22%3A%5B%5D%7D%2C%22n%22%3A%7B%22t%22%3A%5B%7B%22p%22%3A%22%2Fsearch-new%2F%22%2C%22t%22%3A%221dea3fde6ec89d44e1d7547092cbd93a%22%2C%22nT%22%3A%22navigate%22%2C%22r%22%3A%22%22%2C%22ts%22%3A1574.9000000953674%2C%22dw%22%3A0.5999999046325684%7D%5D%7D%2C%22ptr%22%3A%7B%22pt%22%3A0%2C%22l%22%3A%5B%5D%2C%22tr%22%3Afalse%7D%2C%22v%22%3A%7B%22vH%22%3A0%2C%22vV%22%3A109%2C%22vC%22%3A0%2C%22fO%22%3A0%2C%22fI%22%3A0%7D%2C%22_to%22%3A1794460973547.9%2C%22_ti%22%3A%22839ba166-105b-4073-b1b0-5cfd33a27332%22%2C%22_tsrc%22%3A%22new%22%7D%5D",
         "domain": "www.gamestop.com",
         "path": "/cdn-cgi/challenge-platform",
         "expires": -1,
@@ -235,7 +258,7 @@
         "value": "f9d339e6-3ab9-47f9-8647-433382817f81",
         "domain": "www.gamestop.com",
         "path": "/",
-        "expires": 1825989991,
+        "expires": 1825996975,
         "httpOnly": false,
         "secure": false,
         "sameSite": "Lax"
@@ -245,7 +268,7 @@
         "value": "GA1.1.1662207234.1794377925",
         "domain": ".gamestop.com",
         "path": "/",
-        "expires": 1829013989.561948,
+        "expires": 1829019784.129904,
         "httpOnly": false,
         "secure": false,
         "sameSite": "Lax"
@@ -255,7 +278,7 @@
         "value": "cdxy9abuLn4LOAebcMKOptnMOJ",
         "domain": ".cquotient.com",
         "path": "/",
-        "expires": 1828581991.282242,
+        "expires": 1828588976.22977,
         "httpOnly": false,
         "secure": true,
         "sameSite": "None"
@@ -331,68 +354,18 @@
         "sameSite": "None"
       },
       {
-        "name": "incap_ses_656_2787253",
-        "value": "C81lFxT2rmb6fjG3wJQaCdcR9WoAAAAAaFWIMKEFUjchs1jBeP94QA==",
-        "domain": ".kmsmep.com",
-        "path": "/",
-        "expires": -1,
-        "httpOnly": false,
-        "secure": true,
-        "sameSite": "None"
-      },
-      {
-        "name": "incap_ses_1785_2787253",
-        "value": "QZ4uQppuhgDrz5HcepnFGOAl9WoAAAAAsRBtVcT5sU3MCYCdxjA+eg==",
-        "domain": ".kmsmep.com",
-        "path": "/",
-        "expires": -1,
-        "httpOnly": false,
-        "secure": true,
-        "sameSite": "None"
-      },
-      {
         "name": "ConstructorioID_session_id",
-        "value": "4",
+        "value": "5",
         "domain": "www.gamestop.com",
         "path": "/",
-        "expires": 1825989991,
+        "expires": 1825996975,
         "httpOnly": false,
         "secure": false,
-        "sameSite": "Lax"
-      },
-      {
-        "name": "_ga_G3SVFK80WN",
-        "value": "GS2.1.s1794451093$o9$g1$t1794453989$j60$l0$h0",
-        "domain": ".gamestop.com",
-        "path": "/",
-        "expires": 1829013989.574058,
-        "httpOnly": false,
-        "secure": false,
-        "sameSite": "Lax"
-      },
-      {
-        "name": "ConstructorioID_session",
-        "value": "{\"sessionId\":4,\"lastTime\":1794453991026}",
-        "domain": "www.gamestop.com",
-        "path": "/",
-        "expires": 1825989991,
-        "httpOnly": false,
-        "secure": false,
-        "sameSite": "Lax"
-      },
-      {
-        "name": "TAsessionID",
-        "value": "74a5dbdf-c156-4256-862f-dee739f8952c|NEW",
-        "domain": ".gamestop.com",
-        "path": "/",
-        "expires": 1794456766,
-        "httpOnly": false,
-        "secure": true,
         "sameSite": "Lax"
       },
       {
         "name": "incap_ses_959_2787253",
-        "value": "EE9RJgQMN35qvUUOfg1PDbY19WoAAAAAJwP337B86JL6tbNmI0zuSA==",
+        "value": "zmbicpt6+DwG83YOfg1PDWlE9WoAAAAAOTgajx88pXzsQBuDjZYoRQ==",
         "domain": ".kmsmep.com",
         "path": "/",
         "expires": -1,
@@ -401,26 +374,54 @@
         "sameSite": "None"
       },
       {
-        "name": "cf_clearance",
-        "value": "CpGuspHa_TBmCWDZEkHgEV8hw0F-HYHfbmy94YTzTdBnVr2GG7R59UcthIABT05w22GrRSVPM6wtaHjcAg0t5aoQqRJrxBwkFoffBOh22gmBK3xb2fcOhRoppaH8wHMzDKXNDyEEJUI0A0TEVgrunK65QwnljCjDucB0sdhmJxZM0x16vmTs9KuRwsPLVDGr852qVzMFsloxfog91npWO3qQFPtsuDX7iVH5YJOLBQ9QRyTyUnPYrdZVaH-nA5-DezEZLkdQLEihgoBqQyqzU95QZGGl2jMKqNYq8Lkt-sqHXlFT_Rx2fl6xJ54DTAdBgEHuHkGVZOFuwzBFQtlIuZoaTg1oULPHxWE8vHsTnJ-x9uAiKctDOoBqGvBycKv7VRaYYBodJxgmGStj0vNhcK2D8yoWutwBtIJwfVdBiwRUB2fmZWq_1d3BfJudKI3eYNq4LRbU3xzUnDWEOFEAfVXho756qT5hYerq-lEog8CGFeg2WPpWXqEevjnyqGsbAVtyiA0A4AtVBESapPjDVULzFhG2g62Jiw9XEoRCIPRB1UVr_Auu4ZytXEtHE-GdE5Ei",
+        "name": "incap_ses_656_2787253",
+        "value": "6+52a97H5Cc1YLK3wJQaCd1F9WoAAAAA/2zoe7PRLMb6Qguzsmvcxw==",
+        "domain": ".kmsmep.com",
+        "path": "/",
+        "expires": -1,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "None"
+      },
+      {
+        "name": "_ga_G3SVFK80WN",
+        "value": "GS2.1.s1794459784$o10$g1$t1794459784$j60$l0$h0",
         "domain": ".gamestop.com",
         "path": "/",
-        "expires": 1825991738.074591,
-        "httpOnly": true,
+        "expires": 1829019784.141679,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "incap_ses_1785_2787253",
+        "value": "FMFCW1JOByYIYrjcepnFGDZL9WoAAAAARzWP9kEbYl3dd6dmunOAJw==",
+        "domain": ".kmsmep.com",
+        "path": "/",
+        "expires": -1,
+        "httpOnly": false,
         "secure": true,
-        "sameSite": "None",
-        "partitionKey": "https://gamestop.com",
-        "_crHasCrossSiteAncestor": false
+        "sameSite": "None"
       },
       {
         "name": "_cfuvid",
-        "value": "qJh3DCJbyNkzvbLU78GFR0QPrpsrIMLWJ_UzkZDIFok-1794455903.0917873-1.0.1.1-fgq3qg5Dx.nkKa9lTcs4C_Nn94g37WNDW53TGjcPEmY",
+        "value": "UiYD1X4Q6l1koOcNAPnT_crqLKZI_WZ83t6Db0UTqTA-1794460665.084296-1.0.1.1-OVm1nA.MI2.AFMewiWbVsrO3GWHgNPAyQqrhct8Yvjc",
         "domain": ".gamestop.com",
         "path": "/",
         "expires": -1,
         "httpOnly": true,
         "secure": true,
         "sameSite": "None"
+      },
+      {
+        "name": "TAsessionID",
+        "value": "58409f2d-5375-4e29-890a-4796ad815b4e|NEW",
+        "domain": ".gamestop.com",
+        "path": "/",
+        "expires": 1794462465,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "Lax"
       },
       {
         "name": "notice_behavior",
@@ -433,33 +434,56 @@
         "sameSite": "Lax"
       },
       {
-        "name": "forterToken",
-        "value": "f04c29a8cce5400b8667e65c927f8b25_1794456302924__UDF43_25ck",
+        "name": "cf_clearance",
+        "value": "Cgj6VZXfi9znQX7ihADCoZctuilTi51vL0oCbGHVTwBdXm8CoTV4skEHpsGm2xypn6PhSZYxThv73WB3m1PQ0DywOsGM5Wb4FLK6zERdHO-FX1w-JWIGHQITMdmS6eF0OiqpB5dPFkdR3MnKooiQ_X7XcVtuBCCe2GbSEkM4_IASpePcXaGtUull-ySC0VjwktP1NeLPi_dnF6nJ95ohlSSJJoPY6N6SJr4Lser3tczMYk6ibW89hNqFj9IgBnozwSMViHFdBhCn71VJ6RGgNEIB8-hkut8HzZ0Tb2tiBL_oeYlul-e5C26JAZVCkqR53YgjkpYlpvLDQEMxfuhtlSlNgvvCyuk9J2V3LvwxmYPQ4qKT96kq3QHT0RACddkeG0-UjiVa2W4_O2KWkogrjP4k5fWRKf2u5GdOK1vSuTYmV08piAmtYKkGzz6LGf9BRmOPCC7ZaI7FDqJ_KFt1g8TTJZYfmEGR-_3GpY1vilmx8DSfOGlqa4-0uAj4eIJXuDLSnYdZDitU",
         "domain": ".gamestop.com",
         "path": "/",
-        "expires": 1829016302,
-        "httpOnly": false,
-        "secure": false,
-        "sameSite": "Lax"
-      },
-      {
-        "name": "__cf_bm",
-        "value": "zvPOOl_4rm_cFKw0BX2VbXc_WnLmtpjpcM2Na3BIl94-1794456303.3766198-1.0.1.1-rXzZxK1kBM.QpuYML0E0TO3Uhu2YGSHmqphFFbzRW3OCtY.8HF0FImEtiK9m9lVG.HjuUsi5XgGFYiZ4olTPan6kMLJO3b9Nla6cJjN53QGNhz5r1emP1p_wpsyjstA3",
-        "domain": ".gamestop.com",
-        "path": "/",
-        "expires": 1794458103.366787,
+        "expires": 1825996975.100179,
         "httpOnly": true,
         "secure": true,
         "sameSite": "None",
         "partitionKey": "https://gamestop.com",
         "_crHasCrossSiteAncestor": false
+      },
+      {
+        "name": "__cf_bm",
+        "value": "umIRjBActiAP1hqxskbhzBqi92NzWHpkWFsRNSZsJ9o-1794460975.1021197-1.0.1.1-H2pfluZ9Cvd03PRqPi4NWRe0RDnqwyG71MBIicEqI_a4e1gU1_AEwXwU9quiH5FDp7ZooxTtdqI9aFYSrsFnLooS.gH5xUP5CAtzdfXjPk0yDkwI9d_iiOP7jAE0Zl7i",
+        "domain": ".gamestop.com",
+        "path": "/",
+        "expires": 1794462775.100426,
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "None",
+        "partitionKey": "https://gamestop.com",
+        "_crHasCrossSiteAncestor": false
+      },
+      {
+        "name": "ConstructorioID_session",
+        "value": "{\"sessionId\":5,\"lastTime\":1794460975279}",
+        "domain": "www.gamestop.com",
+        "path": "/",
+        "expires": 1825996975,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "forterToken",
+        "value": "f04c29a8cce5400b8667e65c927f8b25_1794460974490__UDF43_25ck_",
+        "domain": ".gamestop.com",
+        "path": "/",
+        "expires": 1829020976,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
       }
     ],
-    "browserChannel": "chrome-headless-new"
+    "browserChannel": "chrome-headless-new",
+    "nextEligibleAt": 1794461128432
   },
   "barnesandnoble": {
     "domain": "barnesandnoble",
-    "cookieHeader": "recent_search_terms=WyJwb2tlbW9uIHRyYWRpbmcgY2FyZCBnYW1lIl0%3D; __Host-grid-session=ImEzNTE1MTYzLTdhMDAtNDljMy1hNGVhLTBmZGY3MmQ2MTAyZSI.ItET0wegTklV5gNCcWFtYpSmafW4LPHGH2TckUKs_xc; bn_cart_attribution_01a1c934c2d5_996883e7882cd32b=%7B%22entered_by%22%3A%22basicSite%22%7D; _shopify_essential=:AaHJNMjTAAEAcBpH1EfMlqSWC1Y384Uh_nCFDYO7lue5Xp-WDgrzYF6IipV9FKaaan18eM-YRe4g-kSbGDdNkyO69iM:; bn_dns_cookie=isGPCEnabled%3D0%3BClarip%3D0%3BOneTrust%3DC0001%2CC0002%2CC0003%2CC0004; salsify_session_id=eac510e9-11b8-4074-a31a-d6f40e2df357; brwsr=b2a75b87-ddb4-11f1-b9d9-c7a350a9babb; irtps=1; _ga=GA1.1.665493482.1794390359; _gcl_au=1.1.1257499886.1794394418; _ga_LQ6J6GRSYC=GS2.1.s1794448634$o7$g0$t1794448634$j60$l0$h0; _ga_9F8GSML2LJ=GS2.1.s1794448635$o5$g1$t1794448635$j60$l0$h0; IR_22009=1794448635099%7C5032489%7C1794448635099%7C%7C; IR_PI=b2a75b87-ddb4-11f1-b9d9-c7a350a9babb%7C1794535035100; OptanonConsent=isGpcEnabled=0&datestamp=Wed+Nov+11+2026+19%3A57%3A20+GMT-0600+(Central+Standard+Time)&version=202606.1.0&browserGpcFlag=0&isDntEnabled=0&isIABGlobal=false&hosts=&consentId=d3b9a1b1-248f-4e4f-b2cc-d00e5527184d&interactionCount=0&isAnonUser=1&prevHadToken=0&landingPath=https%3A%2F%2Fwww.barnesandnoble.com%2Fsearch&groups=C0001%3A1%2CC0002%3A1%2CC0003%3A1%2CC0004%3A1; RT=\"z=1&dm=barnesandnoble.com&si=6f3d223a-91fa-427a-bb66-b68eed8d4db6&ss=mwc4lmiq&sl=0&tt=0&bcn=%2F%2Face99a1e.akstat.io%2F\"; irld=L260TfVUBEyckU-Ew4-RFly-mUvH2nr15UTyCSSBVSCR653Vt; bn_document_request_id=b7b826b8-335d-45da-a8db-abd7ab0354ac; session=eyJ2aXNpdG9ySWQiOiI3MzRkYmY2OS0xZDJkLTRkNjYtOGJiMS1mZWIxYmE4NDNkOTIiLCJkb2N1bWVudFJlcXVlc3RJZCI6ImI3YjgyNmI4LTMzNWQtNDVkYS1hOGRiLWFiZDdhYjAzNTRhYyIsIm1lcmNoRmlsdGVyIjoiWSJ9.HyH9szsv1hkyUC5bEb5DTPkJgZeXKPwfZomtmI5yuEg; _shopify_analytics=:AaHN7kDgAAEAUM2HoTVC2txBgK5wjtOjXW5KNKa8e4c8Kc8i7bW3dAprG3BhbaVg9bTG3CFcYaUF_7KrymddmUfSqz0:; _shopify_marketing=:AaHN7kDlAAEA68XQRjJgOEEz-NsgYybNdBbIYJnULef-cF2hxde8U_T_d4VbwC_mRObuq18ODTnhZta0yWHRv5pL_HU:",
+    "cookieHeader": "recent_search_terms=WyJwb2tlbW9uIHRyYWRpbmcgY2FyZCBnYW1lIl0%3D; __Host-grid-session=ImEzNTE1MTYzLTdhMDAtNDljMy1hNGVhLTBmZGY3MmQ2MTAyZSI.ItET0wegTklV5gNCcWFtYpSmafW4LPHGH2TckUKs_xc; bn_cart_attribution_01a1c934c2d5_996883e7882cd32b=%7B%22entered_by%22%3A%22basicSite%22%7D; _shopify_essential=:AaHJNMjTAAEAcBpH1EfMlqSWC1Y384Uh_nCFDYO7lue5Xp-WDgrzYF6IipV9FKaaan18eM-YRe4g-kSbGDdNkyO69iM:; bn_dns_cookie=isGPCEnabled%3D0%3BClarip%3D0%3BOneTrust%3DC0001%2CC0002%2CC0003%2CC0004; salsify_session_id=eac510e9-11b8-4074-a31a-d6f40e2df357; brwsr=b2a75b87-ddb4-11f1-b9d9-c7a350a9babb; irtps=1; _ga=GA1.1.665493482.1794390359; _gcl_au=1.1.1257499886.1794394418; bn_document_request_id=b35fbbf1-54af-452e-aa5d-09f5eb3a7bed; session=eyJ2aXNpdG9ySWQiOiI3MzRkYmY2OS0xZDJkLTRkNjYtOGJiMS1mZWIxYmE4NDNkOTIiLCJkb2N1bWVudFJlcXVlc3RJZCI6ImIzNWZiYmYxLTU0YWYtNDUyZS1hYTVkLTA5ZjVlYjNhN2JlZCIsIm1lcmNoRmlsdGVyIjoiWSJ9.lmrSa3UY7kgBW4CnzIVF3H6RjXNc4fQUePkh5JsVEmg; _shopify_analytics=:AaHONY2pAAEAmlzIBYLm0LtumIway7mI1-vlhJRq2egtSPh3aLawCwgelIJtEYkgGX_Oew4f7CdKB3epJpxaxzuvGDY:; _shopify_marketing=:AaHONY2uAAEAJFyPkzPA6nPf3I7QyttyO7__sUPP_OcVCe-w_M9BKaEW7S60kKWkKJmxeesy4qzPMiTlrXDRkXsOJyI:; IR_22009=1794460979140%7C5032489%7C1794460979140%7C%7C; IR_PI=b2a75b87-ddb4-11f1-b9d9-c7a350a9babb%7C1794547379141; irld=LxJUS2QUp5Wps3DvSQkU6Oxtg2XKSPuw4rUFmRBr3sT2%3Amy-D; _ga_LQ6J6GRSYC=GS2.1.s1794460670$o8$g0$t1794460979$j60$l0$h0; OptanonConsent=isGpcEnabled=0&datestamp=Wed+Nov+11+2026+23%3A22%3A59+GMT-0600+(Central+Standard+Time)&version=202606.1.0&browserGpcFlag=0&isDntEnabled=0&isIABGlobal=false&hosts=&consentId=d3b9a1b1-248f-4e4f-b2cc-d00e5527184d&interactionCount=0&isAnonUser=1&prevHadToken=0&landingPath=https%3A%2F%2Fwww.barnesandnoble.com%2Fsearch&groups=C0001%3A1%2CC0002%3A1%2CC0003%3A1%2CC0004%3A1; IDE=AHWqTUk36DZWkHR1QXAjyjunitdeIdwwGuFBLCsZ3MSQV-wmeYc6F6s1tgaxr9zK; _ga_9F8GSML2LJ=GS2.1.s1794460802$o6$g1$t1794460979$j60$l0$h0; RT=\"z=1&dm=barnesandnoble.com&si=6f3d223a-91fa-427a-bb66-b68eed8d4db6&ss=mwd3mn2r&sl=3&tt=2nq&bcn=%2F%2Face99dfc.akstat.io%2F&obo=1&ld=3v43\"",
     "cookies": [
       {
         "name": "recent_search_terms",
@@ -506,7 +530,7 @@
         "value": "isGPCEnabled%3D0%3BClarip%3D0%3BOneTrust%3DC0001%2CC0002%2CC0003%2CC0004",
         "domain": ".barnesandnoble.com",
         "path": "/",
-        "expires": 1794542705,
+        "expires": 1794547378,
         "httpOnly": false,
         "secure": false,
         "sameSite": "Lax"
@@ -526,7 +550,7 @@
         "value": "b2a75b87-ddb4-11f1-b9d9-c7a350a9babb",
         "domain": ".sjv.io",
         "path": "/",
-        "expires": 1825984640.816272,
+        "expires": 1825996979.209772,
         "httpOnly": true,
         "secure": true,
         "sameSite": "None"
@@ -546,7 +570,7 @@
         "value": "GA1.1.665493482.1794390359",
         "domain": ".barnesandnoble.com",
         "path": "/",
-        "expires": 1829008635.05102,
+        "expires": 1829020979.567343,
         "httpOnly": false,
         "secure": false,
         "sameSite": "Lax"
@@ -562,88 +586,18 @@
         "sameSite": "Lax"
       },
       {
-        "name": "_ga_LQ6J6GRSYC",
-        "value": "GS2.1.s1794448634$o7$g0$t1794448634$j60$l0$h0",
-        "domain": ".barnesandnoble.com",
-        "path": "/",
-        "expires": 1829008634.945564,
-        "httpOnly": false,
-        "secure": false,
-        "sameSite": "Lax"
-      },
-      {
-        "name": "_ga_9F8GSML2LJ",
-        "value": "GS2.1.s1794448635$o5$g1$t1794448635$j60$l0$h0",
-        "domain": ".barnesandnoble.com",
-        "path": "/",
-        "expires": 1829008635.065654,
-        "httpOnly": false,
-        "secure": false,
-        "sameSite": "Lax"
-      },
-      {
-        "name": "IR_22009",
-        "value": "1794448635099%7C5032489%7C1794448635099%7C%7C",
-        "domain": ".barnesandnoble.com",
-        "path": "/",
-        "expires": -1,
-        "httpOnly": false,
-        "secure": true,
-        "sameSite": "Lax"
-      },
-      {
-        "name": "IR_PI",
-        "value": "b2a75b87-ddb4-11f1-b9d9-c7a350a9babb%7C1794535035100",
-        "domain": ".barnesandnoble.com",
-        "path": "/",
-        "expires": 1825984635,
-        "httpOnly": false,
-        "secure": true,
-        "sameSite": "Lax"
-      },
-      {
-        "name": "OptanonConsent",
-        "value": "isGpcEnabled=0&datestamp=Wed+Nov+11+2026+19%3A57%3A20+GMT-0600+(Central+Standard+Time)&version=202606.1.0&browserGpcFlag=0&isDntEnabled=0&isIABGlobal=false&hosts=&consentId=d3b9a1b1-248f-4e4f-b2cc-d00e5527184d&interactionCount=0&isAnonUser=1&prevHadToken=0&landingPath=https%3A%2F%2Fwww.barnesandnoble.com%2Fsearch&groups=C0001%3A1%2CC0002%3A1%2CC0003%3A1%2CC0004%3A1",
-        "domain": ".www.barnesandnoble.com",
-        "path": "/",
-        "expires": 1825984640,
-        "httpOnly": false,
-        "secure": false,
-        "sameSite": "Lax"
-      },
-      {
-        "name": "RT",
-        "value": "\"z=1&dm=barnesandnoble.com&si=6f3d223a-91fa-427a-bb66-b68eed8d4db6&ss=mwc4lmiq&sl=0&tt=0&bcn=%2F%2Face99a1e.akstat.io%2F\"",
-        "domain": ".barnesandnoble.com",
-        "path": "/",
-        "expires": 1795053440,
-        "httpOnly": false,
-        "secure": false,
-        "sameSite": "Lax"
-      },
-      {
-        "name": "irld",
-        "value": "L260TfVUBEyckU-Ew4-RFly-mUvH2nr15UTyCSSBVSCR653Vt",
-        "domain": "barnesandnoble.sjv.io",
-        "path": "/",
-        "expires": 1810000640.816355,
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "None"
-      },
-      {
         "name": "bn_document_request_id",
-        "value": "b7b826b8-335d-45da-a8db-abd7ab0354ac",
+        "value": "b35fbbf1-54af-452e-aa5d-09f5eb3a7bed",
         "domain": "www.barnesandnoble.com",
         "path": "/",
-        "expires": 1794458105.401349,
+        "expires": 1794462776.857429,
         "httpOnly": false,
         "secure": true,
         "sameSite": "None"
       },
       {
         "name": "session",
-        "value": "eyJ2aXNpdG9ySWQiOiI3MzRkYmY2OS0xZDJkLTRkNjYtOGJiMS1mZWIxYmE4NDNkOTIiLCJkb2N1bWVudFJlcXVlc3RJZCI6ImI3YjgyNmI4LTMzNWQtNDVkYS1hOGRiLWFiZDdhYjAzNTRhYyIsIm1lcmNoRmlsdGVyIjoiWSJ9.HyH9szsv1hkyUC5bEb5DTPkJgZeXKPwfZomtmI5yuEg",
+        "value": "eyJ2aXNpdG9ySWQiOiI3MzRkYmY2OS0xZDJkLTRkNjYtOGJiMS1mZWIxYmE4NDNkOTIiLCJkb2N1bWVudFJlcXVlc3RJZCI6ImIzNWZiYmYxLTU0YWYtNDUyZS1hYTVkLTA5ZjVlYjNhN2JlZCIsIm1lcmNoRmlsdGVyIjoiWSJ9.lmrSa3UY7kgBW4CnzIVF3H6RjXNc4fQUePkh5JsVEmg",
         "domain": "www.barnesandnoble.com",
         "path": "/",
         "expires": -1,
@@ -653,28 +607,728 @@
       },
       {
         "name": "_shopify_analytics",
-        "value": ":AaHN7kDgAAEAUM2HoTVC2txBgK5wjtOjXW5KNKa8e4c8Kc8i7bW3dAprG3BhbaVg9bTG3CFcYaUF_7KrymddmUfSqz0:",
+        "value": ":AaHONY2pAAEAmlzIBYLm0LtumIway7mI1-vlhJRq2egtSPh3aLawCwgelIJtEYkgGX_Oew4f7CdKB3epJpxaxzuvGDY:",
         "domain": "www.barnesandnoble.com",
         "path": "/",
-        "expires": 1825992305.904597,
+        "expires": 1825996978.632269,
         "httpOnly": true,
         "secure": true,
         "sameSite": "Lax"
       },
       {
         "name": "_shopify_marketing",
-        "value": ":AaHN7kDlAAEA68XQRjJgOEEz-NsgYybNdBbIYJnULef-cF2hxde8U_T_d4VbwC_mRObuq18ODTnhZta0yWHRv5pL_HU:",
+        "value": ":AaHONY2uAAEAJFyPkzPA6nPf3I7QyttyO7__sUPP_OcVCe-w_M9BKaEW7S60kKWkKJmxeesy4qzPMiTlrXDRkXsOJyI:",
         "domain": "www.barnesandnoble.com",
         "path": "/",
-        "expires": 1825992305.904671,
+        "expires": 1825996978.632372,
         "httpOnly": true,
         "secure": true,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "IR_22009",
+        "value": "1794460979140%7C5032489%7C1794460979140%7C%7C",
+        "domain": ".barnesandnoble.com",
+        "path": "/",
+        "expires": -1,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "IR_PI",
+        "value": "b2a75b87-ddb4-11f1-b9d9-c7a350a9babb%7C1794547379141",
+        "domain": ".barnesandnoble.com",
+        "path": "/",
+        "expires": 1825996979,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "irld",
+        "value": "LxJUS2QUp5Wps3DvSQkU6Oxtg2XKSPuw4rUFmRBr3sT2%3Amy-D",
+        "domain": "barnesandnoble.sjv.io",
+        "path": "/",
+        "expires": 1810012979.209894,
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "None"
+      },
+      {
+        "name": "_ga_LQ6J6GRSYC",
+        "value": "GS2.1.s1794460670$o8$g0$t1794460979$j60$l0$h0",
+        "domain": ".barnesandnoble.com",
+        "path": "/",
+        "expires": 1829020979.264097,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "OptanonConsent",
+        "value": "isGpcEnabled=0&datestamp=Wed+Nov+11+2026+23%3A22%3A59+GMT-0600+(Central+Standard+Time)&version=202606.1.0&browserGpcFlag=0&isDntEnabled=0&isIABGlobal=false&hosts=&consentId=d3b9a1b1-248f-4e4f-b2cc-d00e5527184d&interactionCount=0&isAnonUser=1&prevHadToken=0&landingPath=https%3A%2F%2Fwww.barnesandnoble.com%2Fsearch&groups=C0001%3A1%2CC0002%3A1%2CC0003%3A1%2CC0004%3A1",
+        "domain": ".www.barnesandnoble.com",
+        "path": "/",
+        "expires": 1825996979,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "IDE",
+        "value": "AHWqTUk36DZWkHR1QXAjyjunitdeIdwwGuFBLCsZ3MSQV-wmeYc6F6s1tgaxr9zK",
+        "domain": ".doubleclick.net",
+        "path": "/",
+        "expires": 1829020979.47438,
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "None"
+      },
+      {
+        "name": "_ga_9F8GSML2LJ",
+        "value": "GS2.1.s1794460802$o6$g1$t1794460979$j60$l0$h0",
+        "domain": ".barnesandnoble.com",
+        "path": "/",
+        "expires": 1829020979.57975,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "RT",
+        "value": "\"z=1&dm=barnesandnoble.com&si=6f3d223a-91fa-427a-bb66-b68eed8d4db6&ss=mwd3mn2r&sl=3&tt=2nq&bcn=%2F%2Face99dfc.akstat.io%2F&obo=1&ld=3v43\"",
+        "domain": ".barnesandnoble.com",
+        "path": "/",
+        "expires": 1795065780,
+        "httpOnly": false,
+        "secure": false,
         "sameSite": "Lax"
       }
     ],
     "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
-    "updatedAt": 1794456306476,
+    "updatedAt": 1794460984726,
     "lastStatus": "200_OK",
+    "browserChannel": "chrome-headless-new",
+    "queueActive": false,
+    "nextEligibleAt": 1794461146643
+  },
+  "target": {
+    "domain": "target",
+    "cookieHeader": "",
+    "cookies": [],
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+    "updatedAt": 1794460972635,
+    "lastStatus": "WAF_CHALLENGE_PX",
+    "nextEligibleAt": 1794461052979,
+    "browserChannel": "chrome-headless-new",
+    "queueActive": false
+  },
+  "bestbuy": {
+    "domain": "bestbuy",
+    "cookieHeader": "_GRECAPTCHA=09AKhCRwh9rbn6zOlxndIz0wM9a8zlAxORcvndz7dEJ_oF7CNQQTlmdz3trYV1JobvVr7Mkr94JnP0gDcnlwxEhms; signInToSaveExpVariant=B; isGridViewEnabled=true; SID=9c4eaae8-7c8f-4465-ae69-231b38d083dc; CTT=a80891811cfe3418a0e5a8acd96cf3f0; bby_rdp=l; vt=01a1ce30-6c86-7263-b6d0-724418e9a917; akacd_PR_www_bestbuy_com=3971913441~rv=7~id=cca7c7917fef5c3fceb9ebdf827071c3; bby_cbc_lb=p-browse-w; lux_uid=179446064347619204; dtCookie=v_4_srv_-2D21123_sn_SUFH8GCTM65CQR3JCRTAIC9UIPEFGSE8; rxVisitor=17944606451209B7EP51D011J4SBCK8H252KAS8B24V71; dtSa=-; bby_loc_lb=p-loc-w; ak_bmsc=8FBA2254070E85603426DE8ED03A8028~000000000000000000000000000000~YAAQUjovF0oyjrKhAQAAcXkwzgEDdrdoMMDydBPBMwgRu6cGUe4rs5EK5e9bjwd/qWlE45ksCMuXHhRj3lrbAhdiXgvjhzuJJnozS3uBH1iuoz+GWiRpOv0CIw97uSG5oZ1FD6e3vApWRVNuxAWqoTfY6AZSROxi5CSyxS/NZvZ77wIeWg4rjq27fCwLtzScS3zNVtrBvg+G0AgnyzZNrYcfDs7OkoVQHABke2vsgX0hYB6oTE1JdaGCf67+OqnD7heQk/vx9YiEbiSs4PCZAboc4pa0hcOaq7GbMvt49fD1U2XVseY84ELaqemSSTtV3ZIPwWw5vC4ZvFNCDRVDHK/7aEqDXTFwe0BOggBn9fYzsUypx001I3CVRJL4QaEaCP5bITe0spyqUa04nyeX40a/7efyLGT6iDs28+s/thD2jI9MBY79Sue3mo9ZzQ7scObESOU=; locDestZip=76101; locStoreId=1027; exp0669=A; bm_s=YAAQUjovF3fpjrKhAQAAR4I0zgZOr5ZiRpyDqx8mzYMwKx3nt0OJPaO2qSYJeDDAOMLk87qFxD20aLC71uFPTK2RprigRYD/tmAB0Qmys7HWfzSOlsrox2DbMdVhnpawx1v6T56Z+cWEoeoTbtD0g/m/UxE1IYdIJFWI5USzQyfDxfU4qmfnM4bJGt+ENh2mQ7azdxkMpr2KwivipbV1bo9UPFUrFjyHNaXK3KNuTKusldkVwIJG50+FWziCIFsb3W0r14jXChJknDpET7wnimzf40SWAD20Y8IwMuefttMwF1TV5XKe5/7q6FTm1im1O/AKB/o8FjFhhYQrf0iTs4s4MAS5jIN68nhs8eONFurI4l1ilEwX0TR4Z1GSsBYqi3Uve8Is2F5g8BaodAcWTDHFyDbjPg/QZXCMO5tWAbwFUsXrOJBXaI9KB5OOVooBDDYT0R+qE9KuPpmK4OEX3UR5msqcptc3MZ47Ccj1D37bwENukBRIVH/Nz8a5qCftWVURDFnsWxvX3OvZpVAFss6WIYwD280KXaNts+bAAumC4hfdHwrgg9MnvHo5f9G/7FIzgd8bhu/mlmLxsmLtngM+hdNJW1t3TbF8a7zIjkxpwJsNokw6BaUBimHeZCn5WQaKUBS4Gbs47xB0tDAEBuh2G8yhEo0v6OvBKTb+mtuJNHKTghtefUkMNY3EGJhtnhyuUJ/RmQtBDykiti3/xcaFb9RUFPaxOkEKSArwB4PQ6j8vQOYopKtrS9E9lLSGNA9KdeUJV65quVbWkV2Uc61vuCzZxFKIBiALoLu09YXWA9wyVFdwTO0Rb1oQURQLcn8IzyrmbSaT/PA/xEk9pqcTx/q0wuvkskvovXlIibUQLhKdjRdKculoBlxbQa0B+lQYaUBcso2i1BqRemy+dwUXdT+Gh7vmDWwF8tQ=; bm_so=02F434AF4412E8E86D004BCD7C11BB5EA3370D76D342435337873EA2AF368295~YAAQUjovF3jpjrKhAQAAR4I0zgmAwDDUiT3gSM3NVZBVitHVaYWFHdbY1snPM2vNym/wBXoe0RLT13rhNzZGkxB1zsDMZs8Of50ophhPuwOztSiMPD6lU+Oma8/h23N+5tE2gRO3a7wSN/2HerrqHd8I2LKheM7955EkYsxgaIt11DngRmU+kdZIvFngxS7qHVIFkdu4i4m+FOoGmU8gZU0Xcu7fuG8s279JtzqaKaz/zf2BKgc8uxapiyJAzJ5P8HbHSaOkivDtqzRWYIC+4LuwQ4EU561ter/VkQVBa2UaG77vDefqYLlkO3709tRYZawEeyn+DlQEAAxZ96ojmkQgS6xyYOjGzSu5SnoHDtoKteTrZwTkw3qnEF1Ot4K45I8OsSrVb9qBoAIEdZ2sR7pQyVW5n9OLWT5NfIZJ8+3x1uj0Qwn+ZU7kVHPecfK7bCBetYIFIG2iQ+PdMdDrUVyDN0yCI5EeQOh9~7; bm_sz=009F663C059AFD39BAA623EF02689DB4~YAAQUjovF3npjrKhAQAAR4I0zgHqWenbA+c+onYBYwmQFsP6KQ3PqTWkOR5FY7r3UF7bRRWn9U+ZV6TB0mRu4WPus1V73K63iCpiyui1vqa8H+UzisCJexKS5IaWOFPpd/1nYIseT2KlsIz4P9GydyfcZagkn0g9HvTmHgLHbAbf8YtwfY/YTqitFHVm3k5YNg5LjIjZpr/X5bUeAu6t8abJRAt2qAh5Ki3iLdScVQQUcSSE5bJOIyCOjAqVWNGBRBDfvdqVutig2e9kg6epIdqinezsNIe+WICn7MC+iqERIRHmLseFgzwm9YkmDaWt8x/hBf69X6qZU6t7BuEDv22N2pB1rGImaHg5FjbYSCNW4plL26zdl79ByacyvGGiGGlu9Fha6EkePEM8jG7+a88RX8me7O78OsPZt9oyV0dT0KEkHlrLZUx0gkXkIiQV~3683652~3424566; _abck=F705713B5D81393C5082AEEDE7222D4E~-1~YAAQTzovF9F39qChAQAA04U0zhASXiAsu1nXSKJXB5APGE/pNSvz/BFSJRQK2GpfsZNLSrKr+hr+xW2qmOmt41ohrn7BQo0Tfzy/dfL18cT/ixTRIodhTUuXL47Up6p0N3aMpuYM2kGlHwofYtkpwJO2Mflu8ZS6bdejDKgxUCHS+jsv4xi921YfOaCF8GrDywsdGNaqMriHHa5CMENhKReY+rffbicOeb+Mh8Ie0+NDxP69Bj1gHTPwEld2sFoKD3aLmnedHVQMu2OQKzhaY199L75k+YZsuouTiv2rijYmZhNar/2/QPLjj6PoY6Q9ayz0jtpU9KWUif0kEvvc/OC41MXtjnK9RTibUvtfZr4dSSCNSZxxlgq1IFNK9w7oNaMRuxEbt9lKucrJCd8iwmBWhUNNyYQl4R4m+rfO9y6zV4Fkto8mVN7z5qz6S2NbhciQJGOIgEjbTKOIyUCqRxxfdraNGSNxNVcflNrCTHMlD1zTs2aMPejTliqOls5mObEDIL6TjgPgw1Udwzk5igSRJ0um64hC7UKlw0+8b1+1jf0u13XDliQsyLSO2wTGJiI17ksOD8UyiSywA8oNLGcFTQp+hBwfKeuREJ8X+Bfn98Ip6PWptzvETABCxlwUg+y54L8V5sHtcTDyC3hDJq+WofhDBih0usQ15SpNjk/cdoMifx5Mgtv2mlFX8VFYiAyshOivlg==~-1~-1~1794464244~AAQAAAAG%2f%2f%2f%2f%2f9VwZxDKqHzihPTIfxOJqNqXsco+wrgjnkPXkYQCkxkbEhmUpu9pm7HOjMxkzn8zaK9fFie+CZQtGUUe4Apz6Wpc1u1BS0brYp5nK4p14TEWmFGrbJQGBjE4WGg0lzGs+ptgE0o%3d~-1; rxvt=1794462715226|1794460645123; dtPC=-21123$460645117_3h1p-21123$460777117_29h1vCCUCFJDJOUGMAEQTCDUUOMVAIEKCAFVJ-0e0; bm_lso=02F434AF4412E8E86D004BCD7C11BB5EA3370D76D342435337873EA2AF368295~YAAQUjovF3jpjrKhAQAAR4I0zgmAwDDUiT3gSM3NVZBVitHVaYWFHdbY1snPM2vNym/wBXoe0RLT13rhNzZGkxB1zsDMZs8Of50ophhPuwOztSiMPD6lU+Oma8/h23N+5tE2gRO3a7wSN/2HerrqHd8I2LKheM7955EkYsxgaIt11DngRmU+kdZIvFngxS7qHVIFkdu4i4m+FOoGmU8gZU0Xcu7fuG8s279JtzqaKaz/zf2BKgc8uxapiyJAzJ5P8HbHSaOkivDtqzRWYIC+4LuwQ4EU561ter/VkQVBa2UaG77vDefqYLlkO3709tRYZawEeyn+DlQEAAxZ96ojmkQgS6xyYOjGzSu5SnoHDtoKteTrZwTkw3qnEF1Ot4K45I8OsSrVb9qBoAIEdZ2sR7pQyVW5n9OLWT5NfIZJ8+3x1uj0Qwn+ZU7kVHPecfK7bCBetYIFIG2iQ+PdMdDrUVyDN0yCI5EeQOh9~7~1794460915384; cto_writeable=1",
+    "cookies": [
+      {
+        "name": "_GRECAPTCHA",
+        "value": "09AKhCRwh9rbn6zOlxndIz0wM9a8zlAxORcvndz7dEJ_oF7CNQQTlmdz3trYV1JobvVr7Mkr94JnP0gDcnlwxEhms",
+        "domain": "www.google.com",
+        "path": "/recaptcha",
+        "expires": 1810012914.815948,
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "None"
+      },
+      {
+        "name": "signInToSaveExpVariant",
+        "value": "B",
+        "domain": "www.bestbuy.com",
+        "path": "/site",
+        "expires": -1,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "isGridViewEnabled",
+        "value": "true",
+        "domain": ".bestbuy.com",
+        "path": "/",
+        "expires": 1825996642.696232,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "SID",
+        "value": "9c4eaae8-7c8f-4465-ae69-231b38d083dc",
+        "domain": ".bestbuy.com",
+        "path": "/",
+        "expires": -1,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "CTT",
+        "value": "a80891811cfe3418a0e5a8acd96cf3f0",
+        "domain": ".bestbuy.com",
+        "path": "/",
+        "expires": 1802236642.696606,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "bby_rdp",
+        "value": "l",
+        "domain": ".bestbuy.com",
+        "path": "/",
+        "expires": 1794547042.696711,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "vt",
+        "value": "01a1ce30-6c86-7263-b6d0-724418e9a917",
+        "domain": ".bestbuy.com",
+        "path": "/",
+        "expires": 1825996642.696808,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "akacd_PR_www_bestbuy_com",
+        "value": "3971913441~rv=7~id=cca7c7917fef5c3fceb9ebdf827071c3",
+        "domain": "www.bestbuy.com",
+        "path": "/",
+        "expires": -1,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "None"
+      },
+      {
+        "name": "bby_cbc_lb",
+        "value": "p-browse-w",
+        "domain": ".bestbuy.com",
+        "path": "/",
+        "expires": 1794461243.297983,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "lux_uid",
+        "value": "179446064347619204",
+        "domain": "www.bestbuy.com",
+        "path": "/",
+        "expires": 1794462710.906501,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "dtCookie",
+        "value": "v_4_srv_-2D21123_sn_SUFH8GCTM65CQR3JCRTAIC9UIPEFGSE8",
+        "domain": ".www.bestbuy.com",
+        "path": "/",
+        "expires": -1,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "rxVisitor",
+        "value": "17944606451209B7EP51D011J4SBCK8H252KAS8B24V71",
+        "domain": ".www.bestbuy.com",
+        "path": "/",
+        "expires": -1,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "dtSa",
+        "value": "-",
+        "domain": ".www.bestbuy.com",
+        "path": "/",
+        "expires": -1,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "bby_loc_lb",
+        "value": "p-loc-w",
+        "domain": ".bestbuy.com",
+        "path": "/",
+        "expires": 1794461245.924899,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "ak_bmsc",
+        "value": "8FBA2254070E85603426DE8ED03A8028~000000000000000000000000000000~YAAQUjovF0oyjrKhAQAAcXkwzgEDdrdoMMDydBPBMwgRu6cGUe4rs5EK5e9bjwd/qWlE45ksCMuXHhRj3lrbAhdiXgvjhzuJJnozS3uBH1iuoz+GWiRpOv0CIw97uSG5oZ1FD6e3vApWRVNuxAWqoTfY6AZSROxi5CSyxS/NZvZ77wIeWg4rjq27fCwLtzScS3zNVtrBvg+G0AgnyzZNrYcfDs7OkoVQHABke2vsgX0hYB6oTE1JdaGCf67+OqnD7heQk/vx9YiEbiSs4PCZAboc4pa0hcOaq7GbMvt49fD1U2XVseY84ELaqemSSTtV3ZIPwWw5vC4ZvFNCDRVDHK/7aEqDXTFwe0BOggBn9fYzsUypx001I3CVRJL4QaEaCP5bITe0spyqUa04nyeX40a/7efyLGT6iDs28+s/thD2jI9MBY79Sue3mo9ZzQ7scObESOU=",
+        "domain": ".bestbuy.com",
+        "path": "/",
+        "expires": 1794467842.72798,
+        "httpOnly": true,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "locDestZip",
+        "value": "76101",
+        "domain": ".bestbuy.com",
+        "path": "/",
+        "expires": -1,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "locStoreId",
+        "value": "1027",
+        "domain": ".bestbuy.com",
+        "path": "/",
+        "expires": -1,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "exp0669",
+        "value": "A",
+        "domain": ".bestbuy.com",
+        "path": "/",
+        "expires": -1,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "bm_s",
+        "value": "YAAQUjovF3fpjrKhAQAAR4I0zgZOr5ZiRpyDqx8mzYMwKx3nt0OJPaO2qSYJeDDAOMLk87qFxD20aLC71uFPTK2RprigRYD/tmAB0Qmys7HWfzSOlsrox2DbMdVhnpawx1v6T56Z+cWEoeoTbtD0g/m/UxE1IYdIJFWI5USzQyfDxfU4qmfnM4bJGt+ENh2mQ7azdxkMpr2KwivipbV1bo9UPFUrFjyHNaXK3KNuTKusldkVwIJG50+FWziCIFsb3W0r14jXChJknDpET7wnimzf40SWAD20Y8IwMuefttMwF1TV5XKe5/7q6FTm1im1O/AKB/o8FjFhhYQrf0iTs4s4MAS5jIN68nhs8eONFurI4l1ilEwX0TR4Z1GSsBYqi3Uve8Is2F5g8BaodAcWTDHFyDbjPg/QZXCMO5tWAbwFUsXrOJBXaI9KB5OOVooBDDYT0R+qE9KuPpmK4OEX3UR5msqcptc3MZ47Ccj1D37bwENukBRIVH/Nz8a5qCftWVURDFnsWxvX3OvZpVAFss6WIYwD280KXaNts+bAAumC4hfdHwrgg9MnvHo5f9G/7FIzgd8bhu/mlmLxsmLtngM+hdNJW1t3TbF8a7zIjkxpwJsNokw6BaUBimHeZCn5WQaKUBS4Gbs47xB0tDAEBuh2G8yhEo0v6OvBKTb+mtuJNHKTghtefUkMNY3EGJhtnhyuUJ/RmQtBDykiti3/xcaFb9RUFPaxOkEKSArwB4PQ6j8vQOYopKtrS9E9lLSGNA9KdeUJV65quVbWkV2Uc61vuCzZxFKIBiALoLu09YXWA9wyVFdwTO0Rb1oQURQLcn8IzyrmbSaT/PA/xEk9pqcTx/q0wuvkskvovXlIibUQLhKdjRdKculoBlxbQa0B+lQYaUBcso2i1BqRemy+dwUXdT+Gh7vmDWwF8tQ=",
+        "domain": ".bestbuy.com",
+        "path": "/",
+        "expires": 1797139310.13668,
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "bm_so",
+        "value": "02F434AF4412E8E86D004BCD7C11BB5EA3370D76D342435337873EA2AF368295~YAAQUjovF3jpjrKhAQAAR4I0zgmAwDDUiT3gSM3NVZBVitHVaYWFHdbY1snPM2vNym/wBXoe0RLT13rhNzZGkxB1zsDMZs8Of50ophhPuwOztSiMPD6lU+Oma8/h23N+5tE2gRO3a7wSN/2HerrqHd8I2LKheM7955EkYsxgaIt11DngRmU+kdZIvFngxS7qHVIFkdu4i4m+FOoGmU8gZU0Xcu7fuG8s279JtzqaKaz/zf2BKgc8uxapiyJAzJ5P8HbHSaOkivDtqzRWYIC+4LuwQ4EU561ter/VkQVBa2UaG77vDefqYLlkO3709tRYZawEeyn+DlQEAAxZ96ojmkQgS6xyYOjGzSu5SnoHDtoKteTrZwTkw3qnEF1Ot4K45I8OsSrVb9qBoAIEdZ2sR7pQyVW5n9OLWT5NfIZJ8+3x1uj0Qwn+ZU7kVHPecfK7bCBetYIFIG2iQ+PdMdDrUVyDN0yCI5EeQOh9~7",
+        "domain": ".bestbuy.com",
+        "path": "/",
+        "expires": 1794547310.136848,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "bm_sz",
+        "value": "009F663C059AFD39BAA623EF02689DB4~YAAQUjovF3npjrKhAQAAR4I0zgHqWenbA+c+onYBYwmQFsP6KQ3PqTWkOR5FY7r3UF7bRRWn9U+ZV6TB0mRu4WPus1V73K63iCpiyui1vqa8H+UzisCJexKS5IaWOFPpd/1nYIseT2KlsIz4P9GydyfcZagkn0g9HvTmHgLHbAbf8YtwfY/YTqitFHVm3k5YNg5LjIjZpr/X5bUeAu6t8abJRAt2qAh5Ki3iLdScVQQUcSSE5bJOIyCOjAqVWNGBRBDfvdqVutig2e9kg6epIdqinezsNIe+WICn7MC+iqERIRHmLseFgzwm9YkmDaWt8x/hBf69X6qZU6t7BuEDv22N2pB1rGImaHg5FjbYSCNW4plL26zdl79ByacyvGGiGGlu9Fha6EkePEM8jG7+a88RX8me7O78OsPZt9oyV0dT0KEkHlrLZUx0gkXkIiQV~3683652~3424566",
+        "domain": ".bestbuy.com",
+        "path": "/",
+        "expires": 1794475042.136957,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "_abck",
+        "value": "F705713B5D81393C5082AEEDE7222D4E~-1~YAAQTzovF9F39qChAQAA04U0zhASXiAsu1nXSKJXB5APGE/pNSvz/BFSJRQK2GpfsZNLSrKr+hr+xW2qmOmt41ohrn7BQo0Tfzy/dfL18cT/ixTRIodhTUuXL47Up6p0N3aMpuYM2kGlHwofYtkpwJO2Mflu8ZS6bdejDKgxUCHS+jsv4xi921YfOaCF8GrDywsdGNaqMriHHa5CMENhKReY+rffbicOeb+Mh8Ie0+NDxP69Bj1gHTPwEld2sFoKD3aLmnedHVQMu2OQKzhaY199L75k+YZsuouTiv2rijYmZhNar/2/QPLjj6PoY6Q9ayz0jtpU9KWUif0kEvvc/OC41MXtjnK9RTibUvtfZr4dSSCNSZxxlgq1IFNK9w7oNaMRuxEbt9lKucrJCd8iwmBWhUNNyYQl4R4m+rfO9y6zV4Fkto8mVN7z5qz6S2NbhciQJGOIgEjbTKOIyUCqRxxfdraNGSNxNVcflNrCTHMlD1zTs2aMPejTliqOls5mObEDIL6TjgPgw1Udwzk5igSRJ0um64hC7UKlw0+8b1+1jf0u13XDliQsyLSO2wTGJiI17ksOD8UyiSywA8oNLGcFTQp+hBwfKeuREJ8X+Bfn98Ip6PWptzvETABCxlwUg+y54L8V5sHtcTDyC3hDJq+WofhDBih0usQ15SpNjk/cdoMifx5Mgtv2mlFX8VFYiAyshOivlg==~-1~-1~1794464244~AAQAAAAG%2f%2f%2f%2f%2f9VwZxDKqHzihPTIfxOJqNqXsco+wrgjnkPXkYQCkxkbEhmUpu9pm7HOjMxkzn8zaK9fFie+CZQtGUUe4Apz6Wpc1u1BS0brYp5nK4p14TEWmFGrbJQGBjE4WGg0lzGs+ptgE0o%3d~-1",
+        "domain": ".bestbuy.com",
+        "path": "/",
+        "expires": 1825996911.0488,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "rxvt",
+        "value": "1794462715226|1794460645123",
+        "domain": ".www.bestbuy.com",
+        "path": "/",
+        "expires": -1,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "dtPC",
+        "value": "-21123$460645117_3h1p-21123$460777117_29h1vCCUCFJDJOUGMAEQTCDUUOMVAIEKCAFVJ-0e0",
+        "domain": ".www.bestbuy.com",
+        "path": "/",
+        "expires": -1,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "bm_lso",
+        "value": "02F434AF4412E8E86D004BCD7C11BB5EA3370D76D342435337873EA2AF368295~YAAQUjovF3jpjrKhAQAAR4I0zgmAwDDUiT3gSM3NVZBVitHVaYWFHdbY1snPM2vNym/wBXoe0RLT13rhNzZGkxB1zsDMZs8Of50ophhPuwOztSiMPD6lU+Oma8/h23N+5tE2gRO3a7wSN/2HerrqHd8I2LKheM7955EkYsxgaIt11DngRmU+kdZIvFngxS7qHVIFkdu4i4m+FOoGmU8gZU0Xcu7fuG8s279JtzqaKaz/zf2BKgc8uxapiyJAzJ5P8HbHSaOkivDtqzRWYIC+4LuwQ4EU561ter/VkQVBa2UaG77vDefqYLlkO3709tRYZawEeyn+DlQEAAxZ96ojmkQgS6xyYOjGzSu5SnoHDtoKteTrZwTkw3qnEF1Ot4K45I8OsSrVb9qBoAIEdZ2sR7pQyVW5n9OLWT5NfIZJ8+3x1uj0Qwn+ZU7kVHPecfK7bCBetYIFIG2iQ+PdMdDrUVyDN0yCI5EeQOh9~7~1794460915384",
+        "domain": ".www.bestbuy.com",
+        "path": "/",
+        "expires": 1797052915,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "cto_writeable",
+        "value": "1",
+        "domain": ".bestbuy.com",
+        "path": "/",
+        "expires": 1794464515,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      }
+    ],
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+    "updatedAt": 1794460916032,
+    "lastStatus": "200_OK",
+    "nextEligibleAt": 1794461025577,
+    "browserChannel": "chrome-headless-new",
+    "queueActive": false
+  },
+  "walmart": {
+    "domain": "walmart",
+    "cookieHeader": "",
+    "cookies": [],
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+    "updatedAt": 1794461015005,
+    "lastStatus": "WAF_CHALLENGE_PX",
+    "nextEligibleAt": 1794461112361,
+    "browserChannel": "chrome-headless-new",
+    "queueActive": false
+  },
+  "costco": {
+    "domain": "costco",
+    "cookieHeader": "client-zip-short=76131; C_LOC=TX; f_as=01fdab3a6a71ee609826a5978b6c840e~rv=86~sig=0x132d7569b477a5f8b527e9b12d044ed7f3c9e4dd8a56111a774750eae645ada6; CriteoSessionUserId=23b5987665e246659c2f298fe9e62eec; rxVisitor=1794460655149IAOS2D8G54JDFOMOGSPL6JOSKUGUJBQA; demdex=12357696234516189662744719958799635677; kndctr_97B21CFE5329614E0A490D45_AdobeOrg_cluster=or2; kndctr_97B21CFE5329614E0A490D45_AdobeOrg_identity=CiYyMjUzNjg2NDQ5ODU4MzYzNjM4MjkxNjAzMDUxMDk3MzgwMzE5N1ISCOPBwvGcNBABGAEqA09SMjAA8AHjwcLxnDQ=; AMCV_97B21CFE5329614E0A490D45%40AdobeOrg=MCMID|22536864498583636382916030510973803197; tcm={\"purposes\":{\"DoNotProcess\":false,\"DoNotSell\":false,\"DoNotShare\":false,\"Minor\":false},\"timestamp\":\"2026-11-12T05:17:32.768Z\",\"confirmed\":false,\"prompted\":false,\"updated\":false}; ajs_anonymous_id=2c917f74-179c-4849-be4c-aff2405f74ae; invCheckCity=Saginaw; invCheckStateCode=TX; invCheckPostalCode=76131; WAREHOUSEDELIVERY_WHS={%22distributionCenters%22:[%221254-3pl%22%2C%221321-wm%22%2C%221471-3pl%22%2C%22283-wm%22%2C%22561-wm%22%2C%22725-wm%22%2C%22731-wm%22%2C%22758-wm%22%2C%22759-wm%22%2C%22847_0-cor%22%2C%22847_0-cwt%22%2C%22847_0-edi%22%2C%22847_0-ehs%22%2C%22847_0-membership%22%2C%22847_0-mpt%22%2C%22847_0-spc%22%2C%22847_0-wm%22%2C%22847_1-cwt%22%2C%22847_1-edi%22%2C%22847_bosch_1461-edi%22%2C%22847_d-fis%22%2C%22847_ge_dal-edi%22%2C%22847_lg_ntx-edi%22%2C%22847_lux_us11-edi%22%2C%22847_NA-cor%22%2C%22847_NA-pharmacy%22%2C%22847_NA-wm%22%2C%22847_ss_u359-edi%22%2C%22847_wp_r455-edi%22%2C%22951-wm%22%2C%22952-wm%22%2C%229847-wcs%22]%2C%22groceryCenters%22:[%22655-bd%22]%2C%22nearestWarehouse%22:{%22catalog%22:%221173-wh%22}%2C%22pickUpCenters%22:[]}; STORELOCATION={%22storeLocation%22:{%22city%22:%22N%20Fort%20Worth%22%2C%22zip%22:%2276177-2004%22}}; C_WHLOC=USTX; adobeopt_exp=ucc; uid=4a3ced57-8819-4a0b-8fd0-2c96becea884; KP_UIDz-ssn=0a38G51Oh3uldE4hSRcSbDBfOntU57jISE1qSXmtw0pvYyiE0I5SfTlS9yRCIsuNiqCawQmQ3ztJO8LnGDRfm9vnsrEO5hOq8J4XhynYxC5AGN25OfTmpxNXfhMCjoiDFokbueEdgJXGSRWMm3NTPI172CroGp3mOP5; KP_UIDz=0a38G51Oh3uldE4hSRcSbDBfOntU57jISE1qSXmtw0pvYyiE0I5SfTlS9yRCIsuNiqCawQmQ3ztJO8LnGDRfm9vnsrEO5hOq8J4XhynYxC5AGN25OfTmpxNXfhMCjoiDFokbueEdgJXGSRWMm3NTPI172CroGp3mOP5; dtSa=-; _lr_tabs_-costco%2Fproduction-vrwno={%22recordingID%22:%226-01a1ce34-a14e-77d6-bdf4-8c5e7237fb29%22%2C%22sessionID%22:0%2C%22lastActivity%22:1794460920891%2C%22hasActivity%22:false%2C%22confirmed%22:false%2C%22recordingConditionThreshold%22:86.47967898013181%2C%22clearsIdentifiedUser%22:false}; _lr_hb_-costco%2Fproduction-vrwno={%22heartbeat%22:1794460920891}; rxvt=1794462722327|1794460655152; BCO=pm2; dtPC=-14644$460920535_600h-vURFPBEBROAALUAJGRHSAAMOWIWFLMUBR-0e0; cto_bundle=uM5nWF82V1hCaFN3SHNqbnczOEpWM052bExTQmpqVnFJZkpnS3BBZ2lJczklMkJMSERUc2dQR3ZwU2JPZUxwb054NG5SYVBKWXFHNW9WU0I4cU5od3BZblRrZFBvQUo4UGY2a1ZmNG54ZkYxV1lJa1JnOCUyRm9VZUR4eWdvTmMzVTlzWm5Jc0pkYWpMdWtTMjNSZWFZU3d0TUdsSHdRJTNEJTNE; cto_bundle=ktdIv183dFlRdWhKNnYzNnFMekl4V3k2MmZZNCUyRldpOGhPUVVhNGo0dFVTRkdkSDJGNnJOMFN0SGl3cml0MUZRckZEM0p5dFlvNUxwTGY5ODA5UjdHWSUyQk4lMkZWem00bGVFTG11c0Y0Z3VPeVFreGpOWWVEQnNHNEZDb1VmeU4lMkI4RFRQbzZZSk5XQWc5USUyQjdNU2V3bXNVTzdyZjBBJTNEJTNE; dtCookie=v_4_srv_4_sn_5JHJMC9F2V2Q7JOHROOCFT1LUNVA5S9T_app-3A3c29ee56f402ef95_1_ol_0_perc_100000_mul_1",
+    "cookies": [
+      {
+        "name": "client-zip-short",
+        "value": "76131",
+        "domain": "www.costco.com",
+        "path": "/",
+        "expires": 1794461822.414087,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "C_LOC",
+        "value": "TX",
+        "domain": "www.costco.com",
+        "path": "/",
+        "expires": 1794461822.41417,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "f_as",
+        "value": "01fdab3a6a71ee609826a5978b6c840e~rv=86~sig=0x132d7569b477a5f8b527e9b12d044ed7f3c9e4dd8a56111a774750eae645ada6",
+        "domain": "www.costco.com",
+        "path": "/",
+        "expires": 1794460952.281729,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "None"
+      },
+      {
+        "name": "CriteoSessionUserId",
+        "value": "23b5987665e246659c2f298fe9e62eec",
+        "domain": "www.costco.com",
+        "path": "/",
+        "expires": 1797052654,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "rxVisitor",
+        "value": "1794460655149IAOS2D8G54JDFOMOGSPL6JOSKUGUJBQA",
+        "domain": ".costco.com",
+        "path": "/",
+        "expires": -1,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "demdex",
+        "value": "12357696234516189662744719958799635677",
+        "domain": ".demdex.net",
+        "path": "/",
+        "expires": 1810012655.856478,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "None"
+      },
+      {
+        "name": "kndctr_97B21CFE5329614E0A490D45_AdobeOrg_cluster",
+        "value": "or2",
+        "domain": ".costco.com",
+        "path": "/",
+        "expires": 1794462722.950513,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "None"
+      },
+      {
+        "name": "kndctr_97B21CFE5329614E0A490D45_AdobeOrg_identity",
+        "value": "CiYyMjUzNjg2NDQ5ODU4MzYzNjM4MjkxNjAzMDUxMDk3MzgwMzE5N1ISCOPBwvGcNBABGAEqA09SMjAA8AHjwcLxnDQ=",
+        "domain": ".costco.com",
+        "path": "/",
+        "expires": 1828588656,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "None"
+      },
+      {
+        "name": "AMCV_97B21CFE5329614E0A490D45%40AdobeOrg",
+        "value": "MCMID|22536864498583636382916030510973803197",
+        "domain": ".costco.com",
+        "path": "/",
+        "expires": 1828156656,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "None"
+      },
+      {
+        "name": "tcm",
+        "value": "{\"purposes\":{\"DoNotProcess\":false,\"DoNotSell\":false,\"DoNotShare\":false,\"Minor\":false},\"timestamp\":\"2026-11-12T05:17:32.768Z\",\"confirmed\":false,\"prompted\":false,\"updated\":false}",
+        "domain": ".costco.com",
+        "path": "/",
+        "expires": 1829020922.331593,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "ajs_anonymous_id",
+        "value": "2c917f74-179c-4849-be4c-aff2405f74ae",
+        "domain": ".costco.com",
+        "path": "/",
+        "expires": 1825996922,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "invCheckCity",
+        "value": "Saginaw",
+        "domain": "www.costco.com",
+        "path": "/",
+        "expires": 1829020656,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "invCheckStateCode",
+        "value": "TX",
+        "domain": "www.costco.com",
+        "path": "/",
+        "expires": 1829020656,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "invCheckPostalCode",
+        "value": "76131",
+        "domain": "www.costco.com",
+        "path": "/",
+        "expires": 1829020656,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "WAREHOUSEDELIVERY_WHS",
+        "value": "{%22distributionCenters%22:[%221254-3pl%22%2C%221321-wm%22%2C%221471-3pl%22%2C%22283-wm%22%2C%22561-wm%22%2C%22725-wm%22%2C%22731-wm%22%2C%22758-wm%22%2C%22759-wm%22%2C%22847_0-cor%22%2C%22847_0-cwt%22%2C%22847_0-edi%22%2C%22847_0-ehs%22%2C%22847_0-membership%22%2C%22847_0-mpt%22%2C%22847_0-spc%22%2C%22847_0-wm%22%2C%22847_1-cwt%22%2C%22847_1-edi%22%2C%22847_bosch_1461-edi%22%2C%22847_d-fis%22%2C%22847_ge_dal-edi%22%2C%22847_lg_ntx-edi%22%2C%22847_lux_us11-edi%22%2C%22847_NA-cor%22%2C%22847_NA-pharmacy%22%2C%22847_NA-wm%22%2C%22847_ss_u359-edi%22%2C%22847_wp_r455-edi%22%2C%22951-wm%22%2C%22952-wm%22%2C%229847-wcs%22]%2C%22groceryCenters%22:[%22655-bd%22]%2C%22nearestWarehouse%22:{%22catalog%22:%221173-wh%22}%2C%22pickUpCenters%22:[]}",
+        "domain": "www.costco.com",
+        "path": "/",
+        "expires": 1794547318,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "STORELOCATION",
+        "value": "{%22storeLocation%22:{%22city%22:%22N%20Fort%20Worth%22%2C%22zip%22:%2276177-2004%22}}",
+        "domain": "www.costco.com",
+        "path": "/",
+        "expires": 1810012918,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "C_WHLOC",
+        "value": "USTX",
+        "domain": "www.costco.com",
+        "path": "/",
+        "expires": 1810009056,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "adobeopt_exp",
+        "value": "ucc",
+        "domain": ".costco.com",
+        "path": "/",
+        "expires": 1796275056,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "uid",
+        "value": "4a3ced57-8819-4a0b-8fd0-2c96becea884",
+        "domain": ".criteo.com",
+        "path": "/",
+        "expires": 1828156923.046172,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "None"
+      },
+      {
+        "name": "KP_UIDz-ssn",
+        "value": "0a38G51Oh3uldE4hSRcSbDBfOntU57jISE1qSXmtw0pvYyiE0I5SfTlS9yRCIsuNiqCawQmQ3ztJO8LnGDRfm9vnsrEO5hOq8J4XhynYxC5AGN25OfTmpxNXfhMCjoiDFokbueEdgJXGSRWMm3NTPI172CroGp3mOP5",
+        "domain": "www.costco.com",
+        "path": "/",
+        "expires": 1794547316.881794,
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "None"
+      },
+      {
+        "name": "KP_UIDz",
+        "value": "0a38G51Oh3uldE4hSRcSbDBfOntU57jISE1qSXmtw0pvYyiE0I5SfTlS9yRCIsuNiqCawQmQ3ztJO8LnGDRfm9vnsrEO5hOq8J4XhynYxC5AGN25OfTmpxNXfhMCjoiDFokbueEdgJXGSRWMm3NTPI172CroGp3mOP5",
+        "domain": "www.costco.com",
+        "path": "/",
+        "expires": 1794547316.881862,
+        "httpOnly": true,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "dtSa",
+        "value": "-",
+        "domain": ".costco.com",
+        "path": "/",
+        "expires": -1,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "_lr_tabs_-costco%2Fproduction-vrwno",
+        "value": "{%22recordingID%22:%226-01a1ce34-a14e-77d6-bdf4-8c5e7237fb29%22%2C%22sessionID%22:0%2C%22lastActivity%22:1794460920891%2C%22hasActivity%22:false%2C%22confirmed%22:false%2C%22recordingConditionThreshold%22:86.47967898013181%2C%22clearsIdentifiedUser%22:false}",
+        "domain": "www.costco.com",
+        "path": "/",
+        "expires": 1794547320,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "_lr_hb_-costco%2Fproduction-vrwno",
+        "value": "{%22heartbeat%22:1794460920891}",
+        "domain": "www.costco.com",
+        "path": "/",
+        "expires": 1794547320,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "rxvt",
+        "value": "1794462722327|1794460655152",
+        "domain": ".costco.com",
+        "path": "/",
+        "expires": -1,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "BCO",
+        "value": "pm2",
+        "domain": ".costco.com",
+        "path": "/",
+        "expires": 1794461222.523373,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "dtPC",
+        "value": "-14644$460920535_600h-vURFPBEBROAALUAJGRHSAAMOWIWFLMUBR-0e0",
+        "domain": ".costco.com",
+        "path": "/",
+        "expires": -1,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "cto_bundle",
+        "value": "uM5nWF82V1hCaFN3SHNqbnczOEpWM052bExTQmpqVnFJZkpnS3BBZ2lJczklMkJMSERUc2dQR3ZwU2JPZUxwb054NG5SYVBKWXFHNW9WU0I4cU5od3BZblRrZFBvQUo4UGY2a1ZmNG54ZkYxV1lJa1JnOCUyRm9VZUR4eWdvTmMzVTlzWm5Jc0pkYWpMdWtTMjNSZWFZU3d0TUdsSHdRJTNEJTNE",
+        "domain": ".criteo.com",
+        "path": "/",
+        "expires": 1828156923.458239,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "None",
+        "partitionKey": "https://costco.com",
+        "_crHasCrossSiteAncestor": true
+      },
+      {
+        "name": "cto_bundle",
+        "value": "ktdIv183dFlRdWhKNnYzNnFMekl4V3k2MmZZNCUyRldpOGhPUVVhNGo0dFVTRkdkSDJGNnJOMFN0SGl3cml0MUZRckZEM0p5dFlvNUxwTGY5ODA5UjdHWSUyQk4lMkZWem00bGVFTG11c0Y0Z3VPeVFreGpOWWVEQnNHNEZDb1VmeU4lMkI4RFRQbzZZSk5XQWc5USUyQjdNU2V3bXNVTzdyZjBBJTNEJTNE",
+        "domain": ".costco.com",
+        "path": "/",
+        "expires": 1828624923,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "dtCookie",
+        "value": "v_4_srv_4_sn_5JHJMC9F2V2Q7JOHROOCFT1LUNVA5S9T_app-3A3c29ee56f402ef95_1_ol_0_perc_100000_mul_1",
+        "domain": ".costco.com",
+        "path": "/",
+        "expires": -1,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      }
+    ],
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+    "updatedAt": 1794460926198,
+    "lastStatus": "200_OK",
+    "nextEligibleAt": 1794461041706,
+    "browserChannel": "chrome-headless-new",
+    "queueActive": false
+  },
+  "samsclub": {
+    "domain": "samsclub",
+    "cookieHeader": "",
+    "cookies": [],
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+    "updatedAt": 1794460937973,
+    "lastStatus": "WAF_CHALLENGE_PX",
+    "nextEligibleAt": 1794461044863,
     "browserChannel": "chrome-headless-new",
     "queueActive": false
   }

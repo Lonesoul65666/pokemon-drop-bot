@@ -1,14 +1,11 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BIG_BOX_STORES = void 0;
 exports.formatHonestSensorBadge = formatHonestSensorBadge;
 exports.pollPokemonCenterDirectMsrp = pollPokemonCenterDirectMsrp;
 exports.pollSecondaryBigBoxSensors = pollSecondaryBigBoxSensors;
+exports.runSinglePassBigBoxSweep = runSinglePassBigBoxSweep;
 exports.pollBigBoxAggregators = pollBigBoxAggregators;
-const axios_1 = __importDefault(require("axios"));
 const lgsPoller_1 = require("../../lgsPoller");
 const listener_1 = require("../../listener");
 const notifier_1 = require("../../notifier");
@@ -18,242 +15,231 @@ const bigBoxAdapters_1 = require("./bigBoxAdapters");
 exports.BIG_BOX_STORES = [
     'Target', 'Best Buy', 'Pokémon Center', 'Walmart', 'Amazon', 'GameStop', 'Costco', "Sam's Club", 'Barnes & Noble'
 ];
-const BASE_TARGET_QUERIES = [
-    'pokemon elite trainer box', 'pokemon booster bundle',
-    'pokemon prismatic evolutions', 'pokemon destined rivals', 'pokemon scarlet violet 151',
-    'pokemon mega evolution', 'pokemon surging sparks', 'pokemon journey together'
+const TARGET_SEARCH_TERMS = [
+    'pokemon elite trainer box', 'pokemon booster bundle', 'pokemon prismatic evolutions',
+    'pokemon destined rivals', 'pokemon scarlet violet 151', 'pokemon surging sparks'
 ];
+const AMAZON_SEARCH_QUERIES = ['pokemon+elite+trainer+box', 'pokemon+booster+bundle'];
 const POKEMON_CENTER_URLS = [
     'https://www.pokemoncenter.com/en-us/category/elite-trainer-box',
     'https://www.pokemoncenter.com/en-us/category/booster-packs',
     'https://www.pokemoncenter.com/en-us/category/trading-card-game'
 ];
-const BROWSER_HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,application/json,*/*;q=0.8',
-    'Accept-Language': 'en-US,en;q=0.9',
-    'Cache-Control': 'no-cache'
-};
-let targetCursor = 0;
-let pcFeedCursor = 0;
-let asinCursor = 0;
-let lastPcPollAt = 0;
-let isPollingBigBox = false;
-let lastBigBoxPollAt = 0;
-async function httpGetWithProxyFallback(url, headers, timeoutMs = 7000) {
-    const attempt = async (httpsAgent) => {
-        const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), timeoutMs);
-        try {
-            return await axios_1.default.get(url, {
-                timeout: timeoutMs,
-                signal: controller.signal,
-                httpsAgent,
-                headers,
-                validateStatus: (s) => s >= 200 && s < 500
-            });
-        }
-        finally {
-            clearTimeout(timer);
-        }
-    };
-    try {
-        const res = await attempt();
-        if (res.status >= 400) {
-            try {
-                const proxied = await attempt((0, lgsPoller_1.getNextProxy)());
-                if (proxied.status < 400)
-                    return proxied;
-            }
-            catch { }
-        }
-        return res;
+let targetCursor = 0, pcFeedCursor = 0, amazonCursor = 0;
+let amazonNextEligibleAt = 0, amazonCookieJar = '';
+let isPollingBigBox = false, lastBigBoxPollAt = 0;
+function formatHonestSensorBadge(totalNodesFound, inStockCount, wafType, isQueueActive = false) {
+    if (isQueueActive)
+        return { status: wafBrowserBridge_1.PC_QUEUE_BANNER, lastStatus: wafBrowserBridge_1.PC_QUEUE_BANNER, statusCode: 'QUEUE_ACTIVE' };
+    if (wafType === 'ROUTER_TLS_FILTER')
+        return { status: 'ROUTER_TLS_FILTER', lastStatus: 'ROUTER_TLS_FILTER', statusCode: 'ROUTER_TLS_FILTER' };
+    if (wafType) {
+        const code = `WAF_CHALLENGE_${wafType}`;
+        return { status: code, lastStatus: code, statusCode: code };
     }
-    catch {
-        return await attempt((0, lgsPoller_1.getNextProxy)());
-    }
-}
-function formatHonestSensorBadge(itemsExtracted, wafType) {
-    if (wafType === 'IMPERVA')
-        return { status: 'WAF_CHALLENGE_IMPERVA', lastStatus: 'WAF_CHALLENGE_IMPERVA', statusCode: 'WAF_CHALLENGE_IMPERVA' };
-    if (wafType === 'PX')
-        return { status: 'WAF_CHALLENGE_PX', lastStatus: 'WAF_CHALLENGE_PX', statusCode: 'WAF_CHALLENGE_PX' };
-    if (wafType === 'CF')
-        return { status: 'WAF_CHALLENGE_CF', lastStatus: 'WAF_CHALLENGE_CF', statusCode: 'WAF_CHALLENGE_CF' };
-    if (wafType === 'BOT_CHECK')
-        return { status: 'WAF_CHALLENGE_BOT_CHECK', lastStatus: 'WAF_CHALLENGE_BOT_CHECK', statusCode: 'WAF_CHALLENGE_BOT_CHECK' };
-    if (itemsExtracted > 0) {
-        const label = `200 OK // ${itemsExtracted} IN STOCK`;
+    if (totalNodesFound <= 0)
+        return { status: 'PARSER_BLIND_0_NODES', lastStatus: 'PARSER_BLIND_0_NODES', statusCode: 'PARSER_BLIND_0_NODES' };
+    if (inStockCount > 0) {
+        const label = `200 OK // ${inStockCount} IN STOCK`;
         return { status: label, lastStatus: label, statusCode: '200_OK_PARSED' };
     }
     return { status: '200 OK // 0 IN STOCK', lastStatus: '200 OK // 0 IN STOCK', statusCode: '200_OK_0_IN_STOCK' };
 }
-function buildSensorNode(name, cadence, engineMethod, strictFilter, itemsExtracted, wafType, extra) {
-    const badge = formatHonestSensorBadge(itemsExtracted, wafType);
+function buildSensorNode(name, cadence, engineMethod, strictFilter, parsed, wafType, extra) {
+    const inStockCount = parsed.inStockOffers.length;
+    const badge = formatHonestSensorBadge(parsed.totalNodesFound, inStockCount, wafType, Boolean(extra?.queueActive));
     return {
         name, cadence, engineMethod, strictFilter,
-        itemsExtracted, itemsParsed: itemsExtracted,
+        totalNodesFound: parsed.totalNodesFound, nodesFound: parsed.totalNodesFound,
+        itemsExtracted: inStockCount, itemsParsed: inStockCount,
         ...badge, ...(extra || {}), lastCheckedAt: Date.now()
     };
 }
 async function pollPokemonCenterDirectMsrp(force = false) {
-    const now = Date.now();
-    if (!force && now - lastPcPollAt < 85000)
-        return;
-    lastPcPollAt = now;
     const pcUrl = POKEMON_CENTER_URLS[pcFeedCursor % POKEMON_CENTER_URLS.length];
+    const sweep = await (0, wafBrowserBridge_1.sweepWafProtectedTarget)('pokemoncenter', pcUrl, { force, waitAfterLoadMs: 1800, timeoutMs: 16000 });
+    if (!force && sweep.fromSessionCache)
+        return null;
     pcFeedCursor = (pcFeedCursor + 1) % POKEMON_CENTER_URLS.length;
-    const wafMeta = {
-        headless: true,
-        args: wafBrowserBridge_1.INVISIBLE_HEADLESS_LAUNCH_OPTS.args,
-        intervalSec: 160,
-        sessionCacheFile: 'data/wafSessionCookies.json'
-    };
-    try {
-        const sweep = await (0, wafBrowserBridge_1.sweepWafProtectedTarget)('pokemoncenter', pcUrl, force);
-        if (sweep.isQueueActive) {
-            await (0, notifier_1.sendPokemonCenterQueueAlert)({ queueUrl: 'https://www.pokemoncenter.com', detectedFromUrl: pcUrl });
-            const qNode = buildSensorNode('Pokémon Center', '160s Playwright Headless + Queue-It Radar', 'Invisible Playwright Headless + Queue-It Detector', '$59.99 Exclusive / 1P MSRP Only', 0, undefined, { status: wafBrowserBridge_1.PC_QUEUE_BANNER, lastStatus: wafBrowserBridge_1.PC_QUEUE_BANNER, statusCode: 'QUEUE_ACTIVE', queueState: 'QUEUE_ACTIVE', queueActive: true, queueBanner: wafBrowserBridge_1.PC_QUEUE_BANNER, bridgeMode: sweep.browserChannel || 'PLAYWRIGHT_HEADLESS_NEW', lastUrlChecked: pcUrl });
-            (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ pokemonCenterStatus: 'QUEUE_ACTIVE', wafBridge: wafMeta, northStar5: { pokemonCenter: qNode } });
-            return;
-        }
-        if (sweep.isWafChallenged) {
-            const cNode = buildSensorNode('Pokémon Center', '160s Playwright Headless + Queue-It Radar', 'Invisible Playwright Headless + Queue-It Detector', '$59.99 Exclusive / 1P MSRP Only', 0, sweep.wafType || 'IMPERVA', { queueState: 'NORMAL', queueActive: false, bridgeMode: sweep.browserChannel || 'PLAYWRIGHT_HEADLESS_NEW', lastUrlChecked: pcUrl });
-            (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ pokemonCenterStatus: cNode.statusCode, wafBridge: wafMeta, northStar5: { pokemonCenter: cNode } });
-            return;
-        }
-        const pcHits = (0, bigBoxAdapters_1.parsePokemonCenterPayload)(sweep.html || '');
-        await (0, bigBoxAdapters_1.dispatchVerifiedBigBoxHits)(pcHits, listener_1.processIncomingDrop, 30);
-        const node = buildSensorNode('Pokémon Center', '160s Playwright Headless + Queue-It Radar', 'Invisible Playwright Headless + InStock JSON-LD', '$59.99 Exclusive / 1P MSRP Only', pcHits.length, undefined, { queueState: 'NORMAL', queueActive: false, bridgeMode: sweep.browserChannel || 'PLAYWRIGHT_HEADLESS_NEW', lastUrlChecked: pcUrl });
-        (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ pokemonCenterStatus: node.statusCode, wafBridge: wafMeta, northStar5: { pokemonCenter: node } });
+    const wafMeta = { headless: true, args: wafBrowserBridge_1.INVISIBLE_HEADLESS_LAUNCH_OPTS.args, intervalSec: 180, sessionCacheFile: 'data/wafSessionCookies.json' };
+    const emptyRes = { totalNodesFound: 0, inStockOffers: [] };
+    if (sweep.isQueueActive) {
+        await (0, notifier_1.sendPokemonCenterQueueAlert)({ queueUrl: 'https://www.pokemoncenter.com', detectedFromUrl: pcUrl });
+        const qNode = buildSensorNode('Pokémon Center', '180s System Chrome Direct + Queue-It', 'System Chrome Direct + Queue-It Radar', '$59.99 Exclusive / 1P MSRP Only', emptyRes, undefined, { queueState: 'QUEUE_ACTIVE', queueActive: true, queueBanner: wafBrowserBridge_1.PC_QUEUE_BANNER, bridgeMode: sweep.browserChannel, lastUrlChecked: pcUrl });
+        (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ pokemonCenterStatus: 'QUEUE_ACTIVE', wafBridge: wafMeta, northStar5: { pokemonCenter: qNode } });
+        return { key: 'pokemonCenter', retailer: 'Pokémon Center', transport: `Playwright (${sweep.browserChannel || 'chrome'})`, httpStatus: sweep.status, totalNodesFound: 0, inStockMatches: 0, engineRoomStatus: qNode.status };
     }
-    catch {
-        const node = buildSensorNode('Pokémon Center', '160s Playwright Headless + Queue-It Radar', 'Invisible Playwright Headless + Queue-It Detector', '$59.99 Exclusive / 1P MSRP Only', 0, 'IMPERVA', { queueState: 'NORMAL', queueActive: false });
-        (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ pokemonCenterStatus: node.statusCode, northStar5: { pokemonCenter: node } });
+    if (sweep.isWafChallenged) {
+        const cNode = buildSensorNode('Pokémon Center', '180s System Chrome Direct + Queue-It', 'System Chrome Direct + TLS/Imperva Probe', '$59.99 Exclusive / 1P MSRP Only', emptyRes, sweep.wafType || 'IMPERVA', { queueState: 'NORMAL', queueActive: false, bridgeMode: sweep.browserChannel, lastUrlChecked: pcUrl });
+        (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ pokemonCenterStatus: cNode.statusCode, wafBridge: wafMeta, northStar5: { pokemonCenter: cNode } });
+        return { key: 'pokemonCenter', retailer: 'Pokémon Center', transport: `Playwright (${sweep.browserChannel || 'chrome'})`, httpStatus: sweep.status || 'ERR', totalNodesFound: 0, inStockMatches: 0, engineRoomStatus: cNode.status };
     }
+    const parsed = (0, bigBoxAdapters_1.parsePokemonCenterPayload)(sweep.html || '');
+    if (parsed.inStockOffers.length > 0)
+        await (0, bigBoxAdapters_1.dispatchVerifiedBigBoxHits)(parsed.inStockOffers, listener_1.processIncomingDrop, 30);
+    const node = buildSensorNode('Pokémon Center', '180s System Chrome Direct + Queue-It', 'System Chrome Direct + InStock Grid', '$59.99 Exclusive / 1P MSRP Only', parsed, undefined, { queueState: 'NORMAL', queueActive: false, bridgeMode: sweep.browserChannel, lastUrlChecked: pcUrl });
+    (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ pokemonCenterStatus: node.statusCode, wafBridge: wafMeta, northStar5: { pokemonCenter: node } });
+    return { key: 'pokemonCenter', retailer: 'Pokémon Center', transport: `Playwright (${sweep.browserChannel || 'chrome'})`, httpStatus: sweep.status, totalNodesFound: parsed.totalNodesFound, inStockMatches: parsed.inStockOffers.length, engineRoomStatus: node.status };
 }
-async function pollSecondaryBigBoxSensors() {
-    // 1. Walmart 1P MSRP (`F55CDC31AB754BB68FE0B39041159D63` / Walmart.com)
+async function sweepTargetPassiveRedsky(force = false) {
+    const kw = TARGET_SEARCH_TERMS[targetCursor % TARGET_SEARCH_TERMS.length];
+    const plpUrl = `https://www.target.com/s?searchTerm=${encodeURIComponent(kw)}&facetedValue=dq4mn`;
+    const sw = await (0, wafBrowserBridge_1.sweepWafProtectedTarget)('target', plpUrl, {
+        force, captureUrlPattern: /redsky\.target\.com\/.*\/plp_search_v2|cdui_orchestrations\/v1\/pages\/slp/i,
+        waitForSelector: '[data-test="@web/site-top-of-funnel/ProductCardWrapper"], a[href*="/p/"]', waitAfterLoadMs: 2800, timeoutMs: 16000
+    });
+    if (!force && sw.fromSessionCache)
+        return null;
+    targetCursor = (targetCursor + 1) % TARGET_SEARCH_TERMS.length;
+    const waf = sw.isWafChallenged ? (sw.wafType || 'PX') : undefined;
+    const parsed = waf ? { totalNodesFound: 0, inStockOffers: [] } : (0, bigBoxAdapters_1.parseTargetRedskyPayload)(sw.capturedJson, sw.html);
+    if (parsed.inStockOffers.length > 0)
+        await (0, bigBoxAdapters_1.dispatchVerifiedBigBoxHits)(parsed.inStockOffers, listener_1.processIncomingDrop, 15);
+    const node = buildSensorNode('Target (RedSky)', '75s Passive RedSky XHR Wire-Tap', 'System Chrome PLP + Passive plp_search_v2', '1P Target Sold Only (facetedValue=dq4mn)', parsed, waf, { lastKeyword: kw, bridgeMode: sw.browserChannel });
+    (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ targetRedskyStatus: node.statusCode, lastTargetKeyword: kw, itemsScanned: parsed.totalNodesFound, northStar5: { target: node } });
+    return { key: 'target', retailer: 'Target', transport: `Playwright Passive XHR (${sw.browserChannel || 'chrome'})`, httpStatus: waf ? 435 : sw.status, totalNodesFound: parsed.totalNodesFound, inStockMatches: parsed.inStockOffers.length, engineRoomStatus: node.status };
+}
+async function sweepAmazon1pUndiciWithFallback(force = false) {
+    const now = Date.now();
+    if (!force && now < amazonNextEligibleAt)
+        return null;
+    amazonNextEligibleAt = now + 95_000 + Math.floor(Math.random() * 10_000);
+    const q = AMAZON_SEARCH_QUERIES[amazonCursor % AMAZON_SEARCH_QUERIES.length];
+    amazonCursor += 1;
+    const amzUrl = `https://www.amazon.com/s?k=${q}&rh=p_6%3A${bigBoxAdapters_1.AMAZON_1P_MERCHANT_ID}&s=date-desc-rank`;
+    let transport = 'Undici HTTP/2 fetch', status = 0, html = '', waf;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 10000);
     try {
-        const wmUrl = 'https://www.walmart.com/search?q=pokemon+elite+trainer+box+booster+bundle&facet=retailer_type%3AWalmart';
-        const res = await httpGetWithProxyFallback(wmUrl, BROWSER_HEADERS, 6500);
-        const html = String(res.data || '');
-        const isPx = res.status >= 400 || /px-captcha|Robot or human\?|verify you are human|\/blocked/i.test(html);
-        const wmHits = isPx ? [] : (0, bigBoxAdapters_1.parseWalmartPayload)(html);
-        if (wmHits.length > 0)
-            await (0, bigBoxAdapters_1.dispatchVerifiedBigBoxHits)(wmHits, listener_1.processIncomingDrop, 20);
-        const wmNode = buildSensorNode('Walmart (1P MSRP)', '45s 1P Facet Sweep', '1P Seller F55CDC31 + /pac 1-Tap Cart', 'Sold & Shipped by Walmart.com Only', wmHits.length, isPx ? 'PX' : undefined);
-        (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ walmartStatus: wmNode.statusCode, northStar5: { walmart: wmNode } });
+        const res = await fetch(amzUrl, {
+            signal: controller.signal,
+            headers: {
+                'User-Agent': (0, wafBrowserBridge_1.getNativeChromeUserAgent)(),
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+                'Accept-Language': 'en-US,en;q=0.9', 'Sec-Fetch-Dest': 'document', 'Sec-Fetch-Mode': 'navigate',
+                'Sec-Fetch-Site': 'none', 'Sec-Fetch-User': '?1', 'Upgrade-Insecure-Requests': '1',
+                ...(amazonCookieJar ? { Cookie: amazonCookieJar } : {})
+            }
+        });
+        status = res.status;
+        const setCookies = res.headers.getSetCookie ? res.headers.getSetCookie() : [];
+        if (Array.isArray(setCookies) && setCookies.length > 0)
+            amazonCookieJar = setCookies.map((c) => c.split(';')[0]).join('; ');
+        html = await res.text();
     }
     catch {
-        const wmNode = buildSensorNode('Walmart (1P MSRP)', '45s 1P Facet Sweep', '1P Seller F55CDC31 + /pac 1-Tap Cart', 'Sold & Shipped by Walmart.com Only', 0, 'PX');
-        (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ walmartStatus: wmNode.statusCode, northStar5: { walmart: wmNode } });
+        status = 503;
     }
-    // 2. Amazon 1st-Party (`ATVPDKIKX0DER` ONLY)
-    try {
-        const seededAsins = policies_1.WATCH_POLICIES.map((p) => p.amazonAsin).filter(Boolean);
-        const usePdp = seededAsins.length > 0 && asinCursor % 2 === 1;
-        const pickedAsin = seededAsins[asinCursor % Math.max(1, seededAsins.length)];
-        asinCursor += 1;
-        const amzUrl = usePdp && pickedAsin
-            ? `https://www.amazon.com/dp/${pickedAsin}?smid=${bigBoxAdapters_1.AMAZON_1P_MERCHANT_ID}&th=1&psc=1`
-            : `https://www.amazon.com/s?k=pokemon+elite+trainer+box+booster+bundle&rh=p_6%3A${bigBoxAdapters_1.AMAZON_1P_MERCHANT_ID}&s=date-desc-rank`;
-        const res = await httpGetWithProxyFallback(amzUrl, BROWSER_HEADERS, 6500);
-        const html = String(res.data || '');
-        const isBotGate = res.status >= 400 || /validateCaptcha|api-services-support@amazon\.com|Enter the characters you see below/i.test(html);
-        const amzHits = isBotGate ? [] : (0, bigBoxAdapters_1.parseAmazon1pPayload)(html, !usePdp);
-        if (amzHits.length > 0)
-            await (0, bigBoxAdapters_1.dispatchVerifiedBigBoxHits)(amzHits, listener_1.processIncomingDrop, 20);
-        const amzNode = buildSensorNode('Amazon (1P MSRP)', '45s ATVPDKIKX0DER Sweep', 'smid=ATVPDKIKX0DER + 1-Tap Cart Add', 'Ships & Sold by Amazon.com (<= MSRP*1.08)', amzHits.length, isBotGate ? 'BOT_CHECK' : undefined);
-        (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ amazonStatus: amzNode.statusCode, northStar5: { amazon: amzNode } });
+    finally {
+        clearTimeout(timer);
     }
-    catch {
-        const amzNode = buildSensorNode('Amazon (1P MSRP)', '45s ATVPDKIKX0DER Sweep', 'smid=ATVPDKIKX0DER + 1-Tap Cart Add', 'Ships & Sold by Amazon.com (<= MSRP*1.08)', 0, 'BOT_CHECK');
-        (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ amazonStatus: amzNode.statusCode, northStar5: { amazon: amzNode } });
+    if (Number(status) >= 400 || /validateCaptcha|api-services-support@amazon\.com|Enter the characters you see below/i.test(html)) {
+        const pw = await (0, wafBrowserBridge_1.sweepWafProtectedTarget)('amazon', amzUrl, { force: true, waitAfterLoadMs: 1800, timeoutMs: 16000 });
+        transport = `Playwright Fallback (${pw.browserChannel || 'chrome'})`;
+        status = pw.status || status;
+        html = pw.html || '';
+        if (pw.isWafChallenged)
+            waf = pw.wafType || 'BOT_CHECK';
     }
-    // 3. GameStop & Barnes & Noble via Invisible Playwright WAF Bridge (`160s` polite cycle)
-    const wafTargets = [
-        { domain: 'gamestop', key: 'gamestop', statusKey: 'gamestopStatus', name: 'GameStop', url: 'https://www.gamestop.com/search/?q=pokemon+elite+trainer+box&type=Primary&sort=BestMatch_Desc&p=1', filter: '1P Retail MSRP Sealed Boxes & ETBs', parser: bigBoxAdapters_1.parseGameStopPayload },
-        { domain: 'barnesandnoble', key: 'barnesNoble', statusKey: 'barnesNobleStatus', name: 'Barnes & Noble', url: 'https://www.barnesandnoble.com/search?q=pokemon+trading+card+game', filter: '1P Retail MSRP ETBs & Booster Bundles', parser: bigBoxAdapters_1.parseBarnesAndNoblePayload }
-    ];
-    for (const wt of wafTargets) {
-        const sw = await (0, wafBrowserBridge_1.sweepWafProtectedTarget)(wt.domain, wt.url, false);
-        const hits = sw.ok && sw.html ? wt.parser(sw.html) : [];
-        if (hits.length > 0)
-            await (0, bigBoxAdapters_1.dispatchVerifiedBigBoxHits)(hits, listener_1.processIncomingDrop, 20);
-        const node = buildSensorNode(wt.name, '160s Playwright WAF Bridge', 'Invisible Playwright + InStock JSON-LD', wt.filter, hits.length, sw.isWafChallenged ? (sw.wafType || 'CF') : undefined, { bridgeMode: sw.browserChannel || 'PLAYWRIGHT_HEADLESS_NEW' });
-        (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ [wt.statusKey]: node.statusCode, northStar5: { [wt.key]: node } });
-    }
-    // 4. Best Buy, Costco, & Sam's Club
-    const directChecks = [
-        { key: 'bestBuy', statusKey: 'bestBuyStatus', name: 'Best Buy', cadence: '45s SKU Availability + 1-Tap Cart', method: 'AddToCart / OnlineAvailability + /click/-/SKU/cart', filter: '1P Retail MSRP ($49.99–$54.99 ETB / $27.99 Bundle)', url: 'https://www.bestbuy.com/site/searchpage.jsp?st=pokemon+elite+trainer+box+booster+bundle&id=pcat17071', parser: bigBoxAdapters_1.parseBestBuyPayload },
-        { key: 'costco', statusKey: 'costcoStatus', name: 'Costco Wholesale', cadence: '60s CatalogSearch', method: 'CatalogSearch Online InStock JSON-LD', filter: '1P Member Sealed Multi-Packs & ETBs', url: 'https://www.costco.com/CatalogSearch?dept=All&keyword=pokemon+cards', parser: bigBoxAdapters_1.parseCostcoPayload },
-        { key: 'samsClub', statusKey: 'samsClubStatus', name: "Sam's Club", cadence: '60s Club Inventory Check', method: 'SamsClub Online Inventory JSON + JSON-LD', filter: '1P Member Sealed Multi-Packs & ETBs', url: 'https://www.samsclub.com/s/pokemon%20cards', parser: bigBoxAdapters_1.parseSamsClubPayload }
-    ];
-    for (const c of directChecks) {
+    const parsed = waf ? { totalNodesFound: 0, inStockOffers: [] } : (0, bigBoxAdapters_1.parseAmazon1pPayload)(html, true);
+    if (parsed.inStockOffers.length > 0)
+        await (0, bigBoxAdapters_1.dispatchVerifiedBigBoxHits)(parsed.inStockOffers, listener_1.processIncomingDrop, 20);
+    const node = buildSensorNode('Amazon (1P MSRP)', '95s Undici HTTP/2 + Chrome Fallback', 's-search-result 1P ATVPDKIKX0DER + 1-Tap Cart', 'Ships & Sold by Amazon.com (<= MSRP*1.08)', parsed, waf);
+    (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ amazonStatus: node.statusCode, northStar5: { amazon: node } });
+    return { key: 'amazon', retailer: 'Amazon 1P', transport, httpStatus: status, totalNodesFound: parsed.totalNodesFound, inStockMatches: parsed.inStockOffers.length, engineRoomStatus: node.status };
+}
+async function sweepBestBuyHybrid(force = false) {
+    const apiKey = String(process.env.BESTBUY_API_KEY || '').trim();
+    if (apiKey) {
+        const skus = policies_1.WATCH_POLICIES.map((p) => p.bestBuySku).filter(Boolean).slice(0, 25);
+        const filter = skus.length > 0 ? `sku in(${skus.join(',')})` : 'search=pokemon&search=elite&search=trainer&search=box';
+        const apiUrl = `https://api.bestbuy.com/v1/products(${filter})?apiKey=${encodeURIComponent(apiKey)}&format=json&pageSize=25&show=sku,name,salePrice,regularPrice,onlineAvailability`;
         try {
-            const res = await httpGetWithProxyFallback(c.url, BROWSER_HEADERS, 6000);
-            const html = typeof res.data === 'string' ? res.data : JSON.stringify(res.data || '');
-            const isPx = res.status === 435 || /px-captcha|Robot or human\?/i.test(html);
-            const isImp = res.status >= 400 || /Access Denied|_Incapsula_Resource|Pardon Our Interruption|cf-chl/i.test(html);
-            const waf = isPx ? 'PX' : (isImp ? 'IMPERVA' : undefined);
-            const hits = !waf ? c.parser(res.data) : [];
-            if (hits.length > 0)
-                await (0, bigBoxAdapters_1.dispatchVerifiedBigBoxHits)(hits, listener_1.processIncomingDrop, 20);
-            const node = buildSensorNode(c.name, c.cadence, c.method, c.filter, hits.length, waf);
-            (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ [c.statusKey]: node.statusCode, northStar5: { [c.key]: node } });
+            const r = await fetch(apiUrl, { signal: AbortSignal.timeout(8000) });
+            if (r.ok) {
+                const parsed = (0, bigBoxAdapters_1.parseBestBuyPayload)(await r.json());
+                if (parsed.inStockOffers.length > 0)
+                    await (0, bigBoxAdapters_1.dispatchVerifiedBigBoxHits)(parsed.inStockOffers, listener_1.processIncomingDrop, 20);
+                const node = buildSensorNode('Best Buy', '95s Official API + 1-Tap Cart', 'Best Buy Products REST API', '1P Retail MSRP ($49.99–$54.99 ETB)', parsed);
+                (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ bestBuyStatus: node.statusCode, northStar5: { bestBuy: node } });
+                return { key: 'bestBuy', retailer: 'Best Buy', transport: 'BestBuy REST API', httpStatus: r.status, totalNodesFound: parsed.totalNodesFound, inStockMatches: parsed.inStockOffers.length, engineRoomStatus: node.status };
+            }
         }
-        catch {
-            const node = buildSensorNode(c.name, c.cadence, c.method, c.filter, 0, 'IMPERVA');
-            (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ [c.statusKey]: node.statusCode, northStar5: { [c.key]: node } });
-        }
+        catch { }
     }
+    const bbUrl = 'https://www.bestbuy.com/site/searchpage.jsp?st=pokemon+elite+trainer+box';
+    const sw = await (0, wafBrowserBridge_1.sweepWafProtectedTarget)('bestbuy', bbUrl, { force, waitForSelector: 'li.product-list-item, .sku-item', waitAfterLoadMs: 1800, timeoutMs: 16000 });
+    if (!force && sw.fromSessionCache)
+        return null;
+    const waf = sw.isWafChallenged ? (sw.wafType || 'AKAMAI') : undefined;
+    const parsed = waf ? { totalNodesFound: 0, inStockOffers: [] } : (0, bigBoxAdapters_1.parseBestBuyPayload)(sw.html);
+    if (parsed.inStockOffers.length > 0)
+        await (0, bigBoxAdapters_1.dispatchVerifiedBigBoxHits)(parsed.inStockOffers, listener_1.processIncomingDrop, 20);
+    const node = buildSensorNode('Best Buy', '95s System Chrome + 1-Tap Cart', 'System Chrome .product-list-item + ButtonState', '1P Retail MSRP ($49.99–$54.99 ETB / $27.99 Bundle)', parsed, waf, { bridgeMode: sw.browserChannel });
+    (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ bestBuyStatus: node.statusCode, northStar5: { bestBuy: node } });
+    return { key: 'bestBuy', retailer: 'Best Buy', transport: `Playwright (${sw.browserChannel || 'chrome'})`, httpStatus: sw.status || 'TIMEOUT', totalNodesFound: parsed.totalNodesFound, inStockMatches: parsed.inStockOffers.length, engineRoomStatus: node.status };
+}
+async function pollSecondaryBigBoxSensors(force = false) {
+    const rows = [];
+    const amz = await sweepAmazon1pUndiciWithFallback(force);
+    if (amz)
+        rows.push(amz);
+    const bb = await sweepBestBuyHybrid(force);
+    if (bb)
+        rows.push(bb);
+    const chromeTargets = [
+        { domain: 'walmart', key: 'walmart', statusKey: 'walmartStatus', name: 'Walmart (1P MSRP)', cadence: '95s System Chrome 1P Sweep', method: 'System Chrome #__NEXT_DATA__ F55CDC31 + /pac', filter: 'Sold & Shipped by Walmart.com Only', url: 'https://www.walmart.com/search?q=pokemon+elite+trainer+box&facet=retailer_type%3AWalmart', waitMs: 1500, defaultWaf: 'PX', parse: (h, j) => (0, bigBoxAdapters_1.parseWalmartPayload)(h, j) },
+        { domain: 'costco', key: 'costco', statusKey: 'costcoStatus', name: 'Costco Wholesale', cadence: '105s System Chrome + Search XHR', method: 'Passive Search API + ProductTile Hydration', filter: '1P Member Sealed Multi-Packs & ETBs', url: 'https://www.costco.com/s?keyword=pokemon+cards', waitSel: '[data-testid="ProductTile"], .product-tile-set', waitMs: 2800, captureRe: /gdx-api\.costco\.com\/catalog\/search/i, defaultWaf: 'KASADA', parse: (h, j) => (0, bigBoxAdapters_1.parseCostcoPayload)(h, j) },
+        { domain: 'samsclub', key: 'samsClub', statusKey: 'samsClubStatus', name: "Sam's Club", cadence: '105s System Chrome Club Sweep', method: 'System Chrome #__NEXT_DATA__ Club Inventory', filter: '1P Member Sealed Multi-Packs & ETBs', url: 'https://www.samsclub.com/s/pokemon%20cards', waitMs: 2000, defaultWaf: 'PX', parse: (h, j) => (0, bigBoxAdapters_1.parseSamsClubPayload)(h, j) },
+        { domain: 'gamestop', key: 'gamestop', statusKey: 'gamestopStatus', name: 'GameStop', cadence: '150s System Chrome WAF Bridge', method: 'System Chrome data-gtmdata Object Parser', filter: '1P Retail MSRP Sealed Boxes & ETBs', url: 'https://www.gamestop.com/search/?q=pokemon+elite+trainer+box&type=Primary&sort=BestMatch_Desc&p=1', waitMs: 1400, defaultWaf: 'CF', parse: (h) => (0, bigBoxAdapters_1.parseGameStopPayload)(h) },
+        { domain: 'barnesandnoble', key: 'barnesNoble', statusKey: 'barnesNobleStatus', name: 'Barnes & Noble', cadence: '150s System Chrome Hydrogen', method: 'System Chrome Hydrogen /w/?ean= Cards', filter: '1P Retail MSRP ETBs & Booster Bundles', url: 'https://www.barnesandnoble.com/search?q=pokemon+trading+card+game', waitSel: 'a[href*="/w/"]', waitMs: 1800, defaultWaf: 'CF', parse: (h) => (0, bigBoxAdapters_1.parseBarnesAndNoblePayload)(h) }
+    ];
+    for (const ct of chromeTargets) {
+        const sw = await (0, wafBrowserBridge_1.sweepWafProtectedTarget)(ct.domain, ct.url, { force, waitForSelector: ct.waitSel, waitAfterLoadMs: ct.waitMs, captureUrlPattern: ct.captureRe, timeoutMs: 16000 });
+        if (!force && sw.fromSessionCache)
+            continue;
+        const waf = sw.isWafChallenged ? (sw.wafType || ct.defaultWaf) : undefined;
+        const parsed = waf ? { totalNodesFound: 0, inStockOffers: [] } : ct.parse(sw.html, sw.capturedJson);
+        if (parsed.inStockOffers.length > 0)
+            await (0, bigBoxAdapters_1.dispatchVerifiedBigBoxHits)(parsed.inStockOffers, listener_1.processIncomingDrop, 20);
+        const node = buildSensorNode(ct.name, ct.cadence, ct.method, ct.filter, parsed, waf, { bridgeMode: sw.browserChannel });
+        (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ [ct.statusKey]: node.statusCode, northStar5: { [ct.key]: node } });
+        rows.push({
+            key: ct.key, retailer: ct.name, transport: `Playwright (${sw.browserChannel || 'chrome'})`,
+            httpStatus: waf === 'PX' && sw.status === 200 ? '200->PX' : (sw.status || 'ERR'),
+            totalNodesFound: parsed.totalNodesFound, inStockMatches: parsed.inStockOffers.length, engineRoomStatus: node.status
+        });
+    }
+    return rows;
+}
+async function runSinglePassBigBoxSweep(force = true) {
+    const out = [];
+    const pc = await pollPokemonCenterDirectMsrp(force);
+    if (pc)
+        out.push(pc);
+    const tgt = await sweepTargetPassiveRedsky(force);
+    if (tgt)
+        out.push(tgt);
+    out.push(...(await pollSecondaryBigBoxSensors(force)));
+    return out;
 }
 async function pollBigBoxAggregators() {
     if (isPollingBigBox) {
-        if (Date.now() - lastBigBoxPollAt > 55000)
+        if (Date.now() - lastBigBoxPollAt > 180_000)
             isPollingBigBox = false;
         else
             return;
     }
     isPollingBigBox = true;
     lastBigBoxPollAt = Date.now();
-    const dynamicQueries = Array.from(new Set([
-        ...BASE_TARGET_QUERIES,
-        ...policies_1.WATCH_POLICIES.map((p) => p.retailSearchQuery).filter(Boolean)
-    ]));
-    const keyword = dynamicQueries[targetCursor % dynamicQueries.length];
-    targetCursor = (targetCursor + 1) % dynamicQueries.length;
     try {
-        await pollPokemonCenterDirectMsrp();
-        const seededTcins = Array.from(new Set(policies_1.WATCH_POLICIES.map((p) => p.targetTcin).filter(Boolean)));
-        const encodedKw = encodeURIComponent(keyword);
-        const redskyUrl = `https://redsky.target.com/redsky_aggregations/v1/web/plp_search_v2?key=9f36aeafbe60771e321a7cc95a78140772ab3e96&channel=WEB&count=24&default_purchasability_filter=true&include_sponsored=false&keyword=${encodedKw}&new_search=true&offset=0&page=%2Fs%2F${encodedKw}&platform=desktop&pricing_store_id=3991&zip=76177&state=TX&useragent=Mozilla%2F5.0&visitor_id=0192B7C8E2F0020188A9`;
-        const res = await httpGetWithProxyFallback(redskyUrl, { ...BROWSER_HEADERS, Accept: 'application/json' }, 7000);
-        const rawStr = typeof res.data === 'string' ? res.data : JSON.stringify(res.data || {});
-        const isTargetPx = res.status === 435 || res.status >= 400 || /PXGWPp4wUS|px-captcha/i.test(rawStr);
-        const targetHits = isTargetPx ? [] : (0, bigBoxAdapters_1.parseTargetRedskyPayload)(res.data);
-        if (!isTargetPx && seededTcins.length > 0 && targetCursor % 2 === 0) {
-            const tcinBatchUrl = `https://redsky.target.com/redsky_aggregations/v1/web/product_summary_with_fulfillment_v1?key=9f36aeafbe60771e321a7cc95a78140772ab3e96&tcins=${seededTcins.slice(0, 20).join(',')}&store_id=3991&zip=76177&state=TX&channel=WEB`;
-            try {
-                const bRes = await httpGetWithProxyFallback(tcinBatchUrl, { ...BROWSER_HEADERS, Accept: 'application/json' }, 6500);
-                if (bRes.status === 200)
-                    targetHits.push(...(0, bigBoxAdapters_1.parseTargetRedskyPayload)(bRes.data));
-            }
-            catch { }
-        }
-        if (targetHits.length > 0)
-            await (0, bigBoxAdapters_1.dispatchVerifiedBigBoxHits)(targetHits, listener_1.processIncomingDrop, 15);
-        const tNode = buildSensorNode('Target (RedSky)', '15s RedSky TCIN + Search API', 'RedSky 1P Fulfillment + /p/-/A-{tcin}', '1P Target Sold Only (<= MSRP*1.08)', targetHits.length, isTargetPx ? 'PX' : undefined, { lastKeyword: keyword, seededTcinsTracked: seededTcins.length });
-        (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ targetRedskyStatus: tNode.statusCode, lastTargetKeyword: keyword, itemsScanned: targetHits.length, northStar5: { target: tNode } });
-        await pollSecondaryBigBoxSensors();
+        await runSinglePassBigBoxSweep(false);
     }
     catch (err) {
-        const tNode = buildSensorNode('Target (RedSky)', '15s RedSky TCIN + Search API', 'RedSky 1P Fulfillment + /p/-/A-{tcin}', '1P Target Sold Only (<= MSRP*1.08)', 0, 'PX');
-        (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ targetRedskyStatus: 'WAF_CHALLENGE_PX', lastTargetError: err?.message || 'RedSky poll error', northStar5: { target: tNode } });
+        (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ lastTargetError: err?.message || 'BigBox sweep error' });
     }
     finally {
         isPollingBigBox = false;
-        setTimeout(pollBigBoxAggregators, 15000);
+        setTimeout(pollBigBoxAggregators, 25_000);
     }
 }

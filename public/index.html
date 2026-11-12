@@ -3473,14 +3473,14 @@
           let st = rawSt;
           let dotCls = 'bg-emerald-400';
           let borderCls = 'border-emerald-500/30 text-emerald-300 bg-emerald-500/10';
-          if (st.includes('QUEUE') || st.includes('DROP')) {
+          if (st.includes('QUEUE') || st.includes('WAITING ROOM') || st.includes('DROP')) {
             dotCls = 'bg-cyan-300 animate-ping';
             borderCls = 'border-cyan-400/60 text-cyan-200 bg-cyan-500/20 shadow-[0_0_12px_rgba(0,240,255,0.35)]';
-          } else if (/WAF|SHIELD|CHALLENGE|403|412|435|ERR_|TIMEOUT|BLOCKED/.test(st)) {
+          } else if (/WAF|SHIELD|CHALLENGE|403|412|435|ERR_|TIMEOUT|BLOCKED|ROUTER_TLS_FILTER/.test(st)) {
             dotCls = 'bg-rose-400';
             borderCls = 'border-rose-500/45 text-rose-300 bg-rose-500/15';
           } else if (st.includes('PARSER_BLIND') || (st.includes('200 OK') && nodesFound === 0)) {
-            st = 'PARSER_BLIND (0 NODES)';
+            st = 'PARSER_BLIND_0_NODES';
             dotCls = 'bg-amber-400';
             borderCls = 'border-amber-500/35 text-amber-200 bg-amber-500/10';
           }
@@ -5528,12 +5528,12 @@
           const methodLabel = String(r.engineMethod || r.mode || 'Direct Retail MSRP Endpoint');
           const filterLabel = String(r.strictFilter || '1P Retail MSRP Only');
           const itemsChecked = Number(r.itemsParsed ?? r.productsParsed ?? 0);
-          const rawSt = String(r.lastStatus || r.status || r.statusTruth || (itemsChecked > 0 ? ('200 OK // ' + itemsChecked + ' IN STOCK') : 'PARSER_BLIND (0 NODES)'));
-          const statusCls = /QUEUE|DROP/i.test(rawSt)
+          const rawSt = String(r.lastStatus || r.status || r.statusTruth || (itemsChecked > 0 ? ('200 OK // ' + itemsChecked + ' IN STOCK') : 'PARSER_BLIND_0_NODES'));
+          const statusCls = /QUEUE|WAITING ROOM|DROP/i.test(rawSt)
             ? 'bg-cyan-500/20 text-cyan-200 border-cyan-400/50'
-            : (/WAF|SHIELD|CHALLENGE|403|412|435|ERR_|TIMEOUT|TARPIT|BLOCKED/i.test(rawSt) || r.coreTier === 'SHIELD_BLOCKED'
+            : (/WAF|SHIELD|CHALLENGE|403|412|435|ERR_|TIMEOUT|TARPIT|BLOCKED|ROUTER_TLS_FILTER/i.test(rawSt) || r.coreTier === 'SHIELD_BLOCKED'
                 ? 'bg-rose-500/20 text-rose-300 border-rose-500/45'
-                : (/PARSER_BLIND|0 NODES|CSR_UNHYDRATED/i.test(rawSt) || r.coreTier === 'SLEEPING_CORE'
+                : (/PARSER_BLIND|0 NODES|0_NODES|CSR_UNHYDRATED/i.test(rawSt) || r.coreTier === 'SLEEPING_CORE'
                     ? 'bg-amber-500/20 text-amber-200 border-amber-400/40'
                     : 'bg-emerald-500/20 text-emerald-300 border-emerald-400/40'));
           return (
