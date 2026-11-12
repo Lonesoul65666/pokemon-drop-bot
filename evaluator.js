@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.STORE_SHIPPING_RULES = exports.MSRP_TROPHIES_PATH = exports.getLiveStoreOfferMedian = exports.computeAutoPilotTarget = exports.isPreReleaseDate = void 0;
+exports.STORE_SHIPPING_RULES = exports.REDDIT_OFFER_TTL_MS = exports.MSRP_TROPHIES_PATH = exports.getLiveStoreOfferMedian = exports.computeAutoPilotTarget = exports.isPreReleaseDate = void 0;
 exports.isVerified1PBigBoxOrPc = isVerified1PBigBoxOrPc;
 exports.buildShopifyDirectCartLinks = buildShopifyDirectCartLinks;
 exports.buildMobileRetailerLinks = buildMobileRetailerLinks;
@@ -11,7 +11,11 @@ exports.getCloseCallGraceBuffer = getCloseCallGraceBuffer;
 exports.computeOfferShelfStatus = computeOfferShelfStatus;
 exports.isMarketplaceScamOrShippingTrap = isMarketplaceScamOrShippingTrap;
 exports.upsertStoreOfferCache = upsertStoreOfferCache;
+exports.isExpiredRedditGhostOffer = isExpiredRedditGhostOffer;
+exports.pruneExpiredRedditOffers = pruneExpiredRedditOffers;
 exports.pruneStoreMissingOffers = pruneStoreMissingOffers;
+exports.commitAlertDelivery = commitAlertDelivery;
+exports.releasePendingAlertLock = releasePendingAlertLock;
 exports.normalizeAlertRetailerKey = normalizeAlertRetailerKey;
 exports.markAlertKeyOutOfStock = markAlertKeyOutOfStock;
 exports.refreshCachedStoreOffersStatus = refreshCachedStoreOffersStatus;
@@ -171,11 +175,11 @@ function getCloseCallGraceBuffer(formFactor) {
 function computeOfferShelfStatus(params) {
     const { dropPrice, landedPrice, estimatedShipping, triggerPrice, msrpCeiling, marketValue, formFactor, owned = false, wallOwned = owned, fullyConquered = false, completionCount = wallOwned ? 1 : 0, ripHuntCeiling, stock, muteVaulted = false, isMsrpUnicorn = false, isRetailFlipBypass = false, isMarketplace3P = false } = params;
     const isRipHuntMode = Boolean((wallOwned || completionCount >= 1) && !fullyConquered);
-    const effTrigger = (isRipHuntMode && ripHuntCeiling && ripHuntCeiling > 0) ? ripHuntCeiling : triggerPrice;
+    const effTrigger = triggerPrice;
     const ffLower = String(formFactor || '').toLowerCase();
     const ripPairReady = Boolean(isRipHuntMode &&
         ((stock !== undefined && stock >= 2) || stock === undefined || ffLower.includes('booster box')));
-    const ripPairBadge = ripPairReady ? '◈ ⟦ RIP PAIR READY (QTY 2+) ⟧' : undefined;
+    const ripPairBadge = ripPairReady ? '◈ ⟦ NEED RIP PAIR (QTY 2+) ⟧' : undefined;
     const graceBuffer = getCloseCallGraceBuffer(formFactor);
     const canUseShelfPrice = !isMarketplace3P && estimatedShipping <= 10.00;
     const comparePrice = (canUseShelfPrice && dropPrice <= effTrigger + graceBuffer) ? dropPrice : landedPrice;
@@ -222,15 +226,14 @@ function computeOfferShelfStatus(params) {
             ripPairBadge
         };
     }
-    if (wallOwned && muteVaulted && !isMsrpUnicorn && !isRetailFlipBypass) {
+    if (wallOwned && !isRipHuntMode && muteVaulted && !isMsrpUnicorn && !isRetailFlipBypass) {
         return {
             statusTier: 'MUTED_OWNED',
-            statusTag: isRipHuntMode ? `⟦ WALL LOCKED (${completionCount}/3) // WAIT FOR $${effTrigger.toFixed(0)} RIP DIP ⟧` : '⟦ MUTED: OWNED ON WALL ⟧',
+            statusTag: '⟦ MUTED: OWNED ON WALL ⟧',
             isCloseCall: false,
             closeCallDelta: 0,
             comparePrice: landedPrice,
-            ripPairReady,
-            ripPairBadge
+            ripPairReady: false
         };
     }
     const overDollars = Math.max(0.01, Math.round((landedPrice - effTrigger) * 100) / 100);
@@ -337,10 +340,46 @@ function upsertStoreOfferCache(entry) {
     storeOffersCacheMem[entry.skuId] = skuMap;
     scheduleStoreOffersFlush();
 }
+exports.REDDIT_OFFER_TTL_MS = 4 * 60 * 60 * 1000; // 4-hour TTL for Reddit / PKMNTCGDeals restock tips
+const IN_FLIGHT_ALERT_LOCK_TTL_MS = 45 * 1000;
+const inFlightAlertLocks = new Map();
+let lastRedditTtlPruneAt = 0;
+function isExpiredRedditGhostOffer(storeKey, rec, nowTs = Date.now()) {
+    if (!rec || typeof rec !== 'object')
+        return false;
+    const idStr = String(rec.itemId || '');
+    const sourceHay = `${storeKey || ''} ${rec.storeName || ''} ${rec.retailer || ''} ${rec.store || ''} ${rec.url || ''}`;
+    const isRedditOffer = idStr.startsWith('reddit_') || /PKMNTCGDeals|BIG-BOX RESTOCK RADAR|reddit\.com/i.test(sourceHay);
+    if (!isRedditOffer)
+        return false;
+    const originTs = Number(rec.firstSeenAt || rec.restockedAt || rec.updatedAt || rec.lastSeenAt || 0);
+    if (originTs <= 0)
+        return true;
+    return (nowTs - originTs) > exports.REDDIT_OFFER_TTL_MS;
+}
+function pruneExpiredRedditOffers(nowTs = Date.now()) {
+    syncStoreOffersFromDiskIfNewer();
+    let mutated = false;
+    for (const [skuId, skuOffers] of Object.entries(storeOffersCacheMem)) {
+        if (!skuOffers || typeof skuOffers !== 'object')
+            continue;
+        for (const [storeKey, rec] of Object.entries(skuOffers)) {
+            if (isExpiredRedditGhostOffer(storeKey, rec, nowTs)) {
+                delete skuOffers[storeKey];
+                mutated = true;
+            }
+        }
+    }
+    if (mutated) {
+        scheduleStoreOffersFlush();
+    }
+    return mutated;
+}
 function pruneStoreMissingOffers(storeName, activeItemIds) {
     if (!storeName)
         return;
     syncStoreOffersFromDiskIfNewer();
+    const now = Date.now();
     let mutated = false;
     for (const [skuId, skuOffers] of Object.entries(storeOffersCacheMem)) {
         if (!skuOffers || typeof skuOffers !== 'object')
@@ -350,6 +389,17 @@ function pruneStoreMissingOffers(storeName, activeItemIds) {
             delete skuOffers[storeName];
             mutated = true;
         }
+        if (now - lastRedditTtlPruneAt > 5 * 60 * 1000) {
+            for (const [stKey, stRec] of Object.entries(skuOffers)) {
+                if (isExpiredRedditGhostOffer(stKey, stRec, now)) {
+                    delete skuOffers[stKey];
+                    mutated = true;
+                }
+            }
+        }
+    }
+    if (now - lastRedditTtlPruneAt > 5 * 60 * 1000) {
+        lastRedditTtlPruneAt = now;
     }
     if (mutated) {
         scheduleStoreOffersFlush();
@@ -389,6 +439,30 @@ try {
 catch (e) { }
 function saveAlertMemory() {
     (0, policies_1.atomicWriteJson)(ALERT_STATE_PATH, alertMemory);
+}
+function commitAlertDelivery(commit) {
+    if (!commit || !commit.stateKey || !commit.entry)
+        return;
+    inFlightAlertLocks.delete(commit.stateKey);
+    try {
+        if (fs_1.default.existsSync(ALERT_STATE_PATH)) {
+            const diskMem = JSON.parse(fs_1.default.readFileSync(ALERT_STATE_PATH, 'utf-8'));
+            if (diskMem && typeof diskMem === 'object') {
+                alertMemory = diskMem;
+            }
+        }
+    }
+    catch (e) { }
+    alertMemory[commit.stateKey] = commit.entry;
+    saveAlertMemory();
+    if (commit.trophyCatch) {
+        recordMsrpTrophyCatch(commit.trophyCatch);
+    }
+}
+function releasePendingAlertLock(stateKey) {
+    if (!stateKey)
+        return;
+    inFlightAlertLocks.delete(stateKey);
 }
 function normalizeAlertRetailerKey(retailer) {
     const r = (retailer || '').trim();
@@ -458,6 +532,8 @@ function refreshCachedStoreOffersStatus() {
                         const seenTs = Number(ev.lastSeenAt || ev.restockedAt || 0);
                         if (now - seenTs > 48 * 3600 * 1000)
                             continue;
+                        if (isExpiredRedditGhostOffer(ev.store, ev, now))
+                            continue;
                         const rule = policies_1.WATCH_POLICIES.find(r => r.id === ev.targetId);
                         if (!rule)
                             continue;
@@ -510,6 +586,11 @@ function refreshCachedStoreOffersStatus() {
             for (const [storeKey, rec] of Object.entries(skuOffers)) {
                 if (!rec || typeof rec !== 'object')
                     continue;
+                if (isExpiredRedditGhostOffer(storeKey, rec, now)) {
+                    delete skuOffers[storeKey];
+                    mutated = true;
+                    continue;
+                }
                 const candidateTitle = String(rec.rawTitle || rec.productName || '');
                 const candidateFormFactor = rule?.formFactor || rec.formFactor;
                 if ((0, policies_1.isSingleCardOrNonSealed)(candidateTitle, undefined, rec.url) ||
@@ -562,7 +643,6 @@ function refreshCachedStoreOffersStatus() {
                     fullyConquered,
                     autoPilotEnabled: rule?.autoPilotEnabled !== false,
                     activeStoreCount,
-                    lowestShelfPrice: rawItemPrice,
                     isCloseCall: false,
                     isMarketplace3P: is3P,
                     nowTs: now
@@ -623,14 +703,14 @@ function refreshCachedStoreOffersStatus() {
                 const liveMap = JSON.parse(fs_1.default.readFileSync(LIVE_STOCK_PATH, 'utf-8')) || {};
                 const bestOffers = (liveMap.__bestOffers && typeof liveMap.__bestOffers === 'object') ? liveMap.__bestOffers : {};
                 let liveMutated = false;
-                // Purge any leaked singles or slabs from liveStock.json and __bestOffers
+                // Purge any leaked singles, slabs, or expired >4h Reddit ghosts from liveStock.json and __bestOffers
                 for (const [k, v] of Object.entries(liveMap)) {
                     if (k.startsWith('__') || !v || typeof v !== 'object')
                         continue;
                     const lsEntry = v;
                     const t = String(lsEntry.title || '');
                     const ff = String(lsEntry.formFactor || '');
-                    if ((0, policies_1.isSingleCardOrNonSealed)(t, undefined, lsEntry.url) || !(0, policies_1.hasMandatorySealedContainerKeyword)(t, ff)) {
+                    if (isExpiredRedditGhostOffer(lsEntry.retailer || k, lsEntry, now) || (0, policies_1.isSingleCardOrNonSealed)(t, undefined, lsEntry.url) || !(0, policies_1.hasMandatorySealedContainerKeyword)(t, ff)) {
                         delete liveMap[k];
                         liveMutated = true;
                     }
@@ -641,7 +721,7 @@ function refreshCachedStoreOffersStatus() {
                     const boEntry = bVal;
                     const t = String(boEntry.title || '');
                     const ff = String(boEntry.formFactor || '');
-                    if ((0, policies_1.isSingleCardOrNonSealed)(t, undefined, boEntry.url) || !(0, policies_1.hasMandatorySealedContainerKeyword)(t, ff)) {
+                    if (isExpiredRedditGhostOffer(boEntry.retailer || bKey, boEntry, now) || (0, policies_1.isSingleCardOrNonSealed)(t, undefined, boEntry.url) || !(0, policies_1.hasMandatorySealedContainerKeyword)(t, ff)) {
                         delete bestOffers[bKey];
                         liveMutated = true;
                     }
@@ -1155,7 +1235,6 @@ function evaluateItem(item) {
             fullyConquered,
             autoPilotEnabled: rule.autoPilotEnabled !== false,
             activeStoreCount,
-            lowestShelfPrice: dropPrice,
             isCloseCall: false,
             isMarketplace3P,
             nowTs: now
@@ -1482,6 +1561,27 @@ function evaluateItem(item) {
         // V5 Slice 3: Strict Per-Store Alert Deduplication scoped to `${storeName}::${skuId}`
         const normRetailer = normalizeAlertRetailerKey(item.retailer);
         const stateKey = `${normRetailer}::${rule.id}`;
+        const inFlightUntil = inFlightAlertLocks.get(stateKey) || 0;
+        if (inFlightUntil > now) {
+            return {
+                action: 'IGNORE',
+                reason: `Deduplicated in-flight alert dispatch: ${rule.name} at ${item.retailer}.`,
+                rule,
+                packCount,
+                pricePerPack,
+                isRipValueLeader,
+                isPreRelease,
+                preReleaseStatusTag,
+                releaseDate: rule.releaseDate,
+                statusTier,
+                statusTag,
+                isCloseCall,
+                closeCallDelta,
+                trendSignal,
+                trendVerdictLabel,
+                isElasticDip
+            };
+        }
         const prev = alertMemory[stateKey] ||
             alertMemory[`${item.retailer}::${rule.id}`] ||
             alertMemory[`${rule.id}__${normRetailer}`] ||
@@ -1541,30 +1641,33 @@ function evaluateItem(item) {
             previousTimeStr = prev.timeStr;
             alertType = isSignificantPriceDrop ? 'PRICE_DROP' : 'RESTOCK_REPEAT';
         }
-        alertMemory[stateKey] = {
-            lastPrice: currentPrice,
-            lowestAlertedPrice: prev ? Math.min(prev.lowestAlertedPrice, currentPrice) : currentPrice,
-            timestamp: now,
-            timeStr: nowTimeStr,
-            alertCount: (prev?.alertCount || 0) + 1,
-            wasOutOfStockSinceLastAlert: false,
-            itemId: item.itemId ? String(item.itemId) : prev?.itemId
-        };
-        saveAlertMemory();
-        // Record persistent Trophy Catch if Tier-A True Retail MSRP hit!
-        if (isMsrpUnicorn && !item.isBigBoxRestockRadar) {
-            recordMsrpTrophyCatch({
-                productName: rule.name,
-                ruleId: rule.id,
-                store: item.retailer,
-                price: currentPrice,
-                landedPrice,
-                msrp: rule.msrpCeiling,
-                url: item.productUrl || item.url,
+        // Commit-After-Send Guard: Reserve 45s in-flight lock, and ONLY persist alertState.json after Discord/Telegram confirms HTTP 2xx delivery!
+        inFlightAlertLocks.set(stateKey, now + IN_FLIGHT_ALERT_LOCK_TTL_MS);
+        const pendingAlertCommit = {
+            stateKey,
+            entry: {
+                lastPrice: currentPrice,
+                lowestAlertedPrice: prev ? Math.min(prev.lowestAlertedPrice, currentPrice) : currentPrice,
                 timestamp: now,
-                timeStr: new Date(now).toISOString()
-            });
-        }
+                timeStr: nowTimeStr,
+                alertCount: (prev?.alertCount || 0) + 1,
+                wasOutOfStockSinceLastAlert: false,
+                itemId: item.itemId ? String(item.itemId) : prev?.itemId
+            },
+            trophyCatch: (isMsrpUnicorn && !item.isBigBoxRestockRadar)
+                ? {
+                    productName: rule.name,
+                    ruleId: rule.id,
+                    store: item.retailer,
+                    price: currentPrice,
+                    landedPrice,
+                    msrp: rule.msrpCeiling,
+                    url: item.productUrl || item.url,
+                    timestamp: now,
+                    timeStr: new Date(now).toISOString()
+                }
+                : undefined
+        };
         const liveTel = (0, marketTelemetry_1.getTelemetry)()[rule.id];
         const marketVal = (liveTel && liveTel.rollingAverage > 0) ? liveTel.rollingAverage : (rule.estimatedMarketValue || effectiveCeiling);
         const effectiveComparePrice = freeShipNote ? currentPrice : landedPrice;
@@ -1606,7 +1709,8 @@ function evaluateItem(item) {
             closeCallDelta,
             trendSignal,
             trendVerdictLabel,
-            isElasticDip
+            isElasticDip,
+            pendingAlertCommit
         };
     }
     return { action: 'IGNORE', reason: 'No matching policy rule found.' };

@@ -209,7 +209,7 @@ export function computeAutoPilotTarget(params: {
   const isBleedingDown = Boolean(hasMinTrendSamples && (rolling.delta14dPct <= -5 || (activeStoreCount >= 8 && rolling.delta14dPct <= -2.5)));
   const isSupplyTightening = Boolean(rolling.sampleDaysCount >= 5 && !isBleedingDown && rolling.change60dPct >= 8 && activeStoreCount <= 5);
 
-  const userManualCeiling = Math.max(msrpCeiling, policyMaxBuy);
+  const userManualCeiling = policyMaxBuy > 0 ? policyMaxBuy : msrpCeiling;
   let autoPilotCeiling = userManualCeiling;
   let autoPilotModeLabel = rolling.insufficientHistory
     ? `REAL SAMPLES (${rolling.sampleDaysCount}D < 14D)`
@@ -217,13 +217,14 @@ export function computeAutoPilotTarget(params: {
   let autoPilotBadge: string | undefined = undefined;
 
   if (isBleedingDown) {
-    const floorRef = lowestShelfPrice > 0 ? lowestShelfPrice : (rolling.low30d || rolling.currentMarket);
+    // Advisory support target computed strictly from historical market floor — NEVER from incoming dropPrice (kills Zeno's Paradox)
+    const floorRef = rolling.low30d > 0 ? rolling.low30d : (rolling.currentMarket || marketBaseline || userManualCeiling);
     autoPilotCeiling = Math.max(round2(msrpCeiling * 0.90), Math.round(floorRef * 0.92));
     const shownDelta = Math.round(rolling.delta14dPct);
-    autoPilotModeLabel = 'BLEEDING DOWN // PULL -8%';
+    autoPilotModeLabel = 'BLEEDING DOWN // CAUTION ADVISORY';
     autoPilotBadge = `◈ ⟦ BLEEDING DOWN (${shownDelta}% 14D • ${rolling.sampleDaysCount}D REAL) // HOLD OFF ⟧`;
   } else if (isSupplyTightening) {
-    const climbTarget = Math.round(Math.max(policyMaxBuy, Math.min(rolling.avg60d * 0.96, rolling.currentMarket * 0.94)));
+    const climbTarget = Math.round(Math.max(userManualCeiling, Math.min(rolling.avg60d * 0.96, rolling.currentMarket * 0.94)));
     autoPilotCeiling = Math.max(msrpCeiling, climbTarget);
     autoPilotModeLabel = 'SUPPLY TIGHTENING // ADVISORY';
     autoPilotBadge = `◈ ⟦ SUPPLY TIGHTENING (+${Math.round(rolling.change60dPct)}% 60D) // SLIDER CAPPED ⟧`;
@@ -232,12 +233,10 @@ export function computeAutoPilotTarget(params: {
     autoPilotCeiling = Math.max(msrpCeiling, dipTarget);
   }
 
-  // Hard Ceiling Rule: Auto-Pilot may tighten targets on bleeding sets, NEVER silently raise effectiveTargetCeiling above Scott's manual slider!
-  const baseMaxBuy = autoPilotEnabled && isBleedingDown
-    ? Math.max(msrpCeiling, Math.min(userManualCeiling, autoPilotCeiling))
-    : userManualCeiling;
-  const ripHuntCeiling = round2(Math.min(baseMaxBuy, Math.max(msrpCeiling * 1.18, (rolling.low60d || msrpCeiling) * 1.03)));
-  const effectiveTargetCeiling = isRipHuntMode ? ripHuntCeiling : baseMaxBuy;
+  // Strict Slider Sovereignty: Always honor Scott's manual policyMaxBuy slider for both 0/3 Wall and 1/3–2/3 Rip-Hunt targets.
+  // BLEEDING DOWN remains strictly an honest trendVerdictLabel & Capital Advisor caution signal — never lowering the buy trigger!
+  const ripHuntCeiling = userManualCeiling;
+  const effectiveTargetCeiling = userManualCeiling;
 
   return { autoPilotEnabled, autoPilotCeiling, effectiveTargetCeiling, ripHuntCeiling, isRipHuntMode, isBleedingDown, isSupplyTightening, autoPilotModeLabel, autoPilotBadge };
 }
@@ -249,7 +248,7 @@ export function evaluateSkuTrendAndTiming(params: TrendEvalParams): TrendEvaluat
     policyMaxBuy, msrpCeiling, marketBaseline, releaseDate,
     owned = false, wallOwned = owned, dadRipOwned = false, loganRipOwned = false,
     completionCount, fullyConquered, autoPilotEnabled = true,
-    activeStoreCount = 0, lowestShelfPrice = dropPrice,
+    activeStoreCount = 0,
     isCloseCall = false, isMarketplace3P = false, nowTs = Date.now()
   } = params;
 
@@ -260,7 +259,7 @@ export function evaluateSkuTrendAndTiming(params: TrendEvalParams): TrendEvaluat
   const rolling = computeRollingMarketMetrics(skuId, marketBaseline, msrpCeiling, nowTs);
   const ap = computeAutoPilotTarget({
     skuId, msrpCeiling, policyMaxBuy, marketBaseline: rolling.currentMarket, rolling, autoPilotEnabled,
-    lowestShelfPrice, activeStoreCount, wallOwned, dadRipOwned, loganRipOwned, completionCount, fullyConquered
+    activeStoreCount, wallOwned, dadRipOwned, loganRipOwned, completionCount, fullyConquered
   });
 
   const mktFloorRef = Math.abs(rolling.currentMarket - 100) <= 1.5 ? 100 : Math.round(rolling.currentMarket || marketBaseline || policyMaxBuy);

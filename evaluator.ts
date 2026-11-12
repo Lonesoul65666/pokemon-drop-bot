@@ -242,13 +242,13 @@ export function computeOfferShelfStatus(params: {
   } = params;
 
   const isRipHuntMode = Boolean((wallOwned || completionCount >= 1) && !fullyConquered);
-  const effTrigger = (isRipHuntMode && ripHuntCeiling && ripHuntCeiling > 0) ? ripHuntCeiling : triggerPrice;
+  const effTrigger = triggerPrice;
   const ffLower = String(formFactor || '').toLowerCase();
   const ripPairReady = Boolean(
     isRipHuntMode &&
     ((stock !== undefined && stock >= 2) || stock === undefined || ffLower.includes('booster box'))
   );
-  const ripPairBadge = ripPairReady ? '◈ ⟦ RIP PAIR READY (QTY 2+) ⟧' : undefined;
+  const ripPairBadge = ripPairReady ? '◈ ⟦ NEED RIP PAIR (QTY 2+) ⟧' : undefined;
 
   const graceBuffer = getCloseCallGraceBuffer(formFactor);
   const canUseShelfPrice = !isMarketplace3P && estimatedShipping <= 10.00;
@@ -302,15 +302,14 @@ export function computeOfferShelfStatus(params: {
     };
   }
 
-  if (wallOwned && muteVaulted && !isMsrpUnicorn && !isRetailFlipBypass) {
+  if (wallOwned && !isRipHuntMode && muteVaulted && !isMsrpUnicorn && !isRetailFlipBypass) {
     return {
       statusTier: 'MUTED_OWNED',
-      statusTag: isRipHuntMode ? `⟦ WALL LOCKED (${completionCount}/3) // WAIT FOR $${effTrigger.toFixed(0)} RIP DIP ⟧` : '⟦ MUTED: OWNED ON WALL ⟧',
+      statusTag: '⟦ MUTED: OWNED ON WALL ⟧',
       isCloseCall: false,
       closeCallDelta: 0,
       comparePrice: landedPrice,
-      ripPairReady,
-      ripPairBadge
+      ripPairReady: false
     };
   }
 
@@ -440,9 +439,10 @@ export interface EvaluationResult {
   trendSignal?: TrendSignal;
   trendVerdictLabel?: string;
   isElasticDip?: boolean;
+  pendingAlertCommit?: PendingAlertCommit;
 }
 
-interface AlertMemoryEntry {
+export interface AlertMemoryEntry {
   lastPrice: number;
   lowestAlertedPrice: number;
   timestamp: number;
@@ -450,6 +450,22 @@ interface AlertMemoryEntry {
   alertCount: number;
   wasOutOfStockSinceLastAlert?: boolean;
   itemId?: string;
+}
+
+export interface PendingAlertCommit {
+  stateKey: string;
+  entry: AlertMemoryEntry;
+  trophyCatch?: {
+    productName: string;
+    ruleId: string;
+    store: string;
+    price: number;
+    landedPrice: number;
+    msrp: number;
+    url: string;
+    timestamp: number;
+    timeStr: string;
+  };
 }
 
 export interface BestOfferEntry {
@@ -605,9 +621,44 @@ export function upsertStoreOfferCache(entry: Omit<StoreOfferRecord, 'firstSeenAt
   scheduleStoreOffersFlush();
 }
 
+export const REDDIT_OFFER_TTL_MS = 4 * 60 * 60 * 1000; // 4-hour TTL for Reddit / PKMNTCGDeals restock tips
+const IN_FLIGHT_ALERT_LOCK_TTL_MS = 45 * 1000;
+const inFlightAlertLocks = new Map<string, number>();
+let lastRedditTtlPruneAt = 0;
+
+export function isExpiredRedditGhostOffer(storeKey: string, rec: any, nowTs = Date.now()): boolean {
+  if (!rec || typeof rec !== 'object') return false;
+  const idStr = String(rec.itemId || '');
+  const sourceHay = `${storeKey || ''} ${rec.storeName || ''} ${rec.retailer || ''} ${rec.store || ''} ${rec.url || ''}`;
+  const isRedditOffer = idStr.startsWith('reddit_') || /PKMNTCGDeals|BIG-BOX RESTOCK RADAR|reddit\.com/i.test(sourceHay);
+  if (!isRedditOffer) return false;
+  const originTs = Number(rec.firstSeenAt || rec.restockedAt || rec.updatedAt || rec.lastSeenAt || 0);
+  if (originTs <= 0) return true;
+  return (nowTs - originTs) > REDDIT_OFFER_TTL_MS;
+}
+
+export function pruneExpiredRedditOffers(nowTs = Date.now()): boolean {
+  syncStoreOffersFromDiskIfNewer();
+  let mutated = false;
+  for (const [skuId, skuOffers] of Object.entries(storeOffersCacheMem)) {
+    if (!skuOffers || typeof skuOffers !== 'object') continue;
+    for (const [storeKey, rec] of Object.entries(skuOffers)) {
+      if (isExpiredRedditGhostOffer(storeKey, rec, nowTs)) {
+        delete skuOffers[storeKey];
+        mutated = true;
+      }
+    }
+  }
+  if (mutated) {
+    scheduleStoreOffersFlush();
+  }
+  return mutated;
+}
+
 export function pruneStoreMissingOffers(storeName: string, activeItemIds: Set<string>) {
   if (!storeName) return;
   syncStoreOffersFromDiskIfNewer();
+  const now = Date.now();
   let mutated = false;
   for (const [skuId, skuOffers] of Object.entries(storeOffersCacheMem)) {
     if (!skuOffers || typeof skuOffers !== 'object') continue;
@@ -616,6 +667,17 @@ export function pruneStoreMissingOffers(storeName: string, activeItemIds: Set<st
       delete skuOffers[storeName];
       mutated = true;
     }
+    if (now - lastRedditTtlPruneAt > 5 * 60 * 1000) {
+      for (const [stKey, stRec] of Object.entries(skuOffers)) {
+        if (isExpiredRedditGhostOffer(stKey, stRec, now)) {
+          delete skuOffers[stKey];
+          mutated = true;
+        }
+      }
+    }
+  }
+  if (now - lastRedditTtlPruneAt > 5 * 60 * 1000) {
+    lastRedditTtlPruneAt = now;
   }
   if (mutated) {
     scheduleStoreOffersFlush();
@@ -654,6 +716,29 @@ try {
 
 function saveAlertMemory() {
   atomicWriteJson(ALERT_STATE_PATH, alertMemory);
+}
+
+export function commitAlertDelivery(commit?: PendingAlertCommit): void {
+  if (!commit || !commit.stateKey || !commit.entry) return;
+  inFlightAlertLocks.delete(commit.stateKey);
+  try {
+    if (fs.existsSync(ALERT_STATE_PATH)) {
+      const diskMem = JSON.parse(fs.readFileSync(ALERT_STATE_PATH, 'utf-8'));
+      if (diskMem && typeof diskMem === 'object') {
+        alertMemory = diskMem;
+      }
+    }
+  } catch (e) {}
+  alertMemory[commit.stateKey] = commit.entry;
+  saveAlertMemory();
+  if (commit.trophyCatch) {
+    recordMsrpTrophyCatch(commit.trophyCatch);
+  }
+}
+
+export function releasePendingAlertLock(stateKey?: string): void {
+  if (!stateKey) return;
+  inFlightAlertLocks.delete(stateKey);
 }
 
 export function normalizeAlertRetailerKey(retailer: string): string {
@@ -723,6 +808,7 @@ export function refreshCachedStoreOffersStatus(): void {
             if (!ev || !ev.targetId || ev.status !== 'ACTIVE' || !ev.store || !ev.price) continue;
             const seenTs = Number(ev.lastSeenAt || ev.restockedAt || 0);
             if (now - seenTs > 48 * 3600 * 1000) continue;
+            if (isExpiredRedditGhostOffer(ev.store, ev, now)) continue;
             const rule = WATCH_POLICIES.find(r => r.id === ev.targetId);
             if (!rule) continue;
             const cleanStoreKey = String(ev.store).replace(/\s*\(TCGPlayer.*?\)$/i, ' (TCGPlayer)').trim();
@@ -772,6 +858,11 @@ export function refreshCachedStoreOffersStatus(): void {
       const rule = WATCH_POLICIES.find(r => r.id === skuId);
       for (const [storeKey, rec] of Object.entries(skuOffers)) {
         if (!rec || typeof rec !== 'object') continue;
+        if (isExpiredRedditGhostOffer(storeKey, rec, now)) {
+          delete skuOffers[storeKey];
+          mutated = true;
+          continue;
+        }
         const candidateTitle = String(rec.rawTitle || rec.productName || '');
         const candidateFormFactor = rule?.formFactor || rec.formFactor;
         if (
@@ -831,7 +922,6 @@ export function refreshCachedStoreOffersStatus(): void {
           fullyConquered,
           autoPilotEnabled: rule?.autoPilotEnabled !== false,
           activeStoreCount,
-          lowestShelfPrice: rawItemPrice,
           isCloseCall: false,
           isMarketplace3P: is3P,
           nowTs: now
@@ -894,13 +984,13 @@ export function refreshCachedStoreOffersStatus(): void {
         const bestOffers = (liveMap.__bestOffers && typeof liveMap.__bestOffers === 'object') ? liveMap.__bestOffers : {};
         let liveMutated = false;
 
-        // Purge any leaked singles or slabs from liveStock.json and __bestOffers
+        // Purge any leaked singles, slabs, or expired >4h Reddit ghosts from liveStock.json and __bestOffers
         for (const [k, v] of Object.entries(liveMap)) {
           if (k.startsWith('__') || !v || typeof v !== 'object') continue;
           const lsEntry = v as any;
           const t = String(lsEntry.title || '');
           const ff = String(lsEntry.formFactor || '');
-          if (isSingleCardOrNonSealed(t, undefined, lsEntry.url) || !hasMandatorySealedContainerKeyword(t, ff)) {
+          if (isExpiredRedditGhostOffer(lsEntry.retailer || k, lsEntry, now) || isSingleCardOrNonSealed(t, undefined, lsEntry.url) || !hasMandatorySealedContainerKeyword(t, ff)) {
             delete liveMap[k];
             liveMutated = true;
           }
@@ -910,7 +1000,7 @@ export function refreshCachedStoreOffersStatus(): void {
           const boEntry = bVal as any;
           const t = String(boEntry.title || '');
           const ff = String(boEntry.formFactor || '');
-          if (isSingleCardOrNonSealed(t, undefined, boEntry.url) || !hasMandatorySealedContainerKeyword(t, ff)) {
+          if (isExpiredRedditGhostOffer(boEntry.retailer || bKey, boEntry, now) || isSingleCardOrNonSealed(t, undefined, boEntry.url) || !hasMandatorySealedContainerKeyword(t, ff)) {
             delete bestOffers[bKey];
             liveMutated = true;
           }
@@ -1494,7 +1584,6 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       fullyConquered,
       autoPilotEnabled: rule.autoPilotEnabled !== false,
       activeStoreCount,
-      lowestShelfPrice: dropPrice,
       isCloseCall: false,
       isMarketplace3P,
       nowTs: now
@@ -1851,6 +1940,27 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
     // V5 Slice 3: Strict Per-Store Alert Deduplication scoped to `${storeName}::${skuId}`
     const normRetailer = normalizeAlertRetailerKey(item.retailer);
     const stateKey = `${normRetailer}::${rule.id}`;
+    const inFlightUntil = inFlightAlertLocks.get(stateKey) || 0;
+    if (inFlightUntil > now) {
+      return {
+        action: 'IGNORE',
+        reason: `Deduplicated in-flight alert dispatch: ${rule.name} at ${item.retailer}.`,
+        rule,
+        packCount,
+        pricePerPack,
+        isRipValueLeader,
+        isPreRelease,
+        preReleaseStatusTag,
+        releaseDate: rule.releaseDate,
+        statusTier,
+        statusTag,
+        isCloseCall,
+        closeCallDelta,
+        trendSignal,
+        trendVerdictLabel,
+        isElasticDip
+      };
+    }
     const prev =
       alertMemory[stateKey] ||
       alertMemory[`${item.retailer}::${rule.id}`] ||
@@ -1920,31 +2030,33 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       alertType = isSignificantPriceDrop ? 'PRICE_DROP' : 'RESTOCK_REPEAT';
     }
 
-    alertMemory[stateKey] = {
-      lastPrice: currentPrice,
-      lowestAlertedPrice: prev ? Math.min(prev.lowestAlertedPrice, currentPrice) : currentPrice,
-      timestamp: now,
-      timeStr: nowTimeStr,
-      alertCount: (prev?.alertCount || 0) + 1,
-      wasOutOfStockSinceLastAlert: false,
-      itemId: item.itemId ? String(item.itemId) : prev?.itemId
-    };
-    saveAlertMemory();
-
-    // Record persistent Trophy Catch if Tier-A True Retail MSRP hit!
-    if (isMsrpUnicorn && !item.isBigBoxRestockRadar) {
-      recordMsrpTrophyCatch({
-        productName: rule.name,
-        ruleId: rule.id,
-        store: item.retailer,
-        price: currentPrice,
-        landedPrice,
-        msrp: rule.msrpCeiling,
-        url: item.productUrl || item.url,
+    // Commit-After-Send Guard: Reserve 45s in-flight lock, and ONLY persist alertState.json after Discord/Telegram confirms HTTP 2xx delivery!
+    inFlightAlertLocks.set(stateKey, now + IN_FLIGHT_ALERT_LOCK_TTL_MS);
+    const pendingAlertCommit: PendingAlertCommit = {
+      stateKey,
+      entry: {
+        lastPrice: currentPrice,
+        lowestAlertedPrice: prev ? Math.min(prev.lowestAlertedPrice, currentPrice) : currentPrice,
         timestamp: now,
-        timeStr: new Date(now).toISOString()
-      });
-    }
+        timeStr: nowTimeStr,
+        alertCount: (prev?.alertCount || 0) + 1,
+        wasOutOfStockSinceLastAlert: false,
+        itemId: item.itemId ? String(item.itemId) : prev?.itemId
+      },
+      trophyCatch: (isMsrpUnicorn && !item.isBigBoxRestockRadar)
+        ? {
+            productName: rule.name,
+            ruleId: rule.id,
+            store: item.retailer,
+            price: currentPrice,
+            landedPrice,
+            msrp: rule.msrpCeiling,
+            url: item.productUrl || item.url,
+            timestamp: now,
+            timeStr: new Date(now).toISOString()
+          }
+        : undefined
+    };
 
     const liveTel = getTelemetry()[rule.id];
     const marketVal = (liveTel && liveTel.rollingAverage > 0) ? liveTel.rollingAverage : (rule.estimatedMarketValue || effectiveCeiling);
@@ -1988,7 +2100,8 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       closeCallDelta,
       trendSignal,
       trendVerdictLabel,
-      isElasticDip
+      isElasticDip,
+      pendingAlertCommit
     };
   }
 

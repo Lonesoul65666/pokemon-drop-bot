@@ -7,8 +7,10 @@ import { startStockDigestScheduler } from './notifier';
 import { startMarketTapeScheduler } from './marketTape';
 import { registerProcessSafetyHandlers } from './listener';
 import { startFastTier1Poller } from './src/pollers/fastTier1Poller';
+import { refreshCachedStoreOffersStatus } from './evaluator';
 
 registerProcessSafetyHandlers('pokemon-drop-bot');
+refreshCachedStoreOffersStatus();
 
 const marketSync = new MarketSyncService();
 

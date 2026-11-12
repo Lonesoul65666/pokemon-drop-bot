@@ -2022,6 +2022,9 @@ app.get('/api/engine-room', (req, res) => {
     const northStar5 = northStarOrder.map(cfg => {
       const item = ns5Raw[cfg.id] || {};
       const itemsParsed = Number(item.itemsExtracted ?? item.itemsParsed ?? cfg.defaultCount);
+      const totalNodesFound = item.totalNodesFound !== undefined
+        ? Number(item.totalNodesFound)
+        : Number(item.nodesFound ?? item.productsDetected ?? itemsParsed ?? 0);
       const rawStatus = String(item.lastStatus || item.status || cfg.defaultStatus);
       let humanStatus = rawStatus;
       if (/^ARMED/i.test(rawStatus) || rawStatus === 'HEALTHY' || /Checked|Monitored/i.test(rawStatus)) {
@@ -2042,10 +2045,19 @@ app.get('/api/engine-room', (req, res) => {
       }
       matched.sort((a, b) => a.landedPrice - b.landedPrice);
       const hasUnderTrigger = matched.some(o => o.underTrigger);
+      const isWafOrNetBlocked = /WAF|SHIELD|CHALLENGE|403|412|435|ERR_|TIMEOUT|TARPIT|BLOCKED/i.test(humanStatus);
+
       let coreTier = 'SLEEPING_CORE';
-      if (hasUnderTrigger || /QUEUE|DROP/i.test(humanStatus)) coreTier = 'MASTER_CORE';
-      else if (itemsParsed > 0 || matched.length > 0) coreTier = 'ULTRA_CORE';
-      else if (/WAF|SHIELD|CHALLENGE|403/i.test(humanStatus)) coreTier = 'SHIELD_BLOCKED';
+      if (isWafOrNetBlocked) {
+        coreTier = 'SHIELD_BLOCKED';
+      } else if (hasUnderTrigger || /QUEUE|DROP/i.test(humanStatus)) {
+        coreTier = 'MASTER_CORE';
+      } else if (totalNodesFound > 0 || itemsParsed > 0 || matched.length > 0) {
+        coreTier = 'ULTRA_CORE';
+      } else {
+        humanStatus = 'PARSER_BLIND (0 NODES)';
+        coreTier = 'SLEEPING_CORE';
+      }
 
       const checkedAt = Number(item.lastCheckedAt || item.lastChecked || storeTel.bigBoxHealth?.lastCheckAt || Date.now());
       const engineMethod = item.engineMethod || item.targetRule || item.mode || cfg.defaultMethod;
@@ -2061,6 +2073,7 @@ app.get('/api/engine-room', (req, res) => {
         queueActive: Boolean(item.queueActive),
         queueBanner: item.queueBanner || undefined,
         strictFilter: item.strictFilter || cfg.defaultStrictFilter,
+        totalNodesFound,
         itemsParsed,
         productsParsed: itemsParsed,
         lastStatus: humanStatus,
@@ -2078,6 +2091,7 @@ app.get('/api/engine-room', (req, res) => {
     let holdingTargetsStoreCount = 0;
     let sleepersStoreCount = 0;
     let blockedStoreCount = 0;
+    let healthyLgsCount = 0;
     let totalMatchedBoxesInStock = 0;
 
     const lgsStores = (storeTel.lgsStores || []).map((st, idx) => {
@@ -2091,9 +2105,10 @@ app.get('/api/engine-room', (req, res) => {
       const neededWallEtbsCount = shelfOffers.filter(o => String(o.formFactor || '').toLowerCase() === 'etb' && !o.owned).length;
       const freshMoverCount = shelfOffers.filter(o => o.isFreshRestock).length;
       const catalogScanned = Number(health.lastProductsCount || 0);
-      const pagesScanned = Number(health.lastPagesScanned || (catalogScanned > 0 ? Math.max(1, Math.ceil(catalogScanned / 250)) : 1));
-      const isCircuitOpen = health.status === 'CIRCUIT_OPEN' && Number(health.cooldownUntil || 0) > now;
-      const isBlocked = isCircuitOpen || (health.status === 'DEGRADED' && catalogScanned === 0 && Number(health.consecutiveFailures || 0) >= 3);
+      const pagesScanned = Number(health.lastPagesScanned || (catalogScanned > 0 ? Math.max(1, Math.ceil(catalogScanned / 250)) : 0));
+      const rawHealthStatus = String(health.status || 'HEALTHY');
+      const isCircuitOpen = rawHealthStatus === 'CIRCUIT_OPEN' && Number(health.cooldownUntil || 0) > now;
+      const isBlocked = isCircuitOpen || (rawHealthStatus === 'DEGRADED' && Number(health.consecutiveFailures || 0) >= 3);
 
       let coreTier = 'SLEEPING_CORE';
       let tierLabel = 'RESTOCK SLEEPER';
@@ -2117,12 +2132,16 @@ app.get('/api/engine-room', (req, res) => {
         sleepersStoreCount++;
       }
 
+      if (!isBlocked && rawHealthStatus === 'HEALTHY') {
+        healthyLgsCount++;
+      }
+
       if (neededWallEtbsCount > 0) {
         holdingNeededWallEtbsStoreCount++;
       }
 
       const cheapestBox = shelfOffers[0] || null;
-      const lastPollAt = Number(health.lastSuccessAt || now);
+      const lastPollAt = Number(health.lastSuccessAt || 0);
 
       return {
         index: idx + 1,
@@ -2133,11 +2152,11 @@ app.get('/api/engine-room', (req, res) => {
         tier: st.tier || health.tier || 'TIER2_STANDARD',
         resolvedPath: st.resolvedPath || health.resolvedPath || '/products.json?limit=250',
         additionalPaths: st.additionalPaths || health.additionalPaths || [],
-        status: health.status || 'HEALTHY',
+        status: rawHealthStatus,
         coreTier,
         tierLabel,
         pagesScanned,
-        catalogScanned: catalogScanned > 0 ? catalogScanned : 145,
+        catalogScanned,
         matchedBoxesCount,
         matchedInStockCount: matchedBoxesCount,
         neededWallEtbsCount,
@@ -2148,7 +2167,7 @@ app.get('/api/engine-room', (req, res) => {
         cheapestOffer: cheapestBox,
         shelfOffers,
         matchedOffers: shelfOffers,
-        latencyMs: Number(health.lastLatencyMs || (180 + ((idx * 37) % 340))),
+        latencyMs: Number(health.lastLatencyMs || health.lastFastLatencyMs || 0),
         lastFastPollAt: health.lastFastPollAt,
         lastFastLatencyMs: health.lastFastLatencyMs,
         lastPollAt,
@@ -2157,13 +2176,18 @@ app.get('/api/engine-room', (req, res) => {
       };
     });
 
+    const healthyBigBoxCount = northStar5.filter(r => r.coreTier === 'MASTER_CORE' || r.coreTier === 'ULTRA_CORE').length;
+    const blockedBigBoxCount = northStar5.filter(r => r.coreTier === 'SHIELD_BLOCKED').length;
+
     const enginePayload = {
       ok: true,
       timestamp: now,
       fastTier1Poller: storeTel.fastTier1Poller,
       summary: {
         totalSensors: lgsStores.length + northStar5.length,
-        healthySensors: (lgsStores.length - blockedStoreCount) + northStar5.length,
+        healthySensors: healthyLgsCount + healthyBigBoxCount,
+        healthyLgsSensors: healthyLgsCount,
+        healthyBigBoxSensors: healthyBigBoxCount,
         lgsTotal: lgsStores.length,
         tier1FastCount: lgsStores.filter(s => s.tier === 'TIER1_FAST').length,
         fastTier1Poller: storeTel.fastTier1Poller,
@@ -2172,11 +2196,11 @@ app.get('/api/engine-room', (req, res) => {
         masterCoreCount: underTriggerStoreCount,
         holdingNeededWallEtbsCount: holdingNeededWallEtbsStoreCount,
         holdingTargetsCount: holdingTargetsStoreCount,
-        ultraCoreCount: Math.max(0, holdingTargetsStoreCount - underTriggerStoreCount) + northStar5.length,
+        ultraCoreCount: Math.max(0, holdingTargetsStoreCount - underTriggerStoreCount) + healthyBigBoxCount,
         sleepersCount: sleepersStoreCount,
         sleepingCoreCount: sleepersStoreCount,
-        blockedCount: blockedStoreCount,
-        shieldBlockedCount: blockedStoreCount,
+        blockedCount: blockedStoreCount + blockedBigBoxCount,
+        shieldBlockedCount: blockedStoreCount + blockedBigBoxCount,
         totalCatalogScanned: storeTel.totalListingsMonitored,
         totalMatchedBoxesInStock
       },

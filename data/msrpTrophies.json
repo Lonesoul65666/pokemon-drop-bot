@@ -1,16 +1,49 @@
 {
-  "totalMsrpHits": 125,
+  "totalMsrpHits": 149,
   "catches": [
+    {
+      "productName": "Mega Evolution: Chaos Rising Booster Box (36-Pack)",
+      "ruleId": "me-chaos-rising-booster-box",
+      "store": "Kanzen Games",
+      "price": 140.93,
+      "landedPrice": 150.92,
+      "msrp": 161.64,
+      "url": "https://kanzengames.com/products/mega-evolution-set-4-me04-booster-box",
+      "timestamp": 1794456143380,
+      "timeStr": "2026-11-12T04:02:23.380Z"
+    },
+    {
+      "productName": "Journey Together Booster Box (36-Pack)",
+      "ruleId": "sv-journey-together-booster-box",
+      "store": "Kanzen Games",
+      "price": 156.59,
+      "landedPrice": 166.58,
+      "msrp": 161.64,
+      "url": "https://kanzengames.com/products/scarlet-violet-journey-together-booster-box",
+      "timestamp": 1794456143423,
+      "timeStr": "2026-11-12T04:02:23.423Z"
+    },
+    {
+      "productName": "Mega Evolution: Perfect Order Booster Box (36-Pack)",
+      "ruleId": "me-perfect-order-booster-box",
+      "store": "Nova Break",
+      "price": 170,
+      "landedPrice": 170,
+      "msrp": 161.64,
+      "url": "https://novabreak.com/products/perfect-order-enhanced-booster-display",
+      "timestamp": 1794445287117,
+      "timeStr": "2026-11-12T01:01:27.117Z"
+    },
     {
       "productName": "Mega Evolution: Perfect Order Booster Box (36-Pack)",
       "ruleId": "me-perfect-order-booster-box",
       "store": "Elite4 TCG",
-      "price": 164,
-      "landedPrice": 164,
+      "price": 163.5,
+      "landedPrice": 163.5,
       "msrp": 161.64,
       "url": "https://elite4tcg.com/products/perfect-order-booster-box",
-      "timestamp": 1794341699229,
-      "timeStr": "2026-11-10T20:14:59.229Z"
+      "timestamp": 1794428245169,
+      "timeStr": "2026-11-11T20:17:25.169Z"
     },
     {
       "productName": "Mega Evolution: Chaos Rising Booster Box (36-Pack)",
@@ -20,8 +53,8 @@
       "landedPrice": 172.25,
       "msrp": 161.64,
       "url": "https://elite4tcg.com/products/chaos-rising-booster-box",
-      "timestamp": 1794341697196,
-      "timeStr": "2026-11-10T20:14:57.196Z"
+      "timestamp": 1794428245145,
+      "timeStr": "2026-11-11T20:17:25.145Z"
     },
     {
       "productName": "Mega Evolution: Pitch Black Booster Box (36-Pack)",
@@ -31,19 +64,19 @@
       "landedPrice": 168.25,
       "msrp": 161.64,
       "url": "https://elite4tcg.com/products/pitch-black-booster-box",
-      "timestamp": 1794341400167,
-      "timeStr": "2026-11-10T20:10:00.167Z"
+      "timestamp": 1794428020310,
+      "timeStr": "2026-11-11T20:13:40.310Z"
     },
     {
-      "productName": "Mega Evolution: Pitch Black Booster Box (36-Pack)",
-      "ruleId": "me-pitch-black-booster-box",
-      "store": "Elite4 TCG",
-      "price": 171.75,
-      "landedPrice": 171.75,
+      "productName": "Mega Evolution: Delta Rayquaza (Delta Reign) Booster Box (36-Pack)",
+      "ruleId": "me-delta-reign-booster-box",
+      "store": "Zulus Games",
+      "price": 161.64,
+      "landedPrice": 161.64,
       "msrp": 161.64,
-      "url": "https://elite4tcg.com/products/pitch-black-booster-box",
-      "timestamp": 1794341331185,
-      "timeStr": "2026-11-10T20:08:51.185Z"
+      "url": "https://zulusgames.com/products/pokemon-tcg-delta-reign-booster-display",
+      "timestamp": 1794421926872,
+      "timeStr": "2026-11-11T18:32:06.872Z"
     },
     {
       "productName": "Mega Evolution: Perfect Order Booster Box (36-Pack)",
@@ -53,8 +86,8 @@
       "landedPrice": 164.99,
       "msrp": 161.64,
       "url": "https://collectorstore.com/products/pokemon-perfect-order-booster-box",
-      "timestamp": 1794333813968,
-      "timeStr": "2026-11-10T18:03:33.968Z"
+      "timestamp": 1794420289934,
+      "timeStr": "2026-11-11T18:04:49.934Z"
     },
     {
       "productName": "Mega Evolution: Perfect Order Booster Box (36-Pack)",
@@ -64,8 +97,8 @@
       "landedPrice": 169.99,
       "msrp": 161.64,
       "url": "https://www.ripnshiparena.com/products/pokemon-tcg-mega-evolution-perfect-order-booster-box-display",
-      "timestamp": 1794323592042,
-      "timeStr": "2026-11-10T15:13:12.042Z"
+      "timestamp": 1794410100747,
+      "timeStr": "2026-11-11T15:15:00.747Z"
     },
     {
       "productName": "Mega Evolution: Perfect Order Booster Box (36-Pack)",
@@ -75,8 +108,8 @@
       "landedPrice": 164.99,
       "msrp": 161.64,
       "url": "https://cardpopusa.com/products/pokemon-perfect-order-booster-box",
-      "timestamp": 1794321970710,
-      "timeStr": "2026-11-10T14:46:10.710Z"
+      "timestamp": 1794408558205,
+      "timeStr": "2026-11-11T14:49:18.205Z"
     },
     {
       "productName": "Mega Evolution: Pitch Black Booster Box (36-Pack)",
@@ -86,30 +119,8 @@
       "landedPrice": 164.99,
       "msrp": 161.64,
       "url": "https://cardpopusa.com/products/pokemon-mega-evolution-chaos-rising-booster-box",
-      "timestamp": 1794321963602,
-      "timeStr": "2026-11-10T14:46:03.602Z"
-    },
-    {
-      "productName": "Mega Evolution: Perfect Order Booster Box (36-Pack)",
-      "ruleId": "me-perfect-order-booster-box",
-      "store": "Mystic TCG",
-      "price": 169.99,
-      "landedPrice": 169.99,
-      "msrp": 161.64,
-      "url": "https://mystictcg.com/products/perfect-order-booster-box",
-      "timestamp": 1794321291851,
-      "timeStr": "2026-11-10T14:34:51.851Z"
-    },
-    {
-      "productName": "Mega Evolution: Chaos Rising Booster Box (36-Pack)",
-      "ruleId": "me-chaos-rising-booster-box",
-      "store": "Card Shop Live",
-      "price": 169.99,
-      "landedPrice": 169.99,
-      "msrp": 161.64,
-      "url": "https://cardshoplive.com/products/chaos-rising-booster-box",
-      "timestamp": 1794321222226,
-      "timeStr": "2026-11-10T14:33:42.226Z"
+      "timestamp": 1794408558105,
+      "timeStr": "2026-11-11T14:49:18.105Z"
     },
     {
       "productName": "Mega Evolution: Perfect Order Booster Box (36-Pack)",
@@ -119,8 +130,30 @@
       "landedPrice": 164.99,
       "msrp": 161.64,
       "url": "https://pentixgames.com/products/pokemon-perfect-order-booster-box",
-      "timestamp": 1794321194888,
-      "timeStr": "2026-11-10T14:33:14.888Z"
+      "timestamp": 1794407803531,
+      "timeStr": "2026-11-11T14:36:43.531Z"
+    },
+    {
+      "productName": "Mega Evolution: Perfect Order Booster Box (36-Pack)",
+      "ruleId": "me-perfect-order-booster-box",
+      "store": "Mystic TCG",
+      "price": 169.99,
+      "landedPrice": 169.99,
+      "msrp": 161.64,
+      "url": "https://mystictcg.com/products/perfect-order-booster-box",
+      "timestamp": 1794407774003,
+      "timeStr": "2026-11-11T14:36:14.003Z"
+    },
+    {
+      "productName": "Mega Evolution: Chaos Rising Booster Box (36-Pack)",
+      "ruleId": "me-chaos-rising-booster-box",
+      "store": "Card Shop Live",
+      "price": 169.99,
+      "landedPrice": 169.99,
+      "msrp": 161.64,
+      "url": "https://cardshoplive.com/products/chaos-rising-booster-box",
+      "timestamp": 1794407761948,
+      "timeStr": "2026-11-11T14:36:01.948Z"
     },
     {
       "productName": "Mega Evolution: Pitch Black Booster Box (36-Pack)",
@@ -130,8 +163,8 @@
       "landedPrice": 169.99,
       "msrp": 161.64,
       "url": "https://jbemporium.com/products/pokemon-pitch-black-booster-box",
-      "timestamp": 1794321149575,
-      "timeStr": "2026-11-10T14:32:29.575Z"
+      "timestamp": 1794407615173,
+      "timeStr": "2026-11-11T14:33:35.173Z"
     },
     {
       "productName": "Mega Evolution: Chaos Rising ETB",
@@ -141,19 +174,8 @@
       "landedPrice": 61.98,
       "msrp": 54.99,
       "url": "https://jbemporium.com/products/pokemon-chaos-rising-elite-trainer-box",
-      "timestamp": 1794321137947,
-      "timeStr": "2026-11-10T14:32:17.947Z"
-    },
-    {
-      "productName": "Mega Evolution: Perfect Order Booster Box (36-Pack)",
-      "ruleId": "me-perfect-order-booster-box",
-      "store": "Trading Card Market",
-      "price": 168,
-      "landedPrice": 168,
-      "msrp": 161.64,
-      "url": "https://tradingcardmarket.com/products/pokemon-mega-evolution-perfect-order-booster-box",
-      "timestamp": 1794320389258,
-      "timeStr": "2026-11-10T14:19:49.258Z"
+      "timestamp": 1794407615140,
+      "timeStr": "2026-11-11T14:33:35.140Z"
     },
     {
       "productName": "Mega Evolution: Perfect Order Booster Box (36-Pack)",
@@ -163,30 +185,19 @@
       "landedPrice": 170,
       "msrp": 161.64,
       "url": "https://www.stompinggroundstcg.com/products/mega-evolution-perfect-order-booster-box",
-      "timestamp": 1794320388589,
-      "timeStr": "2026-11-10T14:19:48.589Z"
+      "timestamp": 1794407029061,
+      "timeStr": "2026-11-11T14:23:49.061Z"
     },
     {
       "productName": "Mega Evolution: Perfect Order Booster Box (36-Pack)",
       "ruleId": "me-perfect-order-booster-box",
-      "store": "MinMaxGames",
-      "price": 170,
-      "landedPrice": 170,
+      "store": "Trading Card Market",
+      "price": 168,
+      "landedPrice": 168,
       "msrp": 161.64,
-      "url": "https://minmaxgames.com/products/perfect-order-booster-box-me03",
-      "timestamp": 1794320310087,
-      "timeStr": "2026-11-10T14:18:30.087Z"
-    },
-    {
-      "productName": "Mega Evolution: Pitch Black Booster Box (36-Pack)",
-      "ruleId": "me-pitch-black-booster-box",
-      "store": "MinMaxGames",
-      "price": 165,
-      "landedPrice": 165,
-      "msrp": 161.64,
-      "url": "https://minmaxgames.com/products/pitch-black-booster-box-pokemon",
-      "timestamp": 1794320307835,
-      "timeStr": "2026-11-10T14:18:27.835Z"
+      "url": "https://tradingcardmarket.com/products/pokemon-mega-evolution-perfect-order-booster-box",
+      "timestamp": 1794406959344,
+      "timeStr": "2026-11-11T14:22:39.344Z"
     },
     {
       "productName": "Mega Evolution: Perfect Order Booster Box (36-Pack)",
@@ -196,30 +207,19 @@
       "landedPrice": 169.99,
       "msrp": 161.64,
       "url": "https://doubleinfinitygaming.com/products/pokemon-mega-evolution-perfect-order-me03-booster-box-36ct-presale-expected-release-date-march-27th",
-      "timestamp": 1794320299326,
-      "timeStr": "2026-11-10T14:18:19.326Z"
-    },
-    {
-      "productName": "Mega Evolution: Chaos Rising Booster Box (36-Pack)",
-      "ruleId": "me-chaos-rising-booster-box",
-      "store": "MinMaxGames",
-      "price": 165,
-      "landedPrice": 165,
-      "msrp": 161.64,
-      "url": "https://minmaxgames.com/products/chaos-rising-booster-box-me04-chaos-rising-cri",
-      "timestamp": 1794320295724,
-      "timeStr": "2026-11-10T14:18:15.724Z"
+      "timestamp": 1794406816748,
+      "timeStr": "2026-11-11T14:20:16.748Z"
     },
     {
       "productName": "Mega Evolution: Perfect Order Booster Box (36-Pack)",
       "ruleId": "me-perfect-order-booster-box",
-      "store": "Collector Store",
-      "price": 164.99,
-      "landedPrice": 164.99,
+      "store": "MinMaxGames",
+      "price": 170,
+      "landedPrice": 170,
       "msrp": 161.64,
-      "url": "https://collectorstore.com/products/pokemon-perfect-order-booster-box",
-      "timestamp": 1794247176373,
-      "timeStr": "2026-11-09T17:59:36.373Z"
+      "url": "https://minmaxgames.com/products/perfect-order-booster-box-me03",
+      "timestamp": 1794406746071,
+      "timeStr": "2026-11-11T14:19:06.071Z"
     }
   ]
 }

@@ -28,6 +28,21 @@ let lastDiscordSendAt = 0;
 function sleepMs(ms) {
     return new Promise(r => setTimeout(r, ms));
 }
+const NETWORK_RETRY_BACKOFF_MS = [1500, 4000];
+function isTransientNetworkOr5xxError(err) {
+    const status = Number(err?.response?.status || 0);
+    if (status >= 500 && status < 600)
+        return true;
+    const code = String(err?.code || err?.cause?.code || '').toUpperCase();
+    const msg = String(err?.message || '');
+    return (code === 'ENOTFOUND' ||
+        code === 'ECONNRESET' ||
+        code === 'ETIMEDOUT' ||
+        code === 'EAI_AGAIN' ||
+        code === 'ECONNABORTED' ||
+        code === 'ERR_NETWORK' ||
+        /ENOTFOUND|ECONNRESET|ETIMEDOUT|EAI_AGAIN|socket hang up|timeout/i.test(msg));
+}
 async function processDiscordQueue() {
     if (isProcessingDiscordQueue)
         return;
@@ -45,7 +60,7 @@ async function processDiscordQueue() {
                     ? await axios_1.default.post(job.url, job.payload, { timeout: 10000 })
                     : await axios_1.default.patch(job.url, job.payload, { timeout: 10000 });
                 discordWebhookQueue.shift();
-                job.resolve(res.data);
+                job.resolve(res.data ?? { ok: true });
             }
             catch (err) {
                 const status = err?.response?.status;
@@ -55,6 +70,12 @@ async function processDiscordQueue() {
                     const retryMs = Math.ceil(Number(retryAfterRaw) * (Number(retryAfterRaw) < 50 ? 1000 : 1)) + 250;
                     console.warn(`[DISCORD QUEUE] HTTP 429 Rate Limit hit. Backing off for ${retryMs}ms (Retry ${job.retries}/4)...`);
                     await sleepMs(retryMs);
+                }
+                else if (isTransientNetworkOr5xxError(err) && job.retries < NETWORK_RETRY_BACKOFF_MS.length) {
+                    const backoffMs = NETWORK_RETRY_BACKOFF_MS[job.retries];
+                    job.retries += 1;
+                    console.warn(`[DISCORD QUEUE] Transient network/DNS/5xx (${err?.code || status || err?.message}). Retrying in ${backoffMs}ms (${job.retries}/${NETWORK_RETRY_BACKOFF_MS.length})...`);
+                    await sleepMs(backoffMs);
                 }
                 else {
                     discordWebhookQueue.shift();
@@ -253,13 +274,20 @@ async function sendTelegramAlertFast(textHtml) {
     const chatId = process.env.TELEGRAM_CHAT_ID;
     if (!botToken || !chatId)
         return undefined;
-    try {
-        const res = await axios_1.default.post(`https://api.telegram.org/bot${botToken}/sendMessage`, { chat_id: chatId, text: textHtml, parse_mode: 'HTML', disable_web_page_preview: true }, { timeout: 6000 });
-        return res.data?.result?.message_id;
+    for (let attempt = 0; attempt <= NETWORK_RETRY_BACKOFF_MS.length; attempt++) {
+        try {
+            const res = await axios_1.default.post(`https://api.telegram.org/bot${botToken}/sendMessage`, { chat_id: chatId, text: textHtml, parse_mode: 'HTML', disable_web_page_preview: true }, { timeout: 6000 });
+            return res.data?.result?.message_id;
+        }
+        catch (e) {
+            if (attempt < NETWORK_RETRY_BACKOFF_MS.length && isTransientNetworkOr5xxError(e)) {
+                await sleepMs(NETWORK_RETRY_BACKOFF_MS[attempt]);
+                continue;
+            }
+            return undefined;
+        }
     }
-    catch (e) {
-        return undefined;
-    }
+    return undefined;
 }
 async function patchTelegramAlertFast(messageId, textHtml) {
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
@@ -338,13 +366,12 @@ async function sendAlert(drop) {
     if (String(drop.ruleId || '').startsWith('single-') ||
         /single|slab|graded/i.test(String(drop.formFactor || '')) ||
         (0, policies_1.isSingleCardOrNonSealed)(drop.title, undefined, drop.url)) {
-        return;
+        return false;
     }
-    recordDropHistory(drop);
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
     if (!webhookUrl && !(process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID)) {
         console.error('[NOTIFIER] No DISCORD_WEBHOOK_URL (or Telegram credentials) found in .env');
-        return;
+        return false;
     }
     const priceVal = drop.priceNum ?? parseFloat(drop.price || '0');
     const msrpVal = drop.msrp ?? 0;
@@ -562,12 +589,24 @@ async function sendAlert(drop) {
         (c3 ? `  |  <a href="${c3}">⚡ 3X ↗</a>` : '');
     try {
         // 1. Fire Discord & optional Telegram immediately (priorityFront = true on all BUY alerts!)
-        const [discordData, tgMsgId] = await Promise.all([
+        const [discordSettled, tgSettled] = await Promise.allSettled([
             webhookUrl
                 ? enqueueDiscordWebhook(`${webhookUrl}?wait=true`, webhookPayload, 'POST', true)
                 : Promise.resolve(null),
             sendTelegramAlertFast(tgBaseHtml)
         ]);
+        const discordOk = Boolean(webhookUrl && discordSettled.status === 'fulfilled' && discordSettled.value);
+        const discordData = discordSettled.status === 'fulfilled' ? discordSettled.value : null;
+        const tgMsgId = tgSettled.status === 'fulfilled' ? tgSettled.value : undefined;
+        const tgOk = Boolean(tgMsgId);
+        if (!discordOk && !tgOk) {
+            const errReason = discordSettled.status === 'rejected'
+                ? (discordSettled.reason?.message || String(discordSettled.reason))
+                : 'All notification channels failed';
+            console.error(`Failed to send Discord alert (alertState NOT locked — will retry next sweep): ${errReason}`);
+            return false;
+        }
+        recordDropHistory(drop);
         const sentMsgId = discordData?.id;
         if (sentMsgId && drop.itemId) {
             activeDiscordMessages.set(String(drop.itemId), {
@@ -639,9 +678,11 @@ async function sendAlert(drop) {
                 }
             })();
         }
+        return true;
     }
     catch (err) {
         console.error(`Failed to send Discord alert: ${err.message}`);
+        return false;
     }
 }
 // Automatically edits the Discord embed in-place when a restock sells out!
@@ -797,7 +838,6 @@ async function sendStockDigestCard(options) {
             policyMaxBuy: Math.max(Number(pol.msrpCeiling || 0), Number(pol.maxMarketBuyPrice || 0)),
             marketBaseline: mkt,
             autoPilotEnabled: pol.autoPilotEnabled !== false,
-            lowestShelfPrice: price,
             activeStoreCount: storeList.length,
             wallOwned: Boolean(pol.wallOwned ?? pol.owned),
             dadRipOwned: Boolean(pol.dadRipOwned),

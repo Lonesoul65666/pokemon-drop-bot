@@ -1,9 +1,14 @@
-import axios from 'axios';
 import dns from 'dns';
 import path from 'path';
 import dotenv from 'dotenv';
 import { loadTier1FastLgsStores, StoreRegistryEntry } from '../config/configManager';
-import { getNextProxy, variantStateMap, recordFastTier1Telemetry, resolveShopifyFxMultiplier } from '../../lgsPoller';
+import {
+  smartGetJson,
+  isInitialLgsSweepComplete,
+  variantStateMap,
+  recordFastTier1Telemetry,
+  resolveShopifyFxMultiplier
+} from '../../lgsPoller';
 import {
   isValidSkuForFormFactor,
   isSingleOrNonSealedShopifyProduct,
@@ -18,13 +23,9 @@ dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 dns.setDefaultResultOrder('ipv4first');
 
 const FAST_INTERVAL_MS = 15000;
-const FAST_CONCURRENCY = 6;
-const FAST_TIMEOUT_MS = 6500;
-const FAST_SWEEP_WATCHDOG_MS = 28000;
+const FAST_SWEEP_WATCHDOG_MS = 75000;
 
 interface FastStoreHttpCache {
-  etag?: string;
-  lastModified?: string;
   consecutiveFailures: number;
   cooldownUntil: number;
 }
@@ -44,10 +45,6 @@ let lastFastSweepStartedAt = 0;
 let totalFastCyclesRun = 0;
 let cumulativeFastHits = 0;
 
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 function getJitter(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
@@ -65,104 +62,43 @@ function buildFastDeltaPath(resolvedPath?: string): string {
   return `${base}${sep}limit=250`;
 }
 
-async function fetchFastStoreDelta(
-  store: StoreRegistryEntry,
-  httpMeta: FastStoreHttpCache
-): Promise<{ status: number; products: any[]; etag?: string; lastModified?: string; error?: string }> {
-  const deltaPath = buildFastDeltaPath(store.resolvedPath);
-  const url = `${store.baseUrl}${deltaPath}`;
-  const headers: Record<string, string> = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
-    Accept: 'application/json'
-  };
-  if (httpMeta.etag) headers['If-None-Match'] = httpMeta.etag;
-  if (httpMeta.lastModified) headers['If-Modified-Since'] = httpMeta.lastModified;
-
-  const attemptGet = async (httpsAgent?: any) => {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), FAST_TIMEOUT_MS);
-    try {
-      return await axios.get(url, {
-        timeout: FAST_TIMEOUT_MS,
-        signal: controller.signal,
-        httpsAgent,
-        headers,
-        validateStatus: (s) => (s >= 200 && s < 300) || s === 304
-      });
-    } finally {
-      clearTimeout(timer);
-    }
-  };
-
-  try {
-    const res = await attemptGet();
-    return {
-      status: res.status,
-      products: res.status === 304 ? [] : (res.data?.products || []),
-      etag: res.headers?.etag,
-      lastModified: res.headers?.['last-modified']
-    };
-  } catch (directErr: any) {
-    try {
-      const proxy = getNextProxy();
-      const res = await attemptGet(proxy);
-      return {
-        status: res.status,
-        products: res.status === 304 ? [] : (res.data?.products || []),
-        etag: res.headers?.etag,
-        lastModified: res.headers?.['last-modified']
-      };
-    } catch (proxyErr: any) {
-      const code = proxyErr?.response?.status || directErr?.response?.status;
-      return {
-        status: code || 0,
-        products: [],
-        error: code ? `HTTP ${code}` : (proxyErr?.code || proxyErr?.message || 'FastPoll Error')
-      };
-    }
-  }
-}
-
 async function pollSingleTier1StoreFast(store: StoreRegistryEntry): Promise<{
-  polled: boolean;
-  notModified304: boolean;
-  variantsChecked: number;
-  deltaHits: number;
-  latencyMs: number;
+  polled: boolean; notModified304: boolean; variantsChecked: number; deltaHits: number; latencyMs: number; productsCount: number;
 }> {
   const startTs = Date.now();
-  const httpMeta: FastStoreHttpCache = storeHttpCacheMap.get(store.name) || {
-    consecutiveFailures: 0,
-    cooldownUntil: 0
-  };
+  const httpMeta: FastStoreHttpCache = storeHttpCacheMap.get(store.name) || { consecutiveFailures: 0, cooldownUntil: 0 };
 
   if (httpMeta.cooldownUntil > startTs) {
-    return { polled: false, notModified304: false, variantsChecked: 0, deltaHits: 0, latencyMs: 0 };
+    return { polled: false, notModified304: false, variantsChecked: 0, deltaHits: 0, latencyMs: 0, productsCount: 0 };
   }
 
-  const res = await fetchFastStoreDelta(store, httpMeta);
+  const deltaPath = buildFastDeltaPath(store.resolvedPath);
+  const url = `${store.baseUrl}${deltaPath}`;
+  const fetched = await smartGetJson(url, {
+    storeName: store.name,
+    allowEtag304: seededFastStores.has(store.name)
+  });
   const latencyMs = Math.max(25, Date.now() - startTs);
 
-  if (res.error || (res.status !== 200 && res.status !== 304)) {
-    httpMeta.consecutiveFailures += 1;
-    if (httpMeta.consecutiveFailures >= 6) {
-      httpMeta.cooldownUntil = Date.now() + 5 * 60 * 1000;
+  if (fetched.error || (fetched.status !== 200 && fetched.status !== 304)) {
+    const is429 = Boolean(fetched.error && /429/.test(fetched.error));
+    if (!is429) {
+      httpMeta.consecutiveFailures += 1;
+      if (httpMeta.consecutiveFailures >= 6) httpMeta.cooldownUntil = Date.now() + 5 * 60 * 1000;
     }
     storeHttpCacheMap.set(store.name, httpMeta);
-    return { polled: false, notModified304: false, variantsChecked: 0, deltaHits: 0, latencyMs };
+    return { polled: false, notModified304: false, variantsChecked: 0, deltaHits: 0, latencyMs, productsCount: 0 };
   }
 
   httpMeta.consecutiveFailures = 0;
   httpMeta.cooldownUntil = 0;
-  if (res.etag) httpMeta.etag = res.etag;
-  if (res.lastModified) httpMeta.lastModified = res.lastModified;
   storeHttpCacheMap.set(store.name, httpMeta);
 
-  if (res.status === 304) {
-    return { polled: true, notModified304: true, variantsChecked: 0, deltaHits: 0, latencyMs };
+  if (fetched.notModified304 || fetched.status === 304) {
+    return { polled: true, notModified304: true, variantsChecked: 0, deltaHits: 0, latencyMs, productsCount: 0 };
   }
 
-  const products = Array.isArray(res.products) ? res.products : [];
+  const products = Array.isArray(fetched.data?.products) ? fetched.data.products : [];
   const fxMultiplier = resolveShopifyFxMultiplier(store);
   const isStoreSeeded = seededFastStores.has(store.name);
   let variantsChecked = 0;
@@ -258,7 +194,7 @@ async function pollSingleTier1StoreFast(store: StoreRegistryEntry): Promise<{
   }
 
   seededFastStores.add(store.name);
-  return { polled: true, notModified304: false, variantsChecked, deltaHits, latencyMs };
+  return { polled: true, notModified304: false, variantsChecked, deltaHits, latencyMs, productsCount: products.length };
 }
 
 export async function runFastTier1SweepOnce(): Promise<void> {
@@ -278,32 +214,32 @@ export async function runFastTier1SweepOnce(): Promise<void> {
   let notModified304Count = 0;
   let variantsChecked = 0;
   let deltaHits = 0;
-  const perStoreMeta = new Map<string, { lastFastPollAt: number; lastFastLatencyMs: number }>();
+  const perStoreMeta = new Map<string, { lastFastPollAt: number; lastFastLatencyMs: number; productsCount?: number }>();
 
   try {
-    const workerCount = Math.min(FAST_CONCURRENCY, queue.length);
-    const workers = Array.from({ length: workerCount }, async () => {
-      while (queue.length > 0) {
-        const store = queue.shift();
-        if (!store) break;
-        try {
-          const res = await pollSingleTier1StoreFast(store);
-          if (res.polled) {
-            storesPolled += 1;
-            perStoreMeta.set(store.name, {
-              lastFastPollAt: Date.now(),
-              lastFastLatencyMs: res.latencyMs
-            });
-          }
-          if (res.notModified304) notModified304Count += 1;
-          variantsChecked += res.variantsChecked;
-          deltaHits += res.deltaHits;
-        } catch (e) {}
-        await sleep(getJitter(60, 160));
-      }
-    });
-
-    await Promise.all(workers);
+    const workerCount = Math.min(3, queue.length);
+    await Promise.all(
+      Array.from({ length: workerCount }, async () => {
+        while (queue.length > 0) {
+          const store = queue.shift();
+          if (!store) break;
+          try {
+            const res = await pollSingleTier1StoreFast(store);
+            if (res.polled) {
+              storesPolled += 1;
+              perStoreMeta.set(store.name, {
+                lastFastPollAt: Date.now(),
+                lastFastLatencyMs: res.latencyMs,
+                productsCount: res.productsCount > 0 ? res.productsCount : undefined
+              });
+            }
+            if (res.notModified304) notModified304Count += 1;
+            variantsChecked += res.variantsChecked;
+            deltaHits += res.deltaHits;
+          } catch (e) {}
+        }
+      })
+    );
     totalFastCyclesRun += 1;
     cumulativeFastHits += deltaHits;
 
@@ -329,14 +265,21 @@ export async function runFastTier1SweepOnce(): Promise<void> {
 }
 
 export function startFastTier1Poller(): void {
+  const bootedAt = Date.now();
   const runLoop = async () => {
+    if (!isInitialLgsSweepComplete() && Date.now() - bootedAt < 95000) {
+      setTimeout(runLoop, 3000);
+      return;
+    }
+    const loopStart = Date.now();
     try {
       await runFastTier1SweepOnce();
     } catch (err: any) {
       console.error(`[FastTier1Poller] 15s delta sweep error: ${err?.message || err}`);
     } finally {
-      setTimeout(runLoop, FAST_INTERVAL_MS + getJitter(0, 1200));
+      const elapsed = Date.now() - loopStart;
+      setTimeout(runLoop, Math.max(8000, FAST_INTERVAL_MS - elapsed) + getJitter(0, 750));
     }
   };
-  setTimeout(runLoop, 1500);
+  setTimeout(runLoop, 4000);
 }

@@ -5,17 +5,17 @@
 ---
 
 ## 1. Live System Snapshot
-- **Current Phase:** **V6 Slice 3 Complete (Real Invisible Playwright WAF Worker `chrome-headless-new`, All 9 Big-Box Retailers Wired Into `processIncomingDrop()` + `storeOffersCache.json`, Amazon 1P `ATVPDKIKX0DER` & Barnes & Noble Shopify Hydrogen Live, Pokémon Center Queue-It / OOS Bugs Fixed, and 20 Priority Retail SKU IDs Seeded)**.
-- **Last Checkpoint Timestamp:** `2026-11-11 00:06 CST`
+- **Current Phase:** **V6 Engine Repair Pass 1 Complete (Zeno's Paradox `dropPrice * 0.92` & Rip-Mode `$64.89` Slider Clamp Killed, Commit-After-Send Discord Retries + 4h Reddit Ghost TTL Live, Native HTTP/2 ALPN + `ETag` `304` LGS Engine at `88 / 90 HEALTHY` with `0` `HTTP 429`s, `588 MB` `[SEEN]` Log/CPU Burn Stopped (`0%–2%` CPU), and Fake Server Telemetry Purged)**.
+- **Last Checkpoint Timestamp:** `2026-11-11 22:07 CST`
 - **Git Branch:** `main`
-- **Parent Baseline Commit:** `a8a6d3a` (`V6 Slice 3: Real invisible Playwright WAF worker, live processIncomingDrop across all 9 Big-Box stores + Amazon 1P & B&N, and 1-tap retail cart links`)
+- **Parent Baseline Commit:** `53f1509` (`V6 Engine Pass 1: Kill Zeno's Paradox and Rip-Mode slider clamp, add LGS ETag 304 + 429 pacing, stop 588MB log CPU burn, and remove fake server telemetry`)
 - **PM2 Process Status:**
-  - `pokemon-drop-bot` (id `0`, `index.js`): **ONLINE** (`0` crashes, `332.5 MB` RSS, all 90 active Shopify LGS stores + all 9 Big-Box 1P sensors + `160s` invisible Playwright `chrome-headless-new` WAF worker + 0ms Fire-Then-Enrich Discord/Telegram dispatch)
-  - `drop-bot-dashboard` (id `1`, `server.js` on `http://localhost:3000`): **ONLINE** (`0` crashes, `174.4 MB` RSS, `GET /api/engine-room` exposing all `9` live Big-Box sensors in `northStar5`)
+  - `pokemon-drop-bot` (id `0`, `index.js`): **ONLINE** (`0` crashes, `0%–2%` CPU down from `73.5%`, `275.0 MB` RSS, `9.82 KB` log down from `588.0 MB`, **`88 / 90` Shopify LGS stores `HEALTHY` (`0` `HTTP 429`s!)**, `16 / 25` `HTTP 304` Tier-1 fast-delta hits in `9.38s` + `17 / 65` `HTTP 304` Tier-2 hits)
+  - `drop-bot-dashboard` (id `1`, `server.js` on `http://localhost:3000`): **ONLINE** (`0` crashes, `126.3 MB` RSS, `GET /api/engine-room` reporting 100% honest `healthySensors: 88` (`healthyLgsSensors: 88`, `healthyBigBoxSensors: 0`), `0` fake `145` catalog counts, and aligned Big-Box left/right status icons)
 - **Active Sensor & Cache Counts:**
-  - **Shopify LGS Pool (`config/stores.json`):** `90` active healthy stores (`26` Tier-1 Fast 15s restock stores polling `?limit=250` + O(1) unchanged-variant diffing; `12` Canadian stores tagged `currency: "CAD"` + `/cart.js` runtime FX guard).
-  - **Big-Box Sensors (`src/pollers/bigBoxRetailPoller.ts` + `src/pollers/bigBoxAdapters.ts` + `src/pollers/wafBrowserBridge.ts`):** All **`9` Big-Box / Official 1st-Party sensors** (`Pokémon Center`, `Target`, `Walmart`, `Best Buy`, `Amazon 1P ATVPDKIKX0DER`, `GameStop`, `Barnes & Noble`, `Costco`, `Sam's Club`) wired end-to-end into `processIncomingDrop()` with 1-Tap ATC / Universal App links (`target.com/p/-/A-{tcin}`, `walmart.com/pac?id={id}&quantity=1`, `api.bestbuy.com/click/-/{sku}/cart`, `amazon.com/gp/aws/cart/add.html?ASIN.1={asin}&Quantity.1=1`).
-  - **Target Matrix (`config/catalog.json` + `config/userPreferences.json` + `marketCache.json`):** `131` tracked sealed SKUs (`20` priority SKUs seeded with `targetTcin`, `walmartItemId`, `bestBuySku`, `amazonAsin`, `pcSlug`, and `retailSearchQuery` + dynamic `matchProductToSku()` auto-discovery).
+  - **Shopify LGS Pool (`config/stores.json`):** `90` active stores (`88 / 90 HEALTHY` on live wire via Node 26 Undici HTTP/2 ALPN `fetch()` + Chrome navigation headers + `ETag`/`304`; only `Squirtle Squad Card Shop` `HTTP 401 Storefront Password Locked` and `The Gaming Goat` `HTTP 403` degraded; `0` `HTTP 429`s).
+  - **Big-Box Sensors (`src/pollers/bigBoxRetailPoller.ts` + `src/pollers/bigBoxAdapters.ts` + `src/pollers/wafBrowserBridge.ts`):** `9` Big-Box sensors wired with honest `WAF_CHALLENGE_*` (`SHIELD_BLOCKED` crimson) vs `PARSER_BLIND (0 NODES)` (`SLEEPING_CORE` amber) telemetry — queued for **V6 Engine Repair Pass 2** next turn.
+  - **Target Matrix (`config/catalog.json` + `config/userPreferences.json` + `marketCache.json`):** `131` tracked sealed SKUs (`0` synthetic `Math.sin` points, `0` stale `reddit_*` ghosts, manual `policyMaxBuy` sliders honored 100% across `0/3`, `1/3`, and `2/3` sets).
 
 ---
 

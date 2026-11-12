@@ -91,9 +91,9 @@
   "Trading Card Market::me-perfect-order-booster-box": {
     "lastPrice": 168,
     "lowestAlertedPrice": 158,
-    "timestamp": 1794320389258,
-    "timeStr": "08:19 AM",
-    "alertCount": 9,
+    "timestamp": 1794406959344,
+    "timeStr": "08:22 AM",
+    "alertCount": 10,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "47422202708020"
   },
@@ -109,9 +109,9 @@
   "Double Infinity Gaming::me-delta-reign-etb": {
     "lastPrice": 89.99,
     "lowestAlertedPrice": 89.99,
-    "timestamp": 1794207538283,
-    "timeStr": "12:58 AM",
-    "alertCount": 12,
+    "timestamp": 1794455534312,
+    "timeStr": "09:52 PM",
+    "alertCount": 13,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "67607313973564"
   },
@@ -226,27 +226,27 @@
   "MinMaxGames::me-pitch-black-booster-box": {
     "lastPrice": 165,
     "lowestAlertedPrice": 165,
-    "timestamp": 1794320307835,
-    "timeStr": "08:18 AM",
-    "alertCount": 6,
+    "timestamp": 1794406746053,
+    "timeStr": "08:19 AM",
+    "alertCount": 7,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "47963258454190"
   },
   "CardPop USA::me-pitch-black-booster-box": {
     "lastPrice": 164.99,
     "lowestAlertedPrice": 164.99,
-    "timestamp": 1794321963602,
-    "timeStr": "08:46 AM",
-    "alertCount": 6,
+    "timestamp": 1794408558105,
+    "timeStr": "08:49 AM",
+    "alertCount": 7,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "53898766811500"
   },
   "Rip N Ship Arena::me-perfect-order-booster-box": {
     "lastPrice": 169.99,
     "lowestAlertedPrice": 169.99,
-    "timestamp": 1794323592042,
-    "timeStr": "09:13 AM",
-    "alertCount": 6,
+    "timestamp": 1794410100747,
+    "timeStr": "09:15 AM",
+    "alertCount": 7,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "47992702763235"
   },
@@ -262,9 +262,9 @@
   "Mystic TCG::me-perfect-order-booster-box": {
     "lastPrice": 169.99,
     "lowestAlertedPrice": 169.99,
-    "timestamp": 1794321291851,
-    "timeStr": "08:34 AM",
-    "alertCount": 6,
+    "timestamp": 1794407774003,
+    "timeStr": "08:36 AM",
+    "alertCount": 7,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "46541707772093"
   },
@@ -289,45 +289,45 @@
   "JBs Emporium::me-chaos-rising-etb": {
     "lastPrice": 54.99,
     "lowestAlertedPrice": 54.99,
-    "timestamp": 1794321137947,
-    "timeStr": "08:32 AM",
-    "alertCount": 6,
+    "timestamp": 1794407615140,
+    "timeStr": "08:33 AM",
+    "alertCount": 7,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "46198650863713"
   },
   "JBs Emporium::me-pitch-black-booster-box": {
     "lastPrice": 169.99,
     "lowestAlertedPrice": 169.99,
-    "timestamp": 1794321149575,
-    "timeStr": "08:32 AM",
-    "alertCount": 6,
+    "timestamp": 1794407615173,
+    "timeStr": "08:33 AM",
+    "alertCount": 7,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "46279270793313"
   },
   "MinMaxGames::me-chaos-rising-booster-box": {
     "lastPrice": 165,
     "lowestAlertedPrice": 165,
-    "timestamp": 1794320295724,
-    "timeStr": "08:18 AM",
-    "alertCount": 6,
+    "timestamp": 1794406746029,
+    "timeStr": "08:19 AM",
+    "alertCount": 7,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "47718207750318"
   },
   "Card Shop Live::me-chaos-rising-booster-box": {
     "lastPrice": 169.99,
     "lowestAlertedPrice": 169.99,
-    "timestamp": 1794321222226,
-    "timeStr": "08:33 AM",
-    "alertCount": 6,
+    "timestamp": 1794407761948,
+    "timeStr": "08:36 AM",
+    "alertCount": 7,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "47040247759017"
   },
   "Double Infinity Gaming::me-perfect-order-booster-box": {
     "lastPrice": 169.99,
     "lowestAlertedPrice": 169.99,
-    "timestamp": 1794320299326,
-    "timeStr": "08:18 AM",
-    "alertCount": 6,
+    "timestamp": 1794406816748,
+    "timeStr": "08:20 AM",
+    "alertCount": 7,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "52687216148796"
   },
@@ -361,18 +361,18 @@
   "Stomping Grounds::me-perfect-order-booster-box": {
     "lastPrice": 170,
     "lowestAlertedPrice": 170,
-    "timestamp": 1794320388589,
-    "timeStr": "08:19 AM",
-    "alertCount": 6,
+    "timestamp": 1794407029061,
+    "timeStr": "08:23 AM",
+    "alertCount": 7,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "56846080770208"
   },
   "MinMaxGames::me-perfect-order-booster-box": {
     "lastPrice": 170,
     "lowestAlertedPrice": 170,
-    "timestamp": 1794320310087,
-    "timeStr": "08:18 AM",
-    "alertCount": 6,
+    "timestamp": 1794406746071,
+    "timeStr": "08:19 AM",
+    "alertCount": 7,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "47464892760238"
   },
@@ -388,36 +388,36 @@
   "MinMaxGames::sv-twilight-masquerade-etb": {
     "lastPrice": 95,
     "lowestAlertedPrice": 95,
-    "timestamp": 1794179347243,
-    "timeStr": "05:09 PM",
-    "alertCount": 5,
+    "timestamp": 1794454786318,
+    "timeStr": "09:39 PM",
+    "alertCount": 6,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "44991007162542"
   },
   "CardPop USA::me-perfect-order-booster-box": {
     "lastPrice": 164.99,
     "lowestAlertedPrice": 164.99,
-    "timestamp": 1794321970710,
-    "timeStr": "08:46 AM",
-    "alertCount": 6,
+    "timestamp": 1794408558205,
+    "timeStr": "08:49 AM",
+    "alertCount": 7,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "53330824593772"
   },
   "Stomping Grounds::me-delta-reign-etb": {
     "lastPrice": 89,
     "lowestAlertedPrice": 89,
-    "timestamp": 1794230181416,
-    "timeStr": "07:16 AM",
-    "alertCount": 4,
+    "timestamp": 1794456178049,
+    "timeStr": "10:02 PM",
+    "alertCount": 5,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "67670366748832"
   },
   "Pentix Games::me-perfect-order-booster-box": {
     "lastPrice": 164.99,
     "lowestAlertedPrice": 164.99,
-    "timestamp": 1794321194888,
-    "timeStr": "08:33 AM",
-    "alertCount": 6,
+    "timestamp": 1794407803531,
+    "timeStr": "08:36 AM",
+    "alertCount": 7,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "47959105437954"
   },
@@ -431,11 +431,11 @@
     "itemId": "44538482589872"
   },
   "Common Lands::sv-destined-rivals-etb": {
-    "lastPrice": 106.75,
+    "lastPrice": 107.75,
     "lowestAlertedPrice": 106.75,
-    "timestamp": 1794006434008,
-    "timeStr": "05:07 PM",
-    "alertCount": 3,
+    "timestamp": 1794456158495,
+    "timeStr": "10:02 PM",
+    "alertCount": 4,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "46489628279004"
   },
@@ -449,11 +449,11 @@
     "itemId": "67626348314813"
   },
   "AVA TCG::sv-destined-rivals-etb": {
-    "lastPrice": 106.99,
+    "lastPrice": 107.99,
     "lowestAlertedPrice": 106.99,
-    "timestamp": 1794006677642,
-    "timeStr": "05:11 PM",
-    "alertCount": 3,
+    "timestamp": 1794456367236,
+    "timeStr": "10:06 PM",
+    "alertCount": 4,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "67888309207342"
   },
@@ -478,9 +478,9 @@
   "Stomping Grounds::sv-destined-rivals-etb": {
     "lastPrice": 108,
     "lowestAlertedPrice": 108,
-    "timestamp": 1794006723657,
-    "timeStr": "05:12 PM",
-    "alertCount": 3,
+    "timestamp": 1794454799942,
+    "timeStr": "09:39 PM",
+    "alertCount": 4,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "57948510191776"
   },
@@ -625,7 +625,7 @@
     "timestamp": 1793974358707,
     "timeStr": "08:12 AM",
     "alertCount": 1,
-    "wasOutOfStockSinceLastAlert": false,
+    "wasOutOfStockSinceLastAlert": true,
     "itemId": "67671015063715"
   },
   "The Card Vault::me-delta-reign-booster-box": {
@@ -667,18 +667,18 @@
   "Collector Store::me-perfect-order-booster-box": {
     "lastPrice": 164.99,
     "lowestAlertedPrice": 164.99,
-    "timestamp": 1794333813968,
-    "timeStr": "12:03 PM",
-    "alertCount": 5,
+    "timestamp": 1794420289934,
+    "timeStr": "12:04 PM",
+    "alertCount": 6,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "55323653210280"
   },
   "Collector Store::sv-twilight-masquerade-etb": {
     "lastPrice": 94.99,
     "lowestAlertedPrice": 94.99,
-    "timestamp": 1794160569875,
-    "timeStr": "11:56 AM",
-    "alertCount": 3,
+    "timestamp": 1794456127515,
+    "timeStr": "10:02 PM",
+    "alertCount": 4,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "49566532468904"
   },
@@ -692,11 +692,11 @@
     "itemId": "55746530541736"
   },
   "MinMaxGames::me-delta-reign-etb": {
-    "lastPrice": 85,
-    "lowestAlertedPrice": 85,
-    "timestamp": 1794230041596,
-    "timeStr": "07:14 AM",
-    "alertCount": 3,
+    "lastPrice": 78,
+    "lowestAlertedPrice": 78,
+    "timestamp": 1794455531129,
+    "timeStr": "09:52 PM",
+    "alertCount": 4,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "67639710482606"
   },
@@ -724,7 +724,7 @@
     "timestamp": 1794230069578,
     "timeStr": "07:14 AM",
     "alertCount": 2,
-    "wasOutOfStockSinceLastAlert": false,
+    "wasOutOfStockSinceLastAlert": true,
     "itemId": "67680138100791"
   },
   "Card Shop Live::me-delta-reign-booster-box": {
@@ -739,9 +739,9 @@
   "Collector Store::me-delta-reign-etb": {
     "lastPrice": 84.99,
     "lowestAlertedPrice": 84.99,
-    "timestamp": 1794207279588,
-    "timeStr": "12:54 AM",
-    "alertCount": 2,
+    "timestamp": 1794456127476,
+    "timeStr": "10:02 PM",
+    "alertCount": 3,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "67781670142120"
   },
@@ -766,9 +766,9 @@
   "Mystic TCG::me-delta-reign-etb": {
     "lastPrice": 84.99,
     "lowestAlertedPrice": 84.99,
-    "timestamp": 1794207279672,
-    "timeStr": "12:54 AM",
-    "alertCount": 2,
+    "timestamp": 1794454976427,
+    "timeStr": "09:42 PM",
+    "alertCount": 3,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "68146576851133"
   },
@@ -818,11 +818,11 @@
     "itemId": "50715629846844"
   },
   "Rip N Ship Arena::me-chaos-rising-booster-box": {
-    "lastPrice": 174.99,
-    "lowestAlertedPrice": 174.99,
-    "timestamp": 1794208644136,
-    "timeStr": "01:17 AM",
-    "alertCount": 3,
+    "lastPrice": 169.99,
+    "lowestAlertedPrice": 169.99,
+    "timestamp": 1794378960062,
+    "timeStr": "12:36 AM",
+    "alertCount": 4,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "48633354354915"
   },
@@ -844,8 +844,8 @@
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "39491186130998"
   },
-  "__lastDigestSentAt": 1794355205008,
-  "__lastDigestHash": "swsh-evolving-skies-etb:1st Edition Collectibles:455.00|me-perfect-order-booster-case:Rip N Ship Arena:1049.99|sv-base-booster-box:PKMN Colosseum:285.99|sv-surging-sparks-etb:Collector Store:114.99|me-delta-reign-booster-case:AllPokeTCG:1259.99|swsh-evolving-skies-etb:1st Edition Collectibles:455.00|sv-base-booster-box:PKMN Colosseum:285.99|sv-prismatic-evolutions-bundle:Collectors Cafe:69.99",
+  "__lastDigestSentAt": 1794441639828,
+  "__lastDigestHash": "swsh-evolving-skies-etb:1st Edition Collectibles:455.00|sv-base-booster-box:PKMN Colosseum:285.99|sv-surging-sparks-etb:Collector Store:114.99|sv-journey-together-etb:Oaks Poke Box:120.00|sv-shrouded-fable-etb:CardsHQ:114.99|swsh-evolving-skies-etb:1st Edition Collectibles:455.00|sv-destined-rivals-booster-box:Collector Store:374.99|sv-base-booster-box:PKMN Colosseum:285.99",
   "PKMN Colosseum::swsh-chilling-reign-ice-etb": {
     "lastPrice": 139.99,
     "lowestAlertedPrice": 139.99,
@@ -912,9 +912,9 @@
   "Elite4 TCG::me-chaos-rising-booster-box": {
     "lastPrice": 172.25,
     "lowestAlertedPrice": 172.25,
-    "timestamp": 1794341697196,
-    "timeStr": "02:14 PM",
-    "alertCount": 2,
+    "timestamp": 1794428245145,
+    "timeStr": "02:17 PM",
+    "alertCount": 3,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "45460494385328"
   },
@@ -1020,9 +1020,9 @@
   "1st Edition Collectibles::swsh-evolving-skies-etb": {
     "lastPrice": 455,
     "lowestAlertedPrice": 455,
-    "timestamp": 1794237810792,
-    "timeStr": "09:23 AM",
-    "alertCount": 1,
+    "timestamp": 1794455542915,
+    "timeStr": "09:52 PM",
+    "alertCount": 2,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "51619879125159"
   },
@@ -1038,18 +1038,18 @@
   "Oaks Poke Box::sv-journey-together-etb": {
     "lastPrice": 120,
     "lowestAlertedPrice": 120,
-    "timestamp": 1794324256724,
-    "timeStr": "09:24 AM",
-    "alertCount": 2,
+    "timestamp": 1794454988950,
+    "timeStr": "09:43 PM",
+    "alertCount": 3,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "45665599848548"
   },
   "Collector Store::sv-surging-sparks-etb": {
     "lastPrice": 114.99,
     "lowestAlertedPrice": 114.99,
-    "timestamp": 1794340067131,
-    "timeStr": "01:47 PM",
-    "alertCount": 2,
+    "timestamp": 1794456127450,
+    "timeStr": "10:02 PM",
+    "alertCount": 3,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "50313323970728"
   },
@@ -1065,9 +1065,9 @@
   "PKMN Colosseum::sv-base-booster-box": {
     "lastPrice": 285.99,
     "lowestAlertedPrice": 285.99,
-    "timestamp": 1794324406114,
-    "timeStr": "09:26 AM",
-    "alertCount": 2,
+    "timestamp": 1794410872670,
+    "timeStr": "09:27 AM",
+    "alertCount": 3,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "40665634701366"
   },
@@ -1083,18 +1083,18 @@
   "Spankys Card Shop::swsh-brilliant-stars-booster-box": {
     "lastPrice": 575,
     "lowestAlertedPrice": 575,
-    "timestamp": 1794238369561,
-    "timeStr": "09:32 AM",
-    "alertCount": 1,
+    "timestamp": 1794456147736,
+    "timeStr": "10:02 PM",
+    "alertCount": 2,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "39766115418192"
   },
   "CardsHQ::sv-shrouded-fable-etb": {
-    "lastPrice": 119.99,
-    "lowestAlertedPrice": 119.99,
-    "timestamp": 1794239911365,
-    "timeStr": "09:58 AM",
-    "alertCount": 1,
+    "lastPrice": 114.99,
+    "lowestAlertedPrice": 114.99,
+    "timestamp": 1794454814412,
+    "timeStr": "09:40 PM",
+    "alertCount": 2,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "45126065324195"
   },
@@ -1128,19 +1128,226 @@
   "Elite4 TCG::me-pitch-black-booster-box": {
     "lastPrice": 168.25,
     "lowestAlertedPrice": 168.25,
-    "timestamp": 1794341400167,
-    "timeStr": "02:10 PM",
-    "alertCount": 2,
+    "timestamp": 1794428020310,
+    "timeStr": "02:13 PM",
+    "alertCount": 3,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "45465094389936"
   },
   "Elite4 TCG::me-perfect-order-booster-box": {
-    "lastPrice": 164,
-    "lowestAlertedPrice": 164,
-    "timestamp": 1794341699229,
-    "timeStr": "02:14 PM",
-    "alertCount": 1,
+    "lastPrice": 163.5,
+    "lowestAlertedPrice": 163.5,
+    "timestamp": 1794428245169,
+    "timeStr": "02:17 PM",
+    "alertCount": 2,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "45148615213232"
+  },
+  "Rip N Ship Arena::me-pitch-black-booster-box": {
+    "lastPrice": 169.99,
+    "lowestAlertedPrice": 169.99,
+    "timestamp": 1794378465832,
+    "timeStr": "12:27 AM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "49022956306659"
+  },
+  "Zulus Games::me-delta-reign-booster-box": {
+    "lastPrice": 161.64,
+    "lowestAlertedPrice": 161.64,
+    "timestamp": 1794421926872,
+    "timeStr": "12:32 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": true,
+    "itemId": "50548557906085"
+  },
+  "Nova Break::me-perfect-order-booster-box": {
+    "lastPrice": 170,
+    "lowestAlertedPrice": 170,
+    "timestamp": 1794445287117,
+    "timeStr": "07:01 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "52814404780308"
+  },
+  "Zulus Games::me-phantasmal-flames-etb": {
+    "lastPrice": 59.99,
+    "lowestAlertedPrice": 59.99,
+    "timestamp": 1794446480449,
+    "timeStr": "07:21 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "46000030384293"
+  },
+  "MinMaxGames::sv-destined-rivals-etb": {
+    "lastPrice": 110,
+    "lowestAlertedPrice": 110,
+    "timestamp": 1794454786270,
+    "timeStr": "09:39 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "46393359564974"
+  },
+  "Kanzen Games::sv-destined-rivals-etb": {
+    "lastPrice": 78.29,
+    "lowestAlertedPrice": 78.29,
+    "timestamp": 1794456143414,
+    "timeStr": "10:02 PM",
+    "alertCount": 2,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "46153985851607"
+  },
+  "Derium and Wifey::me-delta-reign-etb": {
+    "lastPrice": 79.99,
+    "lowestAlertedPrice": 79.99,
+    "timestamp": 1794454795027,
+    "timeStr": "09:39 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "68023696654645"
+  },
+  "Miraj Trading::me-delta-reign-etb": {
+    "lastPrice": 87.56,
+    "lowestAlertedPrice": 87.56,
+    "timestamp": 1794454809386,
+    "timeStr": "09:40 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "50178204729594"
+  },
+  "CardsHQ::sv-prismatic-evolutions-etb": {
+    "lastPrice": 114.99,
+    "lowestAlertedPrice": 114.99,
+    "timestamp": 1794454814342,
+    "timeStr": "09:40 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "45528950636707"
+  },
+  "Common Lands::sv-prismatic-evolutions-etb": {
+    "lastPrice": 114.75,
+    "lowestAlertedPrice": 114.75,
+    "timestamp": 1794454814627,
+    "timeStr": "09:40 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "46189035290844"
+  },
+  "CardsHQ::sv-destined-rivals-etb": {
+    "lastPrice": 109.99,
+    "lowestAlertedPrice": 109.99,
+    "timestamp": 1794454814385,
+    "timeStr": "09:40 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "45846674112675"
+  },
+  "Lvl Up Games::sv-prismatic-evolutions-etb": {
+    "lastPrice": 102.16,
+    "lowestAlertedPrice": 102.16,
+    "timestamp": 1794454992666,
+    "timeStr": "09:43 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": true,
+    "itemId": "41326423212114"
+  },
+  "Zulus Games::sv-prismatic-evolutions-etb": {
+    "lastPrice": 119.99,
+    "lowestAlertedPrice": 119.99,
+    "timestamp": 1794455541427,
+    "timeStr": "09:52 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "44322512961701"
+  },
+  "Victory Road Collections::sv-destined-rivals-etb": {
+    "lastPrice": 110,
+    "lowestAlertedPrice": 110,
+    "timestamp": 1794455559660,
+    "timeStr": "09:52 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "50221036339483"
+  },
+  "Collector Store::sv-destined-rivals-etb": {
+    "lastPrice": 109.99,
+    "lowestAlertedPrice": 109.99,
+    "timestamp": 1794456127491,
+    "timeStr": "10:02 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "52653809139880"
+  },
+  "Kanzen Games::sv-journey-together-booster-box": {
+    "lastPrice": 156.59,
+    "lowestAlertedPrice": 156.59,
+    "timestamp": 1794456143423,
+    "timeStr": "10:02 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "45904061825239"
+  },
+  "Kanzen Games::me-chaos-rising-booster-box": {
+    "lastPrice": 140.93,
+    "lowestAlertedPrice": 140.93,
+    "timestamp": 1794456143380,
+    "timeStr": "10:02 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "48261786730711"
+  },
+  "Collectors Cafe::sv-destined-rivals-etb": {
+    "lastPrice": 109.99,
+    "lowestAlertedPrice": 109.99,
+    "timestamp": 1794456154191,
+    "timeStr": "10:02 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "67937167835267"
+  },
+  "AllPokeTCG::me-30th-celebration-etb-case": {
+    "lastPrice": 999.99,
+    "lowestAlertedPrice": 999.99,
+    "timestamp": 1794456334560,
+    "timeStr": "10:05 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "68974476132594"
+  },
+  "Spankys Card Shop::me-delta-reign-etb": {
+    "lastPrice": 84.55,
+    "lowestAlertedPrice": 84.55,
+    "timestamp": 1794456353048,
+    "timeStr": "10:05 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "42872196366416"
+  },
+  "Shinobi Collectibles::me-delta-reign-etb": {
+    "lastPrice": 86,
+    "lowestAlertedPrice": 86,
+    "timestamp": 1794456354559,
+    "timeStr": "10:05 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "54165857861995"
+  },
+  "DRPM Collectors::me-delta-reign-etb": {
+    "lastPrice": 86.22,
+    "lowestAlertedPrice": 86.22,
+    "timestamp": 1794456363146,
+    "timeStr": "10:06 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "60953511330078"
+  },
+  "Collector Store::sv-prismatic-evolutions-etb": {
+    "lastPrice": 119.99,
+    "lowestAlertedPrice": 119.99,
+    "timestamp": 1794456415704,
+    "timeStr": "10:06 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": false,
+    "itemId": "51120892444840"
   }
 }

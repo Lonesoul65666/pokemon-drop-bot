@@ -23,13 +23,50 @@ dns.setDefaultResultOrder('ipv4first');
 
 const WEBSHARE_PROXY_URL = process.env.WEBSHARE_PROXY_URL || '';
 const STORE_HEALTH_PATH = path.resolve(process.cwd(), 'storeHealth.json');
-const MAX_CONCURRENT_STORES = 10;
-const REQUEST_TIMEOUT_MS = 8000;
+const MAX_CONCURRENT_STORES = 4;
+const REQUEST_TIMEOUT_MS = 7000;
 const CIRCUIT_BREAKER_THRESHOLD = 8;
 const CIRCUIT_COOLDOWN_MS = 15 * 60 * 1000; // 15 minutes
+const DYNAMIC_PROXY_FIRST_TTL_MS = 10 * 60 * 1000;
+const MIN_DOMAIN_GAP_MS = 950;
+const DIRECT_HTTP2_MIN_SPACING_MS = 320; // ~2.7 req/sec HTTP/2 ALPN residential cadence
+const PROXY_FALLBACK_MIN_SPACING_MS = 1400;
+
+export type ShopifyEgressLane = 'DIRECT' | 'PROXY';
+
+const dynamicProxyFirstUntilMap = new Map<string, number>();
+const store429CooldownUntilMap = new Map<string, number>();
+const domainLastHitMap = new Map<string, number>();
+const lgsFeedEtagCache = new Map<string, { etag?: string; lastModified?: string; cachedProducts?: any[] }>();
+const laneNextAvailableAt: Record<ShopifyEgressLane, number> = { DIRECT: 0, PROXY: 0 };
+let sharedProxyAgent: HttpsProxyAgent<string> | undefined;
+
+export function getSharedProxyAgent(): HttpsProxyAgent<string> | undefined {
+  if (!WEBSHARE_PROXY_URL) return undefined;
+  if (!sharedProxyAgent) {
+    sharedProxyAgent = new HttpsProxyAgent(WEBSHARE_PROXY_URL, { keepAlive: true, maxSockets: 6 });
+  }
+  return sharedProxyAgent;
+}
 
 export function getNextProxy(): HttpsProxyAgent<string> {
-  return new HttpsProxyAgent(WEBSHARE_PROXY_URL);
+  return getSharedProxyAgent() || new HttpsProxyAgent(WEBSHARE_PROXY_URL, { keepAlive: true, maxSockets: 6 });
+}
+
+export function getPreferredLaneForStore(storeName: string): ShopifyEgressLane {
+  if (WEBSHARE_PROXY_URL && (dynamicProxyFirstUntilMap.get(storeName) || 0) > Date.now()) {
+    return 'PROXY';
+  }
+  return 'DIRECT';
+}
+
+export function shouldUseProxyFirstForStore(storeName: string): boolean {
+  return getPreferredLaneForStore(storeName) === 'PROXY';
+}
+
+export function flagStoreDirectRateLimited(storeName: string): void {
+  if (!storeName) return;
+  dynamicProxyFirstUntilMap.set(storeName, Date.now() + DYNAMIC_PROXY_FIRST_TTL_MS);
 }
 
 export interface MonitoredStore {
@@ -228,7 +265,10 @@ export function recordBigBoxCheckTelemetry(patch: Record<string, any>) {
   } catch (e) {}
 }
 
-export function recordFastTier1Telemetry(patch: Record<string, any>, perStorePatch?: Map<string, { lastFastPollAt: number; lastFastLatencyMs: number }>) {
+export function recordFastTier1Telemetry(
+  patch: Record<string, any>,
+  perStorePatch?: Map<string, { lastFastPollAt: number; lastFastLatencyMs: number; productsCount?: number }>
+) {
   fastTier1Telemetry = {
     ...fastTier1Telemetry,
     ...patch,
@@ -240,6 +280,15 @@ export function recordFastTier1Telemetry(patch: Record<string, any>, perStorePat
       if (rec) {
         rec.lastFastPollAt = meta.lastFastPollAt;
         rec.lastFastLatencyMs = meta.lastFastLatencyMs;
+        rec.lastLatencyMs = meta.lastFastLatencyMs;
+        rec.lastSuccessAt = meta.lastFastPollAt;
+        rec.status = 'HEALTHY';
+        rec.consecutiveFailures = 0;
+        rec.cooldownUntil = 0;
+        rec.lastError = undefined;
+        if (meta.productsCount && meta.productsCount > 0) {
+          rec.lastProductsCount = Math.max(rec.lastProductsCount || 0, meta.productsCount);
+        }
         storeHealthMap.set(storeName, rec);
       }
     }
@@ -271,33 +320,12 @@ export const LGS_STORES: MonitoredStore[] = loadActiveLgsStores();
 export const MONITORED_STORES: MonitoredStore[] = LGS_STORES;
 
 export const CAD_TO_USD_FX = Number(process.env.CAD_TO_USD_RATE || 0.73);
-const detectedStoreCurrencyMap = new Map<string, string>();
-const probedStoreCurrencySet = new Set<string>();
 
 export function resolveShopifyFxMultiplier(store: { name: string; baseUrl: string; currency?: string }): number {
   const explicit = String(store.currency || '').toUpperCase();
-  if (explicit === 'CAD' || /\.ca(\/|$)/i.test(store.baseUrl) || detectedStoreCurrencyMap.get(store.name) === 'CAD') {
+  if (explicit === 'CAD' || /\.ca(\/|$)/i.test(store.baseUrl)) {
     store.currency = 'CAD';
     return CAD_TO_USD_FX;
-  }
-  if (!probedStoreCurrencySet.has(store.name) && store.baseUrl) {
-    probedStoreCurrencySet.add(store.name);
-    void axios
-      .get(`${store.baseUrl.replace(/\/$/, '')}/cart.js`, {
-        timeout: 4000,
-        headers: { Accept: 'application/json', 'User-Agent': 'Mozilla/5.0' }
-      })
-      .then((res) => {
-        const cur = String(res.data?.currency || '').toUpperCase();
-        if (cur) {
-          detectedStoreCurrencyMap.set(store.name, cur);
-          if (cur === 'CAD') {
-            store.currency = 'CAD';
-            console.log(`🍁 [FX RADAR] Runtime detected CAD currency on ${store.name} (${store.baseUrl}) -> applying ${CAD_TO_USD_FX} USD FX.`);
-          }
-        }
-      })
-      .catch(() => {});
   }
   return 1.0;
 }
@@ -332,7 +360,7 @@ for (const store of MONITORED_STORES) {
       consecutiveFailures: 0,
       cooldownUntil: 0,
       lastSuccessAt: Date.now(),
-      lastProductsCount: 250,
+      lastProductsCount: 0,
       resolvedPath: store.resolvedPath,
       additionalPaths: store.additionalPaths,
       tier: store.tier || 'TIER2_STANDARD'
@@ -348,11 +376,17 @@ const oosVariantStagingMap = new Map<number, { price: number; seenAt: number }>(
 const seededOosStores = new Set<string>();
 const stagingAlertCooldownMap = new Map<string, number>();
 
-// Two-Tier Smart Deep-Catalog Pagination Cache (10-minute TTL per store, max 10 deep store fetches per sweep)
+// Two-Tier Smart Deep-Catalog Pagination Cache (10-minute TTL per store, max 2 deep store fetches per sweep starting Sweep #2)
 const DEEP_PAGE_CACHE_TTL_MS = 10 * 60 * 1000;
-const MAX_DEEP_FETCHES_PER_SWEEP = 10;
+const MAX_DEEP_FETCHES_PER_SWEEP = 2;
 const deepPaginationCache = new Map<string, { lastDeepFetchAt: number; extraProducts: any[] }>();
 let deepFetchesThisSweep = 0;
+let lgsSweepNumber = 0;
+let initialLgsSweepDone = false;
+
+export function isInitialLgsSweepComplete(): boolean {
+  return initialLgsSweepDone;
+}
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -362,13 +396,43 @@ function getRandomJitter(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-const HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
-  Accept: 'application/json',
+export async function acquireShopifyEgressSlot(lane: ShopifyEgressLane, urlForDomainGap?: string): Promise<boolean> {
+  if (lane === 'PROXY' && !WEBSHARE_PROXY_URL) return false;
+  const now = Date.now();
+  const baseSpacing = lane === 'DIRECT' ? DIRECT_HTTP2_MIN_SPACING_MS : PROXY_FALLBACK_MIN_SPACING_MS;
+  const spacing = baseSpacing + getRandomJitter(30, 95);
+  let earliest = Math.max(now, laneNextAvailableAt[lane]);
+  if (urlForDomainGap) {
+    try {
+      const host = new URL(urlForDomainGap).hostname.toLowerCase();
+      const domainReadyAt = (domainLastHitMap.get(host) || 0) + MIN_DOMAIN_GAP_MS;
+      if (domainReadyAt > earliest) earliest = domainReadyAt;
+      domainLastHitMap.set(host, earliest);
+    } catch (e) {}
+  }
+  laneNextAvailableAt[lane] = earliest + spacing;
+  const waitMs = earliest - now;
+  if (waitMs > 0) {
+    await sleep(waitMs);
+  }
+  return true;
+}
+
+// Full Chrome Document Navigation Headers: pairs with Node 26 Undici HTTP/2 ALPN fetch() so Cloudflare Bot Fight
+// classifies Shopify storefront JSON reads as normal browser navigation instead of HTTP/1.1 API scraper (Bot Score 1 -> 429).
+const BROWSER_NAV_HEADERS: Record<string, string> = {
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+  Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+  'Accept-Language': 'en-US,en;q=0.9',
+  'Sec-Fetch-Dest': 'document',
+  'Sec-Fetch-Mode': 'navigate',
+  'Sec-Fetch-Site': 'none',
+  'Sec-Fetch-User': '?1',
+  'Upgrade-Insecure-Requests': '1'
 };
 
-const STORE_POLL_WATCHDOG_MS = 22000;
-const SWEEP_WATCHDOG_MS = 135000;
+const STORE_POLL_WATCHDOG_MS = 30000;
+const SWEEP_WATCHDOG_MS = 150000;
 let lastSweepStartedAt = 0;
 
 function withWatchdog<T>(promise: Promise<T>, timeoutMs: number, label: string): Promise<T> {
@@ -389,35 +453,147 @@ function withWatchdog<T>(promise: Promise<T>, timeoutMs: number, label: string):
   });
 }
 
-async function axiosGetWithAbort(url: string, timeoutMs: number, httpsAgent?: any) {
+async function performLaneJsonRequest(
+  url: string,
+  timeoutMs: number,
+  lane: ShopifyEgressLane,
+  conditionalHeaders?: Record<string, string>
+): Promise<{ status: number; data: any; etag?: string; lastModified?: string; retryAfter?: string }> {
+  const reqHeaders = conditionalHeaders ? { ...BROWSER_NAV_HEADERS, ...conditionalHeaders } : BROWSER_NAV_HEADERS;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    return await axios.get(url, {
+    if (lane === 'DIRECT') {
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: reqHeaders,
+        signal: controller.signal,
+        redirect: 'follow'
+      });
+      const etag = res.headers.get('etag') || undefined;
+      const lastModified = res.headers.get('last-modified') || undefined;
+      const retryAfter = res.headers.get('retry-after') || undefined;
+      if (res.status === 304) {
+        return { status: 304, data: null, etag, lastModified, retryAfter };
+      }
+      if (res.status < 200 || res.status >= 300) {
+        const err: any = new Error(`HTTP ${res.status}`);
+        err.httpStatus = res.status;
+        err.retryAfter = retryAfter;
+        throw err;
+      }
+      const data = await res.json();
+      return { status: res.status, data, etag, lastModified, retryAfter };
+    }
+
+    const res = await axios.get(url, {
       timeout: timeoutMs,
       signal: controller.signal,
-      httpsAgent,
-      headers: HEADERS
+      httpsAgent: getSharedProxyAgent(),
+      proxy: false,
+      headers: reqHeaders,
+      validateStatus: (s) => (s >= 200 && s < 300) || s === 304
     });
+    return {
+      status: res.status,
+      data: res.status === 304 ? null : res.data,
+      etag: res.headers?.etag,
+      lastModified: res.headers?.['last-modified']
+    };
   } finally {
     clearTimeout(timer);
   }
 }
 
-async function smartGetJson(url: string): Promise<{ data: any; error?: string }> {
-  try {
-    const res = await axiosGetWithAbort(url, REQUEST_TIMEOUT_MS);
-    return { data: res.data };
-  } catch (e: any) {
+export async function smartGetJson(
+  url: string,
+  opts?: { storeName?: string; allowEtag304?: boolean; reuseCachedProductsOn304?: boolean }
+): Promise<{ data: any; notModified304?: boolean; status?: number; error?: string }> {
+  const storeName = opts?.storeName || '';
+  if (storeName && (store429CooldownUntilMap.get(storeName) || 0) > Date.now()) {
+    return { data: null, status: 429, error: 'HTTP 429 (Store Cooldown)' };
+  }
+
+  const allow304 = Boolean(opts?.allowEtag304);
+  const cachedEtag = allow304 ? lgsFeedEtagCache.get(url) : undefined;
+  const condHeaders: Record<string, string> | undefined = cachedEtag
+    ? {
+        ...(cachedEtag.etag ? { 'If-None-Match': cachedEtag.etag } : {}),
+        ...(cachedEtag.lastModified ? { 'If-Modified-Since': cachedEtag.lastModified } : {})
+      }
+    : undefined;
+
+  const handleSuccess = (res: { status: number; data: any; etag?: string; lastModified?: string }) => {
+    if (res.status === 304) {
+      if (res.etag || res.lastModified || cachedEtag) {
+        lgsFeedEtagCache.set(url, {
+          etag: res.etag || cachedEtag?.etag,
+          lastModified: res.lastModified || cachedEtag?.lastModified,
+          cachedProducts: cachedEtag?.cachedProducts
+        });
+      }
+      if (opts?.reuseCachedProductsOn304 && cachedEtag?.cachedProducts) {
+        return { data: { products: cachedEtag.cachedProducts }, notModified304: true, status: 304 };
+      }
+      return { data: null, notModified304: true, status: 304 };
+    }
+    if (res.etag || res.lastModified) {
+      lgsFeedEtagCache.set(url, {
+        etag: res.etag || cachedEtag?.etag,
+        lastModified: res.lastModified || cachedEtag?.lastModified,
+        cachedProducts: opts?.reuseCachedProductsOn304 && Array.isArray(res.data?.products)
+          ? res.data.products
+          : undefined
+      });
+    }
+    return { data: res.data, notModified304: false, status: res.status };
+  };
+
+  const primaryLane: ShopifyEgressLane = getPreferredLaneForStore(storeName);
+  const altLane: ShopifyEgressLane = primaryLane === 'DIRECT' ? 'PROXY' : 'DIRECT';
+  const candidateLanes: ShopifyEgressLane[] = WEBSHARE_PROXY_URL ? [primaryLane, altLane] : ['DIRECT'];
+
+  let lastStatus: number | undefined;
+  let lastErrMsg = 'Timeout/Network Error';
+
+  for (const lane of candidateLanes) {
+    const acquired = await acquireShopifyEgressSlot(lane, url);
+    if (!acquired) continue;
+
     try {
-      const proxy = getNextProxy();
-      const res = await axiosGetWithAbort(url, REQUEST_TIMEOUT_MS, proxy);
-      return { data: res.data };
-    } catch (e2: any) {
-      const status = e2?.response?.status || e?.response?.status;
-      return { data: null, error: status ? `HTTP ${status}` : (e2?.code || e2?.message || 'Timeout/Network Error') };
+      const res = await performLaneJsonRequest(url, REQUEST_TIMEOUT_MS, lane, condHeaders);
+      return handleSuccess(res);
+    } catch (err: any) {
+      const st = err?.httpStatus || err?.response?.status;
+      lastStatus = st || lastStatus;
+      if (st === 401) {
+        lastErrMsg = 'HTTP 401 (Storefront Password Locked)';
+        break;
+      }
+      lastErrMsg = st ? `HTTP ${st}` : (err?.code || err?.message || 'Timeout/Network Error');
+
+      if (st === 429) {
+        if (lane === 'DIRECT') flagStoreDirectRateLimited(storeName);
+        continue;
+      }
+      if (st === 403 && lane === 'DIRECT') {
+        flagStoreDirectRateLimited(storeName);
+        continue;
+      }
+      if (st && st >= 400 && st < 500) {
+        break;
+      }
     }
   }
+
+  if (lastStatus === 429 && storeName) {
+    store429CooldownUntilMap.set(storeName, Date.now() + 60000);
+  }
+  return {
+    data: null,
+    status: lastStatus,
+    error: lastErrMsg
+  };
 }
 
 function scorePokemonCollectionCandidate(col: any): number {
@@ -454,7 +630,7 @@ async function resolveBestPokemonFeed(
   }
 
   // Check store's /collections.json first to see their exact Pokemon collection handle
-  const { data: colData } = await smartGetJson(`${store.baseUrl}/collections.json?limit=250`);
+  const { data: colData } = await smartGetJson(`${store.baseUrl}/collections.json?limit=250`, { storeName: store.name });
   if (colData?.collections && Array.isArray(colData.collections)) {
     const pkmnCols = colData.collections.filter((c: any) => {
       const hay = `${c.handle || ''} ${c.title || ''}`;
@@ -471,7 +647,7 @@ async function resolveBestPokemonFeed(
 
     for (const col of pkmnCols.slice(0, 3)) {
       const testPath = `/collections/${col.handle}/products.json?limit=250`;
-      const { data: prodData } = await smartGetJson(`${store.baseUrl}${testPath}`);
+      const { data: prodData } = await smartGetJson(`${store.baseUrl}${testPath}`, { storeName: store.name });
       if (prodData?.products && Array.isArray(prodData.products) && prodData.products.length >= 5) {
         store.resolvedPath = testPath;
         health.resolvedPath = testPath;
@@ -491,7 +667,7 @@ async function resolveBestPokemonFeed(
   }
 
   const fallbackPath = '/products.json?limit=250';
-  const { data: fallbackData, error } = await smartGetJson(`${store.baseUrl}${fallbackPath}`);
+  const { data: fallbackData, error } = await smartGetJson(`${store.baseUrl}${fallbackPath}`, { storeName: store.name });
   if (fallbackData?.products && Array.isArray(fallbackData.products)) {
     store.resolvedPath = fallbackPath;
     health.resolvedPath = fallbackPath;
@@ -501,7 +677,13 @@ async function resolveBestPokemonFeed(
   return { feedPath: fallbackPath, error };
 }
 
-async function pollSingleStore(store: MonitoredStore): Promise<{ hit: boolean; productsScanned: number; skippedByCircuit: boolean }> {
+async function pollSingleStore(store: MonitoredStore): Promise<{
+  hit: boolean;
+  notModified304: boolean;
+  rateLimited429: boolean;
+  productsScanned: number;
+  skippedByCircuit: boolean;
+}> {
   const now = Date.now();
   const health: StoreHealthRecord = storeHealthMap.get(store.name) || {
     name: store.name,
@@ -516,13 +698,17 @@ async function pollSingleStore(store: MonitoredStore): Promise<{ hit: boolean; p
   if (health.cooldownUntil > now) {
     health.status = 'CIRCUIT_OPEN';
     storeHealthMap.set(store.name, health);
-    return { hit: false, productsScanned: 0, skippedByCircuit: true };
+    return { hit: false, notModified304: false, rateLimited429: false, productsScanned: 0, skippedByCircuit: true };
   }
 
   try {
     const resolved = await resolveBestPokemonFeed(store, health);
     let products = resolved.initialProducts;
     let error = resolved.error;
+    const hasAdditionalPaths = Array.isArray(store.additionalPaths) && store.additionalPaths.length > 0;
+    const existingDeep = deepPaginationCache.get(store.name);
+    const needsDeepRefreshSoon = (health.lastProductsCount || 0) >= 250 && (!existingDeep || (now - existingDeep.lastDeepFetchAt >= DEEP_PAGE_CACHE_TTL_MS));
+    const canShortCircuit304 = seededOosStores.has(store.name) && !hasAdditionalPaths && !needsDeepRefreshSoon;
 
     if (!products) {
       const feedWithLimit = resolved.feedPath.includes('limit=')
@@ -531,15 +717,40 @@ async function pollSingleStore(store: MonitoredStore): Promise<{ hit: boolean; p
       const page1Url = feedWithLimit.includes('page=')
         ? `${store.baseUrl}${feedWithLimit}`
         : `${store.baseUrl}${feedWithLimit}${feedWithLimit.includes('?') ? '&' : '?'}page=1`;
-      const fetched = await smartGetJson(page1Url);
+      const fetched = await smartGetJson(page1Url, {
+        storeName: store.name,
+        allowEtag304: canShortCircuit304
+      });
+
+      if (fetched.notModified304) {
+        health.consecutiveFailures = 0;
+        health.cooldownUntil = 0;
+        health.status = 'HEALTHY';
+        health.lastSuccessAt = Date.now();
+        health.lastError = undefined;
+        health.lastLatencyMs = Math.max(25, Date.now() - now);
+        health.resolvedPath = store.resolvedPath;
+        storeHealthMap.set(store.name, health);
+        return {
+          hit: true,
+          notModified304: true,
+          rateLimited429: false,
+          productsScanned: health.lastProductsCount || 0,
+          skippedByCircuit: false
+        };
+      }
+
       products = fetched.data?.products;
       error = fetched.error;
     }
 
     if (!Array.isArray(products)) {
-      health.consecutiveFailures += 1;
+      const is429 = Boolean(error && /429/.test(error));
       health.lastError = error || 'Invalid JSON feed';
-      if (health.consecutiveFailures >= CIRCUIT_BREAKER_THRESHOLD) {
+      if (!is429) {
+        health.consecutiveFailures += 1;
+      }
+      if (!is429 && health.consecutiveFailures >= CIRCUIT_BREAKER_THRESHOLD) {
         health.cooldownUntil = Date.now() + CIRCUIT_COOLDOWN_MS;
         health.status = 'CIRCUIT_OPEN';
         console.warn(`[CIRCUIT BREAKER] ${store.name} failed ${health.consecutiveFailures} consecutive polls (${health.lastError}). Cooling down for 15m.`);
@@ -547,16 +758,21 @@ async function pollSingleStore(store: MonitoredStore): Promise<{ hit: boolean; p
         health.status = 'DEGRADED';
       }
       storeHealthMap.set(store.name, health);
-      return { hit: false, productsScanned: 0, skippedByCircuit: false };
+      return { hit: false, notModified304: false, rateLimited429: is429, productsScanned: 0, skippedByCircuit: false };
     }
 
     // Multi-Endpoint Sub-Collection Polling (for stores whose ETBs and Booster Boxes span multiple collections):
-    if (Array.isArray(store.additionalPaths) && store.additionalPaths.length > 0) {
+    if (hasAdditionalPaths) {
       const seenIds = new Set<any>(products.map((p: any) => p.id));
-      for (const extraPath of store.additionalPaths) {
+      const canUseExtra304 = seededOosStores.has(store.name);
+      for (const extraPath of store.additionalPaths || []) {
         if (!extraPath || extraPath === resolved.feedPath) continue;
         const extraWithLimit = extraPath.includes('limit=') ? extraPath : `${extraPath}${extraPath.includes('?') ? '&' : '?'}limit=250`;
-        const extraRes = await smartGetJson(`${store.baseUrl}${extraWithLimit}`);
+        const extraRes = await smartGetJson(`${store.baseUrl}${extraWithLimit}`, {
+          storeName: store.name,
+          allowEtag304: canUseExtra304,
+          reuseCachedProductsOn304: true
+        });
         const extraItems = extraRes.data?.products;
         if (Array.isArray(extraItems)) {
           for (const ep of extraItems) {
@@ -569,22 +785,19 @@ async function pollSingleStore(store: MonitoredStore): Promise<{ hit: boolean; p
       }
     }
 
-    // Tier 2 (Staggered 10-Minute Deep Shelf Sweep — Pages 2 to 4):
-    // When Page 1 returns a full 250 items, fetch pages 2..4 once every 10 minutes (staggered max 10 stores/sweep)
-    // and merge cached deep-page products so totalListingsChecked covers the full 20,000-30,000+ catalog!
+    // Tier 2 (Staggered 10-Minute Deep Shelf Sweep — Pages 2 to 3, deferred until Sweep #2+):
     if (products.length >= 250) {
       let deepEntry = deepPaginationCache.get(store.name);
       const needsDeepRefresh = !deepEntry || (now - deepEntry.lastDeepFetchAt >= DEEP_PAGE_CACHE_TTL_MS);
 
-      if (needsDeepRefresh && deepFetchesThisSweep < MAX_DEEP_FETCHES_PER_SWEEP) {
+      if (lgsSweepNumber >= 2 && needsDeepRefresh && deepFetchesThisSweep < MAX_DEEP_FETCHES_PER_SWEEP) {
         deepFetchesThisSweep += 1;
         const extraFetched: any[] = [];
         const baseFeed = resolved.feedPath.replace(/[?&]page=\d+/g, '');
         const sep = baseFeed.includes('?') ? '&' : '?';
 
-        for (let pageNum = 2; pageNum <= 4; pageNum++) {
-          await sleep(140);
-          const deepRes = await smartGetJson(`${store.baseUrl}${baseFeed}${sep}page=${pageNum}`);
+        for (let pageNum = 2; pageNum <= 3; pageNum++) {
+          const deepRes = await smartGetJson(`${store.baseUrl}${baseFeed}${sep}page=${pageNum}`, { storeName: store.name });
           const pageItems = deepRes.data?.products;
           if (!Array.isArray(pageItems) || pageItems.length === 0) break;
           extraFetched.push(...pageItems);
@@ -762,7 +975,7 @@ async function pollSingleStore(store: MonitoredStore): Promise<{ hit: boolean; p
       pruneStoreMissingOffers(store.name, activeVariantIds);
     }
     seededOosStores.add(store.name);
-    return { hit: products.length > 0, productsScanned: products.length, skippedByCircuit: false };
+    return { hit: products.length > 0, notModified304: false, rateLimited429: false, productsScanned: products.length, skippedByCircuit: false };
   } catch (err: any) {
     health.consecutiveFailures += 1;
     health.lastError = err?.message || 'Unexpected poll exception';
@@ -773,7 +986,7 @@ async function pollSingleStore(store: MonitoredStore): Promise<{ hit: boolean; p
       health.status = 'DEGRADED';
     }
     storeHealthMap.set(store.name, health);
-    return { hit: false, productsScanned: 0, skippedByCircuit: false };
+    return { hit: false, notModified304: false, rateLimited429: false, productsScanned: 0, skippedByCircuit: false };
   }
 }
 
@@ -790,47 +1003,71 @@ export async function pollShopifyStores(): Promise<void> {
   isPolling = true;
   lastSweepStartedAt = Date.now();
   deepFetchesThisSweep = 0;
+  lgsSweepNumber += 1;
+
+  // Eliminate Tier-1 Double-Polling: fastTier1Poller owns 15s single-page sweeps on TIER1_FAST stores;
+  // lgsPoller reconciles TIER1_FAST deep pagination & missing-offer pruning on Sweep #1 + every 5th cycle (~5 min).
+  const includeTier1Reconciliation = lgsSweepNumber === 1 || lgsSweepNumber % 5 === 0;
+  const storesScheduled = includeTier1Reconciliation
+    ? [...MONITORED_STORES]
+    : MONITORED_STORES.filter((s) => s.tier !== 'TIER1_FAST');
 
   let activeStoresHit = 0;
+  let sweep304Count = 0;
+  let sweep429Count = 0;
   let totalProductsScanned = 0;
   let circuitOpenCount = 0;
 
   try {
-    const queue = [...MONITORED_STORES];
+    const queue = [...storesScheduled];
     const workerCount = Math.min(MAX_CONCURRENT_STORES, queue.length);
-
-    const workers = Array.from({ length: workerCount }, async () => {
-      while (queue.length > 0) {
-        const store = queue.shift();
-        if (!store) break;
-        try {
-          const res = await withWatchdog(
-            pollSingleStore(store),
-            STORE_POLL_WATCHDOG_MS,
-            `Store poll for ${store.name}`
-          );
-          if (res.hit) activeStoresHit++;
-          totalProductsScanned += res.productsScanned;
-          if (res.skippedByCircuit) circuitOpenCount++;
-        } catch (storeErr: any) {
-          console.warn(`[LGS Poller] Watchdog aborted hung store ${store.name}: ${storeErr?.message || storeErr}`);
-        }
-        await sleep(getRandomJitter(120, 300));
-      }
-    });
-
-    await withWatchdog(Promise.all(workers), SWEEP_WATCHDOG_MS, '40-Store LGS Sweep Cycle');
+    await withWatchdog(
+      Promise.all(
+        Array.from({ length: workerCount }, async () => {
+          while (queue.length > 0) {
+            const store = queue.shift();
+            if (!store) break;
+            try {
+              const res = await withWatchdog(
+                pollSingleStore(store),
+                STORE_POLL_WATCHDOG_MS,
+                `Store poll for ${store.name}`
+              );
+              if (res.hit) activeStoresHit++;
+              if (res.notModified304) sweep304Count++;
+              if (res.rateLimited429) sweep429Count++;
+              totalProductsScanned += res.productsScanned;
+              if (res.skippedByCircuit) circuitOpenCount++;
+            } catch (storeErr: any) {
+              console.warn(`[LGS Poller] Watchdog aborted hung store ${store.name}: ${storeErr?.message || storeErr}`);
+            }
+          }
+        })
+      ),
+      SWEEP_WATCHDOG_MS,
+      'LGS Sweep Cycle'
+    );
     flushStoreHealthToDisk();
 
+    let healthyFleetCount = 0;
+    for (const st of MONITORED_STORES) {
+      const h = storeHealthMap.get(st.name);
+      if (h && h.status === 'HEALTHY') healthyFleetCount += 1;
+    }
+    const durSec = ((Date.now() - lastSweepStartedAt) / 1000).toFixed(1);
+    const modeTag = includeTier1Reconciliation ? 'FULL+T1-RECON' : 'T2-STANDARD';
+
     console.log(
-      `[${new Date().toLocaleTimeString()}] LGS Sweep Complete (Pool=${MAX_CONCURRENT_STORES}): ${activeStoresHit}/${MONITORED_STORES.length} stores responded (${totalProductsScanned} Pokemon listings checked${circuitOpenCount > 0 ? `, ${circuitOpenCount} in circuit cooldown` : ''}).`
+      `[${new Date().toLocaleTimeString()}] LGS Sweep #${lgsSweepNumber} [${modeTag}] (${durSec}s): ${activeStoresHit}/${storesScheduled.length} responded (${sweep304Count} HTTP 304, ${sweep429Count} HTTP 429, ${circuitOpenCount} cooldown) • ${totalProductsScanned} listings • ${healthyFleetCount}/${MONITORED_STORES.length} fleet healthy.`
     );
   } catch (sweepErr: any) {
     console.error(`[LGS Poller] Sweep error or watchdog timeout recovered: ${sweepErr?.message || sweepErr}`);
     try { flushStoreHealthToDisk(); } catch (e) {}
   } finally {
+    initialLgsSweepDone = true;
     isPolling = false;
-    const restTime = getRandomJitter(15000, 22000);
+    const elapsedMs = Date.now() - lastSweepStartedAt;
+    const restTime = Math.max(18000, 65000 - elapsedMs) + getRandomJitter(0, 3000);
     setTimeout(pollShopifyStores, restTime);
   }
 }
