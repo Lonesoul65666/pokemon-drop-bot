@@ -116,10 +116,10 @@ function lookupPurchaseMemory(params) {
     const paidStr = formatDollarCompact(lastPaid);
     const rawDelta = Math.round(((lastPaid >= 25 ? Math.round(landedPrice) : landedPrice) - (lastPaid >= 25 ? Math.round(lastPaid) : lastPaid)) * 100) / 100;
     const formattedComparison = (rawDelta <= -1 || (lastPaid < 25 && rawDelta <= -0.50))
-        ? `Last Paid: ${paidStr} (Beats your ${paidStr} buy by ${formatDollarCompact(Math.abs(rawDelta))})`
+        ? `Last Paid: ${paidStr} (-${formatDollarCompact(Math.abs(rawDelta))} vs. your buy)`
         : (rawDelta >= 1 || (lastPaid < 25 && rawDelta >= 0.50))
-            ? `Last Paid: ${paidStr} (+${formatDollarCompact(rawDelta)} above your ${paidStr} victory)`
-            : `Last Paid: ${paidStr} (Matches your ${paidStr} victory)`;
+            ? `Last Paid: ${paidStr} (+${formatDollarCompact(rawDelta)} above your buy)`
+            : `Last Paid: ${paidStr} (Matches your buy)`;
     return { record, lastPaid, deltaDollars: rawDelta, beatsPriorBuy: rawDelta < 0, formattedComparison };
 }
 function formatCollectionAndCostLine(params) {

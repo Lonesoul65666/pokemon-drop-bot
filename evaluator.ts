@@ -31,8 +31,15 @@ import {
   isPreReleaseDate,
   TrendSignal
 } from './src/engine/trendAdvisor';
+import { buildEarnedWatermarkSummary } from './src/engine/watermarkHistory';
 
 export { isPreReleaseDate, TrendSignal, computeAutoPilotTarget, getLiveStoreOfferMedian };
+
+export function isCaseSkuFormat(formFactor?: string, ruleId?: string, productName?: string, url?: string): boolean {
+  return /\bcase\b|\b10[-\s]*etb\b|\b6[-\s]*box\b|\b216[-\s]*pack\b/i.test(
+    `${formFactor || ''} ${ruleId || ''} ${productName || ''} ${url || ''}`
+  );
+}
 
 export function isVerified1PBigBoxOrPc(retailer?: string, url?: string, isMarketplace3P = false): boolean {
   if (isMarketplace3P) return false;
@@ -50,11 +57,15 @@ export function buildShopifyDirectCartLinks(params: {
   itemId?: string | number;
   stock?: number;
   retailer?: string;
+  formFactor?: string;
+  ruleId?: string;
+  productName?: string;
 }): { cart1xUrl?: string; cart2xUrl?: string; cart3xUrl?: string } {
-  const { url = '', productUrl = '', cart1xUrl, cart2xUrl, cart3xUrl, itemId, stock, retailer = '' } = params;
+  const { url = '', productUrl = '', cart1xUrl, cart2xUrl, cart3xUrl, itemId, stock, retailer = '', formFactor, ruleId, productName } = params;
+  const isCase = isCaseSkuFormat(formFactor, ruleId, productName, `${url} ${productUrl}`);
   const hay = `${retailer} ${url} ${productUrl}`.toLowerCase();
   if (/tcgplayer|ebay|target\.com|walmart\.com|bestbuy\.com|amazon\.com|costco\.com|samsclub\.com|gamestop\.com|barnesandnoble\.com|pokemoncenter\.com|reddit\.com/i.test(hay)) {
-    return { cart1xUrl, cart2xUrl, cart3xUrl };
+    return { cart1xUrl, cart2xUrl: isCase ? undefined : cart2xUrl, cart3xUrl: isCase ? undefined : cart3xUrl };
   }
   let baseRoot = '';
   const candidateCart = cart1xUrl || (url.includes('/cart/') ? url : '');
@@ -65,11 +76,11 @@ export function buildShopifyDirectCartLinks(params: {
     const m = u.match(/^(https?:\/\/[^/]+)/i);
     if (m) baseRoot = `${m[1]}/cart/${String(itemId)}`;
   }
-  if (!baseRoot) return { cart1xUrl, cart2xUrl, cart3xUrl };
+  if (!baseRoot) return { cart1xUrl, cart2xUrl: isCase ? undefined : cart2xUrl, cart3xUrl: isCase ? undefined : cart3xUrl };
   return {
     cart1xUrl: `${baseRoot}:1?payment=shop_pay`,
-    cart2xUrl: (stock === undefined || stock >= 2) ? `${baseRoot}:2?payment=shop_pay` : undefined,
-    cart3xUrl: (stock === undefined || stock >= 3) ? `${baseRoot}:3?payment=shop_pay` : undefined
+    cart2xUrl: (!isCase && (stock === undefined || stock >= 2)) ? `${baseRoot}:2?payment=shop_pay` : undefined,
+    cart3xUrl: (!isCase && (stock === undefined || stock >= 3)) ? `${baseRoot}:3?payment=shop_pay` : undefined
   };
 }
 
@@ -1963,7 +1974,7 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       };
     }
 
-    // Phase 2 Alert Quality Gate: Kill Worse-Than-Market & Bleeding-Down LGS Alerts
+    // Phase 2 & 2B Alert Quality Gate: Kill Worse-Than-Market & <8% Falling-Knife LGS Alerts
     if (!is1PBigBoxOrPc) {
       const cachedTcgFloor = getCachedVerifiedTcgLowestShipped(rule.id, minFloor, maxCeiling, now);
       if (cachedTcgFloor > 0 && landedPrice > cachedTcgFloor + 0.01) {
@@ -1974,10 +1985,14 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
           releaseDate: rule.releaseDate, statusTier, statusTag, isCloseCall, closeCallDelta, trendSignal, trendVerdictLabel, isElasticDip
         };
       }
-      if (trendSignal === 'FALLING_KNIFE_WAIT' && (rule.msrpCeiling <= 0 || landedPrice > rule.msrpCeiling)) {
+      const wmEval = buildEarnedWatermarkSummary(rule.id, landedPrice, now);
+      const isActivelySliding = wmEval.isSlidingDown || trendSignal === 'FALLING_KNIFE_WAIT' || /BLEEDING[_\s-]*DOWN/i.test(`${trendSignal || ''} ${trendVerdictLabel || ''}`);
+      const refSlideFloor = cachedTcgFloor > 0 ? cachedTcgFloor : currentMarketRef;
+      const slideUndercutRatio = refSlideFloor > 0 ? (refSlideFloor - landedPrice) / refSlideFloor : 0;
+      if (isActivelySliding && slideUndercutRatio < 0.08 && (rule.msrpCeiling <= 0 || landedPrice > rule.msrpCeiling)) {
         return {
           action: 'IGNORE',
-          reason: `Suppressed HOLD OFF / BLEEDING DOWN LGS offer ($${landedPrice.toFixed(2)} landed).`,
+          reason: `Suppressed falling-knife LGS offer (<8% undercut while sliding: $${landedPrice.toFixed(2)} vs $${refSlideFloor.toFixed(2)}).`,
           rule, packCount, pricePerPack, isRipValueLeader, isPreRelease, preReleaseStatusTag,
           releaseDate: rule.releaseDate, statusTier, statusTag, isCloseCall, closeCallDelta, trendSignal, trendVerdictLabel, isElasticDip
         };

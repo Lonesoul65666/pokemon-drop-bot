@@ -16,3 +16,9 @@
 3. **Daemon Safety:** This app runs under PM2 (`pokemon-drop-bot` and `drop-bot-dashboard`). Avoid blocking event loops or synchronous I/O in polling intervals.
 4. **Secrets Hygiene:** Never commit, log, or hardcode API keys, Discord webhook URLs, or Webshare proxy credentials (`146.103.1.23:5556` auth). Rely strictly on `.env` variables.
 5. **CRITICAL PROCESS ISOLATION RULE:** **NEVER run `taskkill /F /IM node.exe` or `Stop-Process -Name node`! Both `pokemon-drop-bot` (PM2 / Port 3000) and `Project Iris` (Port 5173 / 3001) run on Node.js on this machine. Only stop processes by specific PM2 name (`pm2 restart ...`) or by specific port PID (`Get-NetTCPConnection -LocalPort <port>`).**
+
+## Anti-Thrash Execution Budget
+- **Read Full `< 350 Line` Files:** Read `< 350 line` modular files in full in a single call instead of slicing 50 lines at a time.
+- **Batch Parallel Reads & Edits:** Group independent `read_file` and `edit_file` calls in parallel batches rather than serializing single calls; avoid repo-wide greps when target files are known.
+- **Single Bounded Verification Pass:** Run at most 1 combined compile + verification script per pass, guarded by a `.unref()` timeout and ending with a hard `finally { process.exit(0); }`.
+- **On-Demand State Docs:** Touch `_nyx_state/*` and `STATE.md` ONLY when explicitly requested by Scott (or via `dropbot save` / `dropbot backup`); skip full bootloader/state-doc churn on scoped micro-passes.

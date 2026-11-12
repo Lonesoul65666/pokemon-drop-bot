@@ -610,6 +610,12 @@ export async function sendAlert(drop: DropPayload): Promise<boolean> {
     }
   }
 
+  const isCaseDrop = /\bcase\b|\b10[-\s]*etb\b|\b6[-\s]*box\b|\b216[-\s]*pack\b/i.test(
+    `${drop.formFactor || ''} ${drop.ruleId || ''} ${productLabel}`
+  );
+  const effCart2x = isCaseDrop ? undefined : drop.cart2xUrl;
+  const effCart3x = isCaseDrop ? undefined : drop.cart3xUrl;
+
   const built = buildCleanDiscordAlertEmbed({
     titlePrefix: drop.titlePrefix,
     retailer: drop.retailer,
@@ -618,7 +624,8 @@ export async function sendAlert(drop: DropPayload): Promise<boolean> {
     productUrl: drop.productUrl,
     imageUrl: drop.imageUrl,
     cart1xUrl: drop.cart1xUrl,
-    cart2xUrl: drop.cart2xUrl,
+    cart2xUrl: effCart2x,
+    cart3xUrl: effCart3x,
     itemId: drop.itemId,
     stock: drop.stock,
     ruleId: drop.ruleId,
@@ -635,11 +642,18 @@ export async function sendAlert(drop: DropPayload): Promise<boolean> {
     bigBoxTier: drop.bigBoxTier,
     isMsrpUnicorn: drop.isMsrpUnicorn,
     isPreOrder: drop.isPreOrder,
+    trendSignal: drop.trendSignal,
+    trendVerdictLabel: drop.trendVerdictLabel,
     tcgComp: initialTcgComp,
     fallbackTcgUrl: cachedLowestUrl
   });
 
-  const { embed, boxArt, theme, primaryFastUrl } = built;
+  const { embed, boxArt, theme, primaryFastUrl, isSliding, discountPct } = built;
+  if (!is1PBigBox && isSliding && discountPct < 8) {
+    console.log(`[Notifier] Suppressed falling-knife LGS alert (<8% undercut while sliding): ${drop.retailer} $${landedPrice.toFixed(2)} (-${discountPct.toFixed(1)}%)`);
+    return false;
+  }
+
   const webhookPayload: any = { embeds: [embed] };
   if (theme.mentionContent) {
     webhookPayload.content = theme.mentionContent;
@@ -651,7 +665,7 @@ export async function sendAlert(drop: DropPayload): Promise<boolean> {
     `<b>$${landedPrice.toFixed(2)} Landed</b> (${shipNote})\n` +
     `MSRP: $${msrpVal.toFixed(2)} • Comp: ~$${(initialTcgComp?.price || bestMarketRef).toFixed(2)}\n` +
     `<a href="${primaryFastUrl}">⚡ 1-Tap Checkout ↗</a>` +
-    (drop.cart2xUrl ? `  |  <a href="${drop.cart2xUrl}">⚡ 2x ↗</a>` : '');
+    (effCart2x ? `  |  <a href="${effCart2x}">⚡ 2x ↗</a>` : '');
 
   try {
     const [discordSettled, tgSettled] = await Promise.allSettled([
@@ -675,7 +689,7 @@ export async function sendAlert(drop: DropPayload): Promise<boolean> {
     }
 
     if (!drop.titlePrefix) {
-      recordDropHistory(drop);
+      recordDropHistory({ ...drop, cart2xUrl: effCart2x, cart3xUrl: effCart3x });
     }
     const sentMsgId: string | undefined = discordData?.id;
     if (sentMsgId && drop.itemId) {
@@ -718,7 +732,8 @@ export async function sendAlert(drop: DropPayload): Promise<boolean> {
             imageUrl: drop.imageUrl,
             existingThumbnailUrl: embed.thumbnail?.url,
             cart1xUrl: drop.cart1xUrl,
-            cart2xUrl: drop.cart2xUrl,
+            cart2xUrl: effCart2x,
+            cart3xUrl: effCart3x,
             itemId: drop.itemId,
             stock: drop.stock,
             ruleId: drop.ruleId,
@@ -735,6 +750,8 @@ export async function sendAlert(drop: DropPayload): Promise<boolean> {
             bigBoxTier: drop.bigBoxTier,
             isMsrpUnicorn: drop.isMsrpUnicorn,
             isPreOrder: drop.isPreOrder,
+            trendSignal: drop.trendSignal,
+            trendVerdictLabel: drop.trendVerdictLabel,
             tcgComp: bestTcg,
             fallbackTcgUrl: cachedLowestUrl,
             tcgQuarterNote
@@ -755,7 +772,7 @@ export async function sendAlert(drop: DropPayload): Promise<boolean> {
               `<b>$${landedPrice.toFixed(2)} Landed</b> (${shipNote})\n` +
               `MSRP: $${msrpVal.toFixed(2)} • TCGPlayer: <b>$${liveMktRef.toFixed(2)}</b> (${liveDiscount > 0 ? `-${liveDiscount}%` : 'Matches Low'})\n` +
               `<a href="${primaryFastUrl}">⚡ 1-Tap Checkout ↗</a>` +
-              (drop.cart2xUrl ? `  |  <a href="${drop.cart2xUrl}">⚡ 2x ↗</a>` : '');
+              (effCart2x ? `  |  <a href="${effCart2x}">⚡ 2x ↗</a>` : '');
             await patchTelegramAlertFast(tgMsgId, tgEnriched);
           }
         } catch (enrichErr) {

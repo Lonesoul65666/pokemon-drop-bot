@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import { WATCH_POLICIES, PolicyRule, computeRipMetrics } from '../../policies';
-import { isVerified1PBigBoxOrPc, buildShopifyDirectCartLinks, buildMobileRetailerLinks } from '../../evaluator';
+import { isVerified1PBigBoxOrPc, buildShopifyDirectCartLinks, buildMobileRetailerLinks, isCaseSkuFormat } from '../../evaluator';
 import { CompQuote } from '../../marketComps';
-import { buildEarnedWatermarkSummary } from '../engine/watermarkHistory';
+import { buildEarnedWatermarkSummary, EarnedWatermarkSummary } from '../engine/watermarkHistory';
 import { formatCollectionAndCostLine } from '../engine/purchaseMemory';
 
 const ART_DIR = path.resolve(process.cwd(), 'art');
@@ -149,14 +149,36 @@ export function cleanRetailerDisplayUpper(retailer: string): string {
     .toUpperCase();
 }
 
+function isTcgQuarterSliding(tcgLow: number, tcgQuarterNote?: string): boolean {
+  if (!tcgQuarterNote) return false;
+  const nums = Array.from(tcgQuarterNote.matchAll(/\$([0-9,]+(?:\.[0-9]+)?)/g)).map((m) => parseFloat(m[1].replace(/,/g, '')));
+  if (nums.length >= 2 && nums[0] < nums[1] * 0.975) return true;
+  if (nums.length >= 1 && tcgLow > 0 && tcgLow < nums[0] * 0.975) return true;
+  return false;
+}
+
+export function detectActiveFloorSlide(params: {
+  wm: EarnedWatermarkSummary; trendSignal?: string; trendVerdictLabel?: string; tcgLow?: number; tcgQuarterNote?: string;
+}): boolean {
+  if (params.wm.isSlidingDown) return true;
+  if (params.trendSignal === 'FALLING_KNIFE_WAIT') return true;
+  if (/BLEEDING[_\s-]*DOWN|FALLING[_\s-]*KNIFE/i.test(`${params.trendSignal || ''} ${params.trendVerdictLabel || ''}`)) return true;
+  return isTcgQuarterSliding(params.tcgLow || 0, params.tcgQuarterNote);
+}
+
 function buildOneTapActionBar(params: {
-  retailer: string; url: string; productUrl?: string; cart1xUrl?: string; cart2xUrl?: string;
-  itemId?: string; stock?: number; productLabel: string; tcgComp?: CompQuote; fallbackTcgUrl?: string;
+  retailer: string; url: string; productUrl?: string; cart1xUrl?: string; cart2xUrl?: string; cart3xUrl?: string;
+  itemId?: string; stock?: number; ruleId?: string; formFactor?: string; productLabel: string;
+  tcgComp?: CompQuote; fallbackTcgUrl?: string;
 }): { primaryFastUrl: string; actionBarMarkdown: string } {
   const knownStock = typeof params.stock === 'number' && params.stock > 0 ? params.stock : undefined;
+  const isCase = isCaseSkuFormat(params.formFactor, params.ruleId, params.productLabel);
   const directCart = buildShopifyDirectCartLinks({
-    url: params.url, productUrl: params.productUrl, cart1xUrl: params.cart1xUrl, cart2xUrl: params.cart2xUrl,
-    itemId: params.itemId, stock: knownStock, retailer: params.retailer
+    url: params.url, productUrl: params.productUrl, cart1xUrl: params.cart1xUrl,
+    cart2xUrl: isCase ? undefined : params.cart2xUrl,
+    cart3xUrl: isCase ? undefined : params.cart3xUrl,
+    itemId: params.itemId, stock: knownStock, retailer: params.retailer,
+    formFactor: params.formFactor, ruleId: params.ruleId, productName: params.productLabel
   });
   const prodPageUrl = params.productUrl || (params.url.includes('/cart/') ? params.url.split('/cart/')[0] : params.url);
   const mobileLinks = buildMobileRetailerLinks({ retailer: params.retailer, url: params.url, productUrl: prodPageUrl, itemId: params.itemId });
@@ -168,10 +190,12 @@ function buildOneTapActionBar(params: {
 
   const pills: string[] = [];
   let primaryFastUrl = prodPageUrl || params.url;
+  const allowMultiQty = !isCase && /\betb\b|elite\s*trainer|\bbundle\b/i.test(`${params.formFactor || ''} ${params.ruleId || ''} ${params.productLabel}`);
   if (directCart.cart1xUrl && directCart.cart1xUrl.includes('/cart/')) {
     primaryFastUrl = directCart.cart1xUrl;
     pills.push(`[⚡ Shop Pay 1x ↗](${directCart.cart1xUrl})`);
-    if (directCart.cart2xUrl) pills.push(`[⚡ 2x ↗](${directCart.cart2xUrl})`);
+    if (!isCase && directCart.cart2xUrl) pills.push(`[⚡ 2x ↗](${directCart.cart2xUrl})`);
+    if (allowMultiQty && directCart.cart3xUrl) pills.push(`[⚡ 3x ↗](${directCart.cart3xUrl})`);
   } else {
     primaryFastUrl = mobileLinks.primaryCheckoutUrl || params.url;
     const cleanStore = cleanRetailerDisplayUpper(params.retailer);
@@ -188,12 +212,13 @@ function buildOneTapActionBar(params: {
 
 export function buildCleanDiscordAlertEmbed(params: {
   titlePrefix?: string; retailer: string; productName: string; url: string; productUrl?: string;
-  imageUrl?: string; existingThumbnailUrl?: string; cart1xUrl?: string; cart2xUrl?: string;
+  imageUrl?: string; existingThumbnailUrl?: string; cart1xUrl?: string; cart2xUrl?: string; cart3xUrl?: string;
   itemId?: string; stock?: number; ruleId?: string; formFactor?: string; shelfPrice: number;
   landedPrice: number; shippingAmount: number; msrp: number; sliderCeiling: number; marketFallback: number;
   packCount?: number; pricePerPack?: number; ownedInVault?: boolean; bigBoxTier?: string;
-  isMsrpUnicorn?: boolean; isPreOrder?: boolean; tcgComp?: CompQuote; fallbackTcgUrl?: string; tcgQuarterNote?: string;
-}): { embed: any; boxArt: ResolvedBoxArt; theme: AlertPingTheme; primaryFastUrl: string } {
+  isMsrpUnicorn?: boolean; isPreOrder?: boolean; trendSignal?: string; trendVerdictLabel?: string;
+  tcgComp?: CompQuote; fallbackTcgUrl?: string; tcgQuarterNote?: string;
+}): { embed: any; boxArt: ResolvedBoxArt; theme: AlertPingTheme; primaryFastUrl: string; isSliding: boolean; discountPct: number } {
   const rule = params.ruleId ? WATCH_POLICIES.find((p) => p.id === params.ruleId) : null;
   const theme = resolveAlertPingAndTheme({
     retailer: params.retailer, url: params.url, productUrl: params.productUrl,
@@ -211,8 +236,31 @@ export function buildCleanDiscordAlertEmbed(params: {
   const refComp = tcgLow > 0 ? tcgLow : params.marketFallback;
   const refLabel = tcgLow > 0 ? 'TCGPlayer' : 'Market';
   const savings = Math.round((refComp - params.landedPrice) * 100) / 100;
+  const discountPct = refComp > 0 ? ((refComp - params.landedPrice) / refComp) * 100 : 0;
+
+  const wm = buildEarnedWatermarkSummary(params.ruleId || rule?.id, params.landedPrice);
+  const isSliding = detectActiveFloorSlide({
+    wm, trendSignal: params.trendSignal, trendVerdictLabel: params.trendVerdictLabel, tcgLow, tcgQuarterNote: params.tcgQuarterNote
+  });
+
+  if (!theme.is1PMsrpDrop) {
+    const pctRounded = Math.max(1, Math.round(discountPct));
+    if (isSliding) {
+      theme.embedColor = 0xF59E0B;
+      theme.verdictHeadline = `CAUTIOUS DIP — STILL SLIDING (-${pctRounded}% vs. ${refLabel})`;
+    } else if (wm.hasStableOrCurlingFloor || discountPct >= 12) {
+      theme.embedColor = 0x10B981;
+      theme.verdictHeadline = 'SUGGESTED BUY';
+    } else {
+      theme.embedColor = 0xF59E0B;
+      theme.verdictHeadline = `CAUTIOUS DIP — EARLY FLOOR (-${pctRounded}% vs. ${refLabel})`;
+    }
+  }
+
   const savingsPart = refComp > 0
-    ? (savings >= 0.50 ? `Save $${savings.toFixed(2)} vs. ${refLabel}` : `Matches ${refLabel} Low`)
+    ? (savings >= 0.50
+        ? (theme.verdictHeadline.includes('vs.') ? `Save $${savings.toFixed(2)}` : `Save $${savings.toFixed(2)} vs. ${refLabel}`)
+        : `Matches ${refLabel} Low`)
     : 'Verified Live Stock';
 
   const line1 = `**${theme.verdictHeadline}** — ${savingsPart} • $${pricePerPack.toFixed(2)} / pack`;
@@ -233,16 +281,20 @@ export function buildCleanDiscordAlertEmbed(params: {
   }
 
   const line2 = [`**$${params.landedPrice.toFixed(2)} Landed** ${shipParen}`, compSeg, msrpSeg, sliderSeg].filter(Boolean).join(' • ');
-  const wm = buildEarnedWatermarkSummary(params.ruleId || rule?.id, params.landedPrice);
-  const line3 = params.tcgQuarterNote ? `${wm.watermarkStrip} ${params.tcgQuarterNote}` : wm.watermarkStrip;
-  const line4 = formatCollectionAndCostLine({
+  const floorCore = wm.watermarkStrip.replace(/^Shelf Floor\s*[—-]\s*/i, '');
+  const line3 = `**Floor:** ${params.tcgQuarterNote ? `${floorCore} ${params.tcgQuarterNote}` : floorCore}`;
+  const ledgerCore = formatCollectionAndCostLine({
     skuId: params.ruleId || rule?.id, formFactor: params.formFactor || rule?.formFactor, productName: params.productName,
     landedPrice: params.landedPrice, packCount: rip.packCount, pricePerPack, rule, ownedFallback: params.ownedInVault
   });
+  const line4 = `**Ledger:** ${ledgerCore}`;
 
   const { primaryFastUrl, actionBarMarkdown } = buildOneTapActionBar({
-    retailer: params.retailer, url: params.url, productUrl: params.productUrl, cart1xUrl: params.cart1xUrl, cart2xUrl: params.cart2xUrl,
-    itemId: params.itemId, stock: params.stock, productLabel: params.productName, tcgComp: params.tcgComp, fallbackTcgUrl: params.fallbackTcgUrl
+    retailer: params.retailer, url: params.url, productUrl: params.productUrl,
+    cart1xUrl: params.cart1xUrl, cart2xUrl: params.cart2xUrl, cart3xUrl: params.cart3xUrl,
+    itemId: params.itemId, stock: params.stock, ruleId: params.ruleId || rule?.id,
+    formFactor: params.formFactor || rule?.formFactor, productLabel: params.productName,
+    tcgComp: params.tcgComp, fallbackTcgUrl: params.fallbackTcgUrl
   });
 
   const stockNote = typeof params.stock === 'number' && params.stock > 0 ? `Stock: ${params.stock}` : 'In Stock';
@@ -254,10 +306,10 @@ export function buildCleanDiscordAlertEmbed(params: {
     url: primaryFastUrl,
     color: theme.embedColor,
     thumbnail: { url: boxArt.thumbnailUrl },
-    description: `${line1}\n${line2}\n${line3}\n${line4}\n\n${actionBarMarkdown}`,
+    description: `${line1}\n${line2}\n\n${line3}\n${line4}\n\n${actionBarMarkdown}`,
     footer: { text: `DropBot V6 • ${stockNote}${preOrderNote}` },
     timestamp: new Date().toISOString()
   };
 
-  return { embed, boxArt, theme, primaryFastUrl };
+  return { embed, boxArt, theme, primaryFastUrl, isSliding, discountPct };
 }

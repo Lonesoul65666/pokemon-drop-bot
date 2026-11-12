@@ -112,6 +112,7 @@ function buildEarnedWatermarkSummary(skuId, currentLandedPrice, nowTs = Date.now
         return {
             skuId: '', realDaysTracked: 0, earnedMilestones: [], nextUnlockDays: 7, daysUntilNextUnlock: 7,
             observedAllTimeLow: currentLandedPrice && currentLandedPrice > 0 ? currentLandedPrice : null,
+            isSlidingDown: false, hasStableOrCurlingFloor: false,
             watermarkStrip: 'Shelf Floor — Tracking live (7d unlocks in 7d)'
         };
     }
@@ -119,7 +120,8 @@ function buildEarnedWatermarkSummary(skuId, currentLandedPrice, nowTs = Date.now
     if (points.length === 0) {
         return {
             skuId, realDaysTracked: 0, earnedMilestones: [], nextUnlockDays: 7, daysUntilNextUnlock: 7,
-            observedAllTimeLow: null, watermarkStrip: 'Shelf Floor — Tracking started (7d unlocks in 7d)'
+            observedAllTimeLow: null, isSlidingDown: false, hasStableOrCurlingFloor: false,
+            watermarkStrip: 'Shelf Floor — Tracking started (7d unlocks in 7d)'
         };
     }
     const earliestTs = Math.min(...points.map((pt) => pt.ts));
@@ -139,6 +141,13 @@ function buildEarnedWatermarkSummary(skuId, currentLandedPrice, nowTs = Date.now
         }
         prevMilestoneDays = milestone;
     }
+    const m7 = earnedMilestones.find((m) => m.days === 7)?.lowPrice;
+    const m15 = earnedMilestones.find((m) => m.days === 15)?.lowPrice;
+    const m30 = earnedMilestones.find((m) => m.days === 30)?.lowPrice;
+    const isSlidingDown = Boolean((m7 && m15 && m7 < m15 * 0.985) ||
+        (m7 && m30 && m7 < m30 * 0.985) ||
+        (m15 && m30 && m15 < m30 * 0.985));
+    const hasStableOrCurlingFloor = Boolean(!isSlidingDown && m7 && m15 && m7 >= m15 * 0.985);
     const nextUnlockDays = exports.EARNED_MILESTONES.find((m) => realDaysTracked < m) ?? null;
     const daysUntilNextUnlock = nextUnlockDays !== null ? Math.max(1, nextUnlockDays - realDaysTracked) : null;
     const unlockSuffix = nextUnlockDays !== null
@@ -149,7 +158,8 @@ function buildEarnedWatermarkSummary(skuId, currentLandedPrice, nowTs = Date.now
         : `Observed: ${formatWholeOrCents(observedAllTimeLow)}`;
     return {
         skuId, realDaysTracked, earnedMilestones, nextUnlockDays, daysUntilNextUnlock,
-        observedAllTimeLow, watermarkStrip: `Shelf Floor — ${body} ${unlockSuffix}`
+        observedAllTimeLow, isSlidingDown, hasStableOrCurlingFloor,
+        watermarkStrip: `Shelf Floor — ${body} ${unlockSuffix}`
     };
 }
 async function fetchTcgPlayerQuarterHistoryNote(tcgProductId, options) {

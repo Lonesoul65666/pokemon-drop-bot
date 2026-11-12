@@ -7,6 +7,7 @@ exports.extractTcgProductId = extractTcgProductId;
 exports.resolveAlertBoxArt = resolveAlertBoxArt;
 exports.resolveAlertPingAndTheme = resolveAlertPingAndTheme;
 exports.cleanRetailerDisplayUpper = cleanRetailerDisplayUpper;
+exports.detectActiveFloorSlide = detectActiveFloorSlide;
 exports.buildCleanDiscordAlertEmbed = buildCleanDiscordAlertEmbed;
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
@@ -135,11 +136,34 @@ function cleanRetailerDisplayUpper(retailer) {
         .trim()
         .toUpperCase();
 }
+function isTcgQuarterSliding(tcgLow, tcgQuarterNote) {
+    if (!tcgQuarterNote)
+        return false;
+    const nums = Array.from(tcgQuarterNote.matchAll(/\$([0-9,]+(?:\.[0-9]+)?)/g)).map((m) => parseFloat(m[1].replace(/,/g, '')));
+    if (nums.length >= 2 && nums[0] < nums[1] * 0.975)
+        return true;
+    if (nums.length >= 1 && tcgLow > 0 && tcgLow < nums[0] * 0.975)
+        return true;
+    return false;
+}
+function detectActiveFloorSlide(params) {
+    if (params.wm.isSlidingDown)
+        return true;
+    if (params.trendSignal === 'FALLING_KNIFE_WAIT')
+        return true;
+    if (/BLEEDING[_\s-]*DOWN|FALLING[_\s-]*KNIFE/i.test(`${params.trendSignal || ''} ${params.trendVerdictLabel || ''}`))
+        return true;
+    return isTcgQuarterSliding(params.tcgLow || 0, params.tcgQuarterNote);
+}
 function buildOneTapActionBar(params) {
     const knownStock = typeof params.stock === 'number' && params.stock > 0 ? params.stock : undefined;
+    const isCase = (0, evaluator_1.isCaseSkuFormat)(params.formFactor, params.ruleId, params.productLabel);
     const directCart = (0, evaluator_1.buildShopifyDirectCartLinks)({
-        url: params.url, productUrl: params.productUrl, cart1xUrl: params.cart1xUrl, cart2xUrl: params.cart2xUrl,
-        itemId: params.itemId, stock: knownStock, retailer: params.retailer
+        url: params.url, productUrl: params.productUrl, cart1xUrl: params.cart1xUrl,
+        cart2xUrl: isCase ? undefined : params.cart2xUrl,
+        cart3xUrl: isCase ? undefined : params.cart3xUrl,
+        itemId: params.itemId, stock: knownStock, retailer: params.retailer,
+        formFactor: params.formFactor, ruleId: params.ruleId, productName: params.productLabel
     });
     const prodPageUrl = params.productUrl || (params.url.includes('/cart/') ? params.url.split('/cart/')[0] : params.url);
     const mobileLinks = (0, evaluator_1.buildMobileRetailerLinks)({ retailer: params.retailer, url: params.url, productUrl: prodPageUrl, itemId: params.itemId });
@@ -149,11 +173,14 @@ function buildOneTapActionBar(params) {
     const ebaySoldUrl = `https://www.ebay.com/sch/i.html?_nkw=${qEbaySold}&LH_Complete=1&LH_Sold=1&_sop=13`;
     const pills = [];
     let primaryFastUrl = prodPageUrl || params.url;
+    const allowMultiQty = !isCase && /\betb\b|elite\s*trainer|\bbundle\b/i.test(`${params.formFactor || ''} ${params.ruleId || ''} ${params.productLabel}`);
     if (directCart.cart1xUrl && directCart.cart1xUrl.includes('/cart/')) {
         primaryFastUrl = directCart.cart1xUrl;
         pills.push(`[⚡ Shop Pay 1x ↗](${directCart.cart1xUrl})`);
-        if (directCart.cart2xUrl)
+        if (!isCase && directCart.cart2xUrl)
             pills.push(`[⚡ 2x ↗](${directCart.cart2xUrl})`);
+        if (allowMultiQty && directCart.cart3xUrl)
+            pills.push(`[⚡ 3x ↗](${directCart.cart3xUrl})`);
     }
     else {
         primaryFastUrl = mobileLinks.primaryCheckoutUrl || params.url;
@@ -183,8 +210,30 @@ function buildCleanDiscordAlertEmbed(params) {
     const refComp = tcgLow > 0 ? tcgLow : params.marketFallback;
     const refLabel = tcgLow > 0 ? 'TCGPlayer' : 'Market';
     const savings = Math.round((refComp - params.landedPrice) * 100) / 100;
+    const discountPct = refComp > 0 ? ((refComp - params.landedPrice) / refComp) * 100 : 0;
+    const wm = (0, watermarkHistory_1.buildEarnedWatermarkSummary)(params.ruleId || rule?.id, params.landedPrice);
+    const isSliding = detectActiveFloorSlide({
+        wm, trendSignal: params.trendSignal, trendVerdictLabel: params.trendVerdictLabel, tcgLow, tcgQuarterNote: params.tcgQuarterNote
+    });
+    if (!theme.is1PMsrpDrop) {
+        const pctRounded = Math.max(1, Math.round(discountPct));
+        if (isSliding) {
+            theme.embedColor = 0xF59E0B;
+            theme.verdictHeadline = `CAUTIOUS DIP — STILL SLIDING (-${pctRounded}% vs. ${refLabel})`;
+        }
+        else if (wm.hasStableOrCurlingFloor || discountPct >= 12) {
+            theme.embedColor = 0x10B981;
+            theme.verdictHeadline = 'SUGGESTED BUY';
+        }
+        else {
+            theme.embedColor = 0xF59E0B;
+            theme.verdictHeadline = `CAUTIOUS DIP — EARLY FLOOR (-${pctRounded}% vs. ${refLabel})`;
+        }
+    }
     const savingsPart = refComp > 0
-        ? (savings >= 0.50 ? `Save $${savings.toFixed(2)} vs. ${refLabel}` : `Matches ${refLabel} Low`)
+        ? (savings >= 0.50
+            ? (theme.verdictHeadline.includes('vs.') ? `Save $${savings.toFixed(2)}` : `Save $${savings.toFixed(2)} vs. ${refLabel}`)
+            : `Matches ${refLabel} Low`)
         : 'Verified Live Stock';
     const line1 = `**${theme.verdictHeadline}** — ${savingsPart} • $${pricePerPack.toFixed(2)} / pack`;
     const shipParen = params.shippingAmount > 0.01
@@ -202,15 +251,19 @@ function buildCleanDiscordAlertEmbed(params) {
                 : `+$${Math.abs(sliderDiff).toFixed(2)} vs. Your $${Math.round(params.sliderCeiling)} Slider`;
     }
     const line2 = [`**$${params.landedPrice.toFixed(2)} Landed** ${shipParen}`, compSeg, msrpSeg, sliderSeg].filter(Boolean).join(' • ');
-    const wm = (0, watermarkHistory_1.buildEarnedWatermarkSummary)(params.ruleId || rule?.id, params.landedPrice);
-    const line3 = params.tcgQuarterNote ? `${wm.watermarkStrip} ${params.tcgQuarterNote}` : wm.watermarkStrip;
-    const line4 = (0, purchaseMemory_1.formatCollectionAndCostLine)({
+    const floorCore = wm.watermarkStrip.replace(/^Shelf Floor\s*[—-]\s*/i, '');
+    const line3 = `**Floor:** ${params.tcgQuarterNote ? `${floorCore} ${params.tcgQuarterNote}` : floorCore}`;
+    const ledgerCore = (0, purchaseMemory_1.formatCollectionAndCostLine)({
         skuId: params.ruleId || rule?.id, formFactor: params.formFactor || rule?.formFactor, productName: params.productName,
         landedPrice: params.landedPrice, packCount: rip.packCount, pricePerPack, rule, ownedFallback: params.ownedInVault
     });
+    const line4 = `**Ledger:** ${ledgerCore}`;
     const { primaryFastUrl, actionBarMarkdown } = buildOneTapActionBar({
-        retailer: params.retailer, url: params.url, productUrl: params.productUrl, cart1xUrl: params.cart1xUrl, cart2xUrl: params.cart2xUrl,
-        itemId: params.itemId, stock: params.stock, productLabel: params.productName, tcgComp: params.tcgComp, fallbackTcgUrl: params.fallbackTcgUrl
+        retailer: params.retailer, url: params.url, productUrl: params.productUrl,
+        cart1xUrl: params.cart1xUrl, cart2xUrl: params.cart2xUrl, cart3xUrl: params.cart3xUrl,
+        itemId: params.itemId, stock: params.stock, ruleId: params.ruleId || rule?.id,
+        formFactor: params.formFactor || rule?.formFactor, productLabel: params.productName,
+        tcgComp: params.tcgComp, fallbackTcgUrl: params.fallbackTcgUrl
     });
     const stockNote = typeof params.stock === 'number' && params.stock > 0 ? `Stock: ${params.stock}` : 'In Stock';
     const preOrderNote = params.isPreOrder ? ' • Pre-Order' : '';
@@ -220,9 +273,9 @@ function buildCleanDiscordAlertEmbed(params) {
         url: primaryFastUrl,
         color: theme.embedColor,
         thumbnail: { url: boxArt.thumbnailUrl },
-        description: `${line1}\n${line2}\n${line3}\n${line4}\n\n${actionBarMarkdown}`,
+        description: `${line1}\n${line2}\n\n${line3}\n${line4}\n\n${actionBarMarkdown}`,
         footer: { text: `DropBot V6 • ${stockNote}${preOrderNote}` },
         timestamp: new Date().toISOString()
     };
-    return { embed, boxArt, theme, primaryFastUrl };
+    return { embed, boxArt, theme, primaryFastUrl, isSliding, discountPct };
 }
