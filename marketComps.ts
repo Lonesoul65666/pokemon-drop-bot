@@ -445,11 +445,45 @@ async function fetchEbayComp(ruleId: string | undefined, ruleName: string, price
   return undefined;
 }
 
+const fastTcgCompCache = new Map<string, { comp?: CompQuote; expiresAt: number }>();
+
+export async function getLiveTcgPlayerCompFast(
+  ruleId: string | undefined,
+  ruleName: string,
+  fallbackMarket: number,
+  singleUnitBaseline?: number
+): Promise<CompQuote | undefined> {
+  const cacheKey = `${ruleId || ''}::${ruleName}`.toLowerCase();
+  const now = Date.now();
+  const cached = fastTcgCompCache.get(cacheKey);
+  if (cached && cached.expiresAt > now) return cached.comp;
+
+  const formFactor = inferFormFactor(ruleId, ruleName);
+  const minFloor = getMinPlausiblePriceFloor(formFactor);
+  const safeFallback = Math.max(minFloor, fallbackMarket || minFloor);
+  let timer: NodeJS.Timeout | undefined;
+  try {
+    const comp = await Promise.race([
+      fetchTcgPlayerComp(ruleId, ruleName, singleUnitBaseline, safeFallback),
+      new Promise<undefined>((resolve) => {
+        timer = setTimeout(() => resolve(undefined), 3200);
+        timer.unref?.();
+      })
+    ]);
+    if (comp) {
+      fastTcgCompCache.set(cacheKey, { comp, expiresAt: now + 10 * 60 * 1000 });
+    }
+    return comp;
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+
 export async function getDualMarketComps(ruleId: string | undefined, ruleName: string, fallbackMarket: number, singleUnitBaseline?: number): Promise<DualMarketComps> {
   const formFactor = inferFormFactor(ruleId, ruleName);
   const minFloor = getMinPlausiblePriceFloor(formFactor);
   const safeFallback = Math.max(minFloor, fallbackMarket || minFloor);
-  const tcg = await fetchTcgPlayerComp(ruleId, ruleName, singleUnitBaseline, safeFallback);
+  const tcg = await getLiveTcgPlayerCompFast(ruleId, ruleName, safeFallback, singleUnitBaseline);
   const refPrice = (tcg && tcg.price >= minFloor) ? tcg.total : safeFallback;
   const ebay = await fetchEbayComp(ruleId, ruleName, refPrice, singleUnitBaseline, safeFallback);
   return { tcgplayer: tcg, ebay };

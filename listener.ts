@@ -35,6 +35,7 @@ export async function processIncomingDrop(item: RawRestockItem): Promise<void> {
         retailer: item.retailer,
         url: item.url,
         productUrl: item.productUrl,
+        imageUrl: result.imageUrl || item.imageUrl,
         cart1xUrl: result.cart1xUrl || item.cart1xUrl,
         cart2xUrl: result.cart2xUrl !== undefined ? result.cart2xUrl : item.cart2xUrl,
         cart3xUrl: result.cart3xUrl !== undefined ? result.cart3xUrl : item.cart3xUrl,

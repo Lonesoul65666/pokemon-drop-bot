@@ -325,3 +325,5 @@ export function evaluateSkuTrendAndTiming(params: TrendEvalParams): TrendEvaluat
     : `◈ ⟦ STABLE 60D PLATEAU ($${Math.round(rolling.avg60d)} 60D AVG) ⟧`;
   return makeResult('STABLE_ACCUMULATE', label);
 }
+
+export { buildEarnedWatermarkSummary, fetchTcgPlayerQuarterHistoryNote } from './watermarkHistory';

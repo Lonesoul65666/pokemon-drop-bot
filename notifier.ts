@@ -2,11 +2,23 @@ import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
-import { getDualMarketComps } from './marketComps';
-import { markLiveStockOut, buildShopifyDirectCartLinks, buildMobileRetailerLinks, computeAutoPilotTarget } from './evaluator';
+import { getDualMarketComps, getLiveTcgPlayerCompFast, CompQuote } from './marketComps';
+import {
+  markLiveStockOut,
+  buildShopifyDirectCartLinks,
+  computeAutoPilotTarget,
+  isVerified1PBigBoxOrPc
+} from './evaluator';
 import { atomicWriteJson, computeRipMetrics, isSingleCardOrNonSealed } from './policies';
-import { getFlashClearEscalation } from './marketTape';
 import { loadGlobalSettings, loadMergedPoliciesRaw } from './src/config/configManager';
+import {
+  buildCleanDiscordAlertEmbed,
+  resolveAlertBoxArt,
+  cleanRetailerDisplayUpper,
+  extractTcgProductId
+} from './src/notifications/discordEmbedBuilder';
+import { fetchTcgPlayerQuarterHistoryNote } from './src/engine/watermarkHistory';
+import { isSingleEtbFormat } from './src/engine/purchaseMemory';
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
@@ -15,6 +27,7 @@ interface DiscordQueueJob {
   method: 'POST' | 'PATCH';
   url: string;
   payload: any;
+  localAttachmentPath?: string;
   resolve: (data: any) => void;
   reject: (err: any) => void;
   retries: number;
@@ -60,9 +73,17 @@ async function processDiscordQueue(): Promise<void> {
 
       try {
         lastDiscordSendAt = Date.now();
+        let bodyToSend: any = job.payload;
+        if (job.method === 'POST' && job.localAttachmentPath && fs.existsSync(job.localAttachmentPath)) {
+          const form = new FormData();
+          form.append('payload_json', JSON.stringify(job.payload));
+          const imgBuf = fs.readFileSync(job.localAttachmentPath);
+          form.append('files[0]', new Blob([imgBuf], { type: 'image/jpeg' }), 'boxart.jpg');
+          bodyToSend = form;
+        }
         const res = job.method === 'POST'
-          ? await axios.post(job.url, job.payload, { timeout: 10000 })
-          : await axios.patch(job.url, job.payload, { timeout: 10000 });
+          ? await axios.post(job.url, bodyToSend, { timeout: 10000 })
+          : await axios.patch(job.url, bodyToSend, { timeout: 10000 });
         discordWebhookQueue.shift();
         job.resolve(res.data ?? { ok: true });
       } catch (err: any) {
@@ -89,9 +110,15 @@ async function processDiscordQueue(): Promise<void> {
   }
 }
 
-export function enqueueDiscordWebhook(url: string, payload: any, method: 'POST' | 'PATCH' = 'POST', priorityFront = false): Promise<any> {
+export function enqueueDiscordWebhook(
+  url: string,
+  payload: any,
+  method: 'POST' | 'PATCH' = 'POST',
+  priorityFront = false,
+  localAttachmentPath?: string
+): Promise<any> {
   return new Promise((resolve, reject) => {
-    const job: DiscordQueueJob = { method, url, payload, resolve, reject, retries: 0 };
+    const job: DiscordQueueJob = { method, url, payload, localAttachmentPath, resolve, reject, retries: 0 };
     if (priorityFront) {
       discordWebhookQueue.unshift(job);
     } else {
@@ -103,9 +130,11 @@ export function enqueueDiscordWebhook(url: string, payload: any, method: 'POST' 
 
 export interface DropPayload {
   title: string;
+  titlePrefix?: string;
   retailer: string;
   url: string;
   productUrl?: string;
+  imageUrl?: string;
   cart1xUrl?: string;
   cart2xUrl?: string;
   cart3xUrl?: string;
@@ -395,8 +424,8 @@ export async function sendPokemonCenterQueueAlert(params?: {
     return false;
   }
   lastPcWaitingRoomAlertTs = now;
-  const targetUrl = 'https://www.pokemoncenter.com';
-  const banner = '◈ ⟦ POKÉMON CENTER WAITING ROOM LIVE — JOIN QUEUE NOW ⟧';
+  const targetUrl = params?.queueUrl || 'https://www.pokemoncenter.com';
+  const banner = 'POKÉMON CENTER — Virtual Waiting Room Live';
 
   try {
     let history: any[] = [];
@@ -427,25 +456,23 @@ export async function sendPokemonCenterQueueAlert(params?: {
   } catch (e) {}
 
   const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+  const boxArt = resolveAlertBoxArt({});
   const embed = {
     title: banner,
     description:
-      `**Queue-It Virtual Waiting Room detected on Pokémon Center!**\n` +
-      `Open the homepage immediately on mobile + desktop to secure your queue position before sealed TCG allocations drop.\n\n` +
-      `[**⟦ ⚡ ENTER POKÉMON CENTER QUEUE NOW ↗ ⟧**](${targetUrl})`,
+      `**INVITE OR DRAW LIVE** — Queue-It Virtual Waiting Room Active\n` +
+      `Open Pokémon Center immediately on mobile + desktop to hold your queue spot before sealed TCG stock goes live.\n\n` +
+      `[⚡ Join Pokémon Center Queue ↗](${targetUrl})`,
     url: targetUrl,
-    color: 0x00F0FF,
-    fields: [
-      { name: '◈ TARGET URL', value: targetUrl, inline: true },
-      { name: '◆ COOLDOWN', value: '30m Queue Dedup Active', inline: true }
-    ],
-    footer: { text: 'DropBot Commander v6.0 • Honest Queue-It Radar (Zero Fake SKU Stub)' },
+    color: 0xDC2626,
+    thumbnail: { url: boxArt.thumbnailUrl },
+    footer: { text: 'DropBot V6 • 30m Queue Dedup Active' },
     timestamp: new Date().toISOString()
   };
 
   await Promise.all([
     webhookUrl
-      ? enqueueDiscordWebhook(`${webhookUrl}?wait=true`, { content: `@everyone ${banner} — ${targetUrl}`, embeds: [embed] }, 'POST', true)
+      ? enqueueDiscordWebhook(`${webhookUrl}?wait=true`, { content: '@here', embeds: [embed] }, 'POST', true, boxArt.localFilePath)
       : Promise.resolve(null),
     sendTelegramAlertFast(`<b>${banner}</b>\n<a href="${targetUrl}">⚡ JOIN POKÉMON CENTER QUEUE NOW ↗</a>`)
   ]);
@@ -473,10 +500,10 @@ export async function sendBigBoxQueueOrDrawingAlert(params: {
   bigBoxWindowCooldownMap.set(dedupKey, now);
 
   const kindTag = params.windowKind === 'DRAWING'
-    ? 'ONLINE DRAWING WINDOW LIVE'
-    : (params.windowKind === 'INVITE' ? 'INVITE REQUEST WINDOW LIVE' : 'VIRTUAL QUEUE WINDOW LIVE');
-  const banner = `◈ ⟦ ${params.retailer.toUpperCase()} // ${kindTag} ⟧`;
+    ? 'Online Drawing Window'
+    : (params.windowKind === 'INVITE' ? 'Invite Request Window' : 'Virtual Queue Window');
   const displayTitle = params.ruleName || params.headline;
+  const cleanStore = cleanRetailerDisplayUpper(params.retailer);
 
   try {
     let history: any[] = [];
@@ -507,24 +534,25 @@ export async function sendBigBoxQueueOrDrawingAlert(params: {
   } catch {}
 
   const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+  const boxArt = resolveAlertBoxArt({ ruleId: params.ruleId });
   const embed = {
-    title: banner,
+    title: `${cleanStore} — ${displayTitle}`,
     description:
-      `**${displayTitle}**\n` +
-      `◈ **Event Type:** \`${kindTag}\` (Not Instant-Add-to-Cart — enter registration/queue window)\n` +
-      `◈ **Wire Source:** ${params.sourceLabel || 'Public Restock Wire'}\n\n` +
-      `[**⟦ ⚡ OPEN ${params.retailer.toUpperCase()} ${params.windowKind} PAGE ↗ ⟧**](${params.url})`,
+      `**INVITE OR DRAW LIVE** — ${kindTag}\n` +
+      `Source: ${params.sourceLabel || 'Public Restock Wire'} • Enter registration or queue window directly.\n\n` +
+      `[⚡ Open ${params.retailer} ${params.windowKind} ↗](${params.url})`,
     url: params.url,
-    color: 0x38bdf8,
-    footer: { text: 'DropBot v6.0 Restock Wire • Queue / Invite / Online Drawing Classifier' },
+    color: 0xDC2626,
+    thumbnail: { url: boxArt.thumbnailUrl },
+    footer: { text: `DropBot V6 • ${kindTag}` },
     timestamp: new Date().toISOString()
   };
 
   await Promise.all([
     webhookUrl
-      ? enqueueDiscordWebhook(`${webhookUrl}?wait=true`, { embeds: [embed] }, 'POST', true)
+      ? enqueueDiscordWebhook(`${webhookUrl}?wait=true`, { content: '@here', embeds: [embed] }, 'POST', true, boxArt.localFilePath)
       : Promise.resolve(null),
-    sendTelegramAlertFast(`<b>${banner}</b>\n${displayTitle}\n<a href="${params.url}">⚡ OPEN ${params.windowKind} WINDOW ↗</a>`)
+    sendTelegramAlertFast(`<b>${cleanStore} — ${displayTitle}</b>\n<a href="${params.url}">⚡ OPEN ${params.windowKind} WINDOW ↗</a>`)
   ]);
   return true;
 }
@@ -545,243 +573,90 @@ export async function sendAlert(drop: DropPayload): Promise<boolean> {
     return false;
   }
 
-  const priceVal = drop.priceNum ?? parseFloat(drop.price || '0');
+  const shelfPrice = drop.itemPrice && drop.itemPrice > 0
+    ? drop.itemPrice
+    : (drop.priceNum ?? parseFloat(drop.price || '0'));
+  const shippingAmount = drop.shippingPrice !== undefined
+    ? Number(drop.shippingPrice)
+    : (drop.estimatedShipping !== undefined ? Number(drop.estimatedShipping) : Math.max(0, (drop.landedPrice ?? shelfPrice) - shelfPrice));
+  const landedPrice = drop.landedPrice && drop.landedPrice > 0
+    ? drop.landedPrice
+    : Math.round((shelfPrice + shippingAmount) * 100) / 100;
   const msrpVal = drop.msrp ?? 0;
-  const fallbackMkt = drop.marketValue ?? 0;
+  const sliderCeiling = Math.max(msrpVal, Number(drop.maxBuyTarget || 0));
 
-  // 0ms FIRE-THEN-ENRICH: Resolve initial baseline/cached market floor synchronously from RAM (0ms network block!)
   const telEntry = drop.ruleId ? getTelemetryCacheFast()[drop.ruleId] : undefined;
   const cachedLowest = Number(telEntry?.lowestPrice || 0);
-  const bestMarketRef = fallbackMkt > 0
-    ? fallbackMkt
+  const cachedLowestUrl = typeof telEntry?.lowestUrl === 'string' ? telEntry.lowestUrl : undefined;
+  const bestMarketRef = (drop.marketValue && drop.marketValue > 0)
+    ? drop.marketValue
     : (cachedLowest > 0 ? cachedLowest : msrpVal);
-  const effectiveComparePrice = drop.freeShipNote ? priceVal : (drop.landedPrice ?? priceVal);
-  const discount = bestMarketRef > 0 ? Math.round(((bestMarketRef - effectiveComparePrice) / bestMarketRef) * 100) : 0;
-  const savings = Math.max(0, bestMarketRef - effectiveComparePrice);
 
-  // Format MSRP comparison with tactical typography
-  let msrpComparison = 'N/A';
-  if (msrpVal > 0) {
-    const msrpDiffPct = Math.round(((priceVal - msrpVal) / msrpVal) * 100);
-    if (msrpDiffPct <= 0) {
-      msrpComparison = `**$${msrpVal.toFixed(2)}** (${msrpDiffPct === 0 ? '✦ Exact MSRP' : `${Math.abs(msrpDiffPct)}% BELOW MSRP!`})`;
-    } else {
-      msrpComparison = `**$${msrpVal.toFixed(2)}** (${msrpDiffPct}% above MSRP)`;
+  const is1PBigBox = isVerified1PBigBoxOrPc(drop.retailer, drop.productUrl || drop.url, false);
+  const productLabel = drop.ruleName || drop.title;
+  let initialTcgComp: CompQuote | undefined = undefined;
+
+  // Phase 2 Live Comp Gate for Non-1P LGS: Verify live TCGPlayer lowest shipped BEFORE pinging Discord!
+  // (1P Big-Box MSRP drops skip pre-send wait for 0ms dispatch and enrich immediately after.)
+  if (!is1PBigBox) {
+    initialTcgComp = await getLiveTcgPlayerCompFast(drop.ruleId, productLabel, bestMarketRef);
+    const verifiedTcgLow = (initialTcgComp && initialTcgComp.isLiveVerified && initialTcgComp.price > 0)
+      ? initialTcgComp.price
+      : ((cachedLowest > 0 && /tcgplayer/i.test(`${telEntry?.lowestStore || ''} ${cachedLowestUrl || ''}`) && !/Case Baseline/i.test(String(telEntry?.lowestStore || ''))) ? cachedLowest : 0);
+
+    if (verifiedTcgLow > 0 && landedPrice > verifiedTcgLow + 0.01) {
+      console.log(`[Notifier] Suppressed worse-than-TCGPlayer LGS alert: ${drop.retailer} $${landedPrice.toFixed(2)} landed > TCGPlayer $${verifiedTcgLow.toFixed(2)}`);
+      return false;
     }
   }
 
-  const qTcg = encodeURIComponent(drop.ruleName || drop.title);
-  const qEbay = encodeURIComponent('Pokemon ' + (drop.ruleName || drop.title) + ' Sealed');
-  const initialMarketLines: string[] = [];
-  if (cachedLowest > 0 && telEntry?.lowestUrl) {
-    initialMarketLines.push(`**$${cachedLowest.toFixed(2)}** (Cached Floor • *Live Comp Syncing...*) [Verified Comp ↗](${telEntry.lowestUrl})`);
-  } else {
-    initialMarketLines.push(`**$${bestMarketRef.toFixed(2)}** (Market Baseline • *Live Comp Syncing...*) [Search TCGPlayer ↗](https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${qTcg}&view=grid)`);
-  }
-  initialMarketLines.push(`*Live BIN Check* [View Lowest on eBay ↗](https://www.ebay.com/sch/i.html?_nkw=${qEbay}&LH_BIN=1&_sop=15)`);
-  const marketBlock = initialMarketLines.join('\n');
-
-  const flashEscalation = getFlashClearEscalation(drop.ruleId, priceVal);
-
-  const landedOrPrice = drop.landedPrice ?? priceVal;
-  const isTierAMsrpHit = Boolean(
-    drop.bigBoxTier === 'MSRP_TIER_A' ||
-    drop.isMsrpUnicorn ||
-    (msrpVal > 0 && landedOrPrice <= Math.round(msrpVal * 1.08 * 100) / 100 && (drop.estimatedShipping ?? 0) <= 6.99)
-  );
-
-  // Format-driven tactical prefix & color
-  const ffLower = String(drop.formFactor || '').toLowerCase();
-  const combinedLabel = `${drop.ruleId || ''} ${drop.formFactor || ''} ${drop.ruleName || ''} ${drop.title || ''}`.toLowerCase();
-
-  let tacticalFormatCallsign = '◈ ⟦ WALL ETB // SINGLE ⟧';
-  let embedColor = 0x10b981; // Emerald/Cyan default for Wall ETB
-
-  if (ffLower.includes('etb case') || combinedLabel.includes('etb-case') || (combinedLabel.includes('etb') && combinedLabel.includes('case'))) {
-    tacticalFormatCallsign = '❖ ⟦ MASTER CASE // 10x ETB ⟧';
-    embedColor = 0xf59e0b; // Gold
-  } else if (ffLower.includes('master case') || ffLower.includes('booster case') || combinedLabel.includes('booster-case') || combinedLabel.includes('case')) {
-    tacticalFormatCallsign = '❖ ⟦ BOOSTER CASE // 6x BOX ⟧';
-    embedColor = 0xf59e0b; // Gold
-  } else if (ffLower.includes('booster box') || combinedLabel.includes('booster-box') || combinedLabel.includes('booster box')) {
-    tacticalFormatCallsign = '▲ ⟦ BOOSTER BOX // 36-PACK ⟧';
-    embedColor = 0xa855f7; // Violet
-  } else if (ffLower.includes('bundle') || combinedLabel.includes('bundle')) {
-    tacticalFormatCallsign = '◆ ⟦ BOOSTER BUNDLE // 6-PACK ⟧';
-    embedColor = 0x3b82f6; // Electric Blue
-  }
-
-  let tierBadge = `${tacticalFormatCallsign} • UNDER TRIGGER`;
-
-  if (drop.bigBoxTier === 'BIG_BOX_RESTOCK_RADAR' && drop.bigBoxBadge) {
-    tierBadge = `✦ ⟦ BIG-BOX RESTOCK RADAR // MSRP ASSUMED ⟧`;
-    embedColor = 0x00F0FF;
-  } else if (isTierAMsrpHit) {
-    tierBadge = `✦ ⟦ MSRP OVERRIDE // RETAIL HIT ⟧ • ${tacticalFormatCallsign}`;
-    embedColor = 0xe11d48;
-  } else if (drop.bigBoxTier === 'PC_EXCLUSIVE_MSRP' && drop.bigBoxBadge) {
-    tierBadge = `✦ ⟦ POKEMON CENTER // $59.99 EXCLUSIVE MSRP ⟧`;
-    embedColor = 0x00F0FF;
-  } else if (flashEscalation.isHighVelocityRepeat && flashEscalation.badgeText) {
-    tierBadge = `${tacticalFormatCallsign} • HIGH-VELOCITY REPEAT`;
-    embedColor = 0xe11d48;
-  } else if (drop.isElasticDip) {
-    tierBadge = `${tacticalFormatCallsign} • 60D ELASTIC DIP OPPORTUNITY`;
-    embedColor = 0x10b981;
-  } else if (drop.isPreRelease && drop.preReleaseStatusTag) {
-    tierBadge = drop.preReleaseStatusTag.includes('SOLID PRE-LAUNCH GRAB')
-      ? `${tacticalFormatCallsign} • SOLID PRE-LAUNCH GRAB`
-      : `${tacticalFormatCallsign} • PRE-RELEASE ALLOCATION`;
-    embedColor = drop.preReleaseStatusTag.includes('SOLID PRE-LAUNCH GRAB') ? 0x10b981 : 0x8b5cf6;
-  } else if (drop.isPreOrder) {
-    tierBadge = `${tacticalFormatCallsign} • PRE-ORDER ALLOCATION`;
-    embedColor = 0x8b5cf6;
-  } else if (msrpVal > 0 && priceVal <= msrpVal * 1.05) {
-    tierBadge = `✦ ⟦ AT OR NEAR MSRP // INSTANT COP ⟧ • ${tacticalFormatCallsign}`;
-    embedColor = 0x10b981;
-  } else if (discount >= 22 || savings >= 60) {
-    tierBadge = `${tacticalFormatCallsign} • HEAVY ALPHA (${discount}% UNDER MARKET • SAVE $${savings.toFixed(0)})`;
-  }
-
-  let headerPrefix = isTierAMsrpHit
-    ? '✦ ⟦ MSRP OVERRIDE // RETAIL HIT ⟧'
-    : (drop.bigBoxTier === 'PC_EXCLUSIVE_MSRP'
-        ? '✦ ⟦ PC EXCLUSIVE MSRP ⟧'
-        : tacticalFormatCallsign);
-  let signalLine = drop.isPreOrder ? 'Pre-order allocation live (Slider target active)' : 'Fresh restock detected';
-
-  if (drop.alertType === 'PRICE_DROP' && drop.previousPrice) {
-    const cut = (drop.previousPrice - priceVal).toFixed(2);
-    if (!isTierAMsrpHit) {
-      headerPrefix = `${tacticalFormatCallsign} // PRICE DROP (-$${cut})`;
-    }
-    signalLine = `Slashed from $${drop.previousPrice.toFixed(2)} (seen at ${drop.previousTimeStr})`;
-  } else if (drop.alertType === 'RESTOCK_REPEAT' && drop.previousPrice) {
-    if (!isTierAMsrpHit) {
-      headerPrefix = `${tacticalFormatCallsign} // RESTOCKED`;
-    }
-    signalLine = `Previously seen at $${drop.previousPrice.toFixed(2)} (${drop.previousTimeStr})`;
-  }
-
-  if (drop.trendVerdictLabel) {
-    signalLine += `\n**${drop.trendVerdictLabel}**`;
-  } else if (drop.isPreRelease && drop.preReleaseStatusTag) {
-    signalLine += `\n**${drop.preReleaseStatusTag}**`;
-  }
-
-  if (flashEscalation.isHighVelocityRepeat && flashEscalation.badgeText) {
-    signalLine += `\n${flashEscalation.badgeText}`;
-  }
-
-  if (drop.freeShipNote) {
-    signalLine += `\n◈ **${drop.freeShipNote}**`;
-  }
-
-  if (drop.marketplaceWarning) {
-    signalLine += `\n**${drop.marketplaceWarning}**`;
-  }
-
-  const vaultBadge = drop.ownedInVault
-    ? (isTierAMsrpHit ? '✦ ⟦ DEFCON-1 OVERRIDE // IN VAULT MSRP RIP ⟧' : '❖ ⟦ IN VAULT // PASSING TO CREW ⟧')
-    : '◈ ⟦ NEEDED FOR WALL // ACTIVE TARGET ⟧';
-
-  const stockDisplay = typeof drop.stock === 'number' && drop.stock > 0
-    ? `${drop.stock} Units Loaded`
-    : 'In Stock (Qty Hidden)';
-
-  const shipNote = getRetailerShippingNote(
-    drop.retailer,
-    priceVal,
-    drop.estimatedShipping,
-    drop.itemPrice,
-    drop.shippingPrice,
-    drop.freeShipNote
-  );
-  const landedLine = drop.landedPrice && drop.landedPrice > priceVal
-    ? `\n◈ Landed (1x): **$${drop.landedPrice.toFixed(2)}**${drop.freeShipNote ? ` • *${drop.freeShipNote}*` : ''}`
-    : '';
-
-  const knownStock = typeof drop.stock === 'number' && drop.stock > 0 ? drop.stock : undefined;
-  const directCart = buildShopifyDirectCartLinks({
+  const built = buildCleanDiscordAlertEmbed({
+    titlePrefix: drop.titlePrefix,
+    retailer: drop.retailer,
+    productName: productLabel,
     url: drop.url,
     productUrl: drop.productUrl,
+    imageUrl: drop.imageUrl,
     cart1xUrl: drop.cart1xUrl,
     cart2xUrl: drop.cart2xUrl,
-    cart3xUrl: drop.cart3xUrl,
     itemId: drop.itemId,
-    stock: knownStock,
-    retailer: drop.retailer
+    stock: drop.stock,
+    ruleId: drop.ruleId,
+    formFactor: drop.formFactor,
+    shelfPrice,
+    landedPrice,
+    shippingAmount,
+    msrp: msrpVal,
+    sliderCeiling,
+    marketFallback: bestMarketRef,
+    packCount: drop.packCount,
+    pricePerPack: drop.pricePerPack,
+    ownedInVault: drop.ownedInVault,
+    bigBoxTier: drop.bigBoxTier,
+    isMsrpUnicorn: drop.isMsrpUnicorn,
+    isPreOrder: drop.isPreOrder,
+    tcgComp: initialTcgComp,
+    fallbackTcgUrl: cachedLowestUrl
   });
-  const c1 = directCart.cart1xUrl;
-  const c2 = directCart.cart2xUrl;
-  const c3 = directCart.cart3xUrl;
-  const isShopifyCart = Boolean(c1 && c1.includes('/cart/'));
-  const prodPageUrl = drop.productUrl || (drop.url.includes('/cart/') ? drop.url.split('/cart/')[0] : drop.url);
-  const mobileRetailer = buildMobileRetailerLinks({
-    retailer: drop.retailer,
-    url: drop.url,
-    productUrl: prodPageUrl,
-    itemId: drop.itemId
-  });
 
-  let actionLinks: string;
-  let primaryFastUrl = prodPageUrl;
-  if (isShopifyCart && c1) {
-    primaryFastUrl = c1;
-    const segments = [`[**⟦ ⚡ SHOP PAY 1X ↗ ⟧**](${c1})`];
-    if (c2) segments.push(`[**⟦ ⚡ 2X ↗ ⟧**](${c2})`);
-    if (c3) segments.push(`[**⟦ ⚡ 3X ↗ ⟧**](${c3})`);
-    segments.push(`[Product Page ↗](${prodPageUrl})`);
-    actionLinks = segments.join('   •   ');
-  } else if (mobileRetailer.mobileActionMarkdown) {
-    primaryFastUrl = mobileRetailer.primaryCheckoutUrl || drop.url;
-    actionLinks = mobileRetailer.mobileActionMarkdown;
-  } else {
-    primaryFastUrl = drop.url;
-    actionLinks = `[**⟦ VIEW & CHECKOUT ON ${drop.retailer.toUpperCase()} ↗ ⟧**](${drop.url})`;
-  }
-
-  const thumbUrl = getThumbnailUrl(drop.ruleId);
-
-  const embed: any = {
-    title: `${headerPrefix} — ${drop.ruleName || drop.title}`,
-    description: `**${tierBadge}**\n*${signalLine}*`,
-    url: primaryFastUrl,
-    color: embedColor,
-    fields: [
-      { name: '◈ DROP PRICE', value: `**$${priceVal.toFixed(2)}** (${shipNote})${landedLine}\n**${drop.retailer}**`, inline: true },
-      { name: '◆ RETAIL MSRP', value: `${msrpComparison}\n${stockDisplay}`, inline: true },
-      { name: '▲ LIVE MARKET COMPS (LOWEST + SHIP)', value: marketBlock, inline: false },
-      { name: '❖ VAULT STATUS', value: vaultBadge, inline: true },
-      { name: '✦ SPREAD GAIN', value: discount > 0 ? `**${discount}% Below Market** (~$${savings.toFixed(0)} edge)` : 'At Target', inline: true },
-      { name: '◈ DIRECT CHECKOUT', value: actionLinks, inline: false }
-    ],
-    footer: { text: 'DropBot Commander v6.0 • 0ms Fire-Then-Enrich • Tactical OOS Tracker Active' },
-    timestamp: new Date().toISOString()
-  };
-
-  if (thumbUrl) {
-    embed.thumbnail = { url: thumbUrl };
-  }
-
+  const { embed, boxArt, theme, primaryFastUrl } = built;
   const webhookPayload: any = { embeds: [embed] };
-  if (isTierAMsrpHit) {
-    webhookPayload.content = `@everyone ✦ ⟦ **MSRP OVERRIDE // RETAIL HIT** ⟧ — **${drop.ruleName || drop.title}** at **$${priceVal.toFixed(2)}** on **${drop.retailer}**!`;
+  if (theme.mentionContent) {
+    webhookPayload.content = theme.mentionContent;
   }
 
+  const shipNote = shippingAmount > 0.01 ? `$${shelfPrice.toFixed(2)} + $${shippingAmount.toFixed(2)} Ship` : 'Free Ship';
   const tgBaseHtml =
-    `<b>${drop.ruleName || drop.title}</b>\n` +
-    `<b>$${priceVal.toFixed(2)}</b> at <b>${drop.retailer}</b> (${shipNote})\n` +
-    `MSRP: $${msrpVal.toFixed(2)} • Mkt: ~$${bestMarketRef.toFixed(2)}\n` +
-    `<a href="${primaryFastUrl}">⚡ 1-TAP CHECKOUT ↗</a>` +
-    (c2 ? `  |  <a href="${c2}">⚡ 2X ↗</a>` : '') +
-    (c3 ? `  |  <a href="${c3}">⚡ 3X ↗</a>` : '');
+    `<b>${cleanRetailerDisplayUpper(drop.retailer)} — ${productLabel}</b>\n` +
+    `<b>$${landedPrice.toFixed(2)} Landed</b> (${shipNote})\n` +
+    `MSRP: $${msrpVal.toFixed(2)} • Comp: ~$${(initialTcgComp?.price || bestMarketRef).toFixed(2)}\n` +
+    `<a href="${primaryFastUrl}">⚡ 1-Tap Checkout ↗</a>` +
+    (drop.cart2xUrl ? `  |  <a href="${drop.cart2xUrl}">⚡ 2x ↗</a>` : '');
 
   try {
-    // 1. Fire Discord & optional Telegram immediately (priorityFront = true on all BUY alerts!)
     const [discordSettled, tgSettled] = await Promise.allSettled([
       webhookUrl
-        ? enqueueDiscordWebhook(`${webhookUrl}?wait=true`, webhookPayload, 'POST', true)
+        ? enqueueDiscordWebhook(`${webhookUrl}?wait=true`, webhookPayload, 'POST', true, boxArt.localFilePath)
         : Promise.resolve(null),
       sendTelegramAlertFast(tgBaseHtml)
     ]);
@@ -799,73 +674,88 @@ export async function sendAlert(drop: DropPayload): Promise<boolean> {
       return false;
     }
 
-    recordDropHistory(drop);
+    if (!drop.titlePrefix) {
+      recordDropHistory(drop);
+    }
     const sentMsgId: string | undefined = discordData?.id;
     if (sentMsgId && drop.itemId) {
       activeDiscordMessages.set(String(drop.itemId), {
         messageId: sentMsgId,
         embed,
         sentAt: Date.now(),
-        ruleName: drop.ruleName || drop.title,
+        ruleName: productLabel,
         retailer: drop.retailer
       });
     }
-    console.log(`[DISCORD SENT 0ms] [${drop.alertType || 'NEW'}] ${drop.title} ($${priceVal.toFixed(2)} at ${drop.retailer})`);
+    console.log(`[DISCORD SENT] [${drop.alertType || 'NEW'}] ${productLabel} ($${landedPrice.toFixed(2)} landed at ${drop.retailer})`);
 
-    // 2. Detached Asynchronous Enrichment: Fetch live TCGPlayer + eBay comps and PATCH message if live comps improve accuracy
+    // 2. Detached Asynchronous Enrichment: Fetch TCGPlayer comp + TCG 30d/60d quarter history and PATCH cleanly while preserving Box Art!
     if (sentMsgId || tgMsgId) {
       void (async () => {
         try {
-          const comps = await getDualMarketComps(drop.ruleId, drop.ruleName || drop.title, bestMarketRef);
-          const hasLiveTcg = Boolean(comps.tcgplayer?.isLiveVerified && comps.tcgplayer.price > 0);
-          const hasLiveEbay = Boolean(comps.ebay?.isLiveVerified && comps.ebay.price > 0);
-          if (!hasLiveTcg && !hasLiveEbay) return;
+          const comps = await getDualMarketComps(drop.ruleId, productLabel, bestMarketRef);
+          const bestTcg = comps.tcgplayer || initialTcgComp;
+          const resolvedProdId = extractTcgProductId(bestTcg?.url) || boxArt.tcgProductId || extractTcgProductId(cachedLowestUrl);
+          const tcgQuarterNote = resolvedProdId
+            ? await fetchTcgPlayerQuarterHistoryNote(resolvedProdId, {
+                formFactor: drop.formFactor,
+                skuId: drop.ruleId,
+                productName: productLabel
+              })
+            : '';
 
-          // Abort PATCH if item already sold out while scraping comps so we never overwrite a SOLD OUT strikethrough!
+          if (!bestTcg && !tcgQuarterNote) return;
           if (drop.itemId && sentMsgId && !activeDiscordMessages.has(String(drop.itemId))) {
             return;
           }
 
-          const liveMktRef = hasLiveTcg ? comps.tcgplayer!.price : bestMarketRef;
-          const liveDiscount = liveMktRef > 0 ? Math.round(((liveMktRef - effectiveComparePrice) / liveMktRef) * 100) : discount;
-          const liveSavings = Math.max(0, liveMktRef - effectiveComparePrice);
-
-          const liveLines: string[] = [];
-          if (hasLiveTcg && comps.tcgplayer) {
-            liveLines.push(`**$${comps.tcgplayer.price.toFixed(2)}** ${comps.tcgplayer.shippingLabel} [TCGPlayer Product ↗](${comps.tcgplayer.url})`);
-          } else {
-            liveLines.push(initialMarketLines[0].replace(' • *Live Comp Syncing...*', ''));
-          }
-          if (hasLiveEbay && comps.ebay) {
-            liveLines.push(`**$${comps.ebay.price.toFixed(2)}** ${comps.ebay.shippingLabel} [eBay Direct Item ↗](${comps.ebay.url})`);
-          } else {
-            liveLines.push(`*Live BIN Check* [View Lowest on eBay ↗](https://www.ebay.com/sch/i.html?_nkw=${qEbay}&LH_BIN=1&_sop=15)`);
-          }
+          const enriched = buildCleanDiscordAlertEmbed({
+            titlePrefix: drop.titlePrefix,
+            retailer: drop.retailer,
+            productName: productLabel,
+            url: drop.url,
+            productUrl: drop.productUrl,
+            imageUrl: drop.imageUrl,
+            existingThumbnailUrl: embed.thumbnail?.url,
+            cart1xUrl: drop.cart1xUrl,
+            cart2xUrl: drop.cart2xUrl,
+            itemId: drop.itemId,
+            stock: drop.stock,
+            ruleId: drop.ruleId,
+            formFactor: drop.formFactor,
+            shelfPrice,
+            landedPrice,
+            shippingAmount,
+            msrp: msrpVal,
+            sliderCeiling,
+            marketFallback: bestMarketRef,
+            packCount: drop.packCount,
+            pricePerPack: drop.pricePerPack,
+            ownedInVault: drop.ownedInVault,
+            bigBoxTier: drop.bigBoxTier,
+            isMsrpUnicorn: drop.isMsrpUnicorn,
+            isPreOrder: drop.isPreOrder,
+            tcgComp: bestTcg,
+            fallbackTcgUrl: cachedLowestUrl,
+            tcgQuarterNote
+          });
 
           if (sentMsgId && webhookUrl) {
-            const targetEmbed = (drop.itemId && activeDiscordMessages.get(String(drop.itemId))?.embed) || embed;
-            if (Array.isArray(targetEmbed.fields)) {
-              const mktField = targetEmbed.fields.find((f: any) => String(f.name).includes('LIVE MARKET COMPS'));
-              if (mktField) mktField.value = liveLines.join('\n');
-              const spreadField = targetEmbed.fields.find((f: any) => String(f.name).includes('SPREAD GAIN'));
-              if (spreadField) {
-                spreadField.value = liveDiscount > 0
-                  ? `**${liveDiscount}% Below Market** (~$${liveSavings.toFixed(0)} edge)`
-                  : 'At Target';
-              }
+            if (drop.itemId && activeDiscordMessages.has(String(drop.itemId))) {
+              activeDiscordMessages.get(String(drop.itemId))!.embed = enriched.embed;
             }
-            // Low priority (priorityFront = false) so enrichment PATCH never delays a new BUY alert!
-            await enqueueDiscordWebhook(`${webhookUrl}/messages/${sentMsgId}`, { embeds: [targetEmbed] }, 'PATCH', false);
+            await enqueueDiscordWebhook(`${webhookUrl}/messages/${sentMsgId}`, { embeds: [enriched.embed] }, 'PATCH', false);
           }
 
-          if (tgMsgId) {
+          if (tgMsgId && bestTcg) {
+            const liveMktRef = bestTcg.price || bestMarketRef;
+            const liveDiscount = liveMktRef > 0 ? Math.round(((liveMktRef - landedPrice) / liveMktRef) * 100) : 0;
             const tgEnriched =
-              `<b>${drop.ruleName || drop.title}</b>\n` +
-              `<b>$${priceVal.toFixed(2)}</b> at <b>${drop.retailer}</b> (${shipNote})\n` +
-              `MSRP: $${msrpVal.toFixed(2)} • Live Mkt: <b>$${liveMktRef.toFixed(2)}</b> (${liveDiscount > 0 ? `-${liveDiscount}%` : 'At Target'})\n` +
-              `<a href="${primaryFastUrl}">⚡ 1-TAP CHECKOUT ↗</a>` +
-              (c2 ? `  |  <a href="${c2}">⚡ 2X ↗</a>` : '') +
-              (c3 ? `  |  <a href="${c3}">⚡ 3X ↗</a>` : '');
+              `<b>${cleanRetailerDisplayUpper(drop.retailer)} — ${productLabel}</b>\n` +
+              `<b>$${landedPrice.toFixed(2)} Landed</b> (${shipNote})\n` +
+              `MSRP: $${msrpVal.toFixed(2)} • TCGPlayer: <b>$${liveMktRef.toFixed(2)}</b> (${liveDiscount > 0 ? `-${liveDiscount}%` : 'Matches Low'})\n` +
+              `<a href="${primaryFastUrl}">⚡ 1-Tap Checkout ↗</a>` +
+              (drop.cart2xUrl ? `  |  <a href="${drop.cart2xUrl}">⚡ 2x ↗</a>` : '');
             await patchTelegramAlertFast(tgMsgId, tgEnriched);
           }
         } catch (enrichErr) {
@@ -897,9 +787,9 @@ export async function markAlertSoldOut(itemId: string): Promise<void> {
 
   const updatedEmbed = {
     ...tracked.embed,
-    title: `⟦ SOLD OUT // OOS ⟧ — ${tracked.ruleName}`,
-    description: `**Restock Depleted.** This allocation on **${tracked.retailer}** lasted **${durationStr}** and is now Out of Stock.`,
-    color: 0x475569 // Slate Gray for Sold Out
+    title: `SOLD OUT — ${cleanRetailerDisplayUpper(tracked.retailer)} — ${tracked.ruleName}`,
+    description: `**Restock Depleted.** Allocation on **${tracked.retailer}** lasted **${durationStr}** and is now Out of Stock.`,
+    color: 0x475569
   };
 
   try {
@@ -1127,11 +1017,14 @@ export async function sendStockDigestCard(options?: { force?: boolean; windowLab
 
   const sectionALines = (liveUnderOrCushion.length > 0 ? liveUnderOrCushion : nextBestPicks).map(d => {
     const spreadTxt = d.spreadPct >= 0 ? `${d.spreadPct}% Under Mkt` : `${Math.abs(d.spreadPct)}% Over Mkt`;
-    return `◈ **${d.name}** (\`${d.completionCount}/3\`) — **$${d.price.toFixed(2)}** (${spreadTxt}) @ ${d.store} — ${formatCartPills(d)}`;
+    const isEtb = isSingleEtbFormat(undefined, d.skuId, d.name);
+    const fmtTag = isEtb ? ` (\`${d.completionCount}/3\`)` : '';
+    return `◈ **${d.name}**${fmtTag} — **$${d.price.toFixed(2)}** (${spreadTxt}) @ ${d.store} — ${formatCartPills(d)}`;
   });
 
   const sectionBLines = nextBestPicks.map((d, idx) => {
-    const slotTag = d.completionCount === 0 ? '0/3 NEED WALL' : `${d.completionCount}/3 RIP HUNT`;
+    const isEtb = isSingleEtbFormat(undefined, d.skuId, d.name);
+    const slotTag = isEtb ? (d.completionCount === 0 ? '0/3 WALL ETB' : `${d.completionCount}/3 RIP HUNT`) : 'RIP / PACK FORMAT';
     return `**#${idx + 1}** **${d.name}** [\`${slotTag}\`] — **$${d.landedPrice.toFixed(2)} Landed** vs $${d.marketValue.toFixed(0)} Mkt • ${formatCartPills(d)}`;
   });
 

@@ -5,16 +5,16 @@
     "targetId": "me-phantasmal-flames-etb",
     "targetName": "Mega Evolution: Phantasmal Flames ETB",
     "store": "AVA TCG",
-    "price": 134.49,
-    "landedPrice": 141.48,
+    "price": 133.99,
+    "landedPrice": 140.98,
     "marketPrice": 144.99,
-    "discountPct": 7,
+    "discountPct": 8,
     "packCount": 9,
-    "pricePerPack": 15.72,
+    "pricePerPack": 15.66,
     "isRipValueLeader": false,
     "url": "https://www.avatcg.com/products/phantasmal-flames-elite-trainer-box",
     "restockedAt": 1794513007615,
-    "lastSeenAt": 1794516234498,
+    "lastSeenAt": 1794518907598,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ NEED RIP PAIR (QTY 2+) ⟧"
@@ -53,7 +53,7 @@
     "isRipValueLeader": false,
     "url": "https://tradingcardmarket.com/products/pokemon-mega-evolution-delta-reign-booster-box",
     "restockedAt": 1794494713362,
-    "lastSeenAt": 1794516210192,
+    "lastSeenAt": 1794519172996,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$5.00 OF TARGET ⟧"
@@ -73,7 +73,7 @@
     "isRipValueLeader": false,
     "url": "https://deriumandwifey.com/products/brilliant-stars-booster-box",
     "restockedAt": 1794476674988,
-    "lastSeenAt": 1794516238112,
+    "lastSeenAt": 1794518911106,
     "status": "ACTIVE",
     "velocity": "ACTIVE"
   },
@@ -92,7 +92,7 @@
     "isRipValueLeader": false,
     "url": "https://pentixgames.com/products/pokemon-destined-rivals-elite-trainer-box",
     "restockedAt": 1794456165323,
-    "lastSeenAt": 1794516240949,
+    "lastSeenAt": 1794518914147,
     "status": "ACTIVE",
     "velocity": "ACTIVE"
   },
@@ -111,7 +111,7 @@
     "isRipValueLeader": false,
     "url": "https://victoryroadcollections.com/products/scarlet-and-violet-destined-rivals-elite-trainer-box",
     "restockedAt": 1794456157092,
-    "lastSeenAt": 1794516232320,
+    "lastSeenAt": 1794518905378,
     "status": "ACTIVE",
     "velocity": "ACTIVE"
   },
@@ -130,7 +130,7 @@
     "isRipValueLeader": false,
     "url": "https://collectorscafe.com/products/destined-rivals-elite-trainer-box-dri-624676",
     "restockedAt": 1794456154191,
-    "lastSeenAt": 1794516230271,
+    "lastSeenAt": 1794519110188,
     "status": "ACTIVE",
     "velocity": "ACTIVE"
   },
@@ -149,7 +149,7 @@
     "isRipValueLeader": false,
     "url": "https://shinobicollectibles.com/products/delta-reign-elite-trainer-box-mega-evolution-pokemon-tcg",
     "restockedAt": 1794456149502,
-    "lastSeenAt": 1794516225607,
+    "lastSeenAt": 1794519102933,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ NEED RIP PAIR (QTY 2+) ⟧"
@@ -169,7 +169,7 @@
     "isRipValueLeader": false,
     "url": "https://spankyscardshop.com/products/delta-reign-elite-trainer-box",
     "restockedAt": 1794456147769,
-    "lastSeenAt": 1794516222811,
+    "lastSeenAt": 1794519193801,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ NEED RIP PAIR (QTY 2+) ⟧"
@@ -180,16 +180,16 @@
     "targetId": "swsh-evolving-skies-etb",
     "targetName": "Evolving Skies ETB",
     "store": "Kanzen Games",
-    "price": 381.14,
-    "landedPrice": 381.14,
+    "price": 381.23,
+    "landedPrice": 381.23,
     "marketPrice": 235,
     "discountPct": -62,
     "packCount": 9,
-    "pricePerPack": 42.35,
+    "pricePerPack": 42.36,
     "isRipValueLeader": false,
     "url": "https://kanzengames.com/products/sword-shield-evolving-skies-elite-trainer-box-glaceon-vaporeon-sylveon-espeon",
     "restockedAt": 1794456143447,
-    "lastSeenAt": 1794516218215,
+    "lastSeenAt": 1794519185553,
     "status": "ACTIVE",
     "velocity": "ACTIVE"
   },
@@ -199,16 +199,16 @@
     "targetId": "sv-journey-together-booster-box",
     "targetName": "Journey Together Booster Box (36-Pack)",
     "store": "Kanzen Games",
-    "price": 156.61,
-    "landedPrice": 166.6,
-    "marketPrice": 199.99,
+    "price": 156.65,
+    "landedPrice": 166.64,
+    "marketPrice": 199.75,
     "discountPct": 22,
     "packCount": 36,
     "pricePerPack": 4.63,
     "isRipValueLeader": false,
     "url": "https://kanzengames.com/products/scarlet-violet-journey-together-booster-box",
     "restockedAt": 1794456143423,
-    "lastSeenAt": 1794516218191,
+    "lastSeenAt": 1794519185529,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxTier": "MSRP_TIER_A",
@@ -220,8 +220,8 @@
     "targetId": "me-chaos-rising-booster-box",
     "targetName": "Mega Evolution: Chaos Rising Booster Box (36-Pack)",
     "store": "Kanzen Games",
-    "price": 140.96,
-    "landedPrice": 150.95,
+    "price": 140.98,
+    "landedPrice": 150.97,
     "marketPrice": 169.99,
     "discountPct": 17,
     "packCount": 36,
@@ -229,7 +229,7 @@
     "isRipValueLeader": true,
     "url": "https://kanzengames.com/products/mega-evolution-set-4-me04-booster-box",
     "restockedAt": 1794456143381,
-    "lastSeenAt": 1794516218154,
+    "lastSeenAt": 1794519185494,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxTier": "MSRP_TIER_A",
@@ -250,7 +250,7 @@
     "isRipValueLeader": false,
     "url": "https://poke-collect.com/products/mega-evolution-delta-reign-elite-trainer-box",
     "restockedAt": 1794456135191,
-    "lastSeenAt": 1794516211384,
+    "lastSeenAt": 1794519176982,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ NEED RIP PAIR (QTY 2+) ⟧"
@@ -270,7 +270,7 @@
     "isRipValueLeader": false,
     "url": "https://collectorstore.com/products/pokemon-scarlet-violet-destined-rivals-elite-trainer-box",
     "restockedAt": 1794456127491,
-    "lastSeenAt": 1794516202442,
+    "lastSeenAt": 1794519164759,
     "status": "ACTIVE",
     "velocity": "ACTIVE"
   },
@@ -289,7 +289,7 @@
     "isRipValueLeader": false,
     "url": "https://drpmcollectorstcg.com/products/delta-reign-elite-trainer-box-me06-delta-reign-712102",
     "restockedAt": 1794454816314,
-    "lastSeenAt": 1794516294439,
+    "lastSeenAt": 1794519111757,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ NEED RIP PAIR (QTY 2+) ⟧"
@@ -309,7 +309,7 @@
     "isRipValueLeader": false,
     "url": "https://common-lands.com/products/pokemon-s-v-prismatic-evolutions-elite-trainer-box",
     "restockedAt": 1794454814627,
-    "lastSeenAt": 1794516233597,
+    "lastSeenAt": 1794519205371,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ NEED RIP PAIR (QTY 2+) ⟧"
@@ -329,7 +329,7 @@
     "isRipValueLeader": false,
     "url": "https://cardshq.com/products/destined-rivals-pokemon-elite-trainer-box",
     "restockedAt": 1794454814385,
-    "lastSeenAt": 1794516231109,
+    "lastSeenAt": 1794519202146,
     "status": "ACTIVE",
     "velocity": "ACTIVE"
   },
@@ -348,7 +348,7 @@
     "isRipValueLeader": false,
     "url": "https://mirajtrading.com/products/pokemon-delta-reign-elite-trainer-box",
     "restockedAt": 1794454809387,
-    "lastSeenAt": 1794516221161,
+    "lastSeenAt": 1794519098115,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ NEED RIP PAIR (QTY 2+) ⟧"
@@ -368,7 +368,7 @@
     "isRipValueLeader": false,
     "url": "https://deriumandwifey.com/products/delta-reign-elite-trainer-box-me06",
     "restockedAt": 1794454795029,
-    "lastSeenAt": 1794516238130,
+    "lastSeenAt": 1794518911121,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ NEED RIP PAIR (QTY 2+) ⟧"
@@ -379,8 +379,8 @@
     "targetId": "sv-destined-rivals-etb",
     "targetName": "Destined Rivals ETB",
     "store": "Kanzen Games",
-    "price": 78.29,
-    "landedPrice": 88.28,
+    "price": 78.31,
+    "landedPrice": 88.3,
     "marketPrice": 107.49,
     "discountPct": 27,
     "packCount": 9,
@@ -388,7 +388,7 @@
     "isRipValueLeader": false,
     "url": "https://kanzengames.com/products/destined-rivals-elite-trainer-box",
     "restockedAt": 1794454793485,
-    "lastSeenAt": 1794516218182,
+    "lastSeenAt": 1794519185523,
     "status": "ACTIVE",
     "velocity": "ACTIVE"
   },
@@ -407,7 +407,7 @@
     "isRipValueLeader": false,
     "url": "https://minmaxgames.com/products/destined-rivals-elite-trainer-box-sv-destined-rivals",
     "restockedAt": 1794454786271,
-    "lastSeenAt": 1794516197044,
+    "lastSeenAt": 1794519160324,
     "status": "ACTIVE",
     "velocity": "ACTIVE"
   },
@@ -446,11 +446,11 @@
     "isRipValueLeader": false,
     "url": "https://novabreak.com/products/perfect-order-enhanced-booster-display",
     "restockedAt": 1794445287118,
-    "lastSeenAt": 1794516238728,
+    "lastSeenAt": 1794518911822,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxTier": "MSRP_TIER_A",
-    "bigBoxBadge": "🚨💎 UNICORN RETAIL MSRP HIT 💎🚨"
+    "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$8.36 OF TARGET ⟧"
   },
   {
     "id": "me-delta-reign-booster-box__Zulus Games__1794421926873",
@@ -490,11 +490,11 @@
     "isRipValueLeader": false,
     "url": "https://www.ripnshiparena.com/products/pokemon-tcg-mega-evolution-pitch-black-booster-box-display",
     "restockedAt": 1794378465862,
-    "lastSeenAt": 1794516202707,
+    "lastSeenAt": 1794519164428,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxTier": "MSRP_TIER_A",
-    "bigBoxBadge": "🚨💎 UNICORN RETAIL MSRP HIT 💎🚨"
+    "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$8.35 OF TARGET ⟧"
   },
   {
     "id": "me-perfect-order-booster-box__Elite4 TCG__1794341699229",
@@ -553,11 +553,11 @@
     "isRipValueLeader": false,
     "url": "https://elite4tcg.com/products/pitch-black-booster-box",
     "restockedAt": 1794341331186,
-    "lastSeenAt": 1794516236533,
+    "lastSeenAt": 1794519117856,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxTier": "MSRP_TIER_A",
-    "bigBoxBadge": "🚨💎 UNICORN RETAIL MSRP HIT 💎🚨"
+    "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$5.36 OF TARGET ⟧"
   },
   {
     "id": "sv-surging-sparks-etb__Collector Store__1794340067131",
@@ -574,7 +574,7 @@
     "isRipValueLeader": false,
     "url": "https://collectorstore.com/products/pokemon-scarlet-violet-surging-sparks-elite-trainer-box",
     "restockedAt": 1794340067131,
-    "lastSeenAt": 1794516202411,
+    "lastSeenAt": 1794519164737,
     "status": "ACTIVE",
     "velocity": "ACTIVE"
   },
@@ -735,7 +735,7 @@
     "isRipValueLeader": false,
     "url": "https://cardshq.com/products/shrouded-fable-pokemon-elite-trainer-box",
     "restockedAt": 1794239911366,
-    "lastSeenAt": 1794516231229,
+    "lastSeenAt": 1794519202242,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$4.99 OF TARGET ⟧"
@@ -795,7 +795,7 @@
     "isRipValueLeader": false,
     "url": "https://spankyscardshop.com/products/sword-shield-brilliant-stars-booster-box",
     "restockedAt": 1794238369562,
-    "lastSeenAt": 1794516222782,
+    "lastSeenAt": 1794519193787,
     "status": "ACTIVE",
     "velocity": "ACTIVE"
   },
@@ -834,7 +834,7 @@
     "isRipValueLeader": false,
     "url": "https://pkmncolosseum.com/products/scarlet-violet-booster-box-preorder",
     "restockedAt": 1794237998383,
-    "lastSeenAt": 1794516205056,
+    "lastSeenAt": 1794518879001,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$2.99 OF TARGET ⟧"
@@ -895,7 +895,7 @@
     "isRipValueLeader": false,
     "url": "https://oakspokebox.com/products/journey-together-elite-trainer-box",
     "restockedAt": 1794237846712,
-    "lastSeenAt": 1794516238649,
+    "lastSeenAt": 1794518911598,
     "status": "ACTIVE",
     "velocity": "ACTIVE"
   },
@@ -934,7 +934,7 @@
     "isRipValueLeader": false,
     "url": "https://1steditioncollectibles.com/products/evolving-skies-elite-trainer-box-gvse",
     "restockedAt": 1794237810794,
-    "lastSeenAt": 1794516209019,
+    "lastSeenAt": 1794518883257,
     "status": "ACTIVE",
     "velocity": "ACTIVE"
   },
@@ -1138,11 +1138,11 @@
     "isRipValueLeader": false,
     "url": "https://mystictcg.com/products/perfect-order-booster-box",
     "restockedAt": 1794099951661,
-    "lastSeenAt": 1794516272520,
+    "lastSeenAt": 1794519167601,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxTier": "MSRP_TIER_A",
-    "bigBoxBadge": "🚨💎 UNICORN RETAIL MSRP HIT 💎🚨"
+    "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$8.35 OF TARGET ⟧"
   },
   {
     "id": "sv-journey-together-booster-box__CardPop USA__1794099594513",
@@ -1178,11 +1178,11 @@
     "isRipValueLeader": false,
     "url": "https://pentixgames.com/products/pokemon-perfect-order-booster-box",
     "restockedAt": 1794099372464,
-    "lastSeenAt": 1794516240939,
+    "lastSeenAt": 1794518914139,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxTier": "MSRP_TIER_A",
-    "bigBoxBadge": "🚨💎 UNICORN RETAIL MSRP HIT 💎🚨"
+    "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$3.35 OF TARGET ⟧"
   },
   {
     "id": "sv-prismatic-evolutions-bundle__Common Lands__1794099371209",
@@ -1219,11 +1219,11 @@
     "isRipValueLeader": false,
     "url": "https://cardpopusa.com/products/pokemon-perfect-order-booster-box",
     "restockedAt": 1794099371017,
-    "lastSeenAt": 1794516233062,
+    "lastSeenAt": 1794519114635,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxTier": "MSRP_TIER_A",
-    "bigBoxBadge": "🚨💎 UNICORN RETAIL MSRP HIT 💎🚨"
+    "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$3.35 OF TARGET ⟧"
   },
   {
     "id": "me-pitch-black-booster-box__CardPop USA__1794099370886",
@@ -1240,11 +1240,11 @@
     "isRipValueLeader": false,
     "url": "https://cardpopusa.com/products/pokemon-mega-evolution-chaos-rising-booster-box",
     "restockedAt": 1794099370886,
-    "lastSeenAt": 1794516232939,
+    "lastSeenAt": 1794519114514,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxTier": "MSRP_TIER_A",
-    "bigBoxBadge": "🚨💎 UNICORN RETAIL MSRP HIT 💎🚨"
+    "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$3.35 OF TARGET ⟧"
   },
   {
     "id": "me-30th-celebration-bundle__Puzzled Gamer__1794099369753",
@@ -1383,11 +1383,11 @@
     "isRipValueLeader": false,
     "url": "https://jbemporium.com/products/pokemon-pitch-black-booster-box",
     "restockedAt": 1794099307255,
-    "lastSeenAt": 1794516237788,
+    "lastSeenAt": 1794518910581,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxTier": "MSRP_TIER_A",
-    "bigBoxBadge": "🚨💎 UNICORN RETAIL MSRP HIT 💎🚨"
+    "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$8.35 OF TARGET ⟧"
   },
   {
     "id": "me-30th-celebration-bundle__Double Infinity Gaming__1794099306672",
@@ -1464,11 +1464,11 @@
     "isRipValueLeader": false,
     "url": "https://doubleinfinitygaming.com/products/pokemon-mega-evolution-perfect-order-me03-booster-box-36ct-presale-expected-release-date-march-27th",
     "restockedAt": 1794099306638,
-    "lastSeenAt": 1794516203736,
+    "lastSeenAt": 1794519165462,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxTier": "MSRP_TIER_A",
-    "bigBoxBadge": "🚨💎 UNICORN RETAIL MSRP HIT 💎🚨"
+    "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$8.35 OF TARGET ⟧"
   },
   {
     "id": "me-pitch-black-booster-box__Card Shop Live__1794099305476",
@@ -1506,11 +1506,11 @@
     "isRipValueLeader": false,
     "url": "https://cardshoplive.com/products/chaos-rising-booster-box",
     "restockedAt": 1794099305463,
-    "lastSeenAt": 1794516197691,
+    "lastSeenAt": 1794518872273,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxTier": "MSRP_TIER_A",
-    "bigBoxBadge": "🚨💎 UNICORN RETAIL MSRP HIT 💎🚨"
+    "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$8.35 OF TARGET ⟧"
   },
   {
     "id": "sv-journey-together-booster-box__MinMaxGames__1794099304948",
@@ -1547,11 +1547,11 @@
     "isRipValueLeader": false,
     "url": "https://minmaxgames.com/products/perfect-order-booster-box-me03",
     "restockedAt": 1794099304931,
-    "lastSeenAt": 1794516197036,
+    "lastSeenAt": 1794519160317,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxTier": "MSRP_TIER_A",
-    "bigBoxBadge": "🚨💎 UNICORN RETAIL MSRP HIT 💎🚨"
+    "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$8.36 OF TARGET ⟧"
   },
   {
     "id": "me-pitch-black-booster-box__MinMaxGames__1794099304923",
@@ -1568,11 +1568,11 @@
     "isRipValueLeader": false,
     "url": "https://minmaxgames.com/products/pitch-black-booster-box-pokemon",
     "restockedAt": 1794099304923,
-    "lastSeenAt": 1794516197023,
+    "lastSeenAt": 1794519160311,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxTier": "MSRP_TIER_A",
-    "bigBoxBadge": "🚨💎 UNICORN RETAIL MSRP HIT 💎🚨"
+    "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$3.36 OF TARGET ⟧"
   },
   {
     "id": "me-chaos-rising-booster-box__MinMaxGames__1794099304911",
@@ -1589,11 +1589,11 @@
     "isRipValueLeader": false,
     "url": "https://minmaxgames.com/products/chaos-rising-booster-box-me04-chaos-rising-cri",
     "restockedAt": 1794099304911,
-    "lastSeenAt": 1794516197011,
+    "lastSeenAt": 1794519160304,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxTier": "MSRP_TIER_A",
-    "bigBoxBadge": "🚨💎 UNICORN RETAIL MSRP HIT 💎🚨"
+    "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$3.36 OF TARGET ⟧"
   },
   {
     "id": "sv-journey-together-booster-box__CardsHQ__1794099303060",
@@ -1629,11 +1629,11 @@
     "isRipValueLeader": false,
     "url": "https://tradingcardmarket.com/products/pokemon-mega-evolution-perfect-order-booster-box",
     "restockedAt": 1794099292898,
-    "lastSeenAt": 1794516210257,
+    "lastSeenAt": 1794519173058,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxTier": "MSRP_TIER_A",
-    "bigBoxBadge": "🚨💎 UNICORN RETAIL MSRP HIT 💎🚨"
+    "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$6.36 OF TARGET ⟧"
   },
   {
     "id": "me-perfect-order-booster-box__Stomping Grounds__1794099288062",
@@ -1650,11 +1650,11 @@
     "isRipValueLeader": false,
     "url": "https://www.stompinggroundstcg.com/products/mega-evolution-perfect-order-booster-box",
     "restockedAt": 1794099288062,
-    "lastSeenAt": 1794516065346,
+    "lastSeenAt": 1794519177237,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxTier": "MSRP_TIER_A",
-    "bigBoxBadge": "🚨💎 UNICORN RETAIL MSRP HIT 💎🚨"
+    "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$8.36 OF TARGET ⟧"
   },
   {
     "id": "me-30th-celebration-bundle__Mystic TCG__1794099286835",
@@ -1704,14 +1704,14 @@
     "store": "Collector Store",
     "price": 189.99,
     "landedPrice": 189.99,
-    "marketPrice": 241.88,
-    "discountPct": 21,
+    "marketPrice": 199.75,
+    "discountPct": 5,
     "packCount": 36,
     "pricePerPack": 5.28,
     "isRipValueLeader": false,
     "url": "https://collectorstore.com/products/pokemon-journey-together-regular-booster-box",
     "restockedAt": 1794099271554,
-    "lastSeenAt": 1794241876100,
+    "lastSeenAt": 1794519164924,
     "status": "ACTIVE",
     "velocity": "ACTIVE"
   },
@@ -1730,11 +1730,11 @@
     "isRipValueLeader": false,
     "url": "https://collectorstore.com/products/pokemon-perfect-order-booster-box",
     "restockedAt": 1794099271360,
-    "lastSeenAt": 1794516202499,
+    "lastSeenAt": 1794519164802,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxTier": "MSRP_TIER_A",
-    "bigBoxBadge": "🚨💎 UNICORN RETAIL MSRP HIT 💎🚨"
+    "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$3.35 OF TARGET ⟧"
   },
   {
     "id": "me-pitch-black-booster-box__Collector Store__1794099271332",
@@ -1771,11 +1771,11 @@
     "isRipValueLeader": false,
     "url": "https://www.ripnshiparena.com/products/pokemon-tcg-mega-evolution-perfect-order-booster-box-display",
     "restockedAt": 1794099269809,
-    "lastSeenAt": 1794516202744,
+    "lastSeenAt": 1794519164450,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxTier": "MSRP_TIER_A",
-    "bigBoxBadge": "🚨💎 UNICORN RETAIL MSRP HIT 💎🚨"
+    "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$8.35 OF TARGET ⟧"
   },
   {
     "id": "me-chaos-rising-booster-box__Rip N Ship Arena__1794099269797",
@@ -1792,10 +1792,10 @@
     "isRipValueLeader": false,
     "url": "https://www.ripnshiparena.com/products/pokemon-tcg-mega-evolution-chaos-rising-booster-box-display",
     "restockedAt": 1794099269797,
-    "lastSeenAt": 1794516202739,
+    "lastSeenAt": 1794519164447,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
-    "bigBoxBadge": "🚨💎 UNICORN RETAIL MSRP HIT 💎🚨",
+    "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$8.35 OF TARGET ⟧",
     "bigBoxTier": "MSRP_TIER_A"
   },
   {
@@ -1910,9 +1910,9 @@
     "packCount": 9,
     "pricePerPack": 10.22,
     "isRipValueLeader": false,
-    "url": "https://mystictcg.com/products/pokemon-30th-celebration-elite-trainer-box-copy",
+    "url": "https://mystictcg.com/products/delta-reign-elite-trainer-box",
     "restockedAt": 1793996496102,
-    "lastSeenAt": 1794516205165,
+    "lastSeenAt": 1794519079227,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ NEED RIP PAIR (QTY 2+) ⟧"
@@ -1932,7 +1932,7 @@
     "isRipValueLeader": false,
     "url": "https://collectorstore.com/products/pokemon-mega-evolution-delta-reign-eite-trainer-box-me06",
     "restockedAt": 1793991552590,
-    "lastSeenAt": 1794516202429,
+    "lastSeenAt": 1794519164750,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ NEED RIP PAIR (QTY 2+) ⟧"
@@ -1973,7 +1973,7 @@
     "isRipValueLeader": false,
     "url": "https://minmaxgames.com/products/delta-reign-elite-trainer-box-pokemon",
     "restockedAt": 1793987583408,
-    "lastSeenAt": 1794516197077,
+    "lastSeenAt": 1794519160344,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ NEED RIP PAIR (QTY 2+) ⟧"
@@ -2015,7 +2015,7 @@
     "isRipValueLeader": false,
     "url": "https://collectorstore.com/products/pokemon-scarlet-violet-twilight-masquerade-elite-trainer-box",
     "restockedAt": 1793987518147,
-    "lastSeenAt": 1794516202462,
+    "lastSeenAt": 1794519164772,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$1.99 OF TARGET ⟧"
@@ -2035,7 +2035,7 @@
     "isRipValueLeader": false,
     "url": "https://collectorstore.com/products/pokemon-scarlet-violet-prismatic-evolutions-elite-trainer-box",
     "restockedAt": 1793987450748,
-    "lastSeenAt": 1794516202474,
+    "lastSeenAt": 1794519164782,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ NEED RIP PAIR (QTY 2+) ⟧"
@@ -2074,7 +2074,7 @@
     "isRipValueLeader": false,
     "url": "https://allpoketcg.com/products/30th-celebration-elite-trainer-box-case",
     "restockedAt": 1793982845881,
-    "lastSeenAt": 1794516206583,
+    "lastSeenAt": 1794518880399,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ NEED RIP PAIR (QTY 2+) ⟧"
@@ -2134,7 +2134,7 @@
     "isRipValueLeader": false,
     "url": "https://pokegirlcc.com/products/delta-reign-elite-trainer-box-9-packs",
     "restockedAt": 1793934903792,
-    "lastSeenAt": 1794516226334,
+    "lastSeenAt": 1794519104299,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ NEED RIP PAIR (QTY 2+) ⟧"
@@ -2175,7 +2175,7 @@
     "isRipValueLeader": false,
     "url": "https://zulusgames.com/products/pokemon-tcg-prismatic-evolution-elite-trainer-box-1",
     "restockedAt": 1793853935070,
-    "lastSeenAt": 1794516203249,
+    "lastSeenAt": 1794519162650,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ NEED RIP PAIR (QTY 2+) ⟧"
@@ -2298,7 +2298,7 @@
     "isRipValueLeader": false,
     "url": "https://www.stompinggroundstcg.com/products/destined-rivals-elite-trainer-box",
     "restockedAt": 1793833670051,
-    "lastSeenAt": 1794516065397,
+    "lastSeenAt": 1794519177287,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$4.00 OF TARGET ⟧"
@@ -2340,7 +2340,7 @@
     "isRipValueLeader": false,
     "url": "https://www.avatcg.com/products/destined-rivals-elite-trainer-box",
     "restockedAt": 1793833624025,
-    "lastSeenAt": 1794516234518,
+    "lastSeenAt": 1794519115632,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$2.99 OF TARGET ⟧"
@@ -2360,7 +2360,7 @@
     "isRipValueLeader": false,
     "url": "https://common-lands.com/products/destined-rivals-elite-trainer-box",
     "restockedAt": 1793833449764,
-    "lastSeenAt": 1794516233620,
+    "lastSeenAt": 1794519205381,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$2.75 OF TARGET ⟧"
@@ -2400,7 +2400,7 @@
     "isRipValueLeader": false,
     "url": "https://www.stompinggroundstcg.com/products/mega-evolution-delta-reign-elite-trainer-box",
     "restockedAt": 1793833345946,
-    "lastSeenAt": 1794516253674,
+    "lastSeenAt": 1794518927684,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ NEED RIP PAIR (QTY 2+) ⟧"
@@ -2420,7 +2420,7 @@
     "isRipValueLeader": false,
     "url": "https://minmaxgames.com/products/copy-of-pokemon-scarlet-violet-6-twilight-masquerade-build-battle-box",
     "restockedAt": 1793833340751,
-    "lastSeenAt": 1794516197068,
+    "lastSeenAt": 1794519160339,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$2.00 OF TARGET ⟧"
@@ -2540,7 +2540,7 @@
     "isRipValueLeader": false,
     "url": "https://cardshq.com/products/prismatic-evolutions-pokemon-elite-trainer-box",
     "restockedAt": 1793833263319,
-    "lastSeenAt": 1794516230899,
+    "lastSeenAt": 1794519201985,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ NEED RIP PAIR (QTY 2+) ⟧"
@@ -2687,7 +2687,7 @@
     "isRipValueLeader": false,
     "url": "https://tradingcardmarket.com/products/pokemon-mega-evolution-delta-reign-elite-trainer-box",
     "restockedAt": 1793802777973,
-    "lastSeenAt": 1794516210200,
+    "lastSeenAt": 1794519173004,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ NEED RIP PAIR (QTY 2+) ⟧"
@@ -3143,14 +3143,14 @@
     "store": "PokeGirl CC",
     "price": 62.99,
     "landedPrice": 69.98,
-    "marketPrice": 67.99,
-    "discountPct": 7,
+    "marketPrice": 69.99,
+    "discountPct": 10,
     "packCount": 9,
     "pricePerPack": 7.78,
     "isRipValueLeader": false,
     "url": "https://pokegirlcc.com/products/pitch-black-elite-trainer-box-9-packs",
     "restockedAt": 1793670108580,
-    "lastSeenAt": 1794516226385,
+    "lastSeenAt": 1794517097814,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$2.99 OF TARGET ⟧"
@@ -3227,14 +3227,14 @@
     "store": "MinMaxGames",
     "price": 60,
     "landedPrice": 66.99,
-    "marketPrice": 67.99,
-    "discountPct": 12,
+    "marketPrice": 62.99,
+    "discountPct": 5,
     "packCount": 9,
     "pricePerPack": 7.44,
     "isRipValueLeader": false,
     "url": "https://minmaxgames.com/products/pitch-black-elite-trainer-box-pokemon",
     "restockedAt": 1793639152158,
-    "lastSeenAt": 1794516197020,
+    "lastSeenAt": 1794519160308,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$5.00 OF TARGET ⟧"
@@ -4856,7 +4856,7 @@
     "isRipValueLeader": false,
     "url": "https://jbemporium.com/products/pokemon-chaos-rising-elite-trainer-box",
     "restockedAt": 1793200018275,
-    "lastSeenAt": 1794516237766,
+    "lastSeenAt": 1794518910556,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxTier": "MSRP_TIER_A",
@@ -4877,7 +4877,7 @@
     "isRipValueLeader": false,
     "url": "https://doubleinfinitygaming.com/products/pokemon-mega-evolution-delta-reign-me06-elite-trainer-box-wave-2-ships-by-january-31st",
     "restockedAt": 1793131011612,
-    "lastSeenAt": 1794516203823,
+    "lastSeenAt": 1794519165521,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ NEED RIP PAIR (QTY 2+) ⟧"
@@ -5013,14 +5013,14 @@
     "store": "CardPop USA",
     "price": 59.99,
     "landedPrice": 66.98,
-    "marketPrice": 67.99,
-    "discountPct": 12,
+    "marketPrice": 62.99,
+    "discountPct": 5,
     "packCount": 9,
     "pricePerPack": 7.44,
     "isRipValueLeader": false,
     "url": "https://cardpopusa.com/products/pokemon-mega-evolution-pitch-black-elite-trainer-box",
     "restockedAt": 1792478723710,
-    "lastSeenAt": 1794516232878,
+    "lastSeenAt": 1794519114463,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$4.99 OF TARGET ⟧"
@@ -5060,7 +5060,7 @@
     "isRipValueLeader": false,
     "url": "https://cardpopusa.com/products/pokemon-perfect-order-elite-trainer-box",
     "restockedAt": 1792478723679,
-    "lastSeenAt": 1794516232835,
+    "lastSeenAt": 1794519114426,
     "status": "ACTIVE",
     "velocity": "ACTIVE",
     "bigBoxBadge": "◈ ⟦ CLOSE CALL: WITHIN +$5.00 OF TARGET ⟧"

@@ -10,11 +10,14 @@
 | :--- | :---: | :--- |
 | `_nyx_state/01..06_*.md` | 6 files | Mandatory multi-agent bootloader, laws, Failure Graveyard (`02`), build snapshot (`03`), V6 roadmap (`04`), rolling 3-turn log (`05`), and manifest (`06`). |
 | `_nyx_state/07_DEEP_SYSTEM_AND_COMMERCIAL_AUDIT.md` | 412 | Exhaustive forensic V6 system, checkout-latency, store-coverage, codebase-debt, and Pro SaaS commercialization audit. |
-| `_nyx_state/08_ENGINE_DIAGNOSTIC_REPORT.md` | 307 | Bare-metal live engine autopsy + Pass 1 & Pass 2 post-fix live-wire verification addendums. |
-| `index.ts` (`index.js`) | 25 | PM2 daemon entrypoint for `pokemon-drop-bot`; boots 90-store LGS poller, 15s Tier-1 Fast Poller, Big-Box poller, MarketSync, MarketTape, and 09:00/18:00 Roundup Digest scheduler. |
-| `listener.ts` (`listener.js`) | 92 | Receives `RawRestockItem` via `processIncomingDrop()`, invokes `evaluateItem()`, and dispatches non-blocking `void sendAlert().catch(...)` in `0ms`. |
+| `_nyx_state/08_ENGINE_DIAGNOSTIC_REPORT.md` | 355 | Bare-metal live engine autopsy + Pass 1, Pass 2, Pass 3, & V6 Phase 2 live verification addendums. |
+| `index.ts` (`index.js`) | 25 | PM2 daemon entrypoint for `pokemon-drop-bot`; boots 90-store LGS poller, 15s Tier-1 Fast Poller, Big-Box poller, Restock Wire, MarketSync, MarketTape, and Digest scheduler. |
+| `listener.ts` (`listener.js`) | 259 | Receives `RawRestockItem` (`+ imageUrl`) via `processIncomingDrop()`, dispatches `0ms` `sendAlert()`, and polls rotating Webshare Proxy-Reddit. |
 | `src/config/configManager.ts` (`.js`) | 339 | `< 350` lines; merges `config/catalog.json` + `config/userPreferences.json` + `marketCache.json` + live store-offer median (`computeLiveStoreOfferMedian`); Rule of 3 Family Completion slots & `amazonAsin` / `retailSearchQuery` propagation. |
-| `src/engine/trendAdvisor.ts` (`.js`) | 327 | `< 350` lines; honest 14d/30d/60d/90d rolling metrics (`0` `Math.sin`), `sampleDaysCount` / `insufficientHistory`, Hard Ceiling Rule (`effectiveTargetCeiling = policyMaxBuy`), `BLEEDING DOWN`, `SUPPLY TIGHTENING`, & `ELASTIC_DIP`. |
+| `src/engine/trendAdvisor.ts` (`.js`) | 329 | `< 350` lines; honest rolling metrics (`0` `Math.sin`), re-exports `watermarkHistory.ts`, Hard Ceiling Rule (`effectiveTargetCeiling = policyMaxBuy`), `BLEEDING DOWN`, `SUPPLY TIGHTENING`, & `ELASTIC_DIP`. |
+| `src/engine/watermarkHistory.ts` (`.js`) | 236 | `< 300` lines; real `realDaysTracked` history age + earned-only `7d/15d/30d/60d/90d` shelf floor watermarks + optional verified TCGPlayer `infinite-api` quarter comp note. |
+| `src/engine/purchaseMemory.ts` (`.js`) | 176 | `< 200` lines; mirrors `conqueredVault.json` -> `data/purchaseLedger.json` (`$1,529.45` 30th Case), computes `Last Paid` Victory/Defeat deltas, and enforces strict ETB-only `0/3`–`3/3` Wall formatting. |
+| `src/notifications/discordEmbedBuilder.ts` (`.js`) | 263 | `< 340` lines; clean 5-line Discord embed builder, 1P-only `@here` Gold/Crimson theme (`0` `@everyone`), `0` `"At Target"`, single shipping string, and 7-layer box-art thumbnail preservation. |
 | `src/engine/singlesSniper.ts` (`.js`) | 336 | `< 350` lines; Quiet Singles & Gyarados Offload Radar (`singlesCache.json`) with 500-key LRU cap (`pruneCompBenchmarksLru(500)`) and 100% silent alert rule (`singlesAlertsEnabled: false`). |
 | `src/pollers/wafBrowserBridge.ts` (`.js`) | 317 | `< 350` lines; invisible System Chrome Playwright worker + 2-strike `6h` Home-IP WAF Shield (`HOME_IP_SHIELD_DOMAINS`, `WIRE_ARMED_IP_SHIELD` persisted in `data/wafSessionCookies.json`) + `ROUTER_TLS_FILTER` & Queue-It detectors. |
 | `src/pollers/bigBoxAdapters.ts` (`.js`) | 315 | `< 350` lines; verified 1P JSON/hybrid parsers + `allowAboveMsrpSliderFallthrough` (GameStop) + 30m `claimBigBoxCrossChannelSignal()` deduplicator + `processIncomingDrop()` dispatcher. |
@@ -24,12 +27,12 @@
 | `src/pollers/publicRestockWire.ts` (`.js`) | 338 | `< 350` lines; Bluesky Jetstream WebSocket (`jetstream2.us-east.bsky.network`) + `25s` AppView `getAuthorFeed` wire, `AbortSignal.timeout(5000)` native `fetch()` unshortener, canonical retail ATC builder, and `INSTANT_BUY_RESTOCK` vs `QUEUE_INVITE_DRAWING` classifier. |
 | `src/pollers/fastTier1Poller.ts` (`.js`) | 285 | `< 350` lines; 15-second Tier-1 Fast Shopify delta poller (`25` stores, `?limit=250` `updated_at desc`, `ETag`/`304`, O(1) unchanged-variant diffing, `?payment=shop_pay`, & CAD->USD FX). |
 | `policies.ts` (`policies.js`) | 717 | Loads & hot-watches merged policies, enforces context-aware `isSingleCardOrNonSealed()` (unblocking `pack/promo/foil/single` on valid sealed containers while blocking 100% of singles/slabs/loose packs/partial-ETB traps), and `reloadWatchPolicies()`. |
-| `evaluator.ts` (`evaluator.js`) | 1,941 | `mtimeMs`-synced `storeOffersCacheMem`, Rule of 3 Rip Hunt Mode, 1P Big-Box/PC Retail MSRP Flip Bypass, `buildShopifyDirectCartLinks()` (`?payment=shop_pay`), and `buildMobileRetailerLinks()` (Target/BestBuy/Walmart ATC). |
-| `lgsPoller.ts` (`lgsPoller.js`) | 816 | Polls 90 active verified Shopify LGS storefronts from `config/stores.json`, applies `resolveShopifyFxMultiplier()` (`0.73` CAD->USD + `/cart.js` currency auto-detection), routes singles to `singlesSniper.ts`, and writes `storeHealth.json`. |
+| `evaluator.ts` (`evaluator.js`) | 2,027 | `mtimeMs`-synced `storeOffersCacheMem`, 1P-only `isTierAMsrp`, worse-than-TCGPlayer & `FALLING_KNIFE_WAIT` LGS gates, `Math.max(5.00, last * 0.04)` cooldown step-down, and Shop Pay / mobile retail ATC links. |
+| `lgsPoller.ts` (`lgsPoller.js`) | 992 | Polls 90 active verified Shopify LGS storefronts from `config/stores.json`, applies `resolveShopifyFxMultiplier()`, extracts `prod.images[0].src` box art, routes singles to `singlesSniper.ts`, and writes `storeHealth.json`. |
 | `vampirePoller.ts` (`vampirePoller.js`) | 566 | Delegates Big-Box polling to `bigBoxRetailPoller.ts`, polls `r/PKMNTCGDeals` RSS, and runs TCGPlayer verified-seller undercut sweeps with Scam Shield. |
-| `notifier.ts` (`notifier.js`) | 1,052 | **0ms Fire-Then-Enrich** alert pipeline (`priorityFront = true` instant send + background `getDualMarketComps()` `PATCH`), `?payment=shop_pay` + mobile retailer deep links, hard silent-singles guard, and 09:00/18:00 Roundup Digest. |
-| `marketComps.ts` (`marketComps.js`) | 456 | Live TCGPlayer + eBay Buy-It-Now comp scraper with trimmed-median sanity guards (`applySyncSanityGuard`). |
-| `marketTape.ts` (`marketTape.js`) | 804 | 14-day NRT rolling sales velocity tracker, absorption ratio, 48h distributor wave detector, honey-hole store rankings, and weekly checkpoints. |
+| `notifier.ts` (`notifier.js`) | 1,042 | **0ms Fire-Then-Enrich** w/ `buildCleanDiscordAlertEmbed()`, pre-send `getLiveTcgPlayerCompFast` LGS gate, preserved box-art thumbnails + local attachment fallback, `@here` Queue/Draw embeds, and Roundup Digest. |
+| `marketComps.ts` (`marketComps.js`) | 430 | Live TCGPlayer + eBay Buy-It-Now comp scraper + `getLiveTcgPlayerCompFast` (`3200ms` bounded check + 10m cache) with trimmed-median sanity guards. |
+| `marketTape.ts` (`marketTape.js`) | 718 | 95-day rolling price history & NRT sales velocity tracker (`NINETY_FIVE_DAYS_MS`), absorption ratio, 48h distributor wave detector, honey-hole store rankings, and weekly checkpoints. |
 | `marketTelemetry.ts` (`marketTelemetry.js`) | 127 | Rolling price observation tracker for `marketCache.json`. |
 | `src/marketSync.ts` (`src/marketSync.js`) | 187 | 6-hour background TCGPlayer market baseline synchronizer writing exclusively to `marketCache.json`. |
 | `server.js` | 2,934 | Express HTTP server (`Port 3000`) with `mtimeMs`-backed `readJsonCached()` & response memoization (`12.49ms` `/api/status`), zero split-brain `storeOffersCache.json` overwrites, and honest `/api/sku-history/:skuId`. |
@@ -56,9 +59,10 @@
 | `liveStock.json` | Currently in-stock sealed items under buy trigger (`< 6h`), `__bestOffers`, and `__recentOos`. |
 | `dropsHistory.json` | Last 25 sealed Discord alert payloads. |
 | `alertState.json` | Per-`${storeName}::${skuId}` deduplication memory. |
-| `conqueredVault.json` | Gamified Trophy Plaque ledger. |
+| `conqueredVault.json` | Gamified Trophy Plaque ledger (frozen seed/user trophies). |
+| `data/purchaseLedger.json` | Non-destructive Commander cost-basis mirror synced via `atomicWriteJson` from `conqueredVault.json` (including Scott's `$1,529.45` `me-30th-celebration-etb-case`). |
 | `data/msrpTrophies.json` | Persistent Tier-A Retail MSRP Unicorn counter. |
-| `salesHistory.json`, `dailySnapshots.json`, `weeklyCheckpoints.json` | Real timestamped rolling price telemetry (`0` synthetic `Math.sin` points). |
+| `salesHistory.json`, `dailySnapshots.json`, `weeklyCheckpoints.json` | Real timestamped 95-day rolling price telemetry (`0` synthetic `Math.sin` points) powering earned `7d/15d/30d/60d/90d` watermarks. |
 
 ---
 

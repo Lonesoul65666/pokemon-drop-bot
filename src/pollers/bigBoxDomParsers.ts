@@ -10,10 +10,10 @@ function decodeHtmlEntities(s: string): string {
 
 export function extractJsonLdShelfProducts(html: string, origin: string): {
   totalNodes: number;
-  inStockItems: Array<{ title: string; price: number; url: string; sku: string; isPreOrder: boolean }>;
+  inStockItems: Array<{ title: string; price: number; url: string; sku: string; isPreOrder: boolean; imageUrl?: string }>;
 } {
   let totalNodes = 0;
-  const inStockItems: Array<{ title: string; price: number; url: string; sku: string; isPreOrder: boolean }> = [];
+  const inStockItems: Array<{ title: string; price: number; url: string; sku: string; isPreOrder: boolean; imageUrl?: string }> = [];
   const scripts = [...String(html || '').matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)];
   const visit = (node: any) => {
     if (!node || typeof node !== 'object') return;
@@ -22,6 +22,8 @@ export function extractJsonLdShelfProducts(html: string, origin: string): {
     if (Array.isArray(node.itemListElement)) node.itemListElement.forEach((el: any) => visit(el?.item || el));
     if (/Product/i.test(String(node['@type'] || '')) && node.name) {
       totalNodes += 1;
+      const rawImg = Array.isArray(node.image) ? node.image[0] : node.image;
+      const imgUrl = typeof rawImg === 'string' ? rawImg : (typeof rawImg?.url === 'string' ? rawImg.url : undefined);
       const offers = Array.isArray(node.offers) ? node.offers : (node.offers ? [node.offers] : []);
       for (const off of offers) {
         const avail = String(off?.availability || '');
@@ -32,7 +34,7 @@ export function extractJsonLdShelfProducts(html: string, origin: string): {
         if (p > 0) {
           inStockItems.push({
             title: String(node.name), price: p, url: fullUrl,
-            sku: String(node.sku || node.productID || node.gtin13 || p), isPreOrder: /PreOrder/i.test(avail)
+            sku: String(node.sku || node.productID || node.gtin13 || p), isPreOrder: /PreOrder/i.test(avail), imageUrl: imgUrl
           });
         }
       }
@@ -152,8 +154,9 @@ export function parseAmazon1pPayload(html: string, isAtvLockedFeed = false): Big
 
     const atcUrl = `https://www.amazon.com/gp/aws/cart/add.html?ASIN.1=${asin}&Quantity.1=1`;
     const pdpUrl = `https://www.amazon.com/dp/${asin}?smid=${AMAZON_1P_MERCHANT_ID}`;
+    const imgSrc = block.match(/class=["'][^"']*s-image[^"']*["'][^>]*\bsrc=["'](https:\/\/[^"']+)["']/i)?.[1];
     if (!resolveBigBoxPolicyMatch({ title: realTitle, price, retailer: 'Amazon', url: pdpUrl, tokenField: 'amazonAsin', tokenValue: asin })) continue;
-    inStockOffers.push({ title: realTitle, retailer: 'Amazon', url: atcUrl, productUrl: pdpUrl, cart1xUrl: atcUrl, price, itemId: `amazon_${asin}`, freeShipping: price >= 35 });
+    inStockOffers.push({ title: realTitle, retailer: 'Amazon', url: atcUrl, productUrl: pdpUrl, imageUrl: imgSrc, cart1xUrl: atcUrl, price, itemId: `amazon_${asin}`, freeShipping: price >= 35 });
   }
 
   if (totalNodesFound === 0) {

@@ -20,6 +20,7 @@ const MARKET_CACHE_PATH = path.resolve(process.cwd(), 'marketCache.json');
 const DROPS_HISTORY_PATH = path.resolve(process.cwd(), 'dropsHistory.json');
 const LIVE_STOCK_PATH = path.resolve(process.cwd(), 'liveStock.json');
 
+const NINETY_FIVE_DAYS_MS = 95 * 24 * 60 * 60 * 1000;
 const FOURTEEN_DAYS_MS = 14 * 24 * 60 * 60 * 1000;
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 const FORTY_EIGHT_HOURS_MS = 48 * 60 * 60 * 1000;
@@ -129,12 +130,12 @@ function getMostRecentSundayKey(ts = Date.now()): string {
 }
 
 function pruneOldRecords() {
-  const cutoffTs = Date.now() - FOURTEEN_DAYS_MS;
+  const cutoffTs = Date.now() - NINETY_FIVE_DAYS_MS;
   salesHistory = salesHistory.filter(ev => (ev.clearedAt || ev.lastSeenAt || ev.restockedAt) >= cutoffTs);
 
   for (const targetId of Object.keys(dailySnapshots)) {
     const arr = dailySnapshots[targetId] || [];
-    dailySnapshots[targetId] = arr.filter(s => s.timestamp >= cutoffTs).slice(-14);
+    dailySnapshots[targetId] = arr.filter(s => s.timestamp >= cutoffTs).slice(-95);
     if (dailySnapshots[targetId].length === 0) {
       delete dailySnapshots[targetId];
     }
@@ -284,7 +285,7 @@ export function recordDailySnapshot(
     }
   }
 
-  dailySnapshots[targetId] = list.slice(-14);
+  dailySnapshots[targetId] = list.slice(-95);
   flushMarketTapeToDisk(false);
 }
 
@@ -351,8 +352,8 @@ export function recordTapeRestock(params: {
     });
   }
 
-  if (salesHistory.length > 600) {
-    salesHistory = salesHistory.slice(0, 600);
+  if (salesHistory.length > 2500) {
+    salesHistory = salesHistory.slice(0, 2500);
   }
   flushMarketTapeToDisk(false);
 }

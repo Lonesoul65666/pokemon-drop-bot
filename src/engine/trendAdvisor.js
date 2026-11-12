@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.fetchTcgPlayerQuarterHistoryNote = exports.buildEarnedWatermarkSummary = void 0;
 exports.getDaysUntilRelease = getDaysUntilRelease;
 exports.isPreReleaseDate = isPreReleaseDate;
 exports.getLiveStoreOfferMedian = getLiveStoreOfferMedian;
@@ -268,3 +269,6 @@ function evaluateSkuTrendAndTiming(params) {
         : `◈ ⟦ STABLE 60D PLATEAU ($${Math.round(rolling.avg60d)} 60D AVG) ⟧`;
     return makeResult('STABLE_ACCUMULATE', label);
 }
+var watermarkHistory_1 = require("./watermarkHistory");
+Object.defineProperty(exports, "buildEarnedWatermarkSummary", { enumerable: true, get: function () { return watermarkHistory_1.buildEarnedWatermarkSummary; } });
+Object.defineProperty(exports, "fetchTcgPlayerQuarterHistoryNote", { enumerable: true, get: function () { return watermarkHistory_1.fetchTcgPlayerQuarterHistoryNote; } });

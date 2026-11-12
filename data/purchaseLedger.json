@@ -1,0 +1,35 @@
+{
+  "updatedAt": "2026-11-12T21:27:25.390Z",
+  "purchases": [
+    {
+      "id": "trophy-me-delta-reign-etb-1794237410816",
+      "skuId": "me-delta-reign-etb",
+      "productName": "Mega Evolution: Delta Rayquaza (Delta Reign) ETB",
+      "formFactor": "etb",
+      "store": "Target",
+      "landedPrice": 54.99,
+      "purchasedAt": "2026-11-09T15:16:50.816Z",
+      "orderRef": ""
+    },
+    {
+      "id": "trophy-30th-celebration-etb-case-001",
+      "skuId": "me-30th-celebration-etb-case",
+      "productName": "Pokémon 30th Celebration ETB Sealed Case (10 ETBs)",
+      "formFactor": "etb-case",
+      "store": "Player One Services (Verified WPN)",
+      "landedPrice": 1529.45,
+      "purchasedAt": "2026-10-17T16:45:00.000Z",
+      "orderRef": "8E2261C4-EEED7D-7D4DB"
+    },
+    {
+      "id": "trophy-2-chaos-rising-etb-msrp",
+      "skuId": "me-chaos-rising-etb",
+      "productName": "Mega Evolution: Chaos Rising Elite Trainer Box",
+      "formFactor": "etb",
+      "store": "Cooperstown Cards (TCGPlayer Verified Seller)",
+      "landedPrice": 51,
+      "purchasedAt": "2026-10-18T03:53:00.000Z",
+      "orderRef": "B108C090-96CCFE-CA0AF"
+    }
+  ]
+}

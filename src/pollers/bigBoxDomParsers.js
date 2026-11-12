@@ -30,6 +30,8 @@ function extractJsonLdShelfProducts(html, origin) {
             node.itemListElement.forEach((el) => visit(el?.item || el));
         if (/Product/i.test(String(node['@type'] || '')) && node.name) {
             totalNodes += 1;
+            const rawImg = Array.isArray(node.image) ? node.image[0] : node.image;
+            const imgUrl = typeof rawImg === 'string' ? rawImg : (typeof rawImg?.url === 'string' ? rawImg.url : undefined);
             const offers = Array.isArray(node.offers) ? node.offers : (node.offers ? [node.offers] : []);
             for (const off of offers) {
                 const avail = String(off?.availability || '');
@@ -41,7 +43,7 @@ function extractJsonLdShelfProducts(html, origin) {
                 if (p > 0) {
                     inStockItems.push({
                         title: String(node.name), price: p, url: fullUrl,
-                        sku: String(node.sku || node.productID || node.gtin13 || p), isPreOrder: /PreOrder/i.test(avail)
+                        sku: String(node.sku || node.productID || node.gtin13 || p), isPreOrder: /PreOrder/i.test(avail), imageUrl: imgUrl
                     });
                 }
             }
@@ -169,9 +171,10 @@ function parseAmazon1pPayload(html, isAtvLockedFeed = false) {
             continue;
         const atcUrl = `https://www.amazon.com/gp/aws/cart/add.html?ASIN.1=${asin}&Quantity.1=1`;
         const pdpUrl = `https://www.amazon.com/dp/${asin}?smid=${bigBoxAdapters_1.AMAZON_1P_MERCHANT_ID}`;
+        const imgSrc = block.match(/class=["'][^"']*s-image[^"']*["'][^>]*\bsrc=["'](https:\/\/[^"']+)["']/i)?.[1];
         if (!(0, bigBoxAdapters_1.resolveBigBoxPolicyMatch)({ title: realTitle, price, retailer: 'Amazon', url: pdpUrl, tokenField: 'amazonAsin', tokenValue: asin }))
             continue;
-        inStockOffers.push({ title: realTitle, retailer: 'Amazon', url: atcUrl, productUrl: pdpUrl, cart1xUrl: atcUrl, price, itemId: `amazon_${asin}`, freeShipping: price >= 35 });
+        inStockOffers.push({ title: realTitle, retailer: 'Amazon', url: atcUrl, productUrl: pdpUrl, imageUrl: imgSrc, cart1xUrl: atcUrl, price, itemId: `amazon_${asin}`, freeShipping: price >= 35 });
     }
     if (totalNodesFound === 0) {
         const pdpAsin = src.match(/(?:name=["']ASIN["'][^>]*value=["']|\/dp\/)(B0[A-Z0-9]{8})/i)?.[1]?.toUpperCase();

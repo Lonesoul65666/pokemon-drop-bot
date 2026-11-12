@@ -227,9 +227,10 @@ function computeOfferShelfStatus(params) {
         };
     }
     if (wallOwned && !isRipHuntMode && muteVaulted && !isMsrpUnicorn && !isRetailFlipBypass) {
+        const isSingleEtb = /\b(etb|elite\s*trainer\s*box)\b/i.test(ffLower) && !/\bcase\b/i.test(ffLower);
         return {
             statusTier: 'MUTED_OWNED',
-            statusTag: '⟦ MUTED: OWNED ON WALL ⟧',
+            statusTag: isSingleEtb ? '⟦ MUTED: OWNED ON WALL ⟧' : '⟦ MUTED: OWNED IN VAULT ⟧',
             isCloseCall: false,
             closeCallDelta: 0,
             comparePrice: landedPrice,
@@ -622,9 +623,9 @@ function refreshCachedStoreOffersStatus() {
                 const loganRipOwned = rule ? Boolean(rule.loganRipOwned) : false;
                 const completionCount = (wallOwned ? 1 : 0) + (dadRipOwned ? 1 : 0) + (loganRipOwned ? 1 : 0);
                 const fullyConquered = Boolean(wallOwned && dadRipOwned && loganRipOwned);
-                const isMsrpUnicorn = Boolean(msrp > 0 && rawItemPrice <= Math.round(msrp * 1.08 * 100) / 100 && rawShip <= 10.00);
                 const is3P = /tcgplayer|ebay|3p/i.test(rec.storeName || storeKey);
                 const is1PBigBox = isVerified1PBigBoxOrPc(rec.storeName || storeKey, rec.url, is3P);
+                const isMsrpUnicorn = Boolean(is1PBigBox && msrp > 0 && rawItemPrice <= Math.round(msrp * 1.08 * 100) / 100 && rawShip <= 10.00);
                 const isRetailFlipBypass = Boolean(is1PBigBox && isMsrpUnicorn && (marketVal >= rawItemPrice * 1.30 || (0, policies_1.isPokemonCenterSource)(rec.storeName || storeKey, rec.url)));
                 const landedVal = Number(rec.landedPrice || rawItemPrice + rawShip);
                 const activeStoreCount = Object.keys(skuOffers).length;
@@ -1037,6 +1038,31 @@ function markLiveStockOut(itemId, options) {
     }
     catch (e) { }
 }
+function getCachedVerifiedTcgLowestShipped(skuId, minFloor, maxCeiling, nowTs = Date.now()) {
+    const skuOffers = storeOffersCacheMem[skuId] || {};
+    let bestTcgOffer = 0;
+    for (const [stKey, rec] of Object.entries(skuOffers)) {
+        if (!rec || !/tcgplayer/i.test(`${stKey} ${rec.storeName || ''}`))
+            continue;
+        if (nowTs - Number(rec.updatedAt || 0) > 48 * 3600 * 1000)
+            continue;
+        const lp = Number(rec.landedPrice || rec.price || 0);
+        if (lp >= minFloor && lp <= maxCeiling && (bestTcgOffer === 0 || lp < bestTcgOffer)) {
+            bestTcgOffer = lp;
+        }
+    }
+    if (bestTcgOffer > 0)
+        return bestTcgOffer;
+    const tel = (0, marketTelemetry_1.getTelemetry)()[skuId];
+    if (tel && Number(tel.lowestPrice || 0) >= minFloor && Number(tel.lowestPrice || 0) <= maxCeiling) {
+        const lowStore = String(tel.lowestStore || '');
+        const lowUrl = String(tel.lowestUrl || '');
+        if ((/tcgplayer\.com\/product\/\d+/i.test(lowUrl) || /tcgplayer/i.test(lowStore)) && !/Case Baseline/i.test(lowStore)) {
+            return Number(tel.lowestPrice);
+        }
+    }
+    return 0;
+}
 function evaluateItem(item) {
     const cleanTitle = item.title.trim();
     const isPreOrder = Boolean(item.isPreOrder || /pre-?order|pre-?sale/i.test(`${cleanTitle} ${item.url}`));
@@ -1078,10 +1104,9 @@ function evaluateItem(item) {
         if (item.price !== undefined && (item.price < minFloor || item.price > maxCeiling)) {
             continue;
         }
-        // Identify Pokemon Center Exclusive Retail Unlock (pokemoncenter.com or <= $69.99 retail PC ETB)
+        // Identify Pokemon Center Exclusive Retail Unlock (strictly pokemoncenter.com 1P retail drop)
         const isEtbRule = rule.formFactor === 'ETB' || rule.formFactor === 'ETB Case';
-        const isPcExclusiveRetailDrop = isEtbRule && ((isPcSource && (item.price === undefined || item.price <= 75)) ||
-            (hasPcTerm && item.price !== undefined && item.price <= 69.99));
+        const isPcExclusiveRetailDrop = isEtbRule && isPcSource && (item.price === undefined || item.price <= 75);
         const liveTelPre = (0, marketTelemetry_1.getTelemetry)()[rule.id];
         const maxMedianPlausible = rule.estimatedMarketValue > 0
             ? Math.min(maxCeiling, Math.round(rule.estimatedMarketValue * 1.35 * 100) / 100)
@@ -1150,8 +1175,12 @@ function evaluateItem(item) {
         let bigBoxBadge = undefined;
         let marketplaceWarning = undefined;
         let priorityFront = false;
-        // V5 Slice 3: Evaluate Tier-A True Retail MSRP against raw shelf price (dropPrice <= msrpCeiling * 1.08) when shipping <= $10.00
-        const isTierAMsrp = Boolean(rule.msrpCeiling > 0 &&
+        const isMarketplace3P = Boolean(item.isMarketplace3P ||
+            /tcgplayer|ebay|target\s*plus|walmart.*3p|3rd[-\s]*party|marketplace/i.test(`${item.retailer} ${handleAndUrl}`));
+        const is1PBigBoxOrPc = isVerified1PBigBoxOrPc(item.retailer, handleAndUrl, isMarketplace3P);
+        // Phase 2 Strict 1P Gate: NEVER emit MSRP_TIER_A / MSRP OVERRIDE on an LGS store; strictly reserve for verified 1st-Party Big-Box & Pokemon Center
+        const isTierAMsrp = Boolean(is1PBigBoxOrPc &&
+            rule.msrpCeiling > 0 &&
             dropPrice <= Math.round(rule.msrpCeiling * 1.08 * 100) / 100 &&
             estimatedShipping <= 10.00);
         if (item.isBigBoxRestockRadar) {
@@ -1203,7 +1232,7 @@ function evaluateItem(item) {
         const fullyConquered = Boolean(wallOwned && dadRipOwned && loganRipOwned);
         const isRipHuntMode = Boolean((wallOwned || completionCount >= 1) && !fullyConquered);
         const isInVault = wallOwned;
-        const isMsrpUnicorn = Boolean(isTierAMsrp || isPcExclusiveRetailDrop);
+        const isMsrpUnicorn = Boolean(is1PBigBoxOrPc && (isTierAMsrp || isPcExclusiveRetailDrop));
         let muteVaulted = false;
         let wallHunterMode = false;
         try {
@@ -1212,9 +1241,6 @@ function evaluateItem(item) {
             wallHunterMode = Boolean(settings?.wallHunterMode);
         }
         catch (e) { }
-        const isMarketplace3P = Boolean(item.isMarketplace3P ||
-            /tcgplayer|ebay|target\s*plus|walmart.*3p|3rd[-\s]*party|marketplace/i.test(`${item.retailer} ${handleAndUrl}`));
-        const is1PBigBoxOrPc = isVerified1PBigBoxOrPc(item.retailer, handleAndUrl, isMarketplace3P);
         const isRetailFlipBypass = Boolean(is1PBigBoxOrPc &&
             ((dropPrice <= Math.round(rule.msrpCeiling * 1.08 * 100) / 100 && currentMarketRef >= dropPrice * 1.30) || isPcExclusiveRetailDrop || isPcSource));
         if (isRetailFlipBypass && (fullyConquered || (wallOwned && muteVaulted))) {
@@ -1556,6 +1582,26 @@ function evaluateItem(item) {
                 isElasticDip
             };
         }
+        // Phase 2 Alert Quality Gate: Kill Worse-Than-Market & Bleeding-Down LGS Alerts
+        if (!is1PBigBoxOrPc) {
+            const cachedTcgFloor = getCachedVerifiedTcgLowestShipped(rule.id, minFloor, maxCeiling, now);
+            if (cachedTcgFloor > 0 && landedPrice > cachedTcgFloor + 0.01) {
+                return {
+                    action: 'IGNORE',
+                    reason: `Suppressed worse-than-TCGPlayer LGS offer: $${landedPrice.toFixed(2)} landed exceeds verified TCGPlayer ($${cachedTcgFloor.toFixed(2)}).`,
+                    rule, packCount, pricePerPack, isRipValueLeader, isPreRelease, preReleaseStatusTag,
+                    releaseDate: rule.releaseDate, statusTier, statusTag, isCloseCall, closeCallDelta, trendSignal, trendVerdictLabel, isElasticDip
+                };
+            }
+            if (trendSignal === 'FALLING_KNIFE_WAIT' && (rule.msrpCeiling <= 0 || landedPrice > rule.msrpCeiling)) {
+                return {
+                    action: 'IGNORE',
+                    reason: `Suppressed HOLD OFF / BLEEDING DOWN LGS offer ($${landedPrice.toFixed(2)} landed).`,
+                    rule, packCount, pricePerPack, isRipValueLeader, isPreRelease, preReleaseStatusTag,
+                    releaseDate: rule.releaseDate, statusTier, statusTag, isCloseCall, closeCallDelta, trendSignal, trendVerdictLabel, isElasticDip
+                };
+            }
+        }
         // Reload alertState from disk if reset via dashboard
         try {
             if (fs_1.default.existsSync(ALERT_STATE_PATH)) {
@@ -1597,16 +1643,18 @@ function evaluateItem(item) {
         let alertType = 'NEW_DROP';
         let previousPrice = undefined;
         let previousTimeStr = undefined;
+        const prevLastLanded = prev ? Number(prev.lastLandedPrice ?? prev.lastPrice ?? landedPrice) : landedPrice;
+        const prevLowestLanded = prev ? Number(prev.lowestAlertedLandedPrice ?? prev.lowestAlertedPrice ?? prevLastLanded) : landedPrice;
+        const stepDownAnchor = Math.min(prevLastLanded, prevLowestLanded);
         if (prev) {
             const elapsedHours = (now - prev.timestamp) / (1000 * 60 * 60);
-            const prevLowest = prev.lowestAlertedPrice || prev.lastPrice;
-            const isSignificantPriceDrop = (currentPrice <= prevLowest - 3.00 ||
-                currentPrice <= Math.round(prevLowest * 0.98 * 100) / 100);
-            // 12-Hour Anti-Echo Lock: Never re-alert on the same SKU + Store within 12h if price hasn't moved by >= $1.00
-            if (elapsedHours < 12 && Math.abs(landedPrice - prev.lastPrice) < 1.00 && Math.abs(currentPrice - prev.lastPrice) < 1.00 && !isSignificantPriceDrop) {
+            const minStepDown = Math.round(Math.max(5.00, prevLastLanded * 0.04) * 100) / 100;
+            const isSignificantPriceDrop = landedPrice <= Math.round((stepDownAnchor - minStepDown) * 100) / 100;
+            // Minimum Re-Alert Step-Down Guard: Block $1-$4 wiggles within the cooldown window
+            if (elapsedHours < 12 && !isSignificantPriceDrop && (!prev.wasOutOfStockSinceLastAlert || (!is1PBigBoxOrPc && elapsedHours < Math.max(2, (rule.cooldownMins || 120) / 60)))) {
                 return {
                     action: 'IGNORE',
-                    reason: `Deduplicated 12h repeat echo: ${rule.name} at ${item.retailer} unchanged at $${prev.lastPrice.toFixed(2)} (${prev.timeStr}).`,
+                    reason: `Deduplicated cooldown wiggle: ${rule.name} at ${item.retailer} ($${landedPrice.toFixed(2)} vs last $${prevLastLanded.toFixed(2)} — needs -$${minStepDown.toFixed(2)} step-down).`,
                     rule,
                     packCount,
                     pricePerPack,
@@ -1623,12 +1671,13 @@ function evaluateItem(item) {
                     isElasticDip
                 };
             }
-            const isTrueRestock = Boolean(prev.wasOutOfStockSinceLastAlert) && elapsedHours >= 0.25;
+            const minRestockHours = is1PBigBoxOrPc ? 0.25 : Math.max(2, (rule.cooldownMins || 120) / 60);
+            const isTrueRestock = Boolean(prev.wasOutOfStockSinceLastAlert) && elapsedHours >= minRestockHours;
             const isDailyReminder = elapsedHours >= 24;
             if (!isTrueRestock && !isSignificantPriceDrop && !isDailyReminder) {
                 return {
                     action: 'IGNORE',
-                    reason: `Deduplicated static shelf stock: ${rule.name} at ${item.retailer} already alerted at $${prev.lastPrice.toFixed(2)} (${prev.timeStr}).`,
+                    reason: `Deduplicated static shelf stock: ${rule.name} at ${item.retailer} already alerted at $${prevLastLanded.toFixed(2)} (${prev.timeStr}).`,
                     rule,
                     packCount,
                     pricePerPack,
@@ -1645,7 +1694,7 @@ function evaluateItem(item) {
                     isElasticDip
                 };
             }
-            previousPrice = prev.lastPrice;
+            previousPrice = prevLastLanded;
             previousTimeStr = prev.timeStr;
             alertType = isSignificantPriceDrop ? 'PRICE_DROP' : 'RESTOCK_REPEAT';
         }
@@ -1655,14 +1704,16 @@ function evaluateItem(item) {
             stateKey,
             entry: {
                 lastPrice: currentPrice,
+                lastLandedPrice: landedPrice,
                 lowestAlertedPrice: prev ? Math.min(prev.lowestAlertedPrice, currentPrice) : currentPrice,
+                lowestAlertedLandedPrice: prev ? Math.min(stepDownAnchor, landedPrice) : landedPrice,
                 timestamp: now,
                 timeStr: nowTimeStr,
                 alertCount: (prev?.alertCount || 0) + 1,
                 wasOutOfStockSinceLastAlert: false,
                 itemId: item.itemId ? String(item.itemId) : prev?.itemId
             },
-            trophyCatch: (isMsrpUnicorn && !item.isBigBoxRestockRadar)
+            trophyCatch: (is1PBigBoxOrPc && isMsrpUnicorn && !item.isBigBoxRestockRadar)
                 ? {
                     productName: rule.name,
                     ruleId: rule.id,
@@ -1707,6 +1758,7 @@ function evaluateItem(item) {
             cart1xUrl,
             cart2xUrl,
             cart3xUrl,
+            imageUrl: item.imageUrl || rule.image || undefined,
             bigBoxTier,
             bigBoxBadge,
             marketplaceWarning,

@@ -41,6 +41,7 @@ exports.inferFormFactor = inferFormFactor;
 exports.isValidCompTitle = isValidCompTitle;
 exports.computeTrimmedCompStats = computeTrimmedCompStats;
 exports.applySyncSanityGuard = applySyncSanityGuard;
+exports.getLiveTcgPlayerCompFast = getLiveTcgPlayerCompFast;
 exports.getDualMarketComps = getDualMarketComps;
 const axios_1 = __importDefault(require("axios"));
 const cheerio = __importStar(require("cheerio"));
@@ -423,11 +424,40 @@ async function fetchEbayComp(ruleId, ruleName, priceFloorRef, singleUnitBaseline
     catch (e) { }
     return undefined;
 }
+const fastTcgCompCache = new Map();
+async function getLiveTcgPlayerCompFast(ruleId, ruleName, fallbackMarket, singleUnitBaseline) {
+    const cacheKey = `${ruleId || ''}::${ruleName}`.toLowerCase();
+    const now = Date.now();
+    const cached = fastTcgCompCache.get(cacheKey);
+    if (cached && cached.expiresAt > now)
+        return cached.comp;
+    const formFactor = inferFormFactor(ruleId, ruleName);
+    const minFloor = (0, policies_1.getMinPlausiblePriceFloor)(formFactor);
+    const safeFallback = Math.max(minFloor, fallbackMarket || minFloor);
+    let timer;
+    try {
+        const comp = await Promise.race([
+            fetchTcgPlayerComp(ruleId, ruleName, singleUnitBaseline, safeFallback),
+            new Promise((resolve) => {
+                timer = setTimeout(() => resolve(undefined), 3200);
+                timer.unref?.();
+            })
+        ]);
+        if (comp) {
+            fastTcgCompCache.set(cacheKey, { comp, expiresAt: now + 10 * 60 * 1000 });
+        }
+        return comp;
+    }
+    finally {
+        if (timer)
+            clearTimeout(timer);
+    }
+}
 async function getDualMarketComps(ruleId, ruleName, fallbackMarket, singleUnitBaseline) {
     const formFactor = inferFormFactor(ruleId, ruleName);
     const minFloor = (0, policies_1.getMinPlausiblePriceFloor)(formFactor);
     const safeFallback = Math.max(minFloor, fallbackMarket || minFloor);
-    const tcg = await fetchTcgPlayerComp(ruleId, ruleName, singleUnitBaseline, safeFallback);
+    const tcg = await getLiveTcgPlayerCompFast(ruleId, ruleName, safeFallback, singleUnitBaseline);
     const refPrice = (tcg && tcg.price >= minFloor) ? tcg.total : safeFallback;
     const ebay = await fetchEbayComp(ruleId, ruleName, refPrice, singleUnitBaseline, safeFallback);
     return { tcgplayer: tcg, ebay };

@@ -334,9 +334,9 @@
   "Collector Store::sv-journey-together-booster-box": {
     "lastPrice": 189.99,
     "lowestAlertedPrice": 189.99,
-    "timestamp": 1794160610224,
-    "timeStr": "11:56 AM",
-    "alertCount": 5,
+    "timestamp": 1794518345157,
+    "timeStr": "03:19 PM",
+    "alertCount": 6,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "54076859318440"
   },

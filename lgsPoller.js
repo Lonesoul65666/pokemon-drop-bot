@@ -816,6 +816,7 @@ async function pollSingleStore(store) {
                             retailer: store.name,
                             url: cart1xUrl,
                             productUrl,
+                            imageUrl: prod.images?.[0]?.src || prod.image?.src,
                             cart1xUrl,
                             cart2xUrl,
                             cart3xUrl,
