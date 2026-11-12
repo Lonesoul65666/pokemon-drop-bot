@@ -155,7 +155,8 @@ exports.GLOBAL_JUNK_EXCLUSIONS = [
     /spanish/i,
     /french/i,
     /german/i,
-    // Partial-ETB / promo-from-ETB / accessory-for-ETB traps even when container word appears:
+    // Partial-ETB / promo-from-ETB / accessory-for-ETB / plush-bundle traps even when container word appears:
+    /\bsquishmallows?\b|\bplush(?:ie|ies)?\b/i,
     /\b(etb|elite\s*trainer\s*box|upc|spc|booster\s*box|booster\s*bundle)\s+(sealed\s+|foil\s+|holo\s+|stamped\s+)*(promo|sleeves|playmat|deck\s*box|dice|dividers?|code\s*cards?|booster\s*pack)\b/i,
     /\b(promo|sleeves|playmat|deck\s*box|dice|booster\s*pack)\s+from\s+(an?\s+)?(etb|elite\s*trainer|upc|spc|booster\s*box)\b/i,
 ];

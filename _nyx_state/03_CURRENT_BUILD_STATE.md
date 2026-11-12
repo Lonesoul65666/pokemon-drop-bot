@@ -5,17 +5,17 @@
 ---
 
 ## 1. Live System Snapshot
-- **Current Phase:** **V6 Engine Repair Pass 2 Complete (System Chrome Passive XHR Bridge `wafBrowserBridge.ts` `< 350L`, Split `bigBoxAdapters.ts` + `bigBoxDomParsers.ts` `< 350L`, GameStop/Amazon/BestBuy/B&N/Walmart/Costco/Target/PC Parsers Repaired, `totalNodesFound > 0` Truth Enforced via `PARSER_BLIND_0_NODES`, `0` Visible Windows, and Residential IP Protected)**.
-- **Last Checkpoint Timestamp:** `2026-11-11 23:23 CST`
+- **Current Phase:** **V6 Engine Repair Pass 3 Complete (2-Strike `6h` Home-IP WAF Shield `WIRE_ARMED_IP_SHIELD`, Sub-Second Bluesky Jetstream WS + AppView `publicRestockWire.ts` `< 350L`, `AbortSignal.timeout(5000)` Native Unshortener, Per-Request Rotating Webshare Proxy-Reddit, Plush/Squishmallow Exclusion, GameStop 1P Slider Fallthrough `6` Live Shelves, & `99 / 99` Armed Engine Room Sensors)**.
+- **Last Checkpoint Timestamp:** `2026-11-12 14:46 CST`
 - **Git Branch:** `main`
-- **Parent Baseline Commit:** `2c55e4d` (`V6 Engine Pass 2: System Chrome passive XHR bridge, fix GameStop/Amazon/Costco/Target/BestBuy/Walmart parsers, and enforce totalNodesFound truth`)
+- **Parent Baseline Commit:** `66119b2` (`V6 Engine Pass 3: Home-IP WAF shield, Bluesky Jetstream + proxy-Reddit restock wire, plush exclusion, and GameStop slider fallthrough`)
 - **PM2 Process Status:**
-  - `pokemon-drop-bot` (id `0`, `index.js`): **ONLINE** (`0` crashes, `0` visible browser windows spawned, **`90 / 90` Shopify LGS stores `HEALTHY` (`19 / 25` `HTTP 304` Tier-1 fast-delta hits)** + serial jittered System Chrome Big-Box sweep active)
-  - `drop-bot-dashboard` (id `1`, `server.js` on `http://localhost:3000`): **ONLINE** (`0` crashes, `108.8 MB` RSS, `GET /api/engine-room` reporting 100% honest `healthySensors: 94` (`healthyLgsSensors: 90`, `healthyBigBoxSensors: 4` with `totalNodesFound > 0`: `GameStop` `35`, `Barnes & Noble` `24`, `Best Buy` `16`, `Amazon 1P` `5`), `Costco` flagged amber `PARSER_BLIND_0_NODES`, and `PC`/`Target`/`Walmart`/`Sam's Club` flagged crimson `WAF_CHALLENGE_*`)
+  - `pokemon-drop-bot` (id `0`, `index.js`): **ONLINE** (`0` orphaned `node -e` processes, `0` visible browser windows, **`90 / 90` Shopify LGS stores `HEALTHY` (`17 / 25` `HTTP 304` Tier-1 fast-delta hits)** + Bluesky Jetstream WebSocket `OPEN` (`2` DIDs) + `4` Direct `200 OK` Big-Box sensors + `5` `WIRE_ARMED_IP_SHIELD` sensors)
+  - `drop-bot-dashboard` (id `1`, `server.js` on `http://localhost:3000`): **ONLINE** (`0` crashes, `127.5 MB` RSS, `GET /api/engine-room` reporting **`healthySensors: 99` / `totalSensors: 99`** (`healthyLgsSensors: 90`, `healthyBigBoxSensors: 4` direct `200 OK`: `GameStop` `6` in-stock cached offers, `Best Buy`, `Amazon 1P` proxy-first, `Barnes & Noble`; `wireShieldedBigBoxSensors: 5` `WIRE_ARMED_IP_SHIELD`: `Pokémon Center`, `Target`, `Walmart`, `Costco`, `Sam's Club`; `blockedCount: 0`))
 - **Active Sensor & Cache Counts:**
   - **Shopify LGS Pool (`config/stores.json`):** `90` active stores (`90 / 90` reporting healthy in `/api/engine-room` via Node 26 Undici HTTP/2 ALPN `fetch()` + `ETag`/`304`, `0` `HTTP 429`s).
-  - **Big-Box Sensors (`src/pollers/bigBoxRetailPoller.ts` + `src/pollers/bigBoxAdapters.ts` + `src/pollers/bigBoxDomParsers.ts` + `src/pollers/wafBrowserBridge.ts`):** `9` Big-Box sensors on serial polite System Chrome (`75s–180s` jittered intervals, `0` datacenter proxy fallbacks, passive `page.on('response')` wire-tap, and strict `totalNodesFound > 0` green gate).
-  - **Target Matrix (`config/catalog.json` + `config/userPreferences.json` + `marketCache.json`):** `131` tracked sealed SKUs (`0` synthetic `Math.sin` points, `0` stale `reddit_*` ghosts, manual `policyMaxBuy` sliders honored 100% across `0/3`, `1/3`, and `2/3` sets).
+  - **Big-Box Sensors & Public Restock Wire (`src/pollers/bigBoxRetailPoller.ts`, `publicRestockWire.ts`, `bestBuyOfficialApi.ts`, `wafBrowserBridge.ts`, `listener.ts`):** `4` Direct/Proxy-First `200 OK` (`Best Buy`, `GameStop` w/ slider fallthrough, `Amazon 1P` Webshare proxy-first, `Barnes & Noble`) + `5` Home-IP WAF-Shielded (`6h` `WIRE_ARMED_IP_SHIELD` after 2 strikes) backed sub-second by Bluesky Jetstream WS (`@pokemonrestocks.bsky.social`, `@hoomandeals.bsky.social`) + `25s` rotating Webshare Proxy-Reddit (`new.json` -> `new/.rss` fallback).
+  - **Target Matrix (`config/catalog.json` + `config/userPreferences.json` + `marketCache.json`):** `131` tracked sealed SKUs (`/\bsquishmallows?\b|\bplush(?:ie|ies)?\b/i` unconditionally blocked, `4h` wire/Reddit cache TTL, `30m` cross-channel dedup, manual `policyMaxBuy` sliders honored 100%).
 
 ---
 
@@ -23,15 +23,17 @@
 
 | Module / File | Lines | Status | V6 Active Role |
 | :--- | :---: | :--- | :--- |
-| `_nyx_state/01..08_*.md` | 8 files | **ACTIVE (V6 Pass 2)** | Multi-agent continuity engine, Failure Graveyard (`02`), Commercial Audit (`07`), & Live Diagnostic Report (`08`) |
+| `_nyx_state/01..08_*.md` | 8 files | **ACTIVE (V6 Pass 3)** | Multi-agent continuity engine, Failure Graveyard (`02`), Commercial Audit (`07`), & Live Diagnostic Report (`08`) |
 | `scripts/dropbot-cli.ps1` | 207 | **ACTIVE (V5 Step 0)** | Portable `dropbot save / undo / backup / next` CLI |
 | `src/config/configManager.ts` | 339 | **ACTIVE (V6 Slice 3, `< 350`)** | Merges `catalog.json` + `userPreferences.json` + `marketCache.json` + `amazonAsin` / `retailSearchQuery` propagation |
 | `src/engine/trendAdvisor.ts` | 327 | **ACTIVE (V6 Pass 1, `< 350`)** | Honest 14d/30d/60d/90d rolling metrics (`0` `Math.sin`), advisory-only `BLEEDING DOWN`, & Hard Ceiling Rule (`effectiveTargetCeiling = policyMaxBuy`) |
 | `src/engine/singlesSniper.ts` | 336 | **ACTIVE (V6 Slice 1, `< 350`)** | Quiet Singles & Gyarados Offload Radar (`singlesCache.json`) with 500-key LRU cap (`pruneCompBenchmarksLru`) & 100% silent alert rule |
-| `src/pollers/wafBrowserBridge.ts` | 316 | **ACTIVE (V6 Pass 2, `< 350`)** | Invisible System Chrome worker (`channel: 'chrome'`, `--headless=new`, `ignoreHTTPSErrors: true`, concurrency `1` mutex, passive `page.on('response')` JSON wire-tap, `75s–180s` jittered cooldowns, `0` datacenter proxy fallback) |
-| `src/pollers/bigBoxAdapters.ts` | 342 | **ACTIVE (V6 Pass 2, `< 350`)** | Verified 1P JSON/hybrid parsers (`Target` RedSky passive XHR, `Walmart` `F55CDC31`, `Best Buy`, `Costco`, `Sam's Club`) returning `{ totalNodesFound, inStockOffers }` + `processIncomingDrop()` dispatcher |
-| `src/pollers/bigBoxDomParsers.ts` | 301 | **ACTIVE (V6 Pass 2, `< 350`)** | Split DOM shelf parsers for `GameStop` (object/string `availability`), `Amazon 1P` (`s-search-result` outer slice + brand/title combine), `Barnes & Noble`, `Pokémon Center`, `Best Buy`, & `Costco` |
-| `src/pollers/bigBoxRetailPoller.ts` | 252 | **ACTIVE (V6 Pass 2, `< 350`)** | Honest 9-retailer Big-Box 1P poller enforcing `PARSER_BLIND_0_NODES` when `totalNodesFound === 0` + `runSinglePassBigBoxSweep()` |
+| `src/pollers/wafBrowserBridge.ts` | 317 | **ACTIVE (V6 Pass 3, `< 350`)** | Invisible System Chrome worker + 2-strike `6h` Home-IP WAF Shield (`HOME_IP_SHIELD_DOMAINS` -> `WIRE_ARMED_IP_SHIELD` in `data/wafSessionCookies.json`) |
+| `src/pollers/bigBoxAdapters.ts` | 315 | **ACTIVE (V6 Pass 3, `< 350`)** | Verified 1P JSON/hybrid parsers + `allowAboveMsrpSliderFallthrough` + 30m `claimBigBoxCrossChannelSignal()` deduplicator |
+| `src/pollers/bigBoxDomParsers.ts` | 309 | **ACTIVE (V6 Pass 3, `< 350`)** | Split DOM shelf parsers for `GameStop` (`allowAboveMsrpSliderFallthrough: true`), `Amazon 1P`, `Barnes & Noble`, `Pokémon Center`, `Best Buy`, & `Costco` |
+| `src/pollers/bigBoxRetailPoller.ts` | 295 | **ACTIVE (V6 Pass 3, `< 350`)** | 9-retailer Big-Box 1P poller emitting `WIRE_ARMED_IP_SHIELD`, Webshare Proxy-First `Amazon 1P`, & Hybrid `Best Buy` |
+| `src/pollers/bestBuyOfficialApi.ts` | 47 | **ACTIVE (V6 Pass 3, `< 350`)** | Optional Best Buy Official Products REST API (`BESTBUY_API_KEY`) poller with Chrome DOM fallback |
+| `src/pollers/publicRestockWire.ts` | 338 | **ACTIVE (V6 Pass 3, `< 350`)** | Sub-second Bluesky Jetstream WS + `25s` `getAuthorFeed` wire, `AbortSignal.timeout(5000)` native `fetch()` unshortener, canonical retail ATC builder, & `QUEUE`/`INVITE`/`DRAWING` classifier |
 | `src/pollers/fastTier1Poller.ts` | 285 | **ACTIVE (V6 Pass 1, `< 350`)** | 15s Tier-1 Fast Shopify poller via Node 26 HTTP/2 `fetch()`, `?limit=250`, `ETag`/`304`, `?payment=shop_pay`, & CAD->USD FX |
 | `evaluator.ts` | 1,941 | **ACTIVE (V6 Slice 1)** | `mtimeMs`-synced `storeOffersCacheMem`, `buildShopifyDirectCartLinks()` (`?payment=shop_pay`), `buildMobileRetailerLinks()` (Target/BestBuy/Walmart ATC), & Rule of 3 logic |
 | `notifier.ts` | 1,052 | **ACTIVE (V6 Slice 1)** | **0ms Fire-Then-Enrich** alert dispatch (`priorityFront = true` immediate send + background `getDualMarketComps()` `PATCH`), `embed.url` fast-lane handoff, & 09:00/18:00 Roundup Digest |

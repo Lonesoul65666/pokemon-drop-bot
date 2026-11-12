@@ -630,8 +630,12 @@ export function isExpiredRedditGhostOffer(storeKey: string, rec: any, nowTs = Da
   if (!rec || typeof rec !== 'object') return false;
   const idStr = String(rec.itemId || '');
   const sourceHay = `${storeKey || ''} ${rec.storeName || ''} ${rec.retailer || ''} ${rec.store || ''} ${rec.url || ''}`;
-  const isRedditOffer = idStr.startsWith('reddit_') || /PKMNTCGDeals|BIG-BOX RESTOCK RADAR|reddit\.com/i.test(sourceHay);
-  if (!isRedditOffer) return false;
+  const isWireOrRedditOffer =
+    idStr.startsWith('reddit_') ||
+    idStr.startsWith('bsky_') ||
+    idStr.startsWith('wire_') ||
+    /PKMNTCGDeals|BIG-BOX RESTOCK RADAR|RESTOCK WIRE|Bluesky|reddit\.com/i.test(sourceHay);
+  if (!isWireOrRedditOffer) return false;
   const originTs = Number(rec.firstSeenAt || rec.restockedAt || rec.updatedAt || rec.lastSeenAt || 0);
   if (originTs <= 0) return true;
   return (nowTs - originTs) > REDDIT_OFFER_TTL_MS;
@@ -1509,9 +1513,13 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       priorityFront = true;
     } else if (bigBoxName && dropPrice > rule.msrpCeiling * 1.08) {
       bigBoxTier = '3P_TIER_B';
-      bigBoxBadge = '⚠️ BIG-BOX 3P UNDERCUT';
-      if (/walmart|amazon|target|best\s*buy|marketplace/i.test(`${bigBoxName} ${item.retailer} ${handleAndUrl}`)) {
-        marketplaceWarning = '⚠️ 3P MARKETPLACE CHECK: Price is above MSRP — verify Sold & Shipped by 1st-Party Retailer before buying';
+      if (/^gamestop$/i.test(bigBoxName)) {
+        bigBoxBadge = '◈ ⟦ GAMESTOP 1P IN-STOCK (SLIDER CHECK) ⟧';
+      } else {
+        bigBoxBadge = '⚠️ BIG-BOX 3P UNDERCUT';
+        if (/walmart|amazon|target|best\s*buy|marketplace/i.test(`${bigBoxName} ${item.retailer} ${handleAndUrl}`)) {
+          marketplaceWarning = '⚠️ 3P MARKETPLACE CHECK: Price is above MSRP — verify Sold & Shipped by 1st-Party Retailer before buying';
+        }
       }
     }
 

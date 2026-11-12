@@ -62,9 +62,10 @@ function parseGameStopPayload(html) {
     const ld = extractJsonLdShelfProducts(src, origin);
     for (const it of ld.inStockItems) {
         seenTileIds.add(it.sku);
-        if ((0, bigBoxAdapters_1.resolveBigBoxPolicyMatch)({ title: it.title, price: it.price, retailer: 'GameStop', url: it.url })) {
+        const rule = (0, bigBoxAdapters_1.resolveBigBoxPolicyMatch)({ title: it.title, price: it.price, retailer: 'GameStop', url: it.url, allowAboveMsrpSliderFallthrough: true });
+        if (rule) {
             seenOfferIds.add(it.sku);
-            inStockOffers.push({ title: (0, bigBoxAdapters_1.cleanHtmlText)(it.title), retailer: 'GameStop', url: it.url, productUrl: it.url, price: it.price, itemId: `gamestop_${it.sku}`, isPreOrder: it.isPreOrder, freeShipping: it.price >= 59 });
+            inStockOffers.push({ title: (0, bigBoxAdapters_1.cleanHtmlText)(it.title), retailer: 'GameStop', url: it.url, productUrl: it.url, price: it.price, itemId: `gamestop_${it.sku}`, matchedSkuId: rule.id, isPreOrder: it.isPreOrder, freeShipping: it.price >= 59 });
         }
     }
     for (const g of src.matchAll(/data-gtmdata=(["'])([\s\S]*?)\1/gi)) {
@@ -83,13 +84,20 @@ function parseGameStopPayload(html) {
                 : /instock|in\s*stock|available|pre-?order/i.test(String(rawAvail || ''));
             if (!isAvail)
                 continue;
-            const price = parseFloat(String(obj?.price?.selling ?? obj?.price?.basePrice ?? obj?.price ?? 0).replace(/[^0-9.]/g, ''));
-            const relHref = pid ? src.match(new RegExp(`href=["']([^"']*\\/${pid}(?:\\.html)?[^"']*)["']`, 'i'))?.[1] : undefined;
+            const pObj = obj?.price ?? obj?.productInfo?.price;
+            const rawPrice = typeof pObj === 'object' && pObj !== null
+                ? (pObj.sale ?? pObj.selling ?? pObj.base ?? pObj.basePrice ?? pObj.min ?? 0)
+                : (pObj ?? 0);
+            const price = parseFloat(String(rawPrice).replace(/[^0-9.]/g, ''));
+            const rawObjUrl = typeof obj?.url === 'string' && obj.url.trim() ? obj.url.trim() : undefined;
+            const relHref = rawObjUrl || (pid ? src.match(new RegExp(`href=["']([^"']*\\/${pid}(?:\\.html)?[^"']*)["']`, 'i'))?.[1] : undefined);
             const url = relHref ? (relHref.startsWith('http') ? relHref : `${origin}${relHref.startsWith('/') ? '' : '/'}${relHref}`) : `${origin}/products/${pid}.html`;
-            if ((0, bigBoxAdapters_1.resolveBigBoxPolicyMatch)({ title, price, retailer: 'GameStop', url })) {
+            const isPreOrder = typeof rawAvail === 'object' && rawAvail !== null ? Boolean(rawAvail.preorder) : /pre-?order/i.test(String(rawAvail || ''));
+            const rule = (0, bigBoxAdapters_1.resolveBigBoxPolicyMatch)({ title, price, retailer: 'GameStop', url, allowAboveMsrpSliderFallthrough: true });
+            if (rule) {
                 if (pid)
                     seenOfferIds.add(pid);
-                inStockOffers.push({ title, retailer: 'GameStop', url, productUrl: url, price, itemId: `gamestop_${pid || price}`, freeShipping: price >= 59 });
+                inStockOffers.push({ title, retailer: 'GameStop', url, productUrl: url, price, itemId: `gamestop_${pid || price}`, matchedSkuId: rule.id, isPreOrder, freeShipping: price >= 59 });
             }
         }
         catch { }

@@ -305,3 +305,22 @@ All **Section 1** Big-Box parser, transport, WAF classification, and `totalNodes
 | **Barnes & Noble** | `Playwright (chrome-headless-new)` | `200` | **`24`** | `0` | **`200 OK // 0 IN STOCK`** (`ULTRA_CORE` emerald; `{0,1800}?` lookahead boundary fixed to index-slice all Hydrogen `/w/?ean=` cards) |
 
 - **Live `/api/engine-room` Verification:** `totalSensors: 99`, `healthySensors: 94` (`healthyLgsSensors: 90`, `healthyBigBoxSensors: 4` — up from `1` true green in Diagnostic Section 1.0, with `0` false greens!).
+
+---
+
+## 7. Engine Repair Pass 3 — Post-Fix Live Verification Addendum (`2026-11-12 14:43 CST`)
+
+All **Home-IP WAF Shield**, **Sub-Second Bluesky Jetstream + Rotating Webshare Proxy-Reddit Public Restock Wire**, **Plush/Squishmallow Exclusion**, **GameStop 1P Slider Fallthrough**, and **Bounded `< 15s` Hard-Exit Probe** requirements have been verified on live wire (`elapsedMs: 6,111ms–8,047ms` `< 15,000ms`, exit code `0`, `0` orphaned `node -e` processes, all `src/` modules `< 350` lines):
+
+1. **Bluesky AppView `getAuthorFeed` + Native `AbortSignal.timeout(5000)` Unshortener + Event Classifier (`src/pollers/publicRestockWire.ts` `338` lines):**
+   - Resolved DIDs live: `@pokemonrestocks.bsky.social` -> `did:plc:u72efgy4ojdkcbw6qxn6iegg` (`15` posts fetched) and `@hoomandeals.bsky.social` -> `did:plc:6jaaeivo6bmh2c2jrxtliyd3` (`15` posts fetched).
+   - Unshortened real live feed shorteners to canonical retail endpoints (`https://buff.ly/H29onzP` -> `2` hops -> `https://www.walmart.com/shop/collectibles/draw` classified `QUEUE_INVITE_DRAWING` / `DRAWING`; `https://buff.ly/TStnNO0` -> `2` hops -> `https://www.bestbuy.com/product/pokemon-trading-card-game-mega-evolution-delta-reign-booster-box-36-packs/JJG2TL8QYX` (`bestbuy_JJG2TL8QYX`) classified `QUEUE_INVITE_DRAWING` / `INVITE`; instant restock posts classified `INSTANT_BUY_RESTOCK`).
+   - Verified `QUEUE` (`Pokémon Center Waiting Room`), `INVITE` (`Amazon Request Invite`), and `DRAWING` (`Best Buy Drops` / `Walmart Collectibles Draw`) routing to `sendBigBoxQueueOrDrawingAlert()`, plus unconditional plush rejection (`squishmallowBlocked: true`, `plushSkuMatch: null`).
+2. **Bluesky Jetstream WebSocket Live Handshake:**
+   - Connected to `wss://jetstream2.us-east.bsky.network/subscribe` (`wantedCollections=app.bsky.feed.post`, `2` DIDs) -> `OPEN` (`readyState: 1`) in **`276ms–424ms`**, closed immediately in probe (`closedImmediately: true`), and verified live connected (`jetstreamConnected: true`, `0` reconnect loops) inside PM2 `pokemon-drop-bot`.
+3. **Webshare Proxy-Reddit (`listener.ts` `pollProxyRedditDealsOnce`):**
+   - Upgraded `getRedditWebshareAgent()` to `keepAlive: false` + `AbortSignal.timeout(5000)` so every poll/retry rotates onto a fresh Webshare exit IP with zero lingering sockets; live verified `new.json` -> `new/.rss` automatic fallback returning **`HTTP 200 OK` (`21` outbound deal posts parsed, `viaProxy: true`)** on clean exit IPs (and gracefully absorbing `429`s when Webshare rotates onto a shared rate-limited IP without touching Scott's Home IP).
+4. **GameStop `$84.99` 1P Slider Fallthrough (`src/pollers/bigBoxDomParsers.ts` `309` lines & `evaluator.ts`):**
+   - Verified `parseGameStopPayload()` (`allowAboveMsrpSliderFallthrough: true`) passes `$84.99` *Delta Reign ETB* (`gamestop_450739` -> `UNDER_SLIDER_TRIGGER` against `$93.00` slider) and `$84.99` *Perfect Order ETB* (`gamestop_438990` -> `ABOVE_SLIDER` against `$54.99` slider) cleanly, with **`6` live GameStop ETB offers** actively populated in `storeOffersCache.json` (`Perfect Order` `$84.99`, `Chaos Rising` `$89.99`, `Pitch Black` `$89.99`, `Delta Reign` `$99.99`, `Ascended Heroes` `$119.99`, `Prismatic Evolutions` `$149.99`).
+5. **Live `/api/engine-room` Sensor Counts (`http://localhost:3000/api/engine-room`):**
+   - `totalSensors: 99`, **`healthySensors: 99`** (`healthyLgsSensors: 90`, `direct200OkBigBoxSensors: 4` [`Best Buy`, `GameStop` (`200 OK // 6 IN STOCK`), `Amazon 1P`, `Barnes & Noble`], `wireArmedIpShieldBigBoxSensors: 5` [`Pokémon Center`, `Target`, `Walmart`, `Costco`, `Sam's Club` all armed on `WIRE_ARMED_IP_SHIELD`], `blockedSensors: 0`).

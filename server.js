@@ -2045,14 +2045,18 @@ app.get('/api/engine-room', (req, res) => {
       }
       matched.sort((a, b) => a.landedPrice - b.landedPrice);
       const hasUnderTrigger = matched.some(o => o.underTrigger);
-      const isWafOrNetBlocked = /WAF|SHIELD|CHALLENGE|403|412|435|ERR_|TIMEOUT|TARPIT|BLOCKED|ROUTER_TLS_FILTER/i.test(humanStatus);
+      const isWireIpShield = /WIRE_ARMED_IP_SHIELD/i.test(humanStatus) || Boolean(item.isIpShielded);
+      const isWafOrNetBlocked = !isWireIpShield && /WAF|CHALLENGE|403|412|435|ERR_|TIMEOUT|TARPIT|BLOCKED|ROUTER_TLS_FILTER/i.test(humanStatus);
       const isQueueOrDrop = /QUEUE|WAITING ROOM|DROP/i.test(humanStatus);
 
       let coreTier = 'SLEEPING_CORE';
-      if (isWafOrNetBlocked) {
-        coreTier = 'SHIELD_BLOCKED';
-      } else if (isQueueOrDrop || (totalNodesFound > 0 && hasUnderTrigger)) {
+      if (isQueueOrDrop || (totalNodesFound > 0 && hasUnderTrigger)) {
         coreTier = 'MASTER_CORE';
+      } else if (isWireIpShield) {
+        humanStatus = 'WIRE_ARMED_IP_SHIELD';
+        coreTier = 'WIRE_SHIELD';
+      } else if (isWafOrNetBlocked) {
+        coreTier = 'SHIELD_BLOCKED';
       } else if (totalNodesFound > 0 && !/PARSER_BLIND/i.test(humanStatus)) {
         coreTier = 'ULTRA_CORE';
       } else {
@@ -2061,13 +2065,17 @@ app.get('/api/engine-room', (req, res) => {
       }
 
       const checkedAt = Number(item.lastCheckedAt || item.lastChecked || storeTel.bigBoxHealth?.lastCheckAt || Date.now());
-      const engineMethod = item.engineMethod || item.targetRule || item.mode || cfg.defaultMethod;
+      const engineMethod = isWireIpShield
+        ? (item.engineMethod || 'Bluesky Jetstream WS + Proxy Reddit Wire')
+        : (item.engineMethod || item.targetRule || item.mode || cfg.defaultMethod);
 
       return {
         id: cfg.id,
         name: cfg.name,
         coreTier,
-        cadence: item.cadence || cfg.defaultCadence,
+        isWireBacked: isWireIpShield,
+        ipShieldUntil: item.ipShieldUntil || undefined,
+        cadence: isWireIpShield ? (item.cadence || '6h Home-IP Shield • Sub-Second Wire Armed') : (item.cadence || cfg.defaultCadence),
         engineMethod,
         mode: engineMethod,
         bridgeMode: item.bridgeMode || undefined,
@@ -2178,17 +2186,20 @@ app.get('/api/engine-room', (req, res) => {
     });
 
     const healthyBigBoxCount = northStar5.filter(r => r.coreTier === 'MASTER_CORE' || r.coreTier === 'ULTRA_CORE').length;
+    const wireShieldedBigBoxCount = northStar5.filter(r => r.coreTier === 'WIRE_SHIELD').length;
     const blockedBigBoxCount = northStar5.filter(r => r.coreTier === 'SHIELD_BLOCKED').length;
 
     const enginePayload = {
       ok: true,
       timestamp: now,
       fastTier1Poller: storeTel.fastTier1Poller,
+      restockWire: storeTel.bigBoxHealth?.restockWire || null,
       summary: {
         totalSensors: lgsStores.length + northStar5.length,
-        healthySensors: healthyLgsCount + healthyBigBoxCount,
+        healthySensors: healthyLgsCount + healthyBigBoxCount + wireShieldedBigBoxCount,
         healthyLgsSensors: healthyLgsCount,
         healthyBigBoxSensors: healthyBigBoxCount,
+        wireShieldedBigBoxSensors: wireShieldedBigBoxCount,
         lgsTotal: lgsStores.length,
         tier1FastCount: lgsStores.filter(s => s.tier === 'TIER1_FAST').length,
         fastTier1Poller: storeTel.fastTier1Poller,
@@ -2197,7 +2208,7 @@ app.get('/api/engine-room', (req, res) => {
         masterCoreCount: underTriggerStoreCount,
         holdingNeededWallEtbsCount: holdingNeededWallEtbsStoreCount,
         holdingTargetsCount: holdingTargetsStoreCount,
-        ultraCoreCount: Math.max(0, holdingTargetsStoreCount - underTriggerStoreCount) + healthyBigBoxCount,
+        ultraCoreCount: Math.max(0, holdingTargetsStoreCount - underTriggerStoreCount) + healthyBigBoxCount + wireShieldedBigBoxCount,
         sleepersCount: sleepersStoreCount,
         sleepingCoreCount: sleepersStoreCount,
         blockedCount: blockedStoreCount + blockedBigBoxCount,

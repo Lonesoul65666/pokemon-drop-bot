@@ -452,6 +452,83 @@ export async function sendPokemonCenterQueueAlert(params?: {
   return true;
 }
 
+const bigBoxWindowCooldownMap = new Map<string, number>();
+
+export async function sendBigBoxQueueOrDrawingAlert(params: {
+  retailer: string;
+  headline: string;
+  url: string;
+  windowKind: 'QUEUE' | 'INVITE' | 'DRAWING';
+  ruleId?: string;
+  ruleName?: string;
+  sourceLabel?: string;
+}): Promise<boolean> {
+  if (/pok[eé]mon\s*center/i.test(params.retailer) && params.windowKind === 'QUEUE') {
+    return sendPokemonCenterQueueAlert({ queueUrl: params.url, detectedFromUrl: params.url });
+  }
+  const now = Date.now();
+  const dedupKey = `${params.retailer.toLowerCase()}::${params.ruleId || params.url}`;
+  const prevAt = bigBoxWindowCooldownMap.get(dedupKey) || 0;
+  if (now - prevAt < PC_WAITING_ROOM_COOLDOWN_MS) return false;
+  bigBoxWindowCooldownMap.set(dedupKey, now);
+
+  const kindTag = params.windowKind === 'DRAWING'
+    ? 'ONLINE DRAWING WINDOW LIVE'
+    : (params.windowKind === 'INVITE' ? 'INVITE REQUEST WINDOW LIVE' : 'VIRTUAL QUEUE WINDOW LIVE');
+  const banner = `◈ ⟦ ${params.retailer.toUpperCase()} // ${kindTag} ⟧`;
+  const displayTitle = params.ruleName || params.headline;
+
+  try {
+    let history: any[] = [];
+    if (fs.existsSync(DROPS_HISTORY_PATH)) {
+      history = JSON.parse(fs.readFileSync(DROPS_HISTORY_PATH, 'utf-8'));
+    }
+    history.unshift({
+      timestamp: now,
+      timeStr: `${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • ${params.windowKind}`,
+      title: displayTitle,
+      rawTitle: params.headline,
+      retailer: `${params.retailer} [${params.windowKind}]`,
+      price: 0,
+      landedPrice: 0,
+      msrp: 0,
+      freeShipNote: `${kindTag} (${params.sourceLabel || 'Public Restock Wire'})`,
+      url: params.url,
+      productUrl: params.url,
+      formFactor: `${params.windowKind} Window`,
+      ruleId: params.ruleId || '',
+      alertType: 'PRE_DROP_STAGING',
+      isPreDropStaging: true,
+      isQueueAlert: true,
+      soldOut: false
+    });
+    if (history.length > 25) history = history.slice(0, 25);
+    atomicWriteJson(DROPS_HISTORY_PATH, history);
+  } catch {}
+
+  const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+  const embed = {
+    title: banner,
+    description:
+      `**${displayTitle}**\n` +
+      `◈ **Event Type:** \`${kindTag}\` (Not Instant-Add-to-Cart — enter registration/queue window)\n` +
+      `◈ **Wire Source:** ${params.sourceLabel || 'Public Restock Wire'}\n\n` +
+      `[**⟦ ⚡ OPEN ${params.retailer.toUpperCase()} ${params.windowKind} PAGE ↗ ⟧**](${params.url})`,
+    url: params.url,
+    color: 0x38bdf8,
+    footer: { text: 'DropBot v6.0 Restock Wire • Queue / Invite / Online Drawing Classifier' },
+    timestamp: new Date().toISOString()
+  };
+
+  await Promise.all([
+    webhookUrl
+      ? enqueueDiscordWebhook(`${webhookUrl}?wait=true`, { embeds: [embed] }, 'POST', true)
+      : Promise.resolve(null),
+    sendTelegramAlertFast(`<b>${banner}</b>\n${displayTitle}\n<a href="${params.url}">⚡ OPEN ${params.windowKind} WINDOW ↗</a>`)
+  ]);
+  return true;
+}
+
 export async function sendAlert(drop: DropPayload): Promise<boolean> {
   // Hard Rule (V5 Slice 6): Single cards and slabs NEVER fire notifications (singlesAlertsEnabled: false enforced)
   if (

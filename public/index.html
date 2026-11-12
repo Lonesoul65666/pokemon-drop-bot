@@ -3476,7 +3476,10 @@
           if (st.includes('QUEUE') || st.includes('WAITING ROOM') || st.includes('DROP')) {
             dotCls = 'bg-cyan-300 animate-ping';
             borderCls = 'border-cyan-400/60 text-cyan-200 bg-cyan-500/20 shadow-[0_0_12px_rgba(0,240,255,0.35)]';
-          } else if (/WAF|SHIELD|CHALLENGE|403|412|435|ERR_|TIMEOUT|BLOCKED|ROUTER_TLS_FILTER/.test(st)) {
+          } else if (st.includes('WIRE_ARMED_IP_SHIELD')) {
+            dotCls = 'bg-sky-400';
+            borderCls = 'border-sky-400/45 text-sky-200 bg-sky-500/15';
+          } else if (/WAF|CHALLENGE|403|412|435|ERR_|TIMEOUT|BLOCKED|ROUTER_TLS_FILTER/.test(st)) {
             dotCls = 'bg-rose-400';
             borderCls = 'border-rose-500/45 text-rose-300 bg-rose-500/15';
           } else if (st.includes('PARSER_BLIND') || (st.includes('200 OK') && nodesFound === 0)) {
@@ -5382,6 +5385,14 @@
           '</svg>'
         );
       }
+      if (t === 'WIRE_SHIELD') {
+        return (
+          '<svg class="w-5 h-5 shrink-0 drop-shadow-[0_0_6px_rgba(56,189,248,0.45)]" viewBox="0 0 24 24">' +
+            '<path d="M12 2L20 6v6c0 5.2-3.4 9.6-8 10.8C7.4 21.6 4 17.2 4 12V6l8-4z" fill="#082F49" stroke="#38BDF8" stroke-width="1.9"/>' +
+            '<path d="M13 7l-4 5.5h3.2L11 17l4-5.5h-3.2L13 7z" fill="#38BDF8"/>' +
+          '</svg>'
+        );
+      }
       if (t === 'SHIELD_BLOCKED') {
         return (
           '<svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24">' +
@@ -5483,7 +5494,7 @@
       const blockedBigBoxCnt = ns5.filter(r => r.coreTier === 'SHIELD_BLOCKED').length;
       const blockedStoresCnt = blockedLgsCnt + blockedBigBoxCnt;
       const healthyLgsCnt = lgsStores.filter(s => s.coreTier !== 'SHIELD_BLOCKED' && s.status === 'HEALTHY').length;
-      const healthyBigBoxCnt = ns5.filter(r => r.coreTier === 'MASTER_CORE' || r.coreTier === 'ULTRA_CORE').length;
+      const healthyBigBoxCnt = ns5.filter(r => r.coreTier === 'MASTER_CORE' || r.coreTier === 'ULTRA_CORE' || r.coreTier === 'WIRE_SHIELD').length;
       const trueHealthyTotal = sum.healthySensors !== undefined ? Number(sum.healthySensors) : (healthyLgsCnt + healthyBigBoxCnt);
 
       const sumPill = document.getElementById('erHeaderSummaryPill');
@@ -5531,11 +5542,13 @@
           const rawSt = String(r.lastStatus || r.status || r.statusTruth || (itemsChecked > 0 ? ('200 OK // ' + itemsChecked + ' IN STOCK') : 'PARSER_BLIND_0_NODES'));
           const statusCls = /QUEUE|WAITING ROOM|DROP/i.test(rawSt)
             ? 'bg-cyan-500/20 text-cyan-200 border-cyan-400/50'
-            : (/WAF|SHIELD|CHALLENGE|403|412|435|ERR_|TIMEOUT|TARPIT|BLOCKED|ROUTER_TLS_FILTER/i.test(rawSt) || r.coreTier === 'SHIELD_BLOCKED'
-                ? 'bg-rose-500/20 text-rose-300 border-rose-500/45'
-                : (/PARSER_BLIND|0 NODES|0_NODES|CSR_UNHYDRATED/i.test(rawSt) || r.coreTier === 'SLEEPING_CORE'
-                    ? 'bg-amber-500/20 text-amber-200 border-amber-400/40'
-                    : 'bg-emerald-500/20 text-emerald-300 border-emerald-400/40'));
+            : (/WIRE_ARMED_IP_SHIELD/i.test(rawSt) || r.coreTier === 'WIRE_SHIELD'
+                ? 'bg-sky-500/20 text-sky-200 border-sky-400/45'
+                : (/WAF|CHALLENGE|403|412|435|ERR_|TIMEOUT|TARPIT|BLOCKED|ROUTER_TLS_FILTER/i.test(rawSt) || r.coreTier === 'SHIELD_BLOCKED'
+                    ? 'bg-rose-500/20 text-rose-300 border-rose-500/45'
+                    : (/PARSER_BLIND|0 NODES|0_NODES|CSR_UNHYDRATED/i.test(rawSt) || r.coreTier === 'SLEEPING_CORE'
+                        ? 'bg-amber-500/20 text-amber-200 border-amber-400/40'
+                        : 'bg-emerald-500/20 text-emerald-300 border-emerald-400/40')));
           return (
             '<div class="px-4 py-2.5 bg-[#0D0B18]/75 hover:bg-white/[0.04] grid grid-cols-[44px_minmax(195px,1.2fr)_minmax(210px,1.3fr)_minmax(190px,1.2fr)_165px_100px] items-center gap-3 text-xs">' +
               '<div class="flex items-center justify-center">' + coreSvg + '</div>' +
