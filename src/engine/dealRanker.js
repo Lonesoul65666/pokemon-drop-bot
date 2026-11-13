@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.GLOBAL_HARD_SPEND_BAN = exports.DEFAULT_MAX_ITEM_SPEND_CEILING = void 0;
 exports.rankAndEnrichDealOffer = rankAndEnrichDealOffer;
 exports.sortDealsByTierAndPriority = sortDealsByTierAndPriority;
 exports.summarizeDealBuckets = summarizeDealBuckets;
@@ -8,6 +9,8 @@ const watermarkHistory_1 = require("./watermarkHistory");
 const purchaseMemory_1 = require("./purchaseMemory");
 const evaluator_1 = require("../../evaluator");
 const policies_1 = require("../../policies");
+exports.DEFAULT_MAX_ITEM_SPEND_CEILING = 300;
+exports.GLOBAL_HARD_SPEND_BAN = 1200;
 const TIER_ORDER = {
     BUY_NOW_PINNED: 0,
     CAUTIOUS_WATCH: 1,
@@ -21,6 +24,17 @@ function getMemoizedWatermarks(skuId, landedPrice, nowTs = Date.now()) {
     const summary = (0, watermarkHistory_1.buildEarnedWatermarkSummary)(skuId, landedPrice, nowTs);
     watermarkMemo.set(skuId, { expiresAt: nowTs + 30000, summary });
     return summary;
+}
+function sanitizeCompValue(val, formFactor) {
+    const n = Number(val || 0);
+    if (!Number.isFinite(n) || n <= 0)
+        return 0;
+    const ff = String(formFactor || '').toLowerCase();
+    if (ff === 'etb' && n === 115)
+        return 0;
+    if (ff.includes('case') && n === 1150)
+        return 0;
+    return n;
 }
 function buildTcgSearchFallbackUrl(name) {
     const q = encodeURIComponent(String(name || 'Pokemon Sealed').replace(/\(.*?\)/g, '').trim());
@@ -42,6 +56,10 @@ function rankAndEnrichDealOffer(offer, policy, context) {
     const isBundleFormat = !isCaseSku && (formFactor === 'Booster Bundle' || /\bbundle\b|\b6[- ]?pack\b/i.test(`${formFactor} ${skuId} ${title}`));
     const isBoosterBox36 = !isCaseSku && (formFactor === 'Booster Box' || /\bbooster[-_\s]*(box|display)\b/i.test(`${formFactor} ${skuId} ${title}`));
     const isOverpricedBundle = isBundleFormat && pricePerPack > 7.50;
+    const requestedSpendCap = Number(context?.maxSpendCeiling || exports.DEFAULT_MAX_ITEM_SPEND_CEILING);
+    const effectiveSpendCap = Math.min(exports.GLOBAL_HARD_SPEND_BAN, Math.max(50, requestedSpendCap));
+    const overGlobalHardBan = landedPrice > exports.GLOBAL_HARD_SPEND_BAN;
+    const overSpendCeiling = overGlobalHardBan || landedPrice > effectiveSpendCap;
     const effectivePriceForMem = landedPrice > 0 ? landedPrice : Number(policy?.msrpCeiling || 54.99);
     const mem = (0, purchaseMemory_1.lookupPurchaseMemory)({ skuId, landedPrice: effectivePriceForMem, formFactor, productName: title });
     const effectiveWallQty = isWallFormat
@@ -70,8 +88,9 @@ function rankAndEnrichDealOffer(offer, policy, context) {
     const earnedWatermarks = getMemoizedWatermarks(skuId, landedPrice > 0 ? landedPrice : undefined, context?.nowTs ?? Date.now());
     const msrp = Number(policy?.msrpCeiling || offer.msrp || 0);
     const policyMaxBuy = Number(policy?.maxMarketBuyPrice || offer.triggerPrice || msrp || 0);
-    const tcgComp = Number(offer.tcgplayerLowestShipped || context?.tcgComp || 0);
-    const marketRef = tcgComp > 0 ? tcgComp : Number(offer.marketValue || offer.marketPrice || policy?.estimatedMarketValue || 0);
+    const tcgComp = sanitizeCompValue(offer.tcgplayerLowestShipped || context?.tcgComp, formFactor);
+    const fallbackMkt = sanitizeCompValue(offer.marketValue || offer.marketPrice || policy?.estimatedMarketValue, formFactor);
+    const marketRef = tcgComp > 0 ? tcgComp : (fallbackMkt > 0 ? fallbackMkt : msrp);
     const inStock = offer.inStock !== false && !offer.soldOut && !offer.isPreDropStaging && landedPrice > 0;
     const is1PBigBox = (0, evaluator_1.isVerified1PBigBoxOrPc)(storeName, rawUrl, Boolean(offer.marketplaceWarning));
     const is1PMsrpHit = inStock && is1PBigBox && msrp > 0 && landedPrice <= Math.round(msrp * 1.08 * 100) / 100;
@@ -83,7 +102,7 @@ function rankAndEnrichDealOffer(offer, policy, context) {
     const beatsComp = tcgComp > 0 ? landedPrice < tcgComp : (marketRef > 0 ? landedPrice < marketRef : true);
     const withinMaxBuy = policyMaxBuy <= 0 || landedPrice <= policyMaxBuy;
     let actionTier = 'MUTED_DRAWER';
-    if (inStock && !isOverpricedBundle) {
+    if (inStock && !isOverpricedBundle && !overSpendCeiling) {
         if (is1PMsrpHit) {
             actionTier = 'BUY_NOW_PINNED';
         }
@@ -98,15 +117,16 @@ function rankAndEnrichDealOffer(offer, policy, context) {
             actionTier = 'CAUTIOUS_WATCH';
         }
     }
-    let priorityScore = is1PMsrpHit ? 400 : 0;
+    // Wall-First Priority Scoring: Missing Wall ETBs (0/3 and 1/3) outrank Booster Boxes & Bundles!
+    let priorityScore = is1PMsrpHit ? 600 : 0;
     if (isWallFormat && effectiveWallQty === 0)
-        priorityScore += 250;
+        priorityScore += 500;
     else if (isWallFormat && effectiveWallQty === 1)
-        priorityScore += 175;
+        priorityScore += 420;
     else if (isWallFormat && effectiveWallQty === 2)
-        priorityScore += 60;
+        priorityScore += 180;
     else if (isStacked3of3 && !is1PMsrpHit)
-        priorityScore -= 150;
+        priorityScore -= 200;
     if (isBoosterBox36 && pricePerPack > 0 && pricePerPack <= 5.0)
         priorityScore += 120;
     else if (isBoosterBox36 && pricePerPack > 0 && pricePerPack <= 5.75)
@@ -114,6 +134,10 @@ function rankAndEnrichDealOffer(offer, policy, context) {
     priorityScore += Math.round(Math.max(-60, Math.min(150, undercutVsTcgPct * 3)));
     if (isOverpricedBundle)
         priorityScore -= 250;
+    if (overGlobalHardBan)
+        priorityScore -= 1200;
+    else if (overSpendCeiling)
+        priorityScore -= 450;
     if (!withinMaxBuy && !is1PMsrpHit)
         priorityScore -= 120;
     if (!inStock)
@@ -121,6 +145,10 @@ function rankAndEnrichDealOffer(offer, policy, context) {
     let verdictLabel = 'HOLD OFF — MUTED';
     if (!inStock)
         verdictLabel = 'OUT OF STOCK';
+    else if (overGlobalHardBan)
+        verdictLabel = 'MUTED — OVER $1,200 CASE CAP';
+    else if (overSpendCeiling)
+        verdictLabel = `MUTED — OVER $${effectiveSpendCap} SPEND CAP`;
     else if (is1PMsrpHit)
         verdictLabel = '1P RETAIL MSRP HIT — BUY NOW';
     else if (actionTier === 'BUY_NOW_PINNED') {
@@ -171,9 +199,10 @@ function rankAndEnrichDealOffer(offer, policy, context) {
             wallStatusLabel
         },
         isCaseSku,
-        disqualifiesSmartBuy: isOverpricedBundle || actionTier === 'MUTED_DRAWER',
+        disqualifiesSmartBuy: isOverpricedBundle || overSpendCeiling || actionTier === 'MUTED_DRAWER',
         is1PMsrpHit,
-        undercutVsCompPct
+        undercutVsCompPct,
+        overSpendCeiling
     };
 }
 function sortDealsByTierAndPriority(items) {
@@ -200,12 +229,13 @@ function summarizeDealBuckets(items) {
     return { buyNowPinned, cautiousWatch, mutedDrawer, total: items.length };
 }
 function buildBestLiveOfferAndBuyAction(params) {
+    const ff = String(params.policy?.formFactor || 'ETB');
     const tcgUrl = params.tcgplayerUrl || buildTcgSearchFallbackUrl(params.policy?.name || params.skuId);
-    const comp = Number(params.tcgComp || params.marketPrice || params.policy?.estimatedMarketValue || 0);
+    const comp = sanitizeCompValue(params.tcgComp, ff) || sanitizeCompValue(params.marketPrice, ff) || sanitizeCompValue(params.policy?.estimatedMarketValue, ff) || Number(params.policy?.msrpCeiling || 54.99);
     const validInStock = (params.offers || [])
-        .filter((o) => o && o.inStock !== false && !o.soldOut && !o.isPreDropStaging && !/tcgplayer/i.test(String(o.storeName || o.retailer || o.store || '')) && Number(o.landedPrice || o.price || 0) > 0)
+        .filter((o) => o && o.inStock !== false && !o.soldOut && !o.isPreDropStaging && !/tcgplayer|ebay|baseline|market/i.test(String(o.storeName || o.retailer || o.store || '')) && Number(o.landedPrice || o.price || 0) > 0)
         .sort((a, b) => Number(a.landedPrice || a.price) - Number(b.landedPrice || b.price));
-    const actionable = comp > 0 ? validInStock.filter((o) => Number(o.landedPrice || o.price) <= Math.round(comp * 1.03 * 100) / 100) : validInStock;
+    const actionable = comp > 0 ? validInStock.filter((o) => Number(o.landedPrice || o.price) < Math.round(comp * 1.005 * 100) / 100) : validInStock;
     const best = actionable[0] || null;
     const lowestAny = validInStock[0] || null;
     const shopLinks = best ? (0, evaluator_1.buildShopifyDirectCartLinks)({
@@ -217,13 +247,13 @@ function buildBestLiveOfferAndBuyAction(params) {
             ? {
                 inStock: true, storeName: best.storeName || best.retailer || best.store, price: Number(best.price || best.landedPrice),
                 shipping: Number(best.shipping || 0), landedPrice: Number(best.landedPrice || best.price),
-                buyUrl: bestBuyUrl, productUrl: shopLinks.productUrl || best.productUrl || best.url, tcgplayerUrl: tcgUrl, statusLabel: 'Verified In-Stock <= Comp'
+                buyUrl: bestBuyUrl, productUrl: shopLinks.productUrl || best.productUrl || best.url, tcgplayerUrl: tcgUrl, statusLabel: 'Verified In-Stock < TCGPlayer'
             }
             : {
                 inStock: false, storeName: null, landedPrice: null,
                 uncompetitiveLowestLanded: lowestAny ? Number(lowestAny.landedPrice || lowestAny.price) : null,
                 uncompetitiveStoreName: lowestAny ? (lowestAny.storeName || lowestAny.retailer || lowestAny.store) : null,
-                tcgplayerUrl: tcgUrl, statusLabel: 'No LGS Stock <= Comp'
+                tcgplayerUrl: tcgUrl, statusLabel: 'No LGS < TCGPlayer'
             },
         bestBuyAction: {
             lowestLanded: best ? Number(best.landedPrice || best.price) : null,

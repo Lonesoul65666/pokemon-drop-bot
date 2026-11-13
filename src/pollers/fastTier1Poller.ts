@@ -1,292 +1,323 @@
-import dns from 'dns';
-import path from 'path';
-import dotenv from 'dotenv';
-import { loadTier1FastLgsStores, StoreRegistryEntry } from '../config/configManager';
+import axios from 'axios';
 import {
-  smartGetJson,
-  isInitialLgsSweepComplete,
-  variantStateMap,
-  recordFastTier1Telemetry,
-  resolveShopifyFxMultiplier
-} from '../../lgsPoller';
-import {
-  isValidSkuForFormFactor,
-  isPoisonedVariantOrAccessory,
-  isSingleOrNonSealedShopifyProduct,
   isSingleCardOrNonSealed,
-  isCollectibleSingleCardOrSlab,
+  isPoisonedVariantOrAccessory,
   hasMandatorySealedContainerKeyword
 } from '../../policies';
+import { matchTargetRuleForStaging } from '../../evaluator';
+import { markAlertSoldOut } from '../../notifier';
 import { processIncomingDrop } from '../../listener';
-import { ingestSingleCardOffer } from '../engine/singlesSniper';
+import { loadActiveLgsStores, StoreRegistryEntry } from '../config/configManager';
+import {
+  getSharedProxyAgent,
+  recordFastTier1Telemetry,
+  acquireShopifyEgressSlot
+} from '../../lgsPoller';
+import {
+  SHOPIFY_USD_HEADERS,
+  appendShopifyUsCountryParam,
+  isVariantStrictlyAvailable,
+  resolveVerifiedStoreCurrency,
+  computeVerifiedStoreShippingUsd
+} from '../engine/currencyGuard';
 
-dotenv.config({ path: path.resolve(process.cwd(), '.env') });
-dns.setDefaultResultOrder('ipv4first');
-
-const FAST_INTERVAL_MS = 15000;
-const FAST_SWEEP_WATCHDOG_MS = 75000;
-
-interface FastStoreHttpCache {
-  consecutiveFailures: number;
-  cooldownUntil: number;
+export interface FastTier1Telemetry {
+  status: 'ACTIVE_15S_DELTA' | 'STARTING' | 'STOPPED';
+  intervalMs: number;
+  tier1StoreCount: number;
+  storesPolledLastCycle: number;
+  notModified304Count: number;
+  variantsCheckedLastCycle: number;
+  newOrRestockedHits: number;
+  totalCyclesRun: number;
+  lastSweepAt: number;
 }
 
-interface FastVariantSnapshot {
+interface EtagState {
+  etag?: string;
+  lastModified?: string;
+  last200At: number;
+}
+
+interface VariantFastSnapshot {
   available: boolean;
   price: number;
-  lastSeenAt: number;
+  shippingUsd: number;
+  seenAt: number;
 }
 
-const storeHttpCacheMap = new Map<string, FastStoreHttpCache>();
-const fastVariantSnapshotMap = new Map<number, FastVariantSnapshot>();
-const seededFastStores = new Set<string>();
+const etagByUrl = new Map<string, EtagState>();
+const fastVariantMemory = new Map<string, VariantFastSnapshot>();
 
-let isFastPolling = false;
-let lastFastSweepStartedAt = 0;
-let totalFastCyclesRun = 0;
-let cumulativeFastHits = 0;
+let fastTimer: NodeJS.Timeout | null = null;
+let cycleInFlight = false;
 
-function getJitter(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1) + min);
+export const fastTier1Telemetry: FastTier1Telemetry = {
+  status: 'STARTING',
+  intervalMs: 15000,
+  tier1StoreCount: 0,
+  storesPolledLastCycle: 0,
+  notModified304Count: 0,
+  variantsCheckedLastCycle: 0,
+  newOrRestockedHits: 0,
+  totalCyclesRun: 0,
+  lastSweepAt: 0
+};
+
+const FAST_HEADERS: Record<string, string> = {
+  'User-Agent':
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+  Accept: 'application/json,text/plain,*/*',
+  ...SHOPIFY_USD_HEADERS
+};
+
+function getTier1ShopifyStores(): StoreRegistryEntry[] {
+  const all = loadActiveLgsStores();
+  const explicitTier1 = all.filter(
+    (s) => s.enabled !== false && s.storeType === 'SHOPIFY_LGS' && s.tier === 'TIER1_FAST'
+  );
+  if (explicitTier1.length >= 20) {
+    return explicitTier1.slice(0, 25);
+  }
+  return all.filter((s) => s.enabled !== false && s.storeType === 'SHOPIFY_LGS').slice(0, 25);
 }
 
-function buildFastDeltaPath(resolvedPath?: string): string {
-  const base = (resolvedPath || '/products.json?limit=250').trim();
-  // Curated sealed/boxes sub-collections keep their full 250-item feed; generic collections use root /products.json?limit=250 (sorted updated_at desc by Shopify core)
-  if (!/\/collections\/[^/]*(sealed|boxes|etb|bundle)/i.test(base)) {
-    return '/products.json?limit=250';
-  }
-  if (/limit=\d+/i.test(base)) {
-    return base.replace(/limit=\d+/i, 'limit=250');
-  }
-  const sep = base.includes('?') ? '&' : '?';
-  return `${base}${sep}limit=250`;
-}
+async function fetchStoreDeltaJson(
+  url: string,
+  useProxy: boolean
+): Promise<{ status: number; notModified: boolean; products: any[] }> {
+  const localizedUrl = appendShopifyUsCountryParam(url);
+  await acquireShopifyEgressSlot(useProxy ? 'PROXY' : 'DIRECT', localizedUrl);
+  const cached = etagByUrl.get(localizedUrl);
+  const headers: Record<string, string> = { ...FAST_HEADERS };
+  const canSendEtag = cached && Date.now() - cached.last200At < 10 * 60 * 1000;
+  if (canSendEtag && cached?.etag) headers['If-None-Match'] = cached.etag;
+  if (canSendEtag && cached?.lastModified) headers['If-Modified-Since'] = cached.lastModified;
 
-async function pollSingleTier1StoreFast(store: StoreRegistryEntry): Promise<{
-  polled: boolean; notModified304: boolean; variantsChecked: number; deltaHits: number; latencyMs: number; productsCount: number;
-}> {
-  const startTs = Date.now();
-  const httpMeta: FastStoreHttpCache = storeHttpCacheMap.get(store.name) || { consecutiveFailures: 0, cooldownUntil: 0 };
-
-  if (httpMeta.cooldownUntil > startTs) {
-    return { polled: false, notModified304: false, variantsChecked: 0, deltaHits: 0, latencyMs: 0, productsCount: 0 };
-  }
-
-  const deltaPath = buildFastDeltaPath(store.resolvedPath);
-  const url = `${store.baseUrl}${deltaPath}`;
-  const fetched = await smartGetJson(url, {
-    storeName: store.name,
-    allowEtag304: seededFastStores.has(store.name)
+  const agent = useProxy ? getSharedProxyAgent() : undefined;
+  const res = await axios.get(localizedUrl, {
+    timeout: 7000,
+    headers,
+    ...(agent ? { httpsAgent: agent, proxy: false as const } : {}),
+    validateStatus: (s) => (s >= 200 && s < 300) || s === 304
   });
-  const latencyMs = Math.max(25, Date.now() - startTs);
 
-  if (fetched.error || (fetched.status !== 200 && fetched.status !== 304)) {
-    const is429 = Boolean(fetched.error && /429/.test(fetched.error));
-    if (!is429) {
-      httpMeta.consecutiveFailures += 1;
-      if (httpMeta.consecutiveFailures >= 6) httpMeta.cooldownUntil = Date.now() + 5 * 60 * 1000;
-    }
-    storeHttpCacheMap.set(store.name, httpMeta);
-    return { polled: false, notModified304: false, variantsChecked: 0, deltaHits: 0, latencyMs, productsCount: 0 };
+  if (res.status === 304) {
+    return { status: 304, notModified: true, products: [] };
   }
 
-  httpMeta.consecutiveFailures = 0;
-  httpMeta.cooldownUntil = 0;
-  storeHttpCacheMap.set(store.name, httpMeta);
-
-  if (fetched.notModified304 || fetched.status === 304) {
-    return { polled: true, notModified304: true, variantsChecked: 0, deltaHits: 0, latencyMs, productsCount: 0 };
+  const nextEtag = typeof res.headers?.etag === 'string' ? res.headers.etag : undefined;
+  const nextLastMod = typeof res.headers?.['last-modified'] === 'string' ? res.headers['last-modified'] : undefined;
+  if (nextEtag || nextLastMod) {
+    etagByUrl.set(localizedUrl, { etag: nextEtag, lastModified: nextLastMod, last200At: Date.now() });
   }
 
-  const products = Array.isArray(fetched.data?.products) ? fetched.data.products : [];
-  const fxMultiplier = resolveShopifyFxMultiplier(store);
-  const isStoreSeeded = seededFastStores.has(store.name);
-  let variantsChecked = 0;
-  let deltaHits = 0;
+  const products = Array.isArray(res.data?.products) ? res.data.products : [];
+  return { status: res.status, notModified: false, products };
+}
+
+async function probeStoreJson(url: string, useProxy: boolean): Promise<{ status: number; data: any }> {
+  await acquireShopifyEgressSlot(useProxy ? 'PROXY' : 'DIRECT', url);
+  const agent = useProxy ? getSharedProxyAgent() : undefined;
+  const res = await axios.get(url, {
+    timeout: 4500,
+    headers: { ...FAST_HEADERS },
+    ...(agent ? { httpsAgent: agent, proxy: false as const } : {}),
+    validateStatus: () => true
+  });
+  return { status: res.status, data: res.data };
+}
+
+async function pollSingleTier1StoreDelta(
+  store: StoreRegistryEntry,
+  useProxy: boolean
+): Promise<{ status: number; notModified: boolean; checkedVariants: number; hits: number; latencyMs: number; productsCount: number }> {
+  const started = Date.now();
+  const resolvedPath = store.resolvedPath || '/products.json?limit=250';
+  const fastPath = resolvedPath.replace(/limit=\d+/i, 'limit=100');
+  const url = `${store.baseUrl}${fastPath.startsWith('/') ? '' : '/'}${fastPath}`;
+
+  let activeProxy = useProxy;
+  let currRes = await resolveVerifiedStoreCurrency(store, activeProxy ? 'PROXY' : 'DIRECT', (u) => probeStoreJson(u, activeProxy));
+  if (currRes.quarantineNonUsd && activeProxy) {
+    activeProxy = false;
+    currRes = await resolveVerifiedStoreCurrency(store, 'DIRECT', (u) => probeStoreJson(u, false));
+  }
+  if (currRes.quarantineNonUsd) {
+    return { status: 422, notModified: false, checkedVariants: 0, hits: 0, latencyMs: Date.now() - started, productsCount: 0 };
+  }
+
+  const delta = await fetchStoreDeltaJson(url, activeProxy);
+  if (delta.notModified) {
+    return { status: 304, notModified: true, checkedVariants: 0, hits: 0, latencyMs: Date.now() - started, productsCount: 0 };
+  }
+
+  const fxMult = currRes.fxMultiplier;
+  let checkedVariants = 0;
+  let hits = 0;
   const now = Date.now();
 
-  for (const prod of products) {
-    if (/kanzen\s*games/i.test(store.name) && prod.product_type && String(prod.product_type).trim().toLowerCase() !== 'pokemon sealed') continue;
-    let isMetaSingle: boolean | undefined;
+  for (const prod of delta.products) {
+    if (!prod || !prod.title) continue;
+    const tagsStr = Array.isArray(prod.tags) ? prod.tags.join(' ') : String(prod.tags || '');
+    const productUrl = prod.handle ? `${store.baseUrl}/products/${prod.handle}` : store.baseUrl;
 
-    for (const variant of prod.variants || []) {
-      const variantId = Number(variant.id);
-      if (!variantId) continue;
-      variantsChecked += 1;
+    if (
+      isPoisonedVariantOrAccessory(undefined, prod.title) ||
+      isSingleCardOrNonSealed(prod.title, `${prod.handle || ''} ${tagsStr}`, productUrl)
+    ) {
+      continue;
+    }
 
-      const rawPrice = parseFloat(variant.price);
-      const priceNum = fxMultiplier !== 1.0 ? Math.round(rawPrice * fxMultiplier * 100) / 100 : rawPrice;
-      const safePrice = priceNum || 0;
-      const isAvail = Boolean(variant.available);
+    const variants = Array.isArray(prod.variants) ? prod.variants : [];
+    for (const variant of variants) {
+      if (!variant || !variant.id) continue;
+      checkedVariants++;
 
-      const prevFast = fastVariantSnapshotMap.get(variantId);
-      // O(1) Delta Short-Circuit: skip unchanged variants before string/regex work so limit=250 runs near-zero CPU!
-      if (prevFast && prevFast.available === isAvail && prevFast.price === safePrice) {
-        prevFast.lastSeenAt = now;
+      const varIdStr = String(variant.id);
+      const isAvail = isVariantStrictlyAvailable(variant);
+      const rawPrice = parseFloat(String(variant.price || '0'));
+      if (!Number.isFinite(rawPrice) || rawPrice <= 0) continue;
+      const shelfUsd = fxMult !== 1.0 ? Math.round(rawPrice * fxMult * 100) / 100 : rawPrice;
+
+      if (isPoisonedVariantOrAccessory(variant.title, prod.title, shelfUsd)) {
+        if (fastVariantMemory.get(varIdStr)?.available) await markAlertSoldOut(varIdStr);
+        fastVariantMemory.set(varIdStr, { available: false, price: shelfUsd, shippingUsd: 0, seenAt: now });
         continue;
       }
-      fastVariantSnapshotMap.set(variantId, { available: isAvail, price: safePrice, lastSeenAt: now });
 
-      if (!isAvail || !priceNum || priceNum < 15) continue;
+      const shipCalc = computeVerifiedStoreShippingUsd(store, shelfUsd, currRes);
+      const prevFast = fastVariantMemory.get(varIdStr);
 
-      if (isMetaSingle === undefined) isMetaSingle = isSingleOrNonSealedShopifyProduct(prod);
-      const fullTitle = `${prod.title} ${variant.title !== 'Default Title' ? variant.title : ''}`.trim();
-      const tagsStr = Array.isArray(prod.tags) ? prod.tags.join(' ') : String(prod.tags || '');
-      const productUrl = prod.handle ? `${store.baseUrl}/products/${prod.handle}` : store.baseUrl;
-
-      if (isMetaSingle || isSingleCardOrNonSealed(fullTitle, prod.product_type, `${prod.handle || ''} ${tagsStr}`)) {
-        if (priceNum >= 15 && isCollectibleSingleCardOrSlab(fullTitle, prod.product_type, tagsStr)) {
-          const rawCompare = parseFloat(variant.compare_at_price || '0');
-          ingestSingleCardOffer({
-            title: fullTitle, storeName: store.name, price: priceNum,
-            compareAtPrice: rawCompare > 0 ? (fxMultiplier !== 1.0 ? Math.round(rawCompare * fxMultiplier * 100) / 100 : rawCompare) : undefined,
-            url: productUrl, itemId: String(variant.id), productType: prod.product_type, tags: prod.tags,
-            stock: typeof variant.inventory_quantity === 'number' && variant.inventory_quantity > 0 ? variant.inventory_quantity : undefined,
-            image: prod.images?.[0]?.src
-          });
+      if (!isAvail) {
+        if (prevFast?.available) {
+          await markAlertSoldOut(varIdStr);
         }
-        continue;
-      }
-      if (priceNum < 18 || isPoisonedVariantOrAccessory(variant.title, prod.title, priceNum) || !hasMandatorySealedContainerKeyword(fullTitle)) continue;
-      if (!isValidSkuForFormFactor(fullTitle, undefined, priceNum, {
-        handle: `${prod.handle || ''} ${tagsStr}`,
-        retailer: store.name,
-        sourceUrl: productUrl,
-        variantTitle: variant.title
-      })) {
+        fastVariantMemory.set(varIdStr, { available: false, price: shelfUsd, shippingUsd: shipCalc.shippingUsd, seenAt: now });
         continue;
       }
 
-      const prevGlobal = variantStateMap.get(variantId);
-      const isNewlyListed = !prevFast && !prevGlobal;
-      const isRestockFlip = Boolean(prevFast && !prevFast.available && isAvail);
-      const isPriceDrop = Boolean(
-        (prevFast && priceNum <= prevFast.price - 0.50) ||
-        (prevGlobal && priceNum <= prevGlobal.price - 0.50)
+      fastVariantMemory.set(varIdStr, { available: true, price: shelfUsd, shippingUsd: shipCalc.shippingUsd, seenAt: now });
+
+      const vTitle =
+        variant.title && variant.title !== 'Default Title' ? `${prod.title} - ${variant.title}` : prod.title;
+      if (!hasMandatorySealedContainerKeyword(vTitle)) continue;
+
+      const isBrandNewOrRestocked = !prevFast || !prevFast.available;
+      const isPriceDropOrSync = Boolean(
+        prevFast &&
+        (shelfUsd !== prevFast.price || shipCalc.shippingUsd !== prevFast.shippingUsd)
       );
+      if (!isBrandNewOrRestocked && !isPriceDropOrSync) continue;
 
-      if (!isStoreSeeded && isNewlyListed && prevGlobal) {
-        continue;
-      }
+      const matchedRule = matchTargetRuleForStaging(
+        vTitle,
+        shelfUsd,
+        store.name,
+        `${prod.handle || ''} ${tagsStr} ${productUrl}`
+      );
+      if (!matchedRule) continue;
 
-      if (isNewlyListed || isRestockFlip || isPriceDrop) {
-        variantStateMap.set(variantId, { price: priceNum, lastCheckedAt: now, oosStrikes: 0 });
-        deltaHits += 1;
-
-        const realQty = typeof variant.inventory_quantity === 'number' && variant.inventory_quantity > 0
+      const checkoutUrl = `${store.baseUrl}/cart/${variant.id}:1?payment=shop_pay`;
+      const stockQty =
+        typeof variant.inventory_quantity === 'number' && variant.inventory_quantity > 0
           ? variant.inventory_quantity
           : undefined;
-        const cart1xUrl = `${store.baseUrl}/cart/${variant.id}:1?payment=shop_pay`;
-        const cart2xUrl = (realQty === undefined || realQty >= 2) ? `${store.baseUrl}/cart/${variant.id}:2?payment=shop_pay` : undefined;
-        const cart3xUrl = (realQty === undefined || realQty >= 3) ? `${store.baseUrl}/cart/${variant.id}:3?payment=shop_pay` : undefined;
-        const isPreOrder = /pre-?order|pre-?sale/i.test(`${fullTitle} ${tagsStr} ${prod.handle || ''}`);
 
-        await processIncomingDrop({
-          title: fullTitle,
-          retailer: store.name,
-          url: cart1xUrl,
-          productUrl,
-          imageUrl: prod.images?.[0]?.src || prod.image?.src,
-          cart1xUrl,
-          cart2xUrl,
-          cart3xUrl,
-          isPreOrder,
-          price: priceNum,
-          stock: realQty,
-          itemId: String(variant.id)
-        });
-      }
+      hits++;
+      await processIncomingDrop({
+        title: vTitle,
+        price: shelfUsd,
+        itemPrice: shelfUsd,
+        shippingPrice: shipCalc.shippingUsd,
+        freeShipping: shipCalc.shippingUsd === 0,
+        shippingNoteOverride: shipCalc.shippingNote,
+        retailer: store.name,
+        url: checkoutUrl,
+        productUrl,
+        cart1xUrl: checkoutUrl,
+        cart2xUrl: `${store.baseUrl}/cart/${variant.id}:2?payment=shop_pay`,
+        cart3xUrl: `${store.baseUrl}/cart/${variant.id}:3?payment=shop_pay`,
+        stock: stockQty,
+        itemId: varIdStr,
+        sellerVerified: true
+      });
     }
   }
 
-  seededFastStores.add(store.name);
-  return { polled: true, notModified304: false, variantsChecked, deltaHits, latencyMs, productsCount: products.length };
+  return {
+    status: delta.status,
+    notModified: false,
+    checkedVariants,
+    hits,
+    latencyMs: Math.max(25, Date.now() - started),
+    productsCount: delta.products.length
+  };
 }
 
-export async function runFastTier1SweepOnce(): Promise<void> {
-  if (isFastPolling) {
-    if (Date.now() - lastFastSweepStartedAt > FAST_SWEEP_WATCHDOG_MS) {
-      isFastPolling = false;
-    } else {
-      return;
-    }
-  }
-  isFastPolling = true;
-  lastFastSweepStartedAt = Date.now();
-
-  const tier1Stores = loadTier1FastLgsStores();
-  const queue = [...tier1Stores];
-  let storesPolled = 0;
-  let notModified304Count = 0;
-  let variantsChecked = 0;
-  let deltaHits = 0;
-  const perStoreMeta = new Map<string, { lastFastPollAt: number; lastFastLatencyMs: number; productsCount?: number }>();
+export async function runFastTier1DeltaCycle(): Promise<FastTier1Telemetry> {
+  if (cycleInFlight) return fastTier1Telemetry;
+  cycleInFlight = true;
 
   try {
-    const workerCount = Math.min(3, queue.length);
-    await Promise.all(
-      Array.from({ length: workerCount }, async () => {
-        while (queue.length > 0) {
-          const store = queue.shift();
-          if (!store) break;
-          try {
-            const res = await pollSingleTier1StoreFast(store);
-            if (res.polled) {
-              storesPolled += 1;
-              perStoreMeta.set(store.name, {
-                lastFastPollAt: Date.now(),
-                lastFastLatencyMs: res.latencyMs,
-                productsCount: res.productsCount > 0 ? res.productsCount : undefined
-              });
-            }
-            if (res.notModified304) notModified304Count += 1;
-            variantsChecked += res.variantsChecked;
-            deltaHits += res.deltaHits;
-          } catch (e) {}
-        }
-      })
-    );
-    totalFastCyclesRun += 1;
-    cumulativeFastHits += deltaHits;
+    const tier1Stores = getTier1ShopifyStores();
+    fastTier1Telemetry.tier1StoreCount = tier1Stores.length;
+    const hasProxy = Boolean(getSharedProxyAgent());
 
-    recordFastTier1Telemetry(
-      {
-        status: 'ACTIVE_15S_DELTA',
-        intervalMs: FAST_INTERVAL_MS,
-        tier1StoreCount: tier1Stores.length,
-        storesPolledLastCycle: storesPolled,
-        notModified304Count,
-        variantsCheckedLastCycle: variantsChecked,
-        newOrRestockedHits: cumulativeFastHits,
-        lastCycleHits: deltaHits,
-        totalCyclesRun: totalFastCyclesRun,
-        lastDurationMs: Date.now() - lastFastSweepStartedAt,
-        tier1Stores: tier1Stores.map((s) => s.name)
-      },
-      perStoreMeta
-    );
+    let notModCount = 0;
+    let totalVariants = 0;
+    let totalHits = 0;
+    let polledOk = 0;
+    const perStorePatch = new Map<string, { lastFastPollAt: number; lastFastLatencyMs: number; productsCount?: number }>();
+
+    const CHUNK = 9;
+    for (let i = 0; i < tier1Stores.length; i += CHUNK) {
+      const batch = tier1Stores.slice(i, i + CHUNK);
+      const settled = await Promise.allSettled(
+        batch.map((store, idx) => pollSingleTier1StoreDelta(store, hasProxy && idx % 3 === 1))
+      );
+      settled.forEach((s, idx) => {
+        if (s.status === 'fulfilled') {
+          polledOk++;
+          if (s.value.notModified) notModCount++;
+          totalVariants += s.value.checkedVariants;
+          totalHits += s.value.hits;
+          perStorePatch.set(batch[idx].name, {
+            lastFastPollAt: Date.now(),
+            lastFastLatencyMs: s.value.latencyMs,
+            productsCount: s.value.productsCount
+          });
+        }
+      });
+    }
+
+    fastTier1Telemetry.status = 'ACTIVE_15S_DELTA';
+    fastTier1Telemetry.storesPolledLastCycle = polledOk;
+    fastTier1Telemetry.notModified304Count = notModCount;
+    fastTier1Telemetry.variantsCheckedLastCycle = totalVariants;
+    fastTier1Telemetry.newOrRestockedHits = totalHits;
+    fastTier1Telemetry.totalCyclesRun += 1;
+    fastTier1Telemetry.lastSweepAt = Date.now();
+
+    recordFastTier1Telemetry({ ...fastTier1Telemetry }, perStorePatch);
   } finally {
-    isFastPolling = false;
+    cycleInFlight = false;
   }
+
+  return fastTier1Telemetry;
 }
 
-export function startFastTier1Poller(): void {
-  const bootedAt = Date.now();
-  const runLoop = async () => {
-    if (!isInitialLgsSweepComplete() && Date.now() - bootedAt < 95000) {
-      setTimeout(runLoop, 3000);
-      return;
-    }
-    const loopStart = Date.now();
-    try {
-      await runFastTier1SweepOnce();
-    } catch (err: any) {
-      console.error(`[FastTier1Poller] 15s delta sweep error: ${err?.message || err}`);
-    } finally {
-      const elapsed = Date.now() - loopStart;
-      setTimeout(runLoop, Math.max(8000, FAST_INTERVAL_MS - elapsed) + getJitter(0, 750));
-    }
-  };
-  setTimeout(runLoop, 4000);
+export function startFastTier1Poller(intervalMs = 15000): void {
+  if (fastTimer) return;
+  etagByUrl.clear();
+  fastVariantMemory.clear();
+  fastTier1Telemetry.intervalMs = intervalMs;
+  fastTier1Telemetry.status = 'ACTIVE_15S_DELTA';
+  setTimeout(() => {
+    runFastTier1DeltaCycle().catch(() => {});
+  }, 4000).unref();
+  fastTimer = setInterval(() => {
+    runFastTier1DeltaCycle().catch(() => {});
+  }, intervalMs);
+  fastTimer.unref();
 }

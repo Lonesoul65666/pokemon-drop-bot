@@ -531,63 +531,7 @@ function refreshCachedStoreOffersStatus() {
         }
         catch (e) { }
         const now = Date.now();
-        // Backfill recent ACTIVE salesHistory records (last 48h) into storeOffersCacheMem so lowest active comps (e.g. Game Grid Lehi $79.99) stay indexed
-        try {
-            if (fs_1.default.existsSync(marketTape_1.SALES_HISTORY_PATH)) {
-                const salesArr = JSON.parse(fs_1.default.readFileSync(marketTape_1.SALES_HISTORY_PATH, 'utf-8'));
-                if (Array.isArray(salesArr)) {
-                    for (const ev of salesArr) {
-                        if (!ev || !ev.targetId || ev.status !== 'ACTIVE' || !ev.store || !ev.price)
-                            continue;
-                        const seenTs = Number(ev.lastSeenAt || ev.restockedAt || 0);
-                        if (now - seenTs > 48 * 3600 * 1000)
-                            continue;
-                        if (isExpiredRedditGhostOffer(ev.store, ev, now))
-                            continue;
-                        const rule = policies_1.WATCH_POLICIES.find(r => r.id === ev.targetId);
-                        if (!rule)
-                            continue;
-                        const cleanStoreKey = String(ev.store).replace(/\s*\(TCGPlayer.*?\)$/i, ' (TCGPlayer)').trim();
-                        const skuMap = storeOffersCacheMem[rule.id] || {};
-                        if (!skuMap[cleanStoreKey]) {
-                            const p = Number(ev.price);
-                            const l = Number(ev.landedPrice || p);
-                            const sh = Math.max(0, Math.round((l - p) * 100) / 100);
-                            const rip = (0, policies_1.computeRipMetrics)(l, rule.id, rule.formFactor, rule.name, rule.packCount);
-                            skuMap[cleanStoreKey] = {
-                                skuId: rule.id,
-                                productName: rule.name,
-                                rawTitle: ev.targetName || rule.name,
-                                formFactor: rule.formFactor || 'ETB',
-                                era: rule.era,
-                                owned: Boolean(rule.inVault ?? rule.owned),
-                                msrp: rule.msrpCeiling,
-                                triggerPrice: Math.max(rule.msrpCeiling, rule.maxMarketBuyPrice),
-                                marketValue: Number(ev.marketPrice || rule.estimatedMarketValue || rule.msrpCeiling),
-                                storeName: ev.store,
-                                price: p,
-                                shipping: sh,
-                                landedPrice: l,
-                                freeShipNote: sh > 0 ? `$${p.toFixed(2)} Shelf + $${sh.toFixed(2)} Est. Ship ($${l.toFixed(2)} Landed)` : '+FREE Shipping',
-                                url: ev.url,
-                                productUrl: ev.url,
-                                itemId: ev.itemId,
-                                packCount: rip.packCount,
-                                pricePerPack: rip.pricePerPack,
-                                isRipValueLeader: rip.isRipValueLeader,
-                                firstSeenAt: Number(ev.restockedAt || seenTs),
-                                updatedAt: seenTs,
-                                previousPrice: l,
-                                priceDelta: 0,
-                                isFreshRestock: false
-                            };
-                            storeOffersCacheMem[rule.id] = skuMap;
-                        }
-                    }
-                }
-            }
-        }
-        catch (e) { }
+        // Phase 3C Strict Live Truth: Never backfill 48h salesHistory ghosts back into storeOffersCacheMem!
         let mutated = false;
         for (const [skuId, skuOffers] of Object.entries(storeOffersCacheMem)) {
             if (!skuOffers || typeof skuOffers !== 'object')

@@ -29,6 +29,7 @@ const policies_1 = require("./policies");
 const evaluator_1 = require("./evaluator");
 const configManager_1 = require("./src/config/configManager");
 const singlesSniper_1 = require("./src/engine/singlesSniper");
+const currencyGuard_1 = require("./src/engine/currencyGuard");
 dotenv_1.default.config({ path: path_1.default.resolve(process.cwd(), '.env') });
 dns_1.default.setDefaultResultOrder('ipv4first');
 const WEBSHARE_PROXY_URL = process.env.WEBSHARE_PROXY_URL || '';
@@ -382,7 +383,7 @@ async function acquireShopifyEgressSlot(lane, urlForDomainGap) {
 const BROWSER_NAV_HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
     Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-    'Accept-Language': 'en-US,en;q=0.9',
+    ...currencyGuard_1.SHOPIFY_USD_HEADERS,
     'Sec-Fetch-Dest': 'document',
     'Sec-Fetch-Mode': 'navigate',
     'Sec-Fetch-Site': 'none',
@@ -452,7 +453,8 @@ async function performLaneJsonRequest(url, timeoutMs, lane, conditionalHeaders) 
         clearTimeout(timer);
     }
 }
-async function smartGetJson(url, opts) {
+async function smartGetJson(rawUrl, opts) {
+    const url = (0, currencyGuard_1.appendShopifyUsCountryParam)(rawUrl);
     const storeName = opts?.storeName || '';
     if (storeName && (store429CooldownUntilMap.get(storeName) || 0) > Date.now()) {
         return { data: null, status: 429, error: 'HTTP 429 (Store Cooldown)' };
@@ -465,7 +467,7 @@ async function smartGetJson(url, opts) {
             ...(cachedEtag.lastModified ? { 'If-Modified-Since': cachedEtag.lastModified } : {})
         }
         : undefined;
-    const handleSuccess = (res) => {
+    const handleSuccess = (res, usedLane) => {
         if (res.status === 304) {
             if (res.etag || res.lastModified || cachedEtag) {
                 lgsFeedEtagCache.set(url, {
@@ -475,9 +477,9 @@ async function smartGetJson(url, opts) {
                 });
             }
             if (opts?.reuseCachedProductsOn304 && cachedEtag?.cachedProducts) {
-                return { data: { products: cachedEtag.cachedProducts }, notModified304: true, status: 304 };
+                return { data: { products: cachedEtag.cachedProducts }, notModified304: true, status: 304, usedLane };
             }
-            return { data: null, notModified304: true, status: 304 };
+            return { data: null, notModified304: true, status: 304, usedLane };
         }
         if (res.etag || res.lastModified) {
             lgsFeedEtagCache.set(url, {
@@ -488,7 +490,7 @@ async function smartGetJson(url, opts) {
                     : undefined
             });
         }
-        return { data: res.data, notModified304: false, status: res.status };
+        return { data: res.data, notModified304: false, status: res.status, usedLane };
     };
     const primaryLane = getPreferredLaneForStore(storeName);
     const altLane = primaryLane === 'DIRECT' ? 'PROXY' : 'DIRECT';
@@ -501,7 +503,7 @@ async function smartGetJson(url, opts) {
             continue;
         try {
             const res = await performLaneJsonRequest(url, REQUEST_TIMEOUT_MS, lane, condHeaders);
-            return handleSuccess(res);
+            return handleSuccess(res, lane);
         }
         catch (err) {
             const st = err?.httpStatus || err?.response?.status;
@@ -754,7 +756,35 @@ async function pollSingleStore(store) {
         health.resolvedPath = store.resolvedPath;
         storeHealthMap.set(store.name, health);
         const checkNow = Date.now();
-        const fxMultiplier = resolveShopifyFxMultiplier(store);
+        const activeLane = getPreferredLaneForStore(store.name);
+        let currRes = await (0, currencyGuard_1.resolveVerifiedStoreCurrency)(store, activeLane, async (probeUrl) => {
+            try {
+                await acquireShopifyEgressSlot(activeLane, probeUrl);
+                const r = await performLaneJsonRequest(probeUrl, 4500, activeLane);
+                return { status: r.status, data: r.data };
+            }
+            catch {
+                return { status: 0, data: null };
+            }
+        });
+        if (currRes.quarantineNonUsd && activeLane === 'PROXY') {
+            currRes = await (0, currencyGuard_1.resolveVerifiedStoreCurrency)(store, 'DIRECT', async (probeUrl) => {
+                try {
+                    await acquireShopifyEgressSlot('DIRECT', probeUrl);
+                    const r = await performLaneJsonRequest(probeUrl, 4500, 'DIRECT');
+                    return { status: r.status, data: r.data };
+                }
+                catch {
+                    return { status: 0, data: null };
+                }
+            });
+        }
+        if (currRes.quarantineNonUsd) {
+            console.warn(`[CURRENCY GUARD] Quarantined ${store.name} (${currRes.detectedCurrency}) — failed verified USD lock.`);
+            (0, evaluator_1.pruneStoreMissingOffers)(store.name, new Set());
+            return { hit: false, notModified304: false, rateLimited429: false, productsScanned: products.length, skippedByCircuit: false };
+        }
+        const fxMultiplier = currRes.fxMultiplier;
         const activeVariantIds = new Set();
         for (const prod of products) {
             if (/kanzen\s*games/i.test(store.name) &&
@@ -768,7 +798,7 @@ async function pollSingleStore(store) {
                 const priceNum = fxMultiplier !== 1.0 ? Math.round(rawPrice * fxMultiplier * 100) / 100 : rawPrice;
                 if (!priceNum || priceNum < 15)
                     continue;
-                if (variant.available) {
+                if ((0, currencyGuard_1.isVariantStrictlyAvailable)(variant)) {
                     const fullTitle = `${prod.title} ${variant.title !== 'Default Title' ? variant.title : ''}`.trim();
                     const tagsStr = Array.isArray(prod.tags) ? prod.tags.join(' ') : String(prod.tags || '');
                     const productUrl = prod.handle ? `${store.baseUrl}/products/${prod.handle}` : store.baseUrl;
@@ -806,17 +836,18 @@ async function pollSingleStore(store) {
                     }))
                         continue;
                     activeVariantIds.add(String(variant.id));
+                    const shipCalc = (0, currencyGuard_1.computeVerifiedStoreShippingUsd)(store, priceNum, currRes);
+                    const landedCheck = Math.round((priceNum + shipCalc.shippingUsd) * 100) / 100;
                     const prev = exports.variantStateMap.get(variant.id);
                     const minsSinceCheck = prev ? (checkNow - prev.lastCheckedAt) / (1000 * 60) : 999;
-                    if (!prev || priceNum !== prev.price || minsSinceCheck >= 3) {
-                        exports.variantStateMap.set(variant.id, { price: priceNum, lastCheckedAt: checkNow, oosStrikes: 0 });
+                    if (!prev || landedCheck !== prev.price || minsSinceCheck >= 3) {
+                        exports.variantStateMap.set(variant.id, { price: landedCheck, lastCheckedAt: checkNow, oosStrikes: 0 });
                         const realQty = typeof variant.inventory_quantity === 'number' && variant.inventory_quantity > 0
                             ? variant.inventory_quantity
                             : undefined;
                         const cart1xUrl = `${store.baseUrl}/cart/${variant.id}:1?payment=shop_pay`;
                         const cart2xUrl = (realQty === undefined || realQty >= 2) ? `${store.baseUrl}/cart/${variant.id}:2?payment=shop_pay` : undefined;
                         const cart3xUrl = (realQty === undefined || realQty >= 3) ? `${store.baseUrl}/cart/${variant.id}:3?payment=shop_pay` : undefined;
-                        const productUrl = prod.handle ? `${store.baseUrl}/products/${prod.handle}` : store.baseUrl;
                         const isPreOrder = /pre-?order|pre-?sale/i.test(`${fullTitle} ${tagsStr} ${prod.handle || ''}`);
                         await (0, listener_1.processIncomingDrop)({
                             title: fullTitle,
@@ -829,6 +860,10 @@ async function pollSingleStore(store) {
                             cart3xUrl,
                             isPreOrder,
                             price: priceNum,
+                            itemPrice: priceNum,
+                            shippingPrice: shipCalc.shippingUsd,
+                            freeShipping: shipCalc.shippingUsd === 0,
+                            shippingNoteOverride: shipCalc.shippingNote,
                             stock: realQty,
                             itemId: String(variant.id),
                         });
@@ -838,17 +873,10 @@ async function pollSingleStore(store) {
                     }
                 }
                 else {
-                    const prev = exports.variantStateMap.get(variant.id);
-                    if (prev) {
-                        prev.oosStrikes += 1;
-                        if (prev.oosStrikes >= 2) {
-                            exports.variantStateMap.delete(variant.id);
-                            await (0, notifier_1.markAlertSoldOut)(String(variant.id));
-                        }
+                    if (exports.variantStateMap.has(variant.id)) {
+                        exports.variantStateMap.delete(variant.id);
                     }
-                    else {
-                        await (0, notifier_1.markAlertSoldOut)(String(variant.id));
-                    }
+                    await (0, notifier_1.markAlertSoldOut)(String(variant.id));
                     // Zero-Stock Pre-Drop Staging Detector:
                     // Detect brand-new matching target uploads or OOS price slashes to <= MSRP before inventory flips live!
                     const prevOos = oosVariantStagingMap.get(variant.id);

@@ -39,6 +39,7 @@ const path = __importStar(require("path"));
 const policies_1 = require("../../policies");
 const evaluator_1 = require("../../evaluator");
 const ROOT_DIR = path.resolve(__dirname, '../..');
+const PHASE_3C_EPOCH_MARKER = path.join(ROOT_DIR, 'data', '.phase3c_usd_epoch.json');
 function isPreviewOrTestArtifact(skuId, title, retailer, itemId, price) {
     const combined = `${skuId} ${title} ${retailer} ${itemId}`;
     if (/\[FORMAT\s*PREVIEW|preview_30th|test_tick/i.test(combined))
@@ -48,7 +49,15 @@ function isPreviewOrTestArtifact(skuId, title, retailer, itemId, price) {
     }
     return false;
 }
-function scrubPoisonedRuntimeCaches() {
+function isBogusV3Placeholder(price, formFactor) {
+    const ff = String(formFactor || '').toLowerCase();
+    if (ff === 'etb' && Math.abs(price - 115) < 0.05)
+        return true;
+    if (ff.includes('case') && Math.abs(price - 1150) < 0.05)
+        return true;
+    return false;
+}
+function scrubPoisonedRuntimeCaches(forceCurrencyReset = false) {
     const report = {
         storeOffersPurged: 0,
         liveStockPurged: 0,
@@ -59,8 +68,42 @@ function scrubPoisonedRuntimeCaches() {
         msrpTrophiesPurged: 0,
         valid1PMsrpTrophiesRemaining: 0,
         poisoned38To45Purged: 0,
-        previewTestTicksPurged: 0
+        previewTestTicksPurged: 0,
+        phase3cCurrencyFlushExecuted: false
     };
+    // Phase 3C One-Time Currency & Variant-Truth Reset:
+    // Wipe pre-Phase-3C unverified LGS shelf rows from storeOffersCache.json & liveStock.json once so
+    // fresh USD-locked + variant.available=true polls repopulate clean prices (kills Kanzen $151 & Zulu $65.98 ghosts!).
+    const needsPhase3cFlush = forceCurrencyReset || !fs.existsSync(PHASE_3C_EPOCH_MARKER);
+    if (needsPhase3cFlush) {
+        try {
+            const offersPath = path.join(ROOT_DIR, 'storeOffersCache.json');
+            if (fs.existsSync(offersPath)) {
+                const rawOffers = JSON.parse(fs.readFileSync(offersPath, 'utf-8')) || {};
+                let purged = 0;
+                for (const skuOffers of Object.values(rawOffers)) {
+                    if (skuOffers && typeof skuOffers === 'object') {
+                        purged += Object.keys(skuOffers).length;
+                    }
+                }
+                (0, policies_1.atomicWriteJson)(offersPath, {});
+                report.storeOffersPurged += purged;
+            }
+            const livePath = path.join(ROOT_DIR, 'liveStock.json');
+            if (fs.existsSync(livePath)) {
+                (0, policies_1.atomicWriteJson)(livePath, { __bestOffers: {}, __recentOos: [] });
+            }
+            const dataDir = path.dirname(PHASE_3C_EPOCH_MARKER);
+            if (!fs.existsSync(dataDir))
+                fs.mkdirSync(dataDir, { recursive: true });
+            (0, policies_1.atomicWriteJson)(PHASE_3C_EPOCH_MARKER, {
+                epoch: 'v6_phase3c_usd_variant_truth',
+                flushedAt: new Date().toISOString()
+            });
+            report.phase3cCurrencyFlushExecuted = true;
+        }
+        catch { }
+    }
     const policyMap = new Map();
     for (const p of policies_1.WATCH_POLICIES)
         policyMap.set(p.id, p);
@@ -70,7 +113,7 @@ function scrubPoisonedRuntimeCaches() {
         try {
             marketCache = JSON.parse(fs.readFileSync(marketPath, 'utf-8'));
         }
-        catch (e) {
+        catch {
             marketCache = {};
         }
     }
@@ -108,7 +151,8 @@ function scrubPoisonedRuntimeCaches() {
                     const { pol, floor, ceil } = getFloorAndCeil(skuId, store, url, title);
                     const isPreview = isPreviewOrTestArtifact(skuId, title, store, String(rec.itemId || ''), p);
                     const isBadTitle = title ? ((0, policies_1.isPoisonedVariantOrAccessory)(undefined, title, p, pol?.formFactor) || (0, policies_1.isSingleCardOrNonSealed)(title, undefined, url)) : false;
-                    if (!pol || isPreview || isBadTitle || p < floor || p > ceil) {
+                    const isPlaceholder = isBogusV3Placeholder(p, pol?.formFactor) && /tcgplayer|baseline|market/i.test(store);
+                    if (!pol || isPreview || isBadTitle || isPlaceholder || p < floor || p > ceil) {
                         if (p >= 35 && p <= 48)
                             report.poisoned38To45Purged += 1;
                         if (isPreview)
@@ -122,7 +166,7 @@ function scrubPoisonedRuntimeCaches() {
             if (mutated)
                 (0, policies_1.atomicWriteJson)(offersPath, raw);
         }
-        catch (e) { }
+        catch { }
     }
     // 2. Scrub liveStock.json
     const livePath = path.join(ROOT_DIR, 'liveStock.json');
@@ -169,7 +213,7 @@ function scrubPoisonedRuntimeCaches() {
             if (mutated)
                 (0, policies_1.atomicWriteJson)(livePath, live);
         }
-        catch (e) { }
+        catch { }
     }
     // 3. Scrub dropsHistory.json & alertHistory.json
     for (const histFile of ['dropsHistory.json', 'alertHistory.json']) {
@@ -201,7 +245,7 @@ function scrubPoisonedRuntimeCaches() {
             if (filtered.length !== arr.length)
                 (0, policies_1.atomicWriteJson)(histPath, filtered);
         }
-        catch (e) { }
+        catch { }
     }
     // 4. Scrub dailySnapshots.json & salesHistory.json
     const snapPath = path.join(ROOT_DIR, 'dailySnapshots.json');
@@ -232,7 +276,7 @@ function scrubPoisonedRuntimeCaches() {
             if (mutated)
                 (0, policies_1.atomicWriteJson)(snapPath, snaps);
         }
-        catch (e) { }
+        catch { }
     }
     const salesPath = path.join(ROOT_DIR, 'salesHistory.json');
     if (fs.existsSync(salesPath)) {
@@ -258,44 +302,22 @@ function scrubPoisonedRuntimeCaches() {
                 if (cleanSales.length !== sales.length)
                     (0, policies_1.atomicWriteJson)(salesPath, cleanSales);
             }
-            else if (sales && typeof sales === 'object') {
-                let mutated = false;
-                for (const [skuId, rows] of Object.entries(sales)) {
-                    if (!Array.isArray(rows))
-                        continue;
-                    const { floor, ceil } = getFloorAndCeil(skuId, 'LGS', '', '');
-                    const cleanRows = rows.filter((r) => {
-                        const p = Number(r?.price || 0);
-                        const isPreview = isPreviewOrTestArtifact(skuId, '', String(r?.store || ''), '', p);
-                        if (isPreview || p < floor || p > ceil) {
-                            if (p >= 35 && p <= 48)
-                                report.poisoned38To45Purged += 1;
-                            if (isPreview)
-                                report.previewTestTicksPurged += 1;
-                            report.salesHistoryPurged += 1;
-                            mutated = true;
-                            return false;
-                        }
-                        return true;
-                    });
-                    sales[skuId] = cleanRows;
-                }
-                if (mutated)
-                    (0, policies_1.atomicWriteJson)(salesPath, sales);
-            }
         }
-        catch (e) { }
+        catch { }
     }
-    // 5. Scrub marketCache.json bogus $115 baselines & < sanityFloor lows
+    // 5. Scrub marketCache.json bogus $115 / $1150 V3 placeholders & < sanityFloor lows
     if (Object.keys(marketCache).length > 0) {
         let mktMutated = false;
         for (const [skuId, entry] of Object.entries(marketCache)) {
             if (!entry || typeof entry !== 'object')
                 continue;
-            const { pol, floor, ceil } = getFloorAndCeil(skuId, String(entry.lowestStore || ''), String(entry.lowestUrl || ''), polName(policyMap.get(skuId)));
+            const pol = policyMap.get(skuId);
+            const { floor, ceil } = getFloorAndCeil(skuId, String(entry.lowestStore || ''), String(entry.lowestUrl || ''), String(pol?.name || ''));
             const lowP = Number(entry.lowestPrice || 0);
             const estMkt = Number(pol?.estimatedMarketValue || 0);
-            const isBogusBaseline = /baseline|placeholder|seed/i.test(String(entry.lowestStore || '')) ||
+            const isV3115 = isBogusV3Placeholder(lowP, pol?.formFactor) || isBogusV3Placeholder(Number(entry.rollingAverage || 0), pol?.formFactor) || isBogusV3Placeholder(Number(entry.estimatedMarketValue || 0), pol?.formFactor);
+            const isBogusBaseline = isV3115 ||
+                /baseline|placeholder|seed/i.test(String(entry.lowestStore || '')) ||
                 (estMkt > 0 && lowP > estMkt * 1.45 && /tcgplayer/i.test(String(entry.lowestStore || '')));
             if (lowP > 0 && (lowP < floor || lowP > ceil || isBogusBaseline)) {
                 if (lowP >= 35 && lowP <= 48)
@@ -303,6 +325,16 @@ function scrubPoisonedRuntimeCaches() {
                 entry.lowestPrice = estMkt > 0 ? estMkt : 0;
                 entry.lowestStore = '';
                 entry.lowestUrl = '';
+                entry.inStock = false;
+                if (isBogusV3Placeholder(Number(entry.rollingAverage || 0), pol?.formFactor)) {
+                    entry.rollingAverage = estMkt > 0 ? estMkt : 0;
+                }
+                if (isBogusV3Placeholder(Number(entry.estimatedMarketValue || 0), pol?.formFactor)) {
+                    entry.estimatedMarketValue = estMkt > 0 ? estMkt : 0;
+                }
+                if (Array.isArray(entry.samples)) {
+                    entry.samples = entry.samples.filter((s) => !isBogusV3Placeholder(Number(s), pol?.formFactor));
+                }
                 report.marketCacheCleaned += 1;
                 mktMutated = true;
             }
@@ -327,19 +359,13 @@ function scrubPoisonedRuntimeCaches() {
             if (valid1P.length !== rawCatches.length || prevHits !== valid1P.length) {
                 report.msrpTrophiesPurged = Math.max(rawCatches.length - valid1P.length, prevHits - valid1P.length);
                 report.valid1PMsrpTrophiesRemaining = valid1P.length;
-                (0, policies_1.atomicWriteJson)(trophiesPath, {
-                    totalMsrpHits: valid1P.length,
-                    catches: valid1P
-                });
+                (0, policies_1.atomicWriteJson)(trophiesPath, { totalMsrpHits: valid1P.length, catches: valid1P });
             }
             else {
                 report.valid1PMsrpTrophiesRemaining = valid1P.length;
             }
         }
-        catch (e) { }
+        catch { }
     }
     return report;
-}
-function polName(p) {
-    return String(p?.name || '');
 }

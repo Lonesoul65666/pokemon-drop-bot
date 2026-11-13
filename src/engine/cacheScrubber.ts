@@ -11,6 +11,7 @@ import {
 import { isVerified1PBigBoxOrPc } from '../../evaluator';
 
 const ROOT_DIR = path.resolve(__dirname, '../..');
+const PHASE_3C_EPOCH_MARKER = path.join(ROOT_DIR, 'data', '.phase3c_usd_epoch.json');
 
 export interface CacheScrubReport {
   storeOffersPurged: number;
@@ -23,6 +24,7 @@ export interface CacheScrubReport {
   valid1PMsrpTrophiesRemaining: number;
   poisoned38To45Purged: number;
   previewTestTicksPurged: number;
+  phase3cCurrencyFlushExecuted?: boolean;
 }
 
 function isPreviewOrTestArtifact(skuId: string, title: string, retailer: string, itemId: string, price: number): boolean {
@@ -34,7 +36,14 @@ function isPreviewOrTestArtifact(skuId: string, title: string, retailer: string,
   return false;
 }
 
-export function scrubPoisonedRuntimeCaches(): CacheScrubReport {
+function isBogusV3Placeholder(price: number, formFactor?: string): boolean {
+  const ff = String(formFactor || '').toLowerCase();
+  if (ff === 'etb' && Math.abs(price - 115) < 0.05) return true;
+  if (ff.includes('case') && Math.abs(price - 1150) < 0.05) return true;
+  return false;
+}
+
+export function scrubPoisonedRuntimeCaches(forceCurrencyReset = false): CacheScrubReport {
   const report: CacheScrubReport = {
     storeOffersPurged: 0,
     liveStockPurged: 0,
@@ -45,8 +54,41 @@ export function scrubPoisonedRuntimeCaches(): CacheScrubReport {
     msrpTrophiesPurged: 0,
     valid1PMsrpTrophiesRemaining: 0,
     poisoned38To45Purged: 0,
-    previewTestTicksPurged: 0
+    previewTestTicksPurged: 0,
+    phase3cCurrencyFlushExecuted: false
   };
+
+  // Phase 3C One-Time Currency & Variant-Truth Reset:
+  // Wipe pre-Phase-3C unverified LGS shelf rows from storeOffersCache.json & liveStock.json once so
+  // fresh USD-locked + variant.available=true polls repopulate clean prices (kills Kanzen $151 & Zulu $65.98 ghosts!).
+  const needsPhase3cFlush = forceCurrencyReset || !fs.existsSync(PHASE_3C_EPOCH_MARKER);
+  if (needsPhase3cFlush) {
+    try {
+      const offersPath = path.join(ROOT_DIR, 'storeOffersCache.json');
+      if (fs.existsSync(offersPath)) {
+        const rawOffers = JSON.parse(fs.readFileSync(offersPath, 'utf-8')) || {};
+        let purged = 0;
+        for (const skuOffers of Object.values(rawOffers)) {
+          if (skuOffers && typeof skuOffers === 'object') {
+            purged += Object.keys(skuOffers as Record<string, any>).length;
+          }
+        }
+        atomicWriteJson(offersPath, {});
+        report.storeOffersPurged += purged;
+      }
+      const livePath = path.join(ROOT_DIR, 'liveStock.json');
+      if (fs.existsSync(livePath)) {
+        atomicWriteJson(livePath, { __bestOffers: {}, __recentOos: [] });
+      }
+      const dataDir = path.dirname(PHASE_3C_EPOCH_MARKER);
+      if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+      atomicWriteJson(PHASE_3C_EPOCH_MARKER, {
+        epoch: 'v6_phase3c_usd_variant_truth',
+        flushedAt: new Date().toISOString()
+      });
+      report.phase3cCurrencyFlushExecuted = true;
+    } catch {}
+  }
 
   const policyMap = new Map<string, any>();
   for (const p of WATCH_POLICIES) policyMap.set(p.id, p);
@@ -54,7 +96,7 @@ export function scrubPoisonedRuntimeCaches(): CacheScrubReport {
   const marketPath = path.join(ROOT_DIR, 'marketCache.json');
   let marketCache: Record<string, any> = {};
   if (fs.existsSync(marketPath)) {
-    try { marketCache = JSON.parse(fs.readFileSync(marketPath, 'utf-8')); } catch (e) { marketCache = {}; }
+    try { marketCache = JSON.parse(fs.readFileSync(marketPath, 'utf-8')); } catch { marketCache = {}; }
   }
 
   const getFloorAndCeil = (skuId: string, store: string, url: string, title: string) => {
@@ -93,7 +135,8 @@ export function scrubPoisonedRuntimeCaches(): CacheScrubReport {
           const { pol, floor, ceil } = getFloorAndCeil(skuId, store, url, title);
           const isPreview = isPreviewOrTestArtifact(skuId, title, store, String(rec.itemId || ''), p);
           const isBadTitle = title ? (isPoisonedVariantOrAccessory(undefined, title, p, pol?.formFactor) || isSingleCardOrNonSealed(title, undefined, url)) : false;
-          if (!pol || isPreview || isBadTitle || p < floor || p > ceil) {
+          const isPlaceholder = isBogusV3Placeholder(p, pol?.formFactor) && /tcgplayer|baseline|market/i.test(store);
+          if (!pol || isPreview || isBadTitle || isPlaceholder || p < floor || p > ceil) {
             if (p >= 35 && p <= 48) report.poisoned38To45Purged += 1;
             if (isPreview) report.previewTestTicksPurged += 1;
             delete (skuOffers as Record<string, any>)[stKey];
@@ -103,7 +146,7 @@ export function scrubPoisonedRuntimeCaches(): CacheScrubReport {
         }
       }
       if (mutated) atomicWriteJson(offersPath, raw);
-    } catch (e) {}
+    } catch {}
   }
 
   // 2. Scrub liveStock.json
@@ -145,7 +188,7 @@ export function scrubPoisonedRuntimeCaches(): CacheScrubReport {
         }
       }
       if (mutated) atomicWriteJson(livePath, live);
-    } catch (e) {}
+    } catch {}
   }
 
   // 3. Scrub dropsHistory.json & alertHistory.json
@@ -172,7 +215,7 @@ export function scrubPoisonedRuntimeCaches(): CacheScrubReport {
         return true;
       });
       if (filtered.length !== arr.length) atomicWriteJson(histPath, filtered);
-    } catch (e) {}
+    } catch {}
   }
 
   // 4. Scrub dailySnapshots.json & salesHistory.json
@@ -199,7 +242,7 @@ export function scrubPoisonedRuntimeCaches(): CacheScrubReport {
         (snaps as Record<string, any>)[skuId] = cleanRows;
       }
       if (mutated) atomicWriteJson(snapPath, snaps);
-    } catch (e) {}
+    } catch {}
   }
 
   const salesPath = path.join(ROOT_DIR, 'salesHistory.json');
@@ -222,45 +265,39 @@ export function scrubPoisonedRuntimeCaches(): CacheScrubReport {
           return true;
         });
         if (cleanSales.length !== sales.length) atomicWriteJson(salesPath, cleanSales);
-      } else if (sales && typeof sales === 'object') {
-        let mutated = false;
-        for (const [skuId, rows] of Object.entries(sales)) {
-          if (!Array.isArray(rows)) continue;
-          const { floor, ceil } = getFloorAndCeil(skuId, 'LGS', '', '');
-          const cleanRows = rows.filter((r: any) => {
-            const p = Number(r?.price || 0);
-            const isPreview = isPreviewOrTestArtifact(skuId, '', String(r?.store || ''), '', p);
-            if (isPreview || p < floor || p > ceil) {
-              if (p >= 35 && p <= 48) report.poisoned38To45Purged += 1;
-              if (isPreview) report.previewTestTicksPurged += 1;
-              report.salesHistoryPurged += 1;
-              mutated = true;
-              return false;
-            }
-            return true;
-          });
-          (sales as Record<string, any>)[skuId] = cleanRows;
-        }
-        if (mutated) atomicWriteJson(salesPath, sales);
       }
-    } catch (e) {}
+    } catch {}
   }
 
-  // 5. Scrub marketCache.json bogus $115 baselines & < sanityFloor lows
+  // 5. Scrub marketCache.json bogus $115 / $1150 V3 placeholders & < sanityFloor lows
   if (Object.keys(marketCache).length > 0) {
     let mktMutated = false;
     for (const [skuId, entry] of Object.entries(marketCache)) {
       if (!entry || typeof entry !== 'object') continue;
-      const { pol, floor, ceil } = getFloorAndCeil(skuId, String(entry.lowestStore || ''), String(entry.lowestUrl || ''), polName(policyMap.get(skuId)));
+      const pol = policyMap.get(skuId);
+      const { floor, ceil } = getFloorAndCeil(skuId, String(entry.lowestStore || ''), String(entry.lowestUrl || ''), String(pol?.name || ''));
       const lowP = Number(entry.lowestPrice || 0);
       const estMkt = Number(pol?.estimatedMarketValue || 0);
-      const isBogusBaseline = /baseline|placeholder|seed/i.test(String(entry.lowestStore || '')) ||
+      const isV3115 = isBogusV3Placeholder(lowP, pol?.formFactor) || isBogusV3Placeholder(Number(entry.rollingAverage || 0), pol?.formFactor) || isBogusV3Placeholder(Number(entry.estimatedMarketValue || 0), pol?.formFactor);
+      const isBogusBaseline =
+        isV3115 ||
+        /baseline|placeholder|seed/i.test(String(entry.lowestStore || '')) ||
         (estMkt > 0 && lowP > estMkt * 1.45 && /tcgplayer/i.test(String(entry.lowestStore || '')));
       if (lowP > 0 && (lowP < floor || lowP > ceil || isBogusBaseline)) {
         if (lowP >= 35 && lowP <= 48) report.poisoned38To45Purged += 1;
         entry.lowestPrice = estMkt > 0 ? estMkt : 0;
         entry.lowestStore = '';
         entry.lowestUrl = '';
+        entry.inStock = false;
+        if (isBogusV3Placeholder(Number(entry.rollingAverage || 0), pol?.formFactor)) {
+          entry.rollingAverage = estMkt > 0 ? estMkt : 0;
+        }
+        if (isBogusV3Placeholder(Number(entry.estimatedMarketValue || 0), pol?.formFactor)) {
+          entry.estimatedMarketValue = estMkt > 0 ? estMkt : 0;
+        }
+        if (Array.isArray(entry.samples)) {
+          entry.samples = entry.samples.filter((s: any) => !isBogusV3Placeholder(Number(s), pol?.formFactor));
+        }
         report.marketCacheCleaned += 1;
         mktMutated = true;
       }
@@ -285,19 +322,12 @@ export function scrubPoisonedRuntimeCaches(): CacheScrubReport {
       if (valid1P.length !== rawCatches.length || prevHits !== valid1P.length) {
         report.msrpTrophiesPurged = Math.max(rawCatches.length - valid1P.length, prevHits - valid1P.length);
         report.valid1PMsrpTrophiesRemaining = valid1P.length;
-        atomicWriteJson(trophiesPath, {
-          totalMsrpHits: valid1P.length,
-          catches: valid1P
-        });
+        atomicWriteJson(trophiesPath, { totalMsrpHits: valid1P.length, catches: valid1P });
       } else {
         report.valid1PMsrpTrophiesRemaining = valid1P.length;
       }
-    } catch (e) {}
+    } catch {}
   }
 
   return report;
-}
-
-function polName(p: any): string {
-  return String(p?.name || '');
 }

@@ -373,8 +373,14 @@ function loadConqueredVault() {
     const skuOffers = Object.values(mergedOffers[p.id] || {});
     const tcgOffer = skuOffers.find(o => /tcgplayer/i.test(String(o.store || '')));
     const tel = telemetry[p.id] || {};
-    const mkt = Number(p.estimatedMarketValue || p.msrpCeiling || 54.99);
-    const tcgComp = tcgOffer ? Number(tcgOffer.landedPrice) : (tel.lowestPrice > 0 && /tcgplayer/i.test(String(tel.lowestStore || '')) ? Number(tel.lowestPrice) : mkt);
+    const rawPolMkt = Number(p.estimatedMarketValue || 0);
+    const cleanPolMkt = (rawPolMkt > 0 && rawPolMkt !== 115 && rawPolMkt !== 1150) ? rawPolMkt : 0;
+    const rawTelRoll = Number(tel.rollingAverage || 0);
+    const cleanTelRoll = (rawTelRoll > 0 && rawTelRoll !== 115 && rawTelRoll !== 1150) ? rawTelRoll : 0;
+    const mkt = cleanPolMkt || cleanTelRoll || Number(p.msrpCeiling || 54.99);
+    const rawTelLow = Number(tel.lowestPrice || 0);
+    const validTelTcg = rawTelLow > 0 && rawTelLow !== 115 && rawTelLow !== 1150 && /tcgplayer/i.test(String(tel.lowestStore || '')) && (cleanPolMkt <= 0 || rawTelLow <= cleanPolMkt * 1.45);
+    const tcgComp = (tcgOffer && Number(tcgOffer.landedPrice) !== 115) ? Number(tcgOffer.landedPrice) : (validTelTcg ? rawTelLow : mkt);
     const tcgUrl = (tcgOffer && /tcgplayer\.com/i.test(String(tcgOffer.url || '')) ? tcgOffer.url : null) ||
       (/tcgplayer\.com/i.test(String(tel.lowestUrl || '')) ? tel.lowestUrl : null) ||
       `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(p.name)}&view=grid&ProductTypeName=Sealed+Products`;
@@ -1437,8 +1443,12 @@ function buildNextBestBuyAdvisorPayload(requestedBudget) {
     }
 
     if (fullyConquered || !bestOffer) continue;
+    // Phase 3C Hard Spend Ban: Globally ban > $1,200 cases from Smart Buys, and honor $300 default cap unless $500+ pill active
+    const maxAdvisorSpend = budgetCap >= 500 ? 1200 : 300;
+    if (landedPrice > 1200 || landedPrice > maxAdvisorSpend) continue;
     // Disqualify high-markup Booster Bundles (pricePerPack > $7.50) and MUTED_DRAWER items from Capital Advisor SMART BUY
-    if (bestOffer.disqualifiesSmartBuy || bestOffer.actionTier === 'MUTED_DRAWER') continue;
+    if (bestOffer.disqualifiesSmartBuy && !(budgetCap >= 500 && bestOffer.overSpendCeiling && landedPrice <= 1200)) continue;
+    if (bestOffer.actionTier === 'MUTED_DRAWER' && !(budgetCap >= 500 && bestOffer.overSpendCeiling && landedPrice <= 1200)) continue;
     if (/bundle|\b6[- ]?pack\b/i.test(`${pol.formFactor || ''} ${skuId} ${pol.name || ''}`) && Number(bestOffer.pricePerPack || 0) > 7.50) {
       continue;
     }
@@ -1523,15 +1533,15 @@ function buildNextBestBuyAdvisorPayload(requestedBudget) {
   candidates.push(...sortedCandidates);
 
   const pickForBudget = (cap) => {
-    const within = candidates.filter(c => c.landedPrice <= cap);
-    return (within.length >= 3 ? within : candidates).slice(0, 3);
+    const hardCap = cap >= 500 ? 1200 : Math.min(300, cap);
+    return candidates.filter(c => c.landedPrice <= hardCap).slice(0, 3);
   };
 
   const budgets = {
     '100': pickForBudget(105),
     '200': pickForBudget(210),
-    '350': pickForBudget(360),
-    '500': candidates.slice(0, 3)
+    '350': pickForBudget(300),
+    '500': pickForBudget(1200)
   };
   const selectedKey = budgetCap <= 105 ? '100' : (budgetCap <= 210 ? '200' : (budgetCap <= 360 ? '350' : '500'));
 
@@ -1906,71 +1916,16 @@ function loadMergedStoreOffersBySku() {
 
   for (const [k, v] of Object.entries(liveMap)) {
     if (k.startsWith('__') || !v || !v.inStock) continue;
+    if (now - Number(v.updatedAt || 0) > 2 * 3600 * 1000) continue;
+    const cleanSt = String(v.retailer || '').replace(/^[📡🚨💎🔥⚡🎯]+\s*/, '').trim();
+    if (merged[k] && merged[k][cleanSt]) continue;
     overlayEntry(k, v, false);
   }
-  if (liveMap.__bestOffers && typeof liveMap.__bestOffers === 'object') {
-    for (const [k, v] of Object.entries(liveMap.__bestOffers)) {
-      overlayEntry(k, v, true);
-    }
-  }
 
-  // 3. Overlay recent ACTIVE salesHistory entries (last 48h)
-  if (Array.isArray(salesArr)) {
-    for (const s of salesArr) {
-      if (!s || !s.targetId || s.status !== 'ACTIVE') continue;
-      const seenTs = Number(s.lastSeenAt || s.restockedAt || 0);
-      if (now - seenTs > 48 * 3600 * 1000) continue;
-      const isCart = s.url && String(s.url).includes('/cart/');
-      overlayEntry(s.targetId, {
-        retailer: s.store,
-        price: s.price,
-        landedPrice: s.landedPrice || s.price,
-        url: s.url,
-        productUrl: isCart ? String(s.url).split('/cart/')[0] : s.url,
-        cart1xUrl: isCart ? (String(s.url).includes('payment=shop_pay') ? s.url : `${s.url}${String(s.url).includes('?') ? '&' : '?'}payment=shop_pay`) : undefined,
-        cart2xUrl: isCart ? String(s.url).replace(/:\d+(?=\?|$)/, ':2') + (String(s.url).includes('payment=shop_pay') ? '' : `${String(s.url).includes('?') ? '&' : '?'}payment=shop_pay`) : undefined,
-        cart3xUrl: isCart ? String(s.url).replace(/:\d+(?=\?|$)/, ':3') + (String(s.url).includes('payment=shop_pay') ? '' : `${String(s.url).includes('?') ? '&' : '?'}payment=shop_pay`) : undefined,
-        updatedAt: seenTs
-      }, false);
-    }
-  }
+  // Phase 3C Strict Live Truth: Never overlay 48h salesHistory, dropsHistory, telemetry, or __bestOffers ghosts!
+  // Only live storeOffersCache.json & active <2h liveStock entries represent current available variant prices.
 
-  // 4. Overlay recent in-stock dropsHistory entries (last 48h) & telemetry lowestStore backfill
-  if (Array.isArray(dropsArr)) {
-    for (const d of dropsArr) {
-      if (!d || !d.ruleId || d.soldOut || d.isPreDropStaging) continue;
-      const ts = Number(d.timestamp || 0);
-      if (ts > 0 && (now - ts) > 48 * 3600 * 1000) continue;
-      overlayEntry(d.ruleId, {
-        retailer: d.retailer,
-        title: d.title,
-        price: d.price,
-        landedPrice: d.landedPrice || d.price,
-        freeShipNote: d.freeShipNote,
-        url: d.url,
-        productUrl: d.productUrl || d.url,
-        cart1xUrl: d.cart1xUrl,
-        cart2xUrl: d.cart2xUrl,
-        cart3xUrl: d.cart3xUrl,
-        updatedAt: ts || now
-      }, true);
-    }
-  }
-
-  for (const [skuId, tel] of Object.entries(telemetry)) {
-    if (!tel || !tel.inStock || !tel.lowestStore || !(tel.lowestPrice > 0)) continue;
-    if (/market|baseline|catalog/i.test(String(tel.lowestStore))) continue;
-    overlayEntry(skuId, {
-      retailer: tel.lowestStore,
-      price: tel.lowestPrice,
-      landedPrice: tel.lowestPrice,
-      url: tel.lowestUrl,
-      productUrl: tel.lowestUrl,
-      updatedAt: Number(tel.lastUpdated || now)
-    }, true);
-  }
-
-  // 5. Enrich every merged offer with unified Cost x Need x Trend dealRanker fields
+  // 5. Enrich every merged offer with unified Cost x Need x Trend dealRanker fields ($300 default spend cap)
   for (const [skuId, skuBucket] of Object.entries(merged)) {
     const pol = polById.get(skuId);
     if (!pol || !skuBucket) continue;
@@ -1979,13 +1934,18 @@ function loadMergedStoreOffersBySku() {
     const tel = telemetry[skuId] || {};
     const skuOffers = Object.values(skuBucket);
     const tcgOffer = skuOffers.find(o => /tcgplayer/i.test(String(o.store || '')));
-    const tcgComp = tcgOffer
+    const rawEst = Number(pol.estimatedMarketValue || 0);
+    const cleanEst = (rawEst > 0 && rawEst !== 115 && rawEst !== 1150) ? rawEst : 0;
+    const rawTelLow = Number(tel.lowestPrice || 0);
+    const validTelLow = rawTelLow > 0 && rawTelLow !== 115 && rawTelLow !== 1150 && /tcgplayer/i.test(String(tel.lowestStore || '')) && (cleanEst <= 0 || rawTelLow <= cleanEst * 1.45);
+    const tcgComp = (tcgOffer && Number(tcgOffer.landedPrice) !== 115)
       ? Number(tcgOffer.landedPrice)
-      : (tel.lowestPrice > 0 && /tcgplayer/i.test(String(tel.lowestStore || '')) ? Number(tel.lowestPrice) : Number(pol.estimatedMarketValue || 0));
+      : (validTelLow ? rawTelLow : cleanEst);
     for (const [stKey, offer] of Object.entries(skuBucket)) {
       skuBucket[stKey] = rankAndEnrichDealOffer(offer, pol, {
         wallQty: completionCount,
         tcgComp,
+        maxSpendCeiling: 300,
         nowTs: now
       });
     }

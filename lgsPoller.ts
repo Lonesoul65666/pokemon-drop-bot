@@ -18,6 +18,13 @@ import {
 import { matchTargetRuleForStaging, pruneStoreMissingOffers } from './evaluator';
 import { loadActiveLgsStores } from './src/config/configManager';
 import { ingestSingleCardOffer } from './src/engine/singlesSniper';
+import {
+  SHOPIFY_USD_HEADERS,
+  appendShopifyUsCountryParam,
+  isVariantStrictlyAvailable,
+  resolveVerifiedStoreCurrency,
+  computeVerifiedStoreShippingUsd
+} from './src/engine/currencyGuard';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 dns.setDefaultResultOrder('ipv4first');
@@ -424,7 +431,7 @@ export async function acquireShopifyEgressSlot(lane: ShopifyEgressLane, urlForDo
 const BROWSER_NAV_HEADERS: Record<string, string> = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
   Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-  'Accept-Language': 'en-US,en;q=0.9',
+  ...SHOPIFY_USD_HEADERS,
   'Sec-Fetch-Dest': 'document',
   'Sec-Fetch-Mode': 'navigate',
   'Sec-Fetch-Site': 'none',
@@ -507,9 +514,10 @@ async function performLaneJsonRequest(
 }
 
 export async function smartGetJson(
-  url: string,
+  rawUrl: string,
   opts?: { storeName?: string; allowEtag304?: boolean; reuseCachedProductsOn304?: boolean }
-): Promise<{ data: any; notModified304?: boolean; status?: number; error?: string }> {
+): Promise<{ data: any; notModified304?: boolean; status?: number; error?: string; usedLane?: ShopifyEgressLane }> {
+  const url = appendShopifyUsCountryParam(rawUrl);
   const storeName = opts?.storeName || '';
   if (storeName && (store429CooldownUntilMap.get(storeName) || 0) > Date.now()) {
     return { data: null, status: 429, error: 'HTTP 429 (Store Cooldown)' };
@@ -524,7 +532,7 @@ export async function smartGetJson(
       }
     : undefined;
 
-  const handleSuccess = (res: { status: number; data: any; etag?: string; lastModified?: string }) => {
+  const handleSuccess = (res: { status: number; data: any; etag?: string; lastModified?: string }, usedLane: ShopifyEgressLane) => {
     if (res.status === 304) {
       if (res.etag || res.lastModified || cachedEtag) {
         lgsFeedEtagCache.set(url, {
@@ -534,9 +542,9 @@ export async function smartGetJson(
         });
       }
       if (opts?.reuseCachedProductsOn304 && cachedEtag?.cachedProducts) {
-        return { data: { products: cachedEtag.cachedProducts }, notModified304: true, status: 304 };
+        return { data: { products: cachedEtag.cachedProducts }, notModified304: true, status: 304, usedLane };
       }
-      return { data: null, notModified304: true, status: 304 };
+      return { data: null, notModified304: true, status: 304, usedLane };
     }
     if (res.etag || res.lastModified) {
       lgsFeedEtagCache.set(url, {
@@ -547,7 +555,7 @@ export async function smartGetJson(
           : undefined
       });
     }
-    return { data: res.data, notModified304: false, status: res.status };
+    return { data: res.data, notModified304: false, status: res.status, usedLane };
   };
 
   const primaryLane: ShopifyEgressLane = getPreferredLaneForStore(storeName);
@@ -563,7 +571,7 @@ export async function smartGetJson(
 
     try {
       const res = await performLaneJsonRequest(url, REQUEST_TIMEOUT_MS, lane, condHeaders);
-      return handleSuccess(res);
+      return handleSuccess(res, lane);
     } catch (err: any) {
       const st = err?.httpStatus || err?.response?.status;
       lastStatus = st || lastStatus;
@@ -837,7 +845,34 @@ async function pollSingleStore(store: MonitoredStore): Promise<{
     storeHealthMap.set(store.name, health);
 
     const checkNow = Date.now();
-    const fxMultiplier = resolveShopifyFxMultiplier(store);
+    const activeLane: ShopifyEgressLane = getPreferredLaneForStore(store.name);
+    let currRes = await resolveVerifiedStoreCurrency(store, activeLane, async (probeUrl) => {
+      try {
+        await acquireShopifyEgressSlot(activeLane, probeUrl);
+        const r = await performLaneJsonRequest(probeUrl, 4500, activeLane);
+        return { status: r.status, data: r.data };
+      } catch {
+        return { status: 0, data: null };
+      }
+    });
+    if (currRes.quarantineNonUsd && activeLane === 'PROXY') {
+      currRes = await resolveVerifiedStoreCurrency(store, 'DIRECT', async (probeUrl) => {
+        try {
+          await acquireShopifyEgressSlot('DIRECT', probeUrl);
+          const r = await performLaneJsonRequest(probeUrl, 4500, 'DIRECT');
+          return { status: r.status, data: r.data };
+        } catch {
+          return { status: 0, data: null };
+        }
+      });
+    }
+    if (currRes.quarantineNonUsd) {
+      console.warn(`[CURRENCY GUARD] Quarantined ${store.name} (${currRes.detectedCurrency}) — failed verified USD lock.`);
+      pruneStoreMissingOffers(store.name, new Set<string>());
+      return { hit: false, notModified304: false, rateLimited429: false, productsScanned: products.length, skippedByCircuit: false };
+    }
+
+    const fxMultiplier = currRes.fxMultiplier;
     const activeVariantIds = new Set<string>();
 
     for (const prod of products) {
@@ -855,7 +890,7 @@ async function pollSingleStore(store: MonitoredStore): Promise<{
         const priceNum = fxMultiplier !== 1.0 ? Math.round(rawPrice * fxMultiplier * 100) / 100 : rawPrice;
         if (!priceNum || priceNum < 15) continue;
 
-        if (variant.available) {
+        if (isVariantStrictlyAvailable(variant)) {
           const fullTitle = `${prod.title} ${variant.title !== 'Default Title' ? variant.title : ''}`.trim();
           const tagsStr = Array.isArray(prod.tags) ? prod.tags.join(' ') : String(prod.tags || '');
           const productUrl = prod.handle ? `${store.baseUrl}/products/${prod.handle}` : store.baseUrl;
@@ -891,11 +926,13 @@ async function pollSingleStore(store: MonitoredStore): Promise<{
           })) continue;
           activeVariantIds.add(String(variant.id));
 
+          const shipCalc = computeVerifiedStoreShippingUsd(store, priceNum, currRes);
+          const landedCheck = Math.round((priceNum + shipCalc.shippingUsd) * 100) / 100;
           const prev = variantStateMap.get(variant.id);
           const minsSinceCheck = prev ? (checkNow - prev.lastCheckedAt) / (1000 * 60) : 999;
 
-          if (!prev || priceNum !== prev.price || minsSinceCheck >= 3) {
-            variantStateMap.set(variant.id, { price: priceNum, lastCheckedAt: checkNow, oosStrikes: 0 });
+          if (!prev || landedCheck !== prev.price || minsSinceCheck >= 3) {
+            variantStateMap.set(variant.id, { price: landedCheck, lastCheckedAt: checkNow, oosStrikes: 0 });
 
             const realQty = typeof variant.inventory_quantity === 'number' && variant.inventory_quantity > 0
               ? variant.inventory_quantity
@@ -903,7 +940,6 @@ async function pollSingleStore(store: MonitoredStore): Promise<{
             const cart1xUrl = `${store.baseUrl}/cart/${variant.id}:1?payment=shop_pay`;
             const cart2xUrl = (realQty === undefined || realQty >= 2) ? `${store.baseUrl}/cart/${variant.id}:2?payment=shop_pay` : undefined;
             const cart3xUrl = (realQty === undefined || realQty >= 3) ? `${store.baseUrl}/cart/${variant.id}:3?payment=shop_pay` : undefined;
-            const productUrl = prod.handle ? `${store.baseUrl}/products/${prod.handle}` : store.baseUrl;
             const isPreOrder = /pre-?order|pre-?sale/i.test(`${fullTitle} ${tagsStr} ${prod.handle || ''}`);
 
             await processIncomingDrop({
@@ -917,6 +953,10 @@ async function pollSingleStore(store: MonitoredStore): Promise<{
               cart3xUrl,
               isPreOrder,
               price: priceNum,
+              itemPrice: priceNum,
+              shippingPrice: shipCalc.shippingUsd,
+              freeShipping: shipCalc.shippingUsd === 0,
+              shippingNoteOverride: shipCalc.shippingNote,
               stock: realQty,
               itemId: String(variant.id),
             });
@@ -924,16 +964,10 @@ async function pollSingleStore(store: MonitoredStore): Promise<{
             prev.oosStrikes = 0;
           }
         } else {
-          const prev = variantStateMap.get(variant.id);
-          if (prev) {
-            prev.oosStrikes += 1;
-            if (prev.oosStrikes >= 2) {
-              variantStateMap.delete(variant.id);
-              await markAlertSoldOut(String(variant.id));
-            }
-          } else {
-            await markAlertSoldOut(String(variant.id));
+          if (variantStateMap.has(variant.id)) {
+            variantStateMap.delete(variant.id);
           }
+          await markAlertSoldOut(String(variant.id));
 
           // Zero-Stock Pre-Drop Staging Detector:
           // Detect brand-new matching target uploads or OOS price slashes to <= MSRP before inventory flips live!

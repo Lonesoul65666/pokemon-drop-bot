@@ -1207,7 +1207,7 @@
             </p>
           </div>
           <div class="pt-2 border-t border-white/10 flex items-center justify-between text-[11px]">
-            <span class="text-slate-400">Tag trophies: [On ETB Wall], [Rip with Logan], [Sealed Hold]</span>
+            <span class="text-slate-400">Tag trophies: [LOGAN WALL], [OFFICE SEALED], [DAD RIP]</span>
             <button onclick="closeQuickTourModal(); switchMainView('CONQUERED_VAULT');" class="text-amber-300 font-extrabold hover:underline">Open Conquered Vault &rarr;</button>
           </div>
         </div>
@@ -3468,8 +3468,14 @@
         const ppp = Number(o.pricePerPack || (packCnt > 0 ? Math.round((landedVal / packCnt) * 100) / 100 : 0));
         const famSt = getSkuFamilyState(o.skuId, pol);
 
+        const activeSpendCap = activeAdvisorBudget >= 500 ? 1200 : 300;
+        const overGlobalBan = landedVal > 1200;
+        const overSpendCap = overGlobalBan || landedVal > activeSpendCap;
+
         let actionTier = o.actionTier || '';
-        if (!actionTier) {
+        if (overGlobalBan || overSpendCap) {
+          actionTier = 'MUTED_DRAWER';
+        } else if (!actionTier) {
           const is1pMsrp = Boolean(o.isMsrpUnicorn || (landedVal <= msrpVal * 1.03 && !/tcgplayer|ebay/i.test(storeName) && /target|walmart|best buy|pokemon center|pokémon center|costco|sam's club|barnes|gamestop|amazon/i.test(storeName)));
           if (famSt.fullyConquered && !is1pMsrp) {
             actionTier = 'MUTED_DRAWER';
@@ -3495,12 +3501,21 @@
         seenRuleStores.add(key);
 
         const discPct = Number(o.discountPct ?? (mktVal > landedVal ? Math.max(0, Math.round(((mktVal - landedVal) / mktVal) * 100)) : 0));
-        const prioScore = Number(o.priorityScore ?? (actionTier === 'BUY_NOW_PINNED' ? (70 + discPct) : (actionTier === 'CAUTIOUS_WATCH' ? (45 + discPct) : Math.max(5, discPct))));
-        const verdictLbl = o.verdictLabel || o.trendVerdictLabel || (
-          actionTier === 'BUY_NOW_PINNED'
-            ? (isWall && !famSt.wallOwned ? 'PRIORITY WALL BUY' : 'SUGGESTED BUY')
-            : (actionTier === 'CAUTIOUS_WATCH' ? 'CAUTIOUS DIP — WATCH' : (mktVal > 0 && landedVal > mktVal ? 'HOLD OFF — ABOVE TCGPLAYER' : 'HOLD OFF — ABOVE SLIDER'))
-        );
+        const wallBonus = isWall ? (!famSt.wallOwned ? 500 : (famSt.completionCount === 1 ? 420 : 0)) : 0;
+        const prioScore = overGlobalBan
+          ? -1000
+          : (overSpendCap
+              ? -300
+              : Math.max(Number(o.priorityScore ?? 0), (actionTier === 'BUY_NOW_PINNED' ? (70 + wallBonus + discPct) : (actionTier === 'CAUTIOUS_WATCH' ? (45 + wallBonus + discPct) : Math.max(5, discPct)))));
+        const verdictLbl = overGlobalBan
+          ? 'MUTED — OVER $1,200 CASE CAP'
+          : (overSpendCap
+              ? ('MUTED — OVER $' + activeSpendCap + ' SPEND CAP')
+              : (o.verdictLabel || o.trendVerdictLabel || (
+                  actionTier === 'BUY_NOW_PINNED'
+                    ? (isWall && !famSt.wallOwned ? 'PRIORITY WALL BUY' : 'SUGGESTED BUY')
+                    : (actionTier === 'CAUTIOUS_WATCH' ? 'CAUTIOUS DIP — WATCH' : (mktVal > 0 && landedVal > mktVal ? 'HOLD OFF — ABOVE TCGPLAYER' : 'HOLD OFF — ABOVE SLIDER'))
+                )));
 
         items.push({
           isLiveNow: o.inStock !== false && !o.soldOut,
@@ -4012,9 +4027,11 @@
         : ('Slider $' + trigVal.toFixed(0));
       const pppText = ppp > 0 ? (' • $' + ppp.toFixed(2) + '/pk') : '';
 
-      // Earned Watermarks strip (7d / 15d -> 30d / 60d / 90d)
+      // Earned Watermarks strip (7d / 15d -> 30d / 60d / 90d) — strip duplicate "Shelf Floor —" prefix!
       const ew = item.earnedWatermarks || pol.earnedWatermarks || null;
-      const watermarkText = (ew && ew.watermarkStrip) ? String(ew.watermarkStrip) : '';
+      const watermarkText = (ew && ew.watermarkStrip)
+        ? String(ew.watermarkStrip).replace(/^(?:Shelf\s*Floor|Floor)\s*[—\-:]+\s*/i, '').trim()
+        : '';
       const watermarkHtml = watermarkText
         ? '<div class="mt-1.5 text-[10px] font-mono-num text-slate-300 leading-snug"><strong class="text-cyan-300">Floor:</strong> ' + watermarkText + '</div>'
         : '';
@@ -4626,13 +4643,13 @@
             ? '<div class="text-[11px] font-mono-num text-cyan-200 font-semibold mt-0.5">' + t.landedPriceNote + '</div>'
             : '';
 
-          // 3 Clear Collector Fates: [ On ETB Wall ], [ Rip with Logan ], [ Sealed Hold ]
+          // 3 Clear Collector Fates: [ LOGAN WALL ], [ OFFICE SEALED ], [ DAD RIP ]
           const pipBtn = (field, label, active, activeStyle) => {
             const cls = active
               ? activeStyle
               : 'bg-black/40 text-slate-400 border-white/10 hover:border-white/25';
             const dotCls = active ? 'bg-emerald-400 shadow-[0_0_6px_#10B981]' : 'bg-slate-600';
-            return '<button onclick="toggleTrophyPip(\'' + t.id + '\', \'' + field + '\', ' + (!active) + ')" class="pokedex-badge px-3 py-1.5 rounded-xl border text-[11px] font-extrabold transition inline-flex items-center gap-1.5 ' + cls + '"><span class="w-1.5 h-1.5 rounded-full ' + dotCls + '"></span>[ ' + label + ' ]</button>';
+            return '<button onclick="toggleTrophyPip(\'' + t.id + '\', \'' + field + '\', ' + (!active) + ')" class="pokedex-badge px-3 py-1.5 rounded-xl border text-[11px] font-extrabold transition inline-flex items-center gap-1.5 ' + cls + '"><span class="w-1.5 h-1.5 rounded-full ' + dotCls + '"></span>[' + label + ']</button>';
           };
           const safeSkuAttr = String(t.skuId || '').replace(/"/g, '&quot;');
 
@@ -4677,9 +4694,9 @@
                 '<div>' +
                   '<div class="pokedex-badge text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Collector Fate (Click to Tag)</div>' +
                   '<div class="flex items-center gap-2 flex-wrap">' +
-                    pipBtn('onWall', 'On ETB Wall', Boolean(r3.onWall), 'bg-cyan-500/25 text-cyan-200 border-cyan-400/60 shadow-[0_0_12px_rgba(0,240,255,0.22)]') +
-                    pipBtn('ripped', 'Rip with Logan', Boolean(r3.ripped), 'bg-purple-500/25 text-purple-200 border-purple-400/60 shadow-[0_0_12px_rgba(168,85,247,0.22)]') +
-                    pipBtn('sealedCase', 'Sealed Hold', Boolean(r3.sealedCase), 'bg-amber-500/25 text-amber-200 border-amber-400/60 shadow-[0_0_12px_rgba(250,204,21,0.22)]') +
+                    pipBtn('onWall', '[LOGAN WALL]', Boolean(r3.onWall), 'bg-cyan-500/25 text-cyan-200 border-cyan-400/60 shadow-[0_0_12px_rgba(0,240,255,0.22)]') +
+                    pipBtn('sealedCase', '[OFFICE SEALED]', Boolean(r3.sealedCase), 'bg-amber-500/25 text-amber-200 border-amber-400/60 shadow-[0_0_12px_rgba(250,204,21,0.22)]') +
+                    pipBtn('ripped', '[DAD RIP]', Boolean(r3.ripped), 'bg-purple-500/25 text-purple-200 border-purple-400/60 shadow-[0_0_12px_rgba(168,85,247,0.22)]') +
                   '</div>' +
                 '</div>' +
               '</div>' +
@@ -4805,15 +4822,21 @@
         const imgPath = '/art/' + p.id + '.jpg?v=' + cacheBuster;
         const famSt = getSkuFamilyState(p.id, p);
         const isOwned = Boolean(famSt.wallOwned);
-        const mVal = getEffectiveMarketValue(p, 56);
+        const mVal = getEffectiveMarketValue(p, 52);
         const targetBuy = Number(p.maxMarketBuyPrice || p.msrpCeiling || 54.99);
         const buyAct = (conqueredVault && conqueredVault.bestBuyActionsBySku && conqueredVault.bestBuyActionsBySku[p.id]) || p.bestBuyAction || null;
         const liveBo = p.bestLiveOffer || null;
-        const hasCompetitiveLgs = Boolean((buyAct && buyAct.isDirectLgsBuy && Number(buyAct.lowestLanded) > 0) || (liveBo && liveBo.inStock && Number(liveBo.landedPrice) > 0));
+        const rawBuyMkt = Number((buyAct && buyAct.marketPrice) || 0);
+        const mktCompVal = (rawBuyMkt > 0 && rawBuyMkt !== 115 && rawBuyMkt !== 1150) ? rawBuyMkt : mVal;
         const lgsPrice = Number((buyAct && buyAct.lowestLanded) || (liveBo && liveBo.landedPrice) || 0);
-        const lgsStore = String((buyAct && buyAct.storeName) || (liveBo && liveBo.storeName) || 'Verified LGS');
+        const lgsStore = String((buyAct && buyAct.storeName) || (liveBo && liveBo.storeName) || '');
+        const hasCompetitiveLgs = Boolean(
+          lgsStore &&
+          !/tcgplayer|ebay|baseline|market/i.test(lgsStore) &&
+          ((buyAct && buyAct.isDirectLgsBuy && lgsPrice > 0) || (liveBo && liveBo.inStock && lgsPrice > 0)) &&
+          lgsPrice <= mktCompVal * 1.005
+        );
         const lgsBuyUrl = String((buyAct && buyAct.buyUrl) || (liveBo && liveBo.buyUrl) || '#');
-        const mktCompVal = Number((buyAct && buyAct.marketPrice) || mVal || 54.99);
         const tcgUrl = String((buyAct && buyAct.tcgplayerUrl) || (liveBo && liveBo.tcgplayerUrl) || ('https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=' + encodeURIComponent(p.name) + '&view=grid'));
         const safeSkuAttr = String(p.id || '').replace(/"/g, '&quot;');
 
@@ -4829,7 +4852,7 @@
             '</div>'
           : '<div class="space-y-1 mt-1">' +
               '<div class="flex items-baseline justify-between gap-2 text-xs font-mono-num">' +
-                '<span class="font-bold text-amber-300 truncate">Market: $' + mktCompVal.toFixed(2) + '</span>' +
+                '<a href="' + tcgUrl + '" target="_blank" class="font-bold text-amber-300 hover:text-amber-200 hover:underline truncate">~$' + mktCompVal.toFixed(2) + ' @ TCGPlayer</a>' +
                 '<span class="text-[10px] text-purple-200 shrink-0">Slider: $' + targetBuy.toFixed(0) + '</span>' +
               '</div>' +
             '</div>';
