@@ -34,6 +34,36 @@ import {
   TrendSignal
 } from './src/engine/trendAdvisor';
 import { buildEarnedWatermarkSummary } from './src/engine/watermarkHistory';
+import { getLiveTcgPlayerCompFast } from './marketComps';
+
+const tcgCompWarmupCooldown = new Map<string, number>();
+function triggerBackgroundTcgCompWarmup(rule: PolicyRule, fallbackMarket: number): void {
+  const nowTs = Date.now();
+  if (nowTs - (tcgCompWarmupCooldown.get(rule.id) || 0) < 10 * 60 * 1000) return;
+  tcgCompWarmupCooldown.set(rule.id, nowTs);
+  const t = setTimeout(() => {
+    void getLiveTcgPlayerCompFast(rule.id, rule.name, fallbackMarket)
+      .then((comp) => {
+        if (!comp || !comp.isLiveVerified || !(comp.total > 0) || !/tcgplayer\.com\/product\/\d+/i.test(comp.url || '')) return;
+        const verifiedSku = matchProductToSku(comp.title || '', comp.total, { retailer: 'TCGPlayer', sourceUrl: comp.url });
+        if (!verifiedSku || verifiedSku.id !== rule.id) return;
+        const rip = computeRipMetrics(comp.total, rule.id, rule.formFactor, rule.name, rule.packCount);
+        upsertStoreOfferCache({
+          skuId: rule.id, productName: rule.name, rawTitle: comp.title || rule.name,
+          formFactor: rule.formFactor || 'Sealed', era: rule.era,
+          owned: Boolean(rule.wallOwned ?? rule.inVault ?? rule.owned),
+          msrp: rule.msrpCeiling, triggerPrice: Math.max(rule.msrpCeiling, rule.maxMarketBuyPrice),
+          marketValue: comp.averagePrice || comp.total, storeName: 'TCGPlayer Verified Seller',
+          price: comp.price, shipping: comp.shipping || 0, landedPrice: comp.total,
+          freeShipNote: comp.shippingLabel || '+FREE Shipping', url: comp.url, productUrl: comp.url,
+          itemId: `tcg_${rule.id}`, packCount: rip.packCount, pricePerPack: rip.pricePerPack,
+          isRipValueLeader: rip.isRipValueLeader, updatedAt: Date.now()
+        });
+      })
+      .catch(() => {});
+  }, 50);
+  t.unref?.();
+}
 
 export { isPreReleaseDate, TrendSignal, computeAutoPilotTarget, getLiveStoreOfferMedian };
 
@@ -1349,27 +1379,24 @@ export function markLiveStockOut(itemId: string, options?: { confirmedTcgThreeSt
 }
 
 function getCachedVerifiedTcgLowestShipped(skuId: string, minFloor: number, maxCeiling: number, nowTs = Date.now()): number {
+  const rule = WATCH_POLICIES.find((p) => p.id === skuId);
   const skuOffers = storeOffersCacheMem[skuId] || {};
   let bestTcgOffer = 0;
   for (const [stKey, rec] of Object.entries(skuOffers)) {
     if (!rec || !/tcgplayer/i.test(`${stKey} ${rec.storeName || ''}`)) continue;
-    if (nowTs - Number(rec.updatedAt || 0) > 48 * 3600 * 1000) continue;
+    if (/Baseline|Market/i.test(`${stKey} ${rec.storeName || ''}`)) continue;
+    if (!/tcgplayer\.com\/product\/\d+/i.test(String(rec.url || rec.productUrl || ''))) continue;
+    if (nowTs - Number(rec.updatedAt || 0) > 12 * 3600 * 1000) continue;
+    if (rule && rec.rawTitle) {
+      const m = matchProductToSku(rec.rawTitle, Number(rec.landedPrice || rec.price || 0), { retailer: 'TCGPlayer', sourceUrl: rec.url });
+      if (!m || m.id !== skuId) continue;
+    }
     const lp = Number(rec.landedPrice || rec.price || 0);
     if (lp >= minFloor && lp <= maxCeiling && (bestTcgOffer === 0 || lp < bestTcgOffer)) {
       bestTcgOffer = lp;
     }
   }
-  if (bestTcgOffer > 0) return bestTcgOffer;
-
-  const tel: any = getTelemetry()[skuId];
-  if (tel && Number(tel.lowestPrice || 0) >= minFloor && Number(tel.lowestPrice || 0) <= maxCeiling) {
-    const lowStore = String(tel.lowestStore || '');
-    const lowUrl = String(tel.lowestUrl || '');
-    if ((/tcgplayer\.com\/product\/\d+/i.test(lowUrl) || /tcgplayer/i.test(lowStore)) && !/Case Baseline/i.test(lowStore)) {
-      return Number(tel.lowestPrice);
-    }
-  }
-  return 0;
+  return bestTcgOffer;
 }
 
 export function evaluateItem(item: RawRestockItem): EvaluationResult {
@@ -1958,28 +1985,35 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       };
     }
 
-    // Phase 2 & 2B Alert Quality Gate: Kill Worse-Than-Market & <8% Falling-Knife LGS Alerts
+    // Phase 2 & 2B Alert Quality Gate: Enforce WORSE_THAN_TCGPLAYER and THIN_SLIDE_<8% ONLY when verified tcgComp > 0!
     if (!is1PBigBoxOrPc) {
       const cachedTcgFloor = getCachedVerifiedTcgLowestShipped(rule.id, minFloor, maxCeiling, now);
-      if (cachedTcgFloor > 0 && landedPrice > cachedTcgFloor + 0.01) {
-        return {
-          action: 'IGNORE',
-          reason: `Suppressed worse-than-TCGPlayer LGS offer: $${landedPrice.toFixed(2)} landed exceeds verified TCGPlayer ($${cachedTcgFloor.toFixed(2)}).`,
-          rule, packCount, pricePerPack, isRipValueLeader, isPreRelease, preReleaseStatusTag,
-          releaseDate: rule.releaseDate, statusTier, statusTag, isCloseCall, closeCallDelta, trendSignal, trendVerdictLabel, isElasticDip
-        };
-      }
-      const wmEval = buildEarnedWatermarkSummary(rule.id, landedPrice, now);
-      const isActivelySliding = wmEval.isSlidingDown || trendSignal === 'FALLING_KNIFE_WAIT' || /BLEEDING[_\s-]*DOWN/i.test(`${trendSignal || ''} ${trendVerdictLabel || ''}`);
-      const refSlideFloor = cachedTcgFloor > 0 ? cachedTcgFloor : currentMarketRef;
-      const slideUndercutRatio = refSlideFloor > 0 ? (refSlideFloor - landedPrice) / refSlideFloor : 0;
-      if (isActivelySliding && slideUndercutRatio < 0.08 && (rule.msrpCeiling <= 0 || landedPrice > rule.msrpCeiling)) {
-        return {
-          action: 'IGNORE',
-          reason: `Suppressed falling-knife LGS offer (<8% undercut while sliding: $${landedPrice.toFixed(2)} vs $${refSlideFloor.toFixed(2)}).`,
-          rule, packCount, pricePerPack, isRipValueLeader, isPreRelease, preReleaseStatusTag,
-          releaseDate: rule.releaseDate, statusTier, statusTag, isCloseCall, closeCallDelta, trendSignal, trendVerdictLabel, isElasticDip
-        };
+      if (cachedTcgFloor <= 0) {
+        // Never self-suppress sub-slider deals against raw pre-shipping shelf medians or stale baselines when tcgComp is null
+        if (landedPrice <= effectiveCeiling || dropPrice <= effectiveCeiling) {
+          triggerBackgroundTcgCompWarmup(rule, Math.max(rule.msrpCeiling || 0, rule.estimatedMarketValue || 0));
+        }
+      } else {
+        if (landedPrice > cachedTcgFloor + 0.01) {
+          return {
+            action: 'IGNORE',
+            reason: `Suppressed worse-than-TCGPlayer LGS offer: $${landedPrice.toFixed(2)} landed exceeds verified TCGPlayer ($${cachedTcgFloor.toFixed(2)}).`,
+            rule, packCount, pricePerPack, isRipValueLeader, isPreRelease, preReleaseStatusTag,
+            releaseDate: rule.releaseDate, statusTier, statusTag, isCloseCall, closeCallDelta, trendSignal, trendVerdictLabel, isElasticDip
+          };
+        }
+        // Shelf-to-shelf watermark comparison for trend labeling only; undercut strictly vs verified shipped tcgComp
+        const wmEval = buildEarnedWatermarkSummary(rule.id, dropPrice, now);
+        const isActivelySliding = wmEval.isSlidingDown || trendSignal === 'FALLING_KNIFE_WAIT' || /BLEEDING[_\s-]*DOWN/i.test(`${trendSignal || ''} ${trendVerdictLabel || ''}`);
+        const slideUndercutRatio = (cachedTcgFloor - landedPrice) / cachedTcgFloor;
+        if (isActivelySliding && slideUndercutRatio < 0.08 && (rule.msrpCeiling <= 0 || landedPrice > rule.msrpCeiling)) {
+          return {
+            action: 'IGNORE',
+            reason: `Suppressed falling-knife LGS offer (<8% undercut vs verified TCGPlayer while sliding: $${landedPrice.toFixed(2)} vs $${cachedTcgFloor.toFixed(2)}).`,
+            rule, packCount, pricePerPack, isRipValueLeader, isPreRelease, preReleaseStatusTag,
+            releaseDate: rule.releaseDate, statusTier, statusTag, isCloseCall, closeCallDelta, trendSignal, trendVerdictLabel, isElasticDip
+          };
+        }
       }
     }
 

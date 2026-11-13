@@ -22,4 +22,5 @@
 - **Batch Parallel Reads & Edits:** Group independent `read_file` and `edit_file` calls in parallel batches rather than serializing single calls; avoid repo-wide greps when target files are known.
 - **Single Bounded Verification Pass:** Run at most 1 combined compile + verification script per pass, guarded by a `.unref()` timeout and ending with a hard `finally { process.exit(0); }`.
 - **On-Demand State Docs:** Touch `_nyx_state/*` and `STATE.md` ONLY when explicitly requested by Scott (or via `dropbot save` / `dropbot backup`); skip full bootloader/state-doc churn on scoped micro-passes.
+- **Automatic `ntfy` CLI Completion Ping:** Whenever a multi-step build, refactor, or diagnostic task finishes, run `node scripts/ntfy-done.js "<1-line summary>"` as your final step to notify Scott's phone.
 

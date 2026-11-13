@@ -468,13 +468,14 @@ async function sendAlert(drop) {
     const is1PBigBox = (0, evaluator_1.isVerified1PBigBoxOrPc)(drop.retailer, drop.productUrl || drop.url, false);
     const productLabel = drop.ruleName || drop.title;
     let initialTcgComp = undefined;
+    let verifiedTcgLow = 0;
     // Phase 2 Live Comp Gate for Non-1P LGS: Verify live TCGPlayer lowest shipped BEFORE pinging Discord!
     // (1P Big-Box MSRP drops skip pre-send wait for 0ms dispatch and enrich immediately after.)
     if (!is1PBigBox) {
         initialTcgComp = await (0, marketComps_1.getLiveTcgPlayerCompFast)(drop.ruleId, productLabel, bestMarketRef);
-        const verifiedTcgLow = (initialTcgComp && initialTcgComp.isLiveVerified && initialTcgComp.price > 0)
+        verifiedTcgLow = (initialTcgComp && initialTcgComp.isLiveVerified && initialTcgComp.price > 0)
             ? initialTcgComp.price
-            : ((cachedLowest > 0 && /tcgplayer/i.test(`${telEntry?.lowestStore || ''} ${cachedLowestUrl || ''}`) && !/Case Baseline/i.test(String(telEntry?.lowestStore || ''))) ? cachedLowest : 0);
+            : ((cachedLowest > 0 && /tcgplayer\.com\/product\/\d+/i.test(String(cachedLowestUrl || '')) && !/Baseline|Market/i.test(String(telEntry?.lowestStore || ''))) ? cachedLowest : 0);
         if (verifiedTcgLow > 0 && landedPrice > verifiedTcgLow + 0.01) {
             console.log(`[Notifier] Suppressed worse-than-TCGPlayer LGS alert: ${drop.retailer} $${landedPrice.toFixed(2)} landed > TCGPlayer $${verifiedTcgLow.toFixed(2)}`);
             return false;
@@ -515,8 +516,8 @@ async function sendAlert(drop) {
         fallbackTcgUrl: cachedLowestUrl
     });
     const { embed, boxArt, theme, primaryFastUrl, isSliding, discountPct } = built;
-    if (!is1PBigBox && isSliding && discountPct < 8) {
-        console.log(`[Notifier] Suppressed falling-knife LGS alert (<8% undercut while sliding): ${drop.retailer} $${landedPrice.toFixed(2)} (-${discountPct.toFixed(1)}%)`);
+    if (!is1PBigBox && verifiedTcgLow > 0 && isSliding && discountPct < 8) {
+        console.log(`[Notifier] Suppressed falling-knife LGS alert (<8% undercut vs verified TCGPlayer while sliding): ${drop.retailer} $${landedPrice.toFixed(2)} (-${discountPct.toFixed(1)}%)`);
         return false;
     }
     const webhookPayload = { embeds: [embed] };

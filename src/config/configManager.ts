@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 
@@ -327,13 +328,19 @@ export function getStoreShippingProfileFromRegistry(retailer: string): StoreShip
   for (const [k, profile] of Object.entries(rules)) if (key.includes(k)) return profile;
   return { freeShipThreshold: 150, flatShipping: 6.99 };
 }
+const hashWatchedConfigs = (): string => {
+  const h = crypto.createHash('sha1');
+  for (const fp of [USER_PREFS_PATH, CATALOG_PATH]) { try { if (fs.existsSync(fp)) h.update(fs.readFileSync(fp)); } catch {} }
+  return h.digest('hex');
+};
 export function watchConfigFiles(onReload: () => void): void {
-  let debounceTimer: any = null;
+  let debounceTimer: any = null, lastHash = hashWatchedConfigs();
   const trigger = () => {
     if (debounceTimer) clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => { debounceTimer = null; cachedShippingRulesMap = null; onReload(); }, 150);
+    debounceTimer = setTimeout(() => {
+      debounceTimer = null; const nextHash = hashWatchedConfigs();
+      if (nextHash !== lastHash) { lastHash = nextHash; cachedShippingRulesMap = null; onReload(); }
+    }, 200);
   };
-  for (const filePath of [USER_PREFS_PATH, CATALOG_PATH, LEGACY_POLICIES_PATH]) {
-    if (fs.existsSync(filePath)) { try { fs.watch(filePath, () => trigger()); } catch {} }
-  }
+  for (const fp of [USER_PREFS_PATH, CATALOG_PATH]) if (fs.existsSync(fp)) { try { fs.watch(fp, () => trigger()); } catch {} }
 }

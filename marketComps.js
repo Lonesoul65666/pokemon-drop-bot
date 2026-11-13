@@ -83,7 +83,8 @@ exports.GLOBAL_JUNK_BLOCKLIST = [
     't-chinese',
     'spanish',
     'french',
-    'german'
+    'german',
+    'dollar general'
 ];
 exports.PC_EXCLUSIVE_BLOCKLIST = policies_1.PC_EXCLUSIVE_EXCLUSION_TERMS;
 exports.SINGLE_BULK_BLOCKLIST = [
@@ -314,10 +315,16 @@ async function fetchTcgPlayerComp(ruleId, ruleName, singleUnitBaseline, policyBa
             const prodId = Math.floor(Number(item.productId));
             const directUrl = `https://www.tcgplayer.com/product/${prodId}`;
             const exactListings = await fetchExactTcgSellerListings(prodId, minFloor, maxCeiling);
-            const listingTotals = exactListings.map(l => l.total);
-            const fallbackPrice = parseFloat(item.lowestPrice || item.marketPrice || 0);
-            const validFallback = (fallbackPrice >= minFloor && fallbackPrice <= maxCeiling) ? [fallbackPrice] : [];
-            const rawSamples = listingTotals.length > 0 ? listingTotals : validFallback;
+            if (exactListings.length === 0)
+                continue;
+            const sortedTotals = exactListings.map(l => l.total).sort((a, b) => a - b);
+            const rawMed = sortedTotals[Math.floor(sortedTotals.length / 2)];
+            const filteredTotals = sortedTotals.filter(tVal => tVal >= rawMed * 0.75);
+            if (filteredTotals.length === 0)
+                continue;
+            if (filteredTotals.length === 1 && policyBaseline && policyBaseline > 0 && filteredTotals[0] < policyBaseline * 0.72)
+                continue;
+            const rawSamples = filteredTotals;
             const stats = computeTrimmedCompStats(rawSamples, minFloor, maxCeiling);
             if (!stats || stats.lowestPrice < minFloor)
                 continue;

@@ -24,6 +24,7 @@ exports.loadTier1FastLgsStores = loadTier1FastLgsStores;
 exports.loadShippingRulesMap = loadShippingRulesMap;
 exports.getStoreShippingProfileFromRegistry = getStoreShippingProfileFromRegistry;
 exports.watchConfigFiles = watchConfigFiles;
+const crypto_1 = __importDefault(require("crypto"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const ROOT_DIR = process.cwd();
@@ -360,19 +361,37 @@ function getStoreShippingProfileFromRegistry(retailer) {
             return profile;
     return { freeShipThreshold: 150, flatShipping: 6.99 };
 }
+const hashWatchedConfigs = () => {
+    const h = crypto_1.default.createHash('sha1');
+    for (const fp of [exports.USER_PREFS_PATH, exports.CATALOG_PATH]) {
+        try {
+            if (fs_1.default.existsSync(fp))
+                h.update(fs_1.default.readFileSync(fp));
+        }
+        catch { }
+    }
+    return h.digest('hex');
+};
 function watchConfigFiles(onReload) {
-    let debounceTimer = null;
+    let debounceTimer = null, lastHash = hashWatchedConfigs();
     const trigger = () => {
         if (debounceTimer)
             clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => { debounceTimer = null; cachedShippingRulesMap = null; onReload(); }, 150);
+        debounceTimer = setTimeout(() => {
+            debounceTimer = null;
+            const nextHash = hashWatchedConfigs();
+            if (nextHash !== lastHash) {
+                lastHash = nextHash;
+                cachedShippingRulesMap = null;
+                onReload();
+            }
+        }, 200);
     };
-    for (const filePath of [exports.USER_PREFS_PATH, exports.CATALOG_PATH, exports.LEGACY_POLICIES_PATH]) {
-        if (fs_1.default.existsSync(filePath)) {
+    for (const fp of [exports.USER_PREFS_PATH, exports.CATALOG_PATH])
+        if (fs_1.default.existsSync(fp)) {
             try {
-                fs_1.default.watch(filePath, () => trigger());
+                fs_1.default.watch(fp, () => trigger());
             }
             catch { }
         }
-    }
 }

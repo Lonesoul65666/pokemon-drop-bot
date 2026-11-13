@@ -87,6 +87,7 @@ export function rankAndEnrichDealOffer(
   const rawUrl = String(offer.productUrl || offer.url || '');
 
   const landedPrice = Math.round(Number(offer.landedPrice ?? offer.price ?? 0) * 100) / 100;
+  const shelfPrice = Math.round(Number(offer.price ?? offer.itemPrice ?? landedPrice) * 100) / 100;
   const packCount = Number(offer.packCount || policy?.packCount || getPackCountForSku(skuId, formFactor, title) || 0);
   const pricePerPack = packCount > 0 && landedPrice > 0
     ? Math.round((landedPrice / packCount) * 100) / 100
@@ -130,33 +131,40 @@ export function rankAndEnrichDealOffer(
     ownedFallback: effectiveWallQty >= 1
   });
 
-  const earnedWatermarks = getMemoizedWatermarks(skuId, landedPrice > 0 ? landedPrice : undefined, context?.nowTs ?? Date.now());
+  const earnedWatermarks = getMemoizedWatermarks(skuId, shelfPrice > 0 ? shelfPrice : undefined, context?.nowTs ?? Date.now());
   const msrp = Number(policy?.msrpCeiling || offer.msrp || 0);
-  const policyMaxBuy = Number(policy?.maxMarketBuyPrice || offer.triggerPrice || msrp || 0);
+  const policyMaxBuy = Math.max(msrp, Number(policy?.maxMarketBuyPrice || offer.triggerPrice || msrp || 0));
   const tcgComp = sanitizeCompValue(offer.tcgplayerLowestShipped || context?.tcgComp, formFactor);
+  const hasVerifiedTcgComp = tcgComp > 0;
   const fallbackMkt = sanitizeCompValue(offer.marketValue || offer.marketPrice || policy?.estimatedMarketValue, formFactor);
-  const marketRef = tcgComp > 0 ? tcgComp : (fallbackMkt > 0 ? fallbackMkt : msrp);
+  const marketRef = hasVerifiedTcgComp ? tcgComp : (fallbackMkt > 0 ? fallbackMkt : msrp);
 
   const inStock = offer.inStock !== false && !offer.soldOut && !offer.isPreDropStaging && landedPrice > 0;
   const is1PBigBox = isVerified1PBigBoxOrPc(storeName, rawUrl, Boolean(offer.marketplaceWarning));
   const is1PMsrpHit = inStock && is1PBigBox && msrp > 0 && landedPrice <= Math.round(msrp * 1.08 * 100) / 100;
 
-  const undercutVsCompPct = marketRef > 0 && landedPrice > 0 ? Math.round(((marketRef - landedPrice) / marketRef) * 1000) / 10 : 0;
-  const undercutVsTcgPct = tcgComp > 0 && landedPrice > 0 ? ((tcgComp - landedPrice) / tcgComp) * 100 : undercutVsCompPct;
+  const withinMaxBuy = policyMaxBuy <= 0 || landedPrice <= policyMaxBuy;
+  const sliderPct = policyMaxBuy > 0 && landedPrice > 0 ? Math.round(((policyMaxBuy - landedPrice) / policyMaxBuy) * 1000) / 10 : 0;
+  const undercutVsCompPct = hasVerifiedTcgComp && landedPrice > 0
+    ? Math.round(((tcgComp - landedPrice) / tcgComp) * 1000) / 10
+    : sliderPct;
+  const undercutVsTcgPct = hasVerifiedTcgComp && landedPrice > 0 ? ((tcgComp - landedPrice) / tcgComp) * 100 : sliderPct;
 
   const statusText = `${offer.preReleaseStatusTag || ''} ${offer.trendVerdictLabel || ''} ${offer.statusTag || ''}`;
-  const isSliding = Boolean(offer.trendSignal === 'BLEEDING_DOWN' || /HOLD\s*OFF|BLEED/i.test(statusText) || earnedWatermarks.isSlidingDown);
+  const isSliding = Boolean(offer.trendSignal === 'BLEEDING_DOWN' || offer.trendSignal === 'FALLING_KNIFE_WAIT' || /HOLD\s*OFF|BLEED/i.test(statusText) || earnedWatermarks.isSlidingDown);
   const isStacked3of3 = isWallFormat && effectiveWallQty >= 3;
-  const beatsComp = tcgComp > 0 ? landedPrice < tcgComp : (marketRef > 0 ? landedPrice < marketRef : true);
-  const withinMaxBuy = policyMaxBuy <= 0 || landedPrice <= policyMaxBuy;
+  const beatsComp = hasVerifiedTcgComp ? landedPrice < tcgComp : withinMaxBuy;
 
   let actionTier: ActionTier = 'MUTED_DRAWER';
   if (inStock && !isOverpricedBundle && !overSpendCeiling) {
     if (is1PMsrpHit) {
       actionTier = 'BUY_NOW_PINNED';
-    } else if (!isStacked3of3 && !(isWallFormat && effectiveWallQty === 2) && beatsComp && withinMaxBuy && (!isSliding || undercutVsTcgPct >= 12)) {
+    } else if (!hasVerifiedTcgComp && !isStacked3of3 && withinMaxBuy) {
+      actionTier = (isSliding || (isWallFormat && effectiveWallQty === 2)) ? 'CAUTIOUS_WATCH' : 'BUY_NOW_PINNED';
+    } else if (hasVerifiedTcgComp && !isStacked3of3 && !(isWallFormat && effectiveWallQty === 2) && beatsComp && withinMaxBuy && (!isSliding || undercutVsTcgPct >= 12)) {
       actionTier = 'BUY_NOW_PINNED';
     } else if (
+      hasVerifiedTcgComp &&
       !isStacked3of3 &&
       beatsComp &&
       ((isSliding && undercutVsTcgPct >= 8 && (policyMaxBuy <= 0 || landedPrice <= policyMaxBuy * 1.05)) ||
@@ -188,19 +196,19 @@ export function rankAndEnrichDealOffer(
   else if (overSpendCeiling) verdictLabel = `MUTED — OVER $${effectiveSpendCap} SPEND CAP`;
   else if (is1PMsrpHit) verdictLabel = '1P RETAIL MSRP HIT — BUY NOW';
   else if (actionTier === 'BUY_NOW_PINNED') {
-    if (isSliding && undercutVsTcgPct >= 12) verdictLabel = `DEEP DIP BUY (-${Math.round(undercutVsTcgPct)}% vs. TCGPlayer)`;
+    if (hasVerifiedTcgComp && isSliding && undercutVsTcgPct >= 12) verdictLabel = `DEEP DIP BUY (-${Math.round(undercutVsTcgPct)}% vs. TCGPlayer)`;
     else if (isWallFormat && effectiveWallQty === 0) verdictLabel = 'PRIORITY WALL BUY (0/3 — Need Logan + Office)';
     else if (isWallFormat && effectiveWallQty === 1) verdictLabel = 'WALL COMPLETER BUY (1/3 — Need Office Sealed)';
-    else if (isBoosterBox36 && pricePerPack > 0) verdictLabel = `STRONG RIP VALUE ($${pricePerPack.toFixed(2)}/pk • -${Math.max(1, Math.round(undercutVsTcgPct))}% vs. Comp)`;
-    else verdictLabel = `SUGGESTED BUY (-${Math.max(1, Math.round(undercutVsTcgPct))}% vs. Comp)`;
+    else if (isBoosterBox36 && pricePerPack > 0) verdictLabel = `STRONG RIP VALUE ($${pricePerPack.toFixed(2)}/pk • ${hasVerifiedTcgComp ? `-${Math.max(1, Math.round(undercutVsTcgPct))}% vs. Comp` : `-$${Math.max(0, policyMaxBuy - landedPrice).toFixed(2)} vs. Slider`})`;
+    else verdictLabel = hasVerifiedTcgComp ? `SUGGESTED BUY (-${Math.max(1, Math.round(undercutVsTcgPct))}% vs. Comp)` : `SUGGESTED BUY (-$${Math.max(0, policyMaxBuy - landedPrice).toFixed(2)} Under Slider)`;
   } else if (actionTier === 'CAUTIOUS_WATCH') {
-    if (isSliding) verdictLabel = `CAUTIOUS DIP — STILL SLIDING (-${Math.round(undercutVsTcgPct)}% vs. TCGPlayer)`;
+    if (isSliding) verdictLabel = hasVerifiedTcgComp ? `CAUTIOUS DIP — STILL SLIDING (-${Math.round(undercutVsTcgPct)}% vs. TCGPlayer)` : `CAUTIOUS DIP — UNDER $${Math.round(policyMaxBuy)} SLIDER (SHELF SLIDING)`;
     else if (isWallFormat && effectiveWallQty === 2) verdictLabel = 'BONUS RIP WATCH (2/3 Walls Done)';
-    else verdictLabel = `WATCHLIST DIP (-${Math.max(1, Math.round(undercutVsTcgPct))}% vs. Comp)`;
+    else verdictLabel = `WATCHLIST DIP (-${Math.max(1, Math.round(undercutVsTcgPct))}% vs. ${hasVerifiedTcgComp ? 'Comp' : 'Slider'})`;
   } else if (isOverpricedBundle) verdictLabel = `OVERPRICED BUNDLE ($${pricePerPack.toFixed(2)}/pk > $7.50 cap)`;
   else if (isStacked3of3) verdictLabel = 'MUTED — 3/3 WALL STACKED';
-  else if (tcgComp > 0 && landedPrice >= tcgComp) verdictLabel = `ABOVE TCGPLAYER (+$${(landedPrice - tcgComp).toFixed(2)} vs. Comp)`;
-  else if (isSliding) verdictLabel = 'HOLD OFF — BLEEDING DOWN (<8% spread)';
+  else if (hasVerifiedTcgComp && landedPrice >= tcgComp) verdictLabel = `ABOVE TCGPLAYER (+$${(landedPrice - tcgComp).toFixed(2)} vs. Comp)`;
+  else if (hasVerifiedTcgComp && isSliding) verdictLabel = 'HOLD OFF — BLEEDING DOWN (<8% spread)';
   else if (!withinMaxBuy && policyMaxBuy > 0) verdictLabel = `ABOVE MAX BUY ($${landedPrice.toFixed(2)} vs. $${policyMaxBuy.toFixed(2)} target)`;
 
   return {

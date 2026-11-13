@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isPokemonTcgRelevantText = exports.getConfiguredBskyHandles = exports.wireTelemetry = exports.WIRE_LIVE_MAX_AGE_MS = void 0;
+exports.isPokemonTcgRelevantText = exports.isDedicatedPokemonFeed = exports.getConfiguredBskyHandles = exports.wireTelemetry = exports.WIRE_LIVE_MAX_AGE_MS = void 0;
+exports.extractRetailTargetFromWrapperHtml = extractRetailTargetFromWrapperHtml;
 exports.canonicalizeRetailCheckoutUrl = canonicalizeRetailCheckoutUrl;
 exports.unshortenAndCanonicalizeRetailUrl = unshortenAndCanonicalizeRetailUrl;
 exports.classifyWireRestockEvent = classifyWireRestockEvent;
@@ -21,22 +22,23 @@ const bigBoxAdapters_1 = require("./bigBoxAdapters");
 const BSKY_APPVIEW_BASE = 'https://public.api.bsky.app/xrpc';
 const BSKY_JETSTREAM_BASE = 'wss://jetstream2.us-east.bsky.network/subscribe';
 exports.WIRE_LIVE_MAX_AGE_MS = 15 * 60 * 1000;
-const POKEMON_RELEVANCE_RE = /\b(pok[eé]mon|tcg|pikachu|charizard|mewtwo|eevee|prismatic\s+evolutions|destined\s+rivals|surging\s+sparks|journey\s+together|delta\s+reign|chaos\s+rising|ascended\s+heroes|paldean\s+fates|elite\s+trainer\s+box|\betb\b|booster\s+(?:box|bundle)|pokemon\s*center)\b/i;
-const SHORTENER_BARE_RE = /\b((?:buff\.ly|amzn\.to|bit\.ly|mavely\.app\.link|goto\.target\.com|goto\.walmart\.com|bestbuy\w*\.7tiv\.net)\/[A-Za-z0-9_-]+)/gi;
+const DEDICATED_POKEMON_FEED_RE = /(?:^|[@\s])pokemonrestocks\.bsky\.social\b/i;
+const POKEMON_RELEVANCE_RE = /\b(30th|celebration|upc|ultra\s+premium|booster|bundle|blister|prismatic|destined\s+rivals|paldean|surging\s+sparks|journey\s+together|delta\s+reign|chaos\s+rising|pitch\s+black|phantasmal|perfect\s+order|ascended\s+heroes|pok[eé]mon|pkmn|tcg|etb|pikachu|charizard|mewtwo|eevee|elite\s+trainer\s+box|pokemon\s*center)\b/i;
+const SHORTENER_BARE_RE = /\b((?:buff\.ly|amzn\.to|bit\.ly|mavely\.app\.link|mavelylife\.com|shop-links\.co|howl\.me|linktr\.ee|goto\.target\.com|goto\.walmart\.com|bestbuy\w*\.7tiv\.net)\/[A-Za-z0-9_/-]+)/gi;
 const DIRECT_RETAIL_HOST_RE = /(?:^|\.)(?:target\.com|walmart\.com|bestbuy\.com|amazon\.com|pokemoncenter\.com|gamestop\.com|costco\.com|samsclub\.com|barnesandnoble\.com)$/i;
+const INTERSTITIAL_WRAPPER_HOST_RE = /(?:^|\.)(?:mavelylife\.com|mavely\.app\.link|shop-links\.co|howl\.me|linktr\.ee|bam-x\.com|narrativ\.com)$/i;
 const EMBEDDED_URL_PARAMS = ['u', 'url', 'ulp', 'murl', 'return', 'target', 'dest', 'redirect', 'redirectUrl'];
-const seenWirePostUris = new Set();
-const unshortenCache = new Map();
-let activeJetstreamWs = null;
-let restPollTimer = null, reconnectTimer = null, wireStarted = false, reconnectAttempt = 0;
+const seenWirePostUris = new Set(), unshortenCache = new Map();
+let activeJetstreamWs = null, restPollTimer = null, reconnectTimer = null, wireStarted = false, reconnectAttempt = 0;
 exports.wireTelemetry = {
     handles: [], didMap: {}, jetstreamConnected: false,
     lastJetstreamOpenAt: 0, lastJetstreamEventAt: 0, jetstreamReconnects: 0,
     lastRestPollAt: 0, postsInspected: 0, linksUnshortened: 0, signalsDispatched: 0
 };
-const getConfiguredBskyHandles = () => String(process.env.RESTOCK_BSKY_HANDLES || 'pokemonrestocks.bsky.social,hoomandeals.bsky.social')
-    .split(',').map((s) => s.trim().replace(/^@/, '')).filter(Boolean);
+const getConfiguredBskyHandles = () => String(process.env.RESTOCK_BSKY_HANDLES || 'pokemonrestocks.bsky.social,hoomandeals.bsky.social').split(',').map((s) => s.trim().replace(/^@/, '')).filter(Boolean);
 exports.getConfiguredBskyHandles = getConfiguredBskyHandles;
+const isDedicatedPokemonFeed = (sourceOrHandle) => DEDICATED_POKEMON_FEED_RE.test(String(sourceOrHandle || ''));
+exports.isDedicatedPokemonFeed = isDedicatedPokemonFeed;
 const isPokemonTcgRelevantText = (txt) => POKEMON_RELEVANCE_RE.test(String(txt || ''));
 exports.isPokemonTcgRelevantText = isPokemonTcgRelevantText;
 function isDirectRetailFinalUrl(candidateUrl) {
@@ -77,6 +79,61 @@ function tryDecodeEmbeddedRetailUrl(candidateUrl) {
     catch { }
     return null;
 }
+function extractRetailTargetFromWrapperHtml(htmlChunk) {
+    const normalized = String(htmlChunk || '').slice(0, 32768).replace(/&amp;/gi, '&').replace(/\\\//g, '/');
+    const candidates = Array.from(normalized.matchAll(/https?:\/\/[^\s"'<>\\)]+/gi), (m) => m[0]);
+    for (const m of normalized.matchAll(/https?%3A%2F%2F[A-Za-z0-9%._~:/?#[\]@!$&'()*+,;=-]+/gi)) {
+        let dec = m[0];
+        for (let d = 0; d < 2 && /^https?%3A/i.test(dec); d++) {
+            try {
+                dec = decodeURIComponent(dec);
+            }
+            catch {
+                break;
+            }
+        }
+        candidates.push(dec);
+    }
+    for (const rawCand of candidates) {
+        const clean = rawCand.replace(/[).,;]+$/, ''), embedded = tryDecodeEmbeddedRetailUrl(clean);
+        if (embedded && isDirectRetailFinalUrl(embedded))
+            return { retailUrl: embedded };
+        if (isDirectRetailFinalUrl(clean))
+            return { retailUrl: clean };
+    }
+    if (/walmartimages\.com|walmart_logo/i.test(normalized))
+        return { inferredRetailer: 'Walmart' };
+    if (/target\.scene7\.com|target_logo/i.test(normalized))
+        return { inferredRetailer: 'Target' };
+    if (/bbystatic\.com|bestbuy_logo/i.test(normalized))
+        return { inferredRetailer: 'Best Buy' };
+    if (/media-amazon\.com|ssl-images-amazon\.com/i.test(normalized))
+        return { inferredRetailer: 'Amazon' };
+    return {};
+}
+async function readFirst32KbText(res) {
+    if (!res.body)
+        return '';
+    const reader = res.body.getReader(), chunks = [];
+    let total = 0;
+    try {
+        while (total < 32768) {
+            const { done, value } = await reader.read();
+            if (done || !value)
+                break;
+            chunks.push(value);
+            total += value.byteLength;
+        }
+    }
+    catch { }
+    finally {
+        try {
+            await reader.cancel();
+        }
+        catch { }
+    }
+    return Buffer.concat(chunks).subarray(0, 32768).toString('utf8');
+}
 function canonicalizeRetailCheckoutUrl(rawUrl, postContext = '', isQueueOrDrawing = false) {
     let u;
     try {
@@ -87,22 +144,18 @@ function canonicalizeRetailCheckoutUrl(rawUrl, postContext = '', isQueueOrDrawin
     }
     const host = u.hostname.toLowerCase();
     if (host.endsWith('target.com')) {
-        const tcin = rawUrl.match(/A-(\d{8,10})/i)?.[1] || u.searchParams.get('tcin') || '';
-        const canonicalUrl = tcin ? `https://www.target.com/p/-/A-${tcin}` : `https://www.target.com${u.pathname}`;
+        const tcin = rawUrl.match(/A-(\d{8,10})/i)?.[1] || u.searchParams.get('tcin') || '', canonicalUrl = tcin ? `https://www.target.com/p/-/A-${tcin}` : `https://www.target.com${u.pathname}`;
         return { finalUrl: rawUrl, canonicalUrl, checkoutUrl: canonicalUrl, retailer: 'Target', canonicalItemId: tcin ? `target_${tcin}` : canonicalUrl };
     }
     if (host.endsWith('walmart.com')) {
         const wmId = rawUrl.match(/\/ip\/(?:[^/?#]+\/)?(\d{7,14})/i)?.[1] || u.searchParams.get('id') || u.searchParams.get('items') || '';
-        const canonicalUrl = wmId ? `https://www.walmart.com/ip/${wmId}` : `https://www.walmart.com${u.pathname}`;
-        const pacUrl = wmId && !isQueueOrDrawing ? `https://www.walmart.com/pac?id=${wmId}&quantity=1` : canonicalUrl;
+        const canonicalUrl = wmId ? `https://www.walmart.com/ip/${wmId}` : `https://www.walmart.com${u.pathname}`, pacUrl = wmId && !isQueueOrDrawing ? `https://www.walmart.com/pac?id=${wmId}&quantity=1` : canonicalUrl;
         return { finalUrl: rawUrl, canonicalUrl, checkoutUrl: pacUrl, cart1xUrl: wmId && !isQueueOrDrawing ? pacUrl : undefined, retailer: 'Walmart', canonicalItemId: wmId ? `walmart_${wmId}` : canonicalUrl };
     }
     if (host.endsWith('bestbuy.com')) {
-        const numSku = u.searchParams.get('skuId') || rawUrl.match(/\/click\/-\/(\d{7})\/cart|\/(\d{7})\.p/i)?.slice(1).find(Boolean) || '';
-        const prodMatch = u.pathname.match(/\/product\/([^/?#]+)\/([A-Z0-9]{7,14})/i);
+        const numSku = u.searchParams.get('skuId') || rawUrl.match(/\/click\/-\/(\d{7})\/cart|\/(\d{7})\.p/i)?.slice(1).find(Boolean) || '', prodMatch = u.pathname.match(/\/product\/([^/?#]+)\/([A-Z0-9]{7,14})/i);
         if (/^\d{7}$/.test(numSku)) {
-            const canonicalUrl = `https://www.bestbuy.com/site/-/${numSku}.p?skuId=${numSku}`;
-            const atc = isQueueOrDrawing ? canonicalUrl : `https://api.bestbuy.com/click/-/${numSku}/cart`;
+            const canonicalUrl = `https://www.bestbuy.com/site/-/${numSku}.p?skuId=${numSku}`, atc = isQueueOrDrawing ? canonicalUrl : `https://api.bestbuy.com/click/-/${numSku}/cart`;
             return { finalUrl: rawUrl, canonicalUrl, checkoutUrl: atc, cart1xUrl: isQueueOrDrawing ? undefined : atc, retailer: 'Best Buy', canonicalItemId: `bestbuy_${numSku}` };
         }
         const cleanBb = prodMatch ? `https://www.bestbuy.com/product/${prodMatch[1]}/${prodMatch[2]}` : `https://www.bestbuy.com${u.pathname}`;
@@ -110,48 +163,76 @@ function canonicalizeRetailCheckoutUrl(rawUrl, postContext = '', isQueueOrDrawin
     }
     if (host.endsWith('amazon.com') || host === 'a.co') {
         const asin = rawUrl.match(/(?:\/dp\/|\/gp\/product\/|\/gp\/aw\/d\/|ASIN\.1=)(B0[A-Z0-9]{8})/i)?.[1]?.toUpperCase() || '';
-        if (asin) {
-            const canonicalUrl = `https://www.amazon.com/dp/${asin}?smid=${bigBoxAdapters_1.AMAZON_1P_MERCHANT_ID}`;
-            const atc = `https://www.amazon.com/gp/aws/cart/add.html?ASIN.1=${asin}&Quantity.1=1`;
-            return { finalUrl: rawUrl, canonicalUrl, checkoutUrl: canonicalUrl, cart1xUrl: isQueueOrDrawing ? undefined : atc, retailer: 'Amazon', canonicalItemId: `amazon_${asin}` };
-        }
+        if (asin)
+            return { finalUrl: rawUrl, canonicalUrl: `https://www.amazon.com/dp/${asin}?smid=${bigBoxAdapters_1.AMAZON_1P_MERCHANT_ID}`, checkoutUrl: `https://www.amazon.com/dp/${asin}?smid=${bigBoxAdapters_1.AMAZON_1P_MERCHANT_ID}`, cart1xUrl: isQueueOrDrawing ? undefined : `https://www.amazon.com/gp/aws/cart/add.html?ASIN.1=${asin}&Quantity.1=1`, retailer: 'Amazon', canonicalItemId: `amazon_${asin}` };
     }
     if (host.endsWith('pokemoncenter.com')) {
         const cleanPc = `https://www.pokemoncenter.com${u.pathname}`;
         return { finalUrl: rawUrl, canonicalUrl: cleanPc, checkoutUrl: cleanPc, retailer: 'Pokémon Center', canonicalItemId: `pc_${u.pathname.split('/').filter(Boolean).pop() || 'pc'}` };
     }
-    const keepEan = host.endsWith('barnesandnoble.com') ? u.searchParams.get('ean') : null;
-    const cleanGeneric = `${u.origin}${u.pathname}${keepEan ? `?ean=${encodeURIComponent(keepEan)}` : ''}`;
+    const keepEan = host.endsWith('barnesandnoble.com') ? u.searchParams.get('ean') : null, cleanGeneric = `${u.origin}${u.pathname}${keepEan ? `?ean=${encodeURIComponent(keepEan)}` : ''}`;
     return { finalUrl: rawUrl, canonicalUrl: cleanGeneric, checkoutUrl: cleanGeneric, retailer: (0, policies_1.detectBigBoxRetailer)(postContext, cleanGeneric), canonicalItemId: cleanGeneric };
 }
 async function unshortenAndCanonicalizeRetailUrl(rawInputUrl, postContext = '', isQueueOrDrawing = false) {
     const normalized = /^https?:\/\//i.test(rawInputUrl) ? rawInputUrl.trim().replace(/^http:\/\//i, 'https://') : `https://${rawInputUrl.trim()}`;
-    const cacheKey = `${normalized}::${isQueueOrDrawing ? 'Q' : 'B'}`;
+    const cacheKey = `${normalized}::${isQueueOrDrawing ? 'Q' : 'B'}::${postContext.slice(0, 48)}`;
     const hit = unshortenCache.get(cacheKey);
     if (hit)
         return hit;
     let currentUrl = tryDecodeEmbeddedRetailUrl(normalized) || normalized;
-    let hops = 0;
-    while (hops < 4 && !isDirectRetailFinalUrl(currentUrl)) {
+    let lastMavelyBranchUrl = /mavely\.app\.link/i.test(currentUrl) ? currentUrl : '';
+    let inferredWrapperRetailer, hops = 0;
+    while (hops < 5 && !isDirectRetailFinalUrl(currentUrl)) {
         try {
             const res = await fetch(currentUrl, {
-                redirect: 'manual',
-                signal: AbortSignal.timeout(5000),
-                headers: {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
-                    Accept: 'text/html,application/xhtml+xml,*/*;q=0.8'
-                }
+                redirect: 'manual', signal: AbortSignal.timeout(4000),
+                headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/134.0.0.0 Safari/537.36', Accept: 'text/html,application/xhtml+xml,*/*;q=0.8' }
             });
             const loc = String(res.headers.get('location') || '').trim();
-            await res.body?.cancel().catch(() => { });
             if (res.status >= 300 && res.status < 400 && loc) {
+                await res.body?.cancel().catch(() => { });
                 hops += 1;
                 const nextUrl = new URL(loc, currentUrl).toString().replace(/^http:\/\//i, 'https://');
+                if (/mavely\.app\.link/i.test(nextUrl))
+                    lastMavelyBranchUrl = nextUrl;
                 const embedded = tryDecodeEmbeddedRetailUrl(nextUrl);
                 currentUrl = embedded || nextUrl;
                 if (embedded)
                     break;
                 continue;
+            }
+            const curHost = (() => { try {
+                return new URL(currentUrl).hostname;
+            }
+            catch {
+                return '';
+            } })();
+            if (INTERSTITIAL_WRAPPER_HOST_RE.test(curHost)) {
+                const html32k = res.status === 200 ? await readFirst32KbText(res) : (await res.body?.cancel().catch(() => { }), '');
+                let parsed = html32k ? extractRetailTargetFromWrapperHtml(html32k) : {};
+                if (!parsed.retailUrl && lastMavelyBranchUrl) {
+                    try {
+                        const brRes = await fetch(lastMavelyBranchUrl, { redirect: 'manual', signal: AbortSignal.timeout(4000), headers: { 'User-Agent': 'Slackbot-LinkExpanding 1.0 (+https://api.slack.com/robots)' } });
+                        parsed = extractRetailTargetFromWrapperHtml(await readFirst32KbText(brRes));
+                    }
+                    catch { }
+                }
+                if (parsed.retailUrl) {
+                    hops += 1;
+                    currentUrl = parsed.retailUrl;
+                }
+                else {
+                    inferredWrapperRetailer = parsed.inferredRetailer || (0, policies_1.detectBigBoxRetailer)(postContext, currentUrl) || undefined;
+                    const hubMap = {
+                        Walmart: isQueueOrDrawing ? 'https://www.walmart.com/shop/collectibles/draw' : 'https://www.walmart.com/browse/toys/pokemon-cards/4171_4191_9807313',
+                        Target: 'https://www.target.com/s?searchTerm=pokemon+tcg', 'Best Buy': 'https://www.bestbuy.com/site/searchpage.jsp?st=pokemon+tcg', 'Pokémon Center': 'https://www.pokemoncenter.com'
+                    };
+                    if (inferredWrapperRetailer && hubMap[inferredWrapperRetailer])
+                        currentUrl = hubMap[inferredWrapperRetailer];
+                }
+            }
+            else {
+                await res.body?.cancel().catch(() => { });
             }
             break;
         }
@@ -160,7 +241,8 @@ async function unshortenAndCanonicalizeRetailUrl(rawInputUrl, postContext = '', 
         }
     }
     exports.wireTelemetry.linksUnshortened += 1;
-    const out = { originalUrl: normalized, hops, ...canonicalizeRetailCheckoutUrl(currentUrl, postContext, isQueueOrDrawing) };
+    const canon = canonicalizeRetailCheckoutUrl(currentUrl, postContext, isQueueOrDrawing);
+    const out = { originalUrl: normalized, hops, ...canon, retailer: canon.retailer || inferredWrapperRetailer || null };
     if (unshortenCache.size > 500)
         unshortenCache.clear();
     unshortenCache.set(cacheKey, out);
@@ -176,17 +258,15 @@ function classifyWireRestockEvent(text, url = '') {
         return { classification: 'QUEUE_INVITE_DRAWING', windowKind: 'QUEUE' };
     return { classification: 'INSTANT_BUY_RESTOCK' };
 }
-function extractExplicitDealPrice(text) {
+const extractExplicitDealPrice = (text) => {
     const m = String(text || '').replace(/(?:free\s+ship(?:ping)?\s+(?:on\s+|over\s+)?)\$\d+(?:\.\d{1,2})?/gi, '').match(/\$([0-9]{2,4}(?:\.[0-9]{1,2})?)/);
     return m ? parseFloat(m[1]) : undefined;
-}
+};
 async function evaluateAndDispatchWireSignal(params) {
     const combinedText = (0, bigBoxAdapters_1.cleanHtmlText)(`${params.lineContext || ''} ${params.headlineText || ''}`);
-    const cls = classifyWireRestockEvent(combinedText, params.rawUrl);
-    const isQueue = cls.classification === 'QUEUE_INVITE_DRAWING';
+    const cls = classifyWireRestockEvent(combinedText, params.rawUrl), isQueue = cls.classification === 'QUEUE_INVITE_DRAWING';
     const link = await unshortenAndCanonicalizeRetailUrl(params.rawUrl, combinedText, isQueue);
-    const postAgeSec = Math.max(0, Math.round((Date.now() - params.postCreatedMs) / 1000));
-    const isLiveEligible = (Date.now() - params.postCreatedMs) <= exports.WIRE_LIVE_MAX_AGE_MS;
+    const postAgeSec = Math.max(0, Math.round((Date.now() - params.postCreatedMs) / 1000)), isLiveEligible = (Date.now() - params.postCreatedMs) <= exports.WIRE_LIVE_MAX_AGE_MS;
     const urlSlugWords = (() => { try {
         return new URL(link.canonicalUrl).pathname.replace(/[/_-]+/g, ' ');
     }
@@ -198,21 +278,26 @@ async function evaluateAndDispatchWireSignal(params) {
     const rule = (params.lineContext ? (0, policies_1.matchProductToSku)(params.lineContext, explicitPrice, matchOpts) : null) ||
         (urlSlugWords ? (0, policies_1.matchProductToSku)(`Pokemon TCG ${urlSlugWords}`, explicitPrice, matchOpts) : null) ||
         (0, policies_1.matchProductToSku)(params.headlineText, explicitPrice, matchOpts);
-    let checkoutUrl = link.checkoutUrl, cart1xUrl = link.cart1xUrl;
-    if (!isQueue && link.retailer === 'Best Buy' && rule?.bestBuySku && /^\d{7}$/.test(String(rule.bestBuySku))) {
-        cart1xUrl = `https://api.bestbuy.com/click/-/${rule.bestBuySku}/cart`;
-        checkoutUrl = cart1xUrl;
+    let canonicalUrl = link.canonicalUrl, checkoutUrl = link.checkoutUrl, cart1xUrl = link.cart1xUrl;
+    if (!isQueue && rule) {
+        if (link.retailer === 'Walmart' && !/\/ip\//i.test(canonicalUrl) && rule.walmartItemId) {
+            canonicalUrl = `https://www.walmart.com/ip/${rule.walmartItemId}`;
+            cart1xUrl = checkoutUrl = `https://www.walmart.com/pac?id=${rule.walmartItemId}&quantity=1`;
+        }
+        else if (link.retailer === 'Target' && !/A-\d+/i.test(canonicalUrl) && rule.targetTcin) {
+            canonicalUrl = checkoutUrl = `https://www.target.com/p/-/A-${rule.targetTcin}`;
+        }
+        else if (link.retailer === 'Best Buy' && rule.bestBuySku && /^\d{7}$/.test(String(rule.bestBuySku))) {
+            cart1xUrl = checkoutUrl = `https://api.bestbuy.com/click/-/${rule.bestBuySku}/cart`;
+        }
     }
     let dispatched = false;
     const price = explicitPrice ?? (rule?.msrpCeiling || undefined);
     if (!params.dryRun && isLiveEligible && link.retailer) {
         const dedupIds = [link.canonicalItemId, rule?.id || ''].filter(Boolean);
-        if (isQueue && cls.windowKind && (0, exports.isPokemonTcgRelevantText)(`${combinedText} ${urlSlugWords}`)) {
+        if (isQueue && cls.windowKind && ((0, exports.isDedicatedPokemonFeed)(params.sourceLabel) || (0, exports.isPokemonTcgRelevantText)(`${combinedText} ${urlSlugWords}`))) {
             if ((0, bigBoxAdapters_1.claimBigBoxCrossChannelSignal)(link.retailer, dedupIds, 0, params.sourceLabel)) {
-                dispatched = await (0, notifier_1.sendBigBoxQueueOrDrawingAlert)({
-                    retailer: link.retailer, headline: params.lineContext || params.headlineText,
-                    url: link.canonicalUrl, windowKind: cls.windowKind, ruleId: rule?.id, ruleName: rule?.name, sourceLabel: params.sourceLabel
-                });
+                dispatched = await (0, notifier_1.sendBigBoxQueueOrDrawingAlert)({ retailer: link.retailer, headline: params.lineContext || params.headlineText, url: canonicalUrl, windowKind: cls.windowKind, ruleId: rule?.id, ruleName: rule?.name, sourceLabel: params.sourceLabel });
             }
         }
         else if (!isQueue && rule && price && price >= 18 && (0, bigBoxAdapters_1.claimBigBoxCrossChannelSignal)(link.retailer, dedupIds, price, params.sourceLabel)) {
@@ -220,9 +305,8 @@ async function evaluateAndDispatchWireSignal(params) {
             await (0, listener_1.processIncomingDrop)({
                 title: rule.name || params.lineContext || params.headlineText,
                 retailer: isAssumedMsrp ? `${link.retailer} [BIG-BOX RESTOCK RADAR]` : `${link.retailer} (via ${params.sourceLabel})`,
-                url: checkoutUrl, productUrl: link.canonicalUrl, cart1xUrl, price, itemId: `wire_${params.postId}_${rule.id}`,
-                isPreOrder: /pre-?order|pre-?sale/i.test(combinedText), freeShipping: Boolean(isAssumedMsrp || price >= 35),
-                isBigBoxRestockRadar: isAssumedMsrp,
+                url: checkoutUrl, productUrl: canonicalUrl, cart1xUrl, price, itemId: `wire_${params.postId}_${rule.id}`,
+                isPreOrder: /pre-?order|pre-?sale/i.test(combinedText), freeShipping: Boolean(isAssumedMsrp || price >= 35), isBigBoxRestockRadar: isAssumedMsrp,
                 shippingNoteOverride: isAssumedMsrp ? `📡 [${params.sourceLabel}] Live ${link.retailer} Restock Signal — Canonical Checkout Armed` : undefined
             });
             dispatched = true;
@@ -231,15 +315,13 @@ async function evaluateAndDispatchWireSignal(params) {
             exports.wireTelemetry.signalsDispatched += 1;
     }
     return {
-        source: params.sourceLabel, postAgeSec, isLiveEligible, originalUrl: link.originalUrl, canonicalUrl: link.canonicalUrl,
-        checkoutUrl, retailer: link.retailer, canonicalItemId: link.canonicalItemId, hops: link.hops,
-        classification: cls.classification, windowKind: cls.windowKind, matchedSkuId: rule?.id || null,
-        matchedSkuName: rule?.name || null, price, dispatched
+        source: params.sourceLabel, postAgeSec, isLiveEligible, originalUrl: link.originalUrl, canonicalUrl, checkoutUrl,
+        retailer: link.retailer, canonicalItemId: link.canonicalItemId, hops: link.hops, classification: cls.classification,
+        windowKind: cls.windowKind, matchedSkuId: rule?.id || null, matchedSkuName: rule?.name || null, price, dispatched
     };
 }
 function extractBlueskyRecordLinks(record) {
-    const text = String(record?.text || ''), utf8 = Buffer.from(text, 'utf8'), lines = text.split(/\r?\n/);
-    const results = [], seen = new Set();
+    const text = String(record?.text || ''), utf8 = Buffer.from(text, 'utf8'), lines = text.split(/\r?\n/), results = [], seen = new Set();
     const add = (raw, ctx) => {
         const clean = String(raw || '').trim().replace(/[).,!]+$/, '');
         if (!clean || /bsky\.app/i.test(clean))
@@ -251,12 +333,10 @@ function extractBlueskyRecordLinks(record) {
         }
     };
     for (const facet of record?.facets || []) {
-        const bStart = Number(facet?.index?.byteStart ?? 0);
-        const lineIdx = utf8.subarray(0, Math.min(bStart, utf8.length)).toString('utf8').split(/\r?\n/).length - 1;
-        for (const feat of facet?.features || []) {
+        const lineIdx = utf8.subarray(0, Math.min(Number(facet?.index?.byteStart ?? 0), utf8.length)).toString('utf8').split(/\r?\n/).length - 1;
+        for (const feat of facet?.features || [])
             if (feat?.$type === 'app.bsky.richtext.facet#link' && feat.uri)
                 add(feat.uri, lines[lineIdx] || text);
-        }
     }
     const ext = record?.embed?.external || record?.embed?.media?.external;
     if (ext?.uri)
@@ -270,8 +350,7 @@ function extractBlueskyRecordLinks(record) {
     return results;
 }
 async function resolveBlueskyActorDids(handles = (0, exports.getConfiguredBskyHandles)()) {
-    const qs = handles.map((h) => `actors=${encodeURIComponent(h)}`).join('&');
-    const res = await fetch(`${BSKY_APPVIEW_BASE}/app.bsky.actor.getProfiles?${qs}`, { signal: AbortSignal.timeout(5000) });
+    const res = await fetch(`${BSKY_APPVIEW_BASE}/app.bsky.actor.getProfiles?${handles.map((h) => `actors=${encodeURIComponent(h)}`).join('&')}`, { signal: AbortSignal.timeout(5000) });
     if (!res.ok)
         throw new Error(`Bluesky getProfiles HTTP ${res.status}`);
     const data = await res.json(), map = {};
@@ -299,7 +378,7 @@ async function ingestBlueskyPost(uri, handle, record, dryRun = false) {
     }
     exports.wireTelemetry.postsInspected += 1;
     const fullText = `${record?.text || ''} ${record?.embed?.external?.title || ''}`;
-    if (!(0, exports.isPokemonTcgRelevantText)(fullText))
+    if (!(0, exports.isDedicatedPokemonFeed)(handle) && !(0, exports.isPokemonTcgRelevantText)(fullText))
         return [];
     const createdMs = Date.parse(String(record?.createdAt || '')) || Date.now();
     if (!dryRun && Date.now() - createdMs > exports.WIRE_LIVE_MAX_AGE_MS)
@@ -327,7 +406,6 @@ function connectBlueskyJetstream(didMap) {
     if (didEntries.length === 0 || typeof WebSocket !== 'function')
         return null;
     const didToHandle = new Map(didEntries.map(([h, did]) => [did, h]));
-    const wsUrl = `${BSKY_JETSTREAM_BASE}?wantedCollections=app.bsky.feed.post&${didEntries.map(([, did]) => `wantedDids=${encodeURIComponent(did)}`).join('&')}`;
     if (activeJetstreamWs) {
         try {
             activeJetstreamWs.close();
@@ -335,20 +413,14 @@ function connectBlueskyJetstream(didMap) {
         catch { }
         activeJetstreamWs = null;
     }
-    const ws = (activeJetstreamWs = new WebSocket(wsUrl));
-    ws.addEventListener('open', () => {
-        exports.wireTelemetry.jetstreamConnected = true;
-        exports.wireTelemetry.lastJetstreamOpenAt = Date.now();
-        reconnectAttempt = 0;
-        (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ restockWire: { ...exports.wireTelemetry } });
-    });
+    const ws = (activeJetstreamWs = new WebSocket(`${BSKY_JETSTREAM_BASE}?wantedCollections=app.bsky.feed.post&${didEntries.map(([, did]) => `wantedDids=${encodeURIComponent(did)}`).join('&')}`));
+    ws.addEventListener('open', () => { exports.wireTelemetry.jetstreamConnected = true; exports.wireTelemetry.lastJetstreamOpenAt = Date.now(); reconnectAttempt = 0; (0, lgsPoller_1.recordBigBoxCheckTelemetry)({ restockWire: { ...exports.wireTelemetry } }); });
     ws.addEventListener('message', (ev) => {
         try {
             exports.wireTelemetry.lastJetstreamEventAt = Date.now();
             const msg = JSON.parse(String(ev.data || ''));
-            if (msg?.kind === 'commit' && msg?.commit?.collection === 'app.bsky.feed.post' && msg?.commit?.operation === 'create') {
+            if (msg?.kind === 'commit' && msg?.commit?.collection === 'app.bsky.feed.post' && msg?.commit?.operation === 'create')
                 void ingestBlueskyPost(`at://${msg.did}/app.bsky.feed.post/${msg.commit.rkey}`, didToHandle.get(String(msg.did || '')) || 'bsky', msg.commit.record, false);
-            }
         }
         catch { }
     });
