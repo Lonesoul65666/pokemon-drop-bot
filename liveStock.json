@@ -45,14 +45,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-11% 14D • 19D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://cardpopusa.com/products/pokemon-mega-evolution-chaos-rising-booster-box",
+      "url": "https://cardpopusa.com/cart/53898766811500:1?payment=shop_pay",
       "productUrl": "https://cardpopusa.com/products/pokemon-mega-evolution-chaos-rising-booster-box",
       "cart1xUrl": "https://cardpopusa.com/cart/53898766811500:1?payment=shop_pay",
       "cart2xUrl": "https://cardpopusa.com/cart/53898766811500:2?payment=shop_pay",
       "cart3xUrl": "https://cardpopusa.com/cart/53898766811500:3?payment=shop_pay",
       "itemId": "53898766811500",
-      "updatedAt": 1794532103190,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533040631,
+      "timeStr": "07:24 PM"
     },
     "me-pitch-black-etb": {
       "ruleId": "me-pitch-black-etb",
@@ -85,14 +85,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-17% 14D • 20D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://cardpopusa.com/products/pokemon-mega-evolution-pitch-black-elite-trainer-box",
+      "url": "https://cardpopusa.com/cart/53898777002348:1?payment=shop_pay",
       "productUrl": "https://cardpopusa.com/products/pokemon-mega-evolution-pitch-black-elite-trainer-box",
       "cart1xUrl": "https://cardpopusa.com/cart/53898777002348:1?payment=shop_pay",
       "cart2xUrl": "https://cardpopusa.com/cart/53898777002348:2?payment=shop_pay",
       "cart3xUrl": "https://cardpopusa.com/cart/53898777002348:3?payment=shop_pay",
       "itemId": "53898777002348",
-      "updatedAt": 1794532103123,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533040583,
+      "timeStr": "07:24 PM"
     },
     "me-chaos-rising-etb": {
       "ruleId": "me-chaos-rising-etb",
@@ -125,14 +125,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-8% 14D • 22D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://jbemporium.com/products/pokemon-chaos-rising-elite-trainer-box",
+      "url": "https://jbemporium.com/cart/46198650863713:1?payment=shop_pay",
       "productUrl": "https://jbemporium.com/products/pokemon-chaos-rising-elite-trainer-box",
       "cart1xUrl": "https://jbemporium.com/cart/46198650863713:1?payment=shop_pay",
       "cart2xUrl": "https://jbemporium.com/cart/46198650863713:2?payment=shop_pay",
       "cart3xUrl": "https://jbemporium.com/cart/46198650863713:3?payment=shop_pay",
       "itemId": "46198650863713",
-      "updatedAt": 1794532108068,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533044770,
+      "timeStr": "07:24 PM"
     },
     "me-chaos-rising-booster-box": {
       "ruleId": "me-chaos-rising-booster-box",
@@ -165,54 +165,54 @@
       "trendSignal": "ELASTIC_DIP",
       "trendVerdictLabel": "◈ ⟦ 60D ELASTIC DIP (-18% VS $184 60D AVG) // HISTORICALLY REBOUNDS ⟧",
       "isElasticDip": true,
-      "url": "https://kanzengames.com/products/mega-evolution-set-4-me04-booster-box",
+      "url": "https://kanzengames.com/cart/48261786730711:1?payment=shop_pay",
       "productUrl": "https://kanzengames.com/products/mega-evolution-set-4-me04-booster-box",
       "cart1xUrl": "https://kanzengames.com/cart/48261786730711:1?payment=shop_pay",
       "cart2xUrl": "https://kanzengames.com/cart/48261786730711:2?payment=shop_pay",
       "cart3xUrl": "https://kanzengames.com/cart/48261786730711:3?payment=shop_pay",
       "itemId": "48261786730711",
-      "updatedAt": 1794532125277,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533025020,
+      "timeStr": "07:23 PM"
     },
     "me-perfect-order-booster-box": {
       "ruleId": "me-perfect-order-booster-box",
       "ruleName": "Mega Evolution: Perfect Order Booster Box (36-Pack)",
       "formFactor": "Booster Box",
       "era": "Mega Evolution (2025-2026)",
-      "title": "Pokemon TCG: Mega Evolution: Perfect Order Booster Box",
-      "retailer": "The Gaming Goat",
-      "price": 204.95,
+      "title": "Pokemon Perfect Order Booster Box",
+      "retailer": "Pentix Games",
+      "price": 164.99,
       "shippingPrice": 0,
-      "landedPrice": 204.95,
+      "landedPrice": 164.99,
       "freeShipNote": "+FREE Shipping",
       "triggerPrice": 161.64,
       "msrp": 161.64,
       "marketValue": 164.99,
-      "gapDollars": 43.31,
-      "gapPct": 26.8,
-      "rawGapDollars": 43.31,
-      "rawGapPct": 26.8,
+      "gapDollars": 3.35,
+      "gapPct": 2.1,
+      "rawGapDollars": 3.35,
+      "rawGapPct": 2.1,
       "packCount": 36,
-      "pricePerPack": 5.69,
+      "pricePerPack": 4.58,
       "isRipValueLeader": false,
       "owned": false,
       "isPreOrder": false,
       "isPreRelease": false,
-      "statusTier": "NEAR_MISS",
-      "statusTag": "⟦ NEAR MISS (+$43.31 OVER TARGET) ⟧",
-      "isCloseCall": false,
-      "closeCallDelta": 0,
+      "statusTier": "CLOSE_CALL",
+      "statusTag": "⟦ CLOSE CALL (+$3.35 OVER TARGET — IN CUSHION) ⟧",
+      "isCloseCall": true,
+      "closeCallDelta": 3.35,
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-4% 14D • 19D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://tgg-games.com/cart/44235697389591:1?payment=shop_pay",
-      "productUrl": "https://tgg-games.com/products/pokemon-tcg-mega-evolution-perfect-order-booster-box",
-      "cart1xUrl": "https://tgg-games.com/cart/44235697389591:1?payment=shop_pay",
-      "cart2xUrl": "https://tgg-games.com/cart/44235697389591:2?payment=shop_pay",
-      "cart3xUrl": "https://tgg-games.com/cart/44235697389591:3?payment=shop_pay",
-      "itemId": "44235697389591",
-      "updatedAt": 1794532159622,
-      "timeStr": "07:09 PM"
+      "url": "https://pentixgames.com/cart/47959105437954:1?payment=shop_pay",
+      "productUrl": "https://pentixgames.com/products/pokemon-perfect-order-booster-box",
+      "cart1xUrl": "https://pentixgames.com/cart/47959105437954:1?payment=shop_pay",
+      "cart2xUrl": "https://pentixgames.com/cart/47959105437954:2?payment=shop_pay",
+      "cart3xUrl": "https://pentixgames.com/cart/47959105437954:3?payment=shop_pay",
+      "itemId": "47959105437954",
+      "updatedAt": 1794533048713,
+      "timeStr": "07:24 PM"
     },
     "me-perfect-order-etb": {
       "ruleId": "me-perfect-order-etb",
@@ -245,54 +245,54 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-9% 14D • 20D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://cardpopusa.com/products/pokemon-perfect-order-elite-trainer-box",
+      "url": "https://cardpopusa.com/cart/53330822725996:1?payment=shop_pay",
       "productUrl": "https://cardpopusa.com/products/pokemon-perfect-order-elite-trainer-box",
       "cart1xUrl": "https://cardpopusa.com/cart/53330822725996:1?payment=shop_pay",
       "cart2xUrl": "https://cardpopusa.com/cart/53330822725996:2?payment=shop_pay",
       "cart3xUrl": "https://cardpopusa.com/cart/53330822725996:3?payment=shop_pay",
       "itemId": "53330822725996",
-      "updatedAt": 1794532103061,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533040549,
+      "timeStr": "07:24 PM"
     },
     "me-phantasmal-flames-etb": {
       "ruleId": "me-phantasmal-flames-etb",
       "ruleName": "Mega Evolution: Phantasmal Flames ETB",
       "formFactor": "ETB",
       "era": "Mega Evolution (2025-2026)",
-      "title": "Mega Evolution: Phantasmal Flames ETB",
-      "retailer": "Zulus Games",
-      "price": 59.99,
-      "shippingPrice": 5.99,
-      "landedPrice": 65.98,
-      "freeShipNote": "$59.99 Shelf + $5.99 Est. Ship ($65.98 Landed)",
+      "title": "Phantasmal Flames Elite Trainer Box Purchase",
+      "retailer": "AVA TCG",
+      "price": 133.49,
+      "shippingPrice": 6.99,
+      "landedPrice": 140.48,
+      "freeShipNote": "$133.49 Shelf + $6.99 Est. Ship ($140.48 Landed)",
       "triggerPrice": 133,
       "msrp": 54.99,
-      "marketValue": 136.75,
-      "gapDollars": -67.02,
-      "gapPct": -50.4,
-      "rawGapDollars": -73.01,
-      "rawGapPct": -54.9,
+      "marketValue": 144.99,
+      "gapDollars": 7.48,
+      "gapPct": 5.6,
+      "rawGapDollars": 0.49,
+      "rawGapPct": 0.4,
       "packCount": 9,
-      "pricePerPack": 7.33,
+      "pricePerPack": 15.61,
       "isRipValueLeader": false,
       "owned": true,
       "isPreOrder": false,
       "isPreRelease": false,
-      "statusTier": "UNDER_TARGET",
-      "statusTag": "⟦ RIP TARGET HIT (-$67.02) ⟧ • ◈ ⟦ NEED RIP PAIR (QTY 2+) ⟧",
-      "isCloseCall": false,
-      "closeCallDelta": 0,
-      "trendSignal": "ELASTIC_DIP",
-      "trendVerdictLabel": "◈ ⟦ 60D ELASTIC DIP (-51% VS $134 60D AVG) // HISTORICALLY REBOUNDS ⟧",
-      "isElasticDip": true,
-      "url": "https://zulusgames.com/products/pokemon-tcg-phantasmal-flames-elite-trainer-box-5pm-drop",
-      "productUrl": "https://zulusgames.com/products/pokemon-tcg-phantasmal-flames-elite-trainer-box-5pm-drop",
-      "cart1xUrl": "https://zulusgames.com/cart/46000030384293:1?payment=shop_pay",
-      "cart2xUrl": "https://zulusgames.com/cart/46000030384293:2?payment=shop_pay",
-      "cart3xUrl": "https://zulusgames.com/cart/46000030384293:3?payment=shop_pay",
-      "itemId": "46000030384293",
-      "updatedAt": 1794446480450,
-      "timeStr": "07:09 PM"
+      "statusTier": "CLOSE_CALL",
+      "statusTag": "⟦ CLOSE CALL (+$0.49 OVER TARGET — IN CUSHION) ⟧ • ◈ ⟦ NEED RIP PAIR (QTY 2+) ⟧",
+      "isCloseCall": true,
+      "closeCallDelta": 0.49,
+      "trendSignal": "STABLE_ACCUMULATE",
+      "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU (-3% VS $145 MKT) ⟧",
+      "isElasticDip": false,
+      "url": "https://www.avatcg.com/cart/67888311894318:1?payment=shop_pay",
+      "productUrl": "https://www.avatcg.com/products/phantasmal-flames-elite-trainer-box",
+      "cart1xUrl": "https://www.avatcg.com/cart/67888311894318:1?payment=shop_pay",
+      "cart2xUrl": "https://www.avatcg.com/cart/67888311894318:2?payment=shop_pay",
+      "cart3xUrl": "https://www.avatcg.com/cart/67888311894318:3?payment=shop_pay",
+      "itemId": "67888311894318",
+      "updatedAt": 1794533042289,
+      "timeStr": "07:24 PM"
     },
     "sv-destined-rivals-booster-box": {
       "ruleId": "sv-destined-rivals-booster-box",
@@ -325,14 +325,14 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU ($324 60D AVG) ⟧",
       "isElasticDip": false,
-      "url": "https://deriumandwifey.com/products/destined-rivals-booster-box",
+      "url": "https://deriumandwifey.com/cart/51144205173045:1?payment=shop_pay",
       "productUrl": "https://deriumandwifey.com/products/destined-rivals-booster-box",
       "cart1xUrl": "https://deriumandwifey.com/cart/51144205173045:1?payment=shop_pay",
       "cart2xUrl": "https://deriumandwifey.com/cart/51144205173045:2?payment=shop_pay",
       "cart3xUrl": "https://deriumandwifey.com/cart/51144205173045:3?payment=shop_pay",
       "itemId": "51144205173045",
-      "updatedAt": 1794532107904,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533045222,
+      "timeStr": "07:24 PM"
     },
     "sv-journey-together-booster-box": {
       "ruleId": "sv-journey-together-booster-box",
@@ -365,22 +365,22 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-12% 14D • 19D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://kanzengames.com/products/scarlet-violet-journey-together-booster-box",
+      "url": "https://kanzengames.com/cart/45904061825239:1?payment=shop_pay",
       "productUrl": "https://kanzengames.com/products/scarlet-violet-journey-together-booster-box",
       "cart1xUrl": "https://kanzengames.com/cart/45904061825239:1?payment=shop_pay",
       "cart2xUrl": "https://kanzengames.com/cart/45904061825239:2?payment=shop_pay",
       "cart3xUrl": "https://kanzengames.com/cart/45904061825239:3?payment=shop_pay",
       "itemId": "45904061825239",
-      "updatedAt": 1794532125332,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533025067,
+      "timeStr": "07:23 PM"
     },
     "sv-surging-sparks-booster-box": {
       "ruleId": "sv-surging-sparks-booster-box",
       "ruleName": "Surging Sparks Booster Box (36-Pack)",
       "formFactor": "Booster Box",
       "era": "Scarlet & Violet (2023-2025)",
-      "title": "Surging Sparks Pokemon Booster Box",
-      "retailer": "CardsHQ",
+      "title": "Pokemon - Scarlet and Violet - Surging Sparks - Booster Box",
+      "retailer": "CardPop USA",
       "price": 299.99,
       "shippingPrice": 0,
       "landedPrice": 299.99,
@@ -396,7 +396,7 @@
       "pricePerPack": 8.33,
       "isRipValueLeader": false,
       "owned": false,
-      "isPreOrder": true,
+      "isPreOrder": false,
       "isPreRelease": false,
       "statusTier": "NEAR_MISS",
       "statusTag": "⟦ NEAR MISS (+$41.99 OVER TARGET) ⟧",
@@ -405,14 +405,14 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU ($285 60D AVG) ⟧",
       "isElasticDip": false,
-      "url": "https://cardshq.com/products/surging-sparks-pokemon-booster-box",
-      "productUrl": "https://cardshq.com/products/surging-sparks-pokemon-booster-box",
-      "cart1xUrl": "https://cardshq.com/cart/45369644679331:1?payment=shop_pay",
-      "cart2xUrl": "https://cardshq.com/cart/45369644679331:2?payment=shop_pay",
-      "cart3xUrl": "https://cardshq.com/cart/45369644679331:3?payment=shop_pay",
-      "itemId": "45369644679331",
-      "updatedAt": 1794532100085,
-      "timeStr": "07:09 PM"
+      "url": "https://cardpopusa.com/cart/51673571262828:1?payment=shop_pay",
+      "productUrl": "https://cardpopusa.com/products/pokemon-scarlet-violet-surging-sparks-booster-box",
+      "cart1xUrl": "https://cardpopusa.com/cart/51673571262828:1?payment=shop_pay",
+      "cart2xUrl": "https://cardpopusa.com/cart/51673571262828:2?payment=shop_pay",
+      "cart3xUrl": "https://cardpopusa.com/cart/51673571262828:3?payment=shop_pay",
+      "itemId": "51673571262828",
+      "updatedAt": 1794533040590,
+      "timeStr": "07:24 PM"
     },
     "sv-stellar-crown-booster-box": {
       "ruleId": "sv-stellar-crown-booster-box",
@@ -427,7 +427,7 @@
       "freeShipNote": "+FREE Shipping",
       "triggerPrice": 269,
       "msrp": 161.64,
-      "marketValue": 315.87,
+      "marketValue": 319.99,
       "gapDollars": 16.82,
       "gapPct": 6.3,
       "rawGapDollars": 16.82,
@@ -445,14 +445,14 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU (-11% VS $320 MKT) ⟧",
       "isElasticDip": false,
-      "url": "https://oakspokebox.com/products/owners-personal-collection-stellar-crown-booster-box",
+      "url": "https://oakspokebox.com/cart/67695367749732:1?payment=shop_pay",
       "productUrl": "https://oakspokebox.com/products/owners-personal-collection-stellar-crown-booster-box",
       "cart1xUrl": "https://oakspokebox.com/cart/67695367749732:1?payment=shop_pay",
       "cart2xUrl": "https://oakspokebox.com/cart/67695367749732:2?payment=shop_pay",
       "cart3xUrl": "https://oakspokebox.com/cart/67695367749732:3?payment=shop_pay",
       "itemId": "67695367749732",
-      "updatedAt": 1794532108266,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533045795,
+      "timeStr": "07:24 PM"
     },
     "sv-twilight-masquerade-etb": {
       "ruleId": "sv-twilight-masquerade-etb",
@@ -485,14 +485,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-41% 14D • 19D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://collectorstore.com/products/pokemon-scarlet-violet-twilight-masquerade-elite-trainer-box",
+      "url": "https://collectorstore.com/cart/49566532468904:1?payment=shop_pay",
       "productUrl": "https://collectorstore.com/products/pokemon-scarlet-violet-twilight-masquerade-elite-trainer-box",
       "cart1xUrl": "https://collectorstore.com/cart/49566532468904:1?payment=shop_pay",
       "cart2xUrl": "https://collectorstore.com/cart/49566532468904:2?payment=shop_pay",
       "cart3xUrl": "https://collectorstore.com/cart/49566532468904:3?payment=shop_pay",
       "itemId": "49566532468904",
-      "updatedAt": 1794532141797,
-      "timeStr": "07:09 PM"
+      "updatedAt": 1794533010405,
+      "timeStr": "07:23 PM"
     },
     "sv-temporal-forces-booster-box": {
       "ruleId": "sv-temporal-forces-booster-box",
@@ -507,7 +507,7 @@
       "freeShipNote": "+FREE Shipping",
       "triggerPrice": 279,
       "msrp": 161.64,
-      "marketValue": 324.99,
+      "marketValue": 327.5,
       "gapDollars": 44.49,
       "gapPct": 15.9,
       "rawGapDollars": 44.49,
@@ -525,14 +525,14 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU (-1% VS $328 MKT) ⟧",
       "isElasticDip": false,
-      "url": "https://www.avatcg.com/products/temporal-forces-booster-box",
+      "url": "https://www.avatcg.com/cart/67888320905518:1?payment=shop_pay",
       "productUrl": "https://www.avatcg.com/products/temporal-forces-booster-box",
       "cart1xUrl": "https://www.avatcg.com/cart/67888320905518:1?payment=shop_pay",
       "cart2xUrl": "https://www.avatcg.com/cart/67888320905518:2?payment=shop_pay",
       "cart3xUrl": "https://www.avatcg.com/cart/67888320905518:3?payment=shop_pay",
       "itemId": "67888320905518",
-      "updatedAt": 1794532104458,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533042330,
+      "timeStr": "07:24 PM"
     },
     "sv-paradox-rift-booster-box": {
       "ruleId": "sv-paradox-rift-booster-box",
@@ -565,14 +565,14 @@
       "trendSignal": "UPTREND_LAG_DEAL",
       "trendVerdictLabel": "◈ ⟦ SUPPLY TIGHTENING (+114% 60D) // SLIDER CAPPED ⟧",
       "isElasticDip": false,
-      "url": "https://elite4tcg.com/products/paradox-rift-booster-box",
+      "url": "https://elite4tcg.com/cart/44538484293808:1?payment=shop_pay",
       "productUrl": "https://elite4tcg.com/products/paradox-rift-booster-box",
       "cart1xUrl": "https://elite4tcg.com/cart/44538484293808:1?payment=shop_pay",
       "cart2xUrl": "https://elite4tcg.com/cart/44538484293808:2?payment=shop_pay",
       "cart3xUrl": "https://elite4tcg.com/cart/44538484293808:3?payment=shop_pay",
       "itemId": "44538484293808",
-      "updatedAt": 1794532107348,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533044257,
+      "timeStr": "07:24 PM"
     },
     "sv-destined-rivals-etb": {
       "ruleId": "sv-destined-rivals-etb",
@@ -602,17 +602,17 @@
       "statusTag": "⟦ UNDER TARGET (-$22.72) ⟧",
       "isCloseCall": false,
       "closeCallDelta": 0,
-      "trendSignal": "ELASTIC_DIP",
-      "trendVerdictLabel": "◈ ⟦ 60D ELASTIC DIP (-20% VS $111 60D AVG) // HISTORICALLY REBOUNDS ⟧",
-      "isElasticDip": true,
-      "url": "https://kanzengames.com/products/destined-rivals-elite-trainer-box",
+      "trendSignal": "FALLING_KNIFE_WAIT",
+      "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-3% 14D • 20D REAL) // HOLD OFF ⟧",
+      "isElasticDip": false,
+      "url": "https://kanzengames.com/cart/46153985851607:1?payment=shop_pay",
       "productUrl": "https://kanzengames.com/products/destined-rivals-elite-trainer-box",
       "cart1xUrl": "https://kanzengames.com/cart/46153985851607:1?payment=shop_pay",
       "cart2xUrl": "https://kanzengames.com/cart/46153985851607:2?payment=shop_pay",
       "cart3xUrl": "https://kanzengames.com/cart/46153985851607:3?payment=shop_pay",
       "itemId": "46153985851607",
-      "updatedAt": 1794532125309,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533025058,
+      "timeStr": "07:23 PM"
     },
     "sv-prismatic-evolutions-bundle": {
       "ruleId": "sv-prismatic-evolutions-bundle",
@@ -651,8 +651,8 @@
       "cart2xUrl": "https://redraccoongames.com/cart/55100996976939:2?payment=shop_pay",
       "cart3xUrl": "https://redraccoongames.com/cart/55100996976939:3?payment=shop_pay",
       "itemId": "55100996976939",
-      "updatedAt": 1794531653952,
-      "timeStr": "07:00 PM"
+      "updatedAt": 1794532974721,
+      "timeStr": "07:22 PM"
     },
     "me-ascended-heroes-bundle": {
       "ruleId": "me-ascended-heroes-bundle",
@@ -685,14 +685,14 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU ($76 60D AVG) ⟧",
       "isElasticDip": false,
-      "url": "https://carddogtcg.com/products/pokemon-tcg-mega-evolution-ascended-heroes-booster-bundle",
+      "url": "https://carddogtcg.com/cart/52171670061352:1?payment=shop_pay",
       "productUrl": "https://carddogtcg.com/products/pokemon-tcg-mega-evolution-ascended-heroes-booster-bundle",
       "cart1xUrl": "https://carddogtcg.com/cart/52171670061352:1?payment=shop_pay",
       "cart2xUrl": "https://carddogtcg.com/cart/52171670061352:2?payment=shop_pay",
       "cart3xUrl": "https://carddogtcg.com/cart/52171670061352:3?payment=shop_pay",
       "itemId": "52171670061352",
-      "updatedAt": 1794532105897,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533043787,
+      "timeStr": "07:24 PM"
     },
     "me-ascended-heroes-etb": {
       "ruleId": "me-ascended-heroes-etb",
@@ -728,8 +728,8 @@
       "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-ascended-heroes-elite-trainer-box/437099.html",
       "productUrl": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-ascended-heroes-elite-trainer-box/437099.html",
       "itemId": "gamestop_437099",
-      "updatedAt": 1794532080345,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533118792,
+      "timeStr": "07:25 PM"
     },
     "sv-paldean-fates-bundle": {
       "ruleId": "sv-paldean-fates-bundle",
@@ -762,14 +762,14 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU ($90 60D AVG) ⟧",
       "isElasticDip": false,
-      "url": "https://kanzengames.com/products/pokemon-scarlet-and-violet-paldean-fates-booster-bundle-pre-order",
+      "url": "https://kanzengames.com/cart/44257183203543:1?payment=shop_pay",
       "productUrl": "https://kanzengames.com/products/pokemon-scarlet-and-violet-paldean-fates-booster-bundle-pre-order",
       "cart1xUrl": "https://kanzengames.com/cart/44257183203543:1?payment=shop_pay",
       "cart2xUrl": "https://kanzengames.com/cart/44257183203543:2?payment=shop_pay",
       "cart3xUrl": "https://kanzengames.com/cart/44257183203543:3?payment=shop_pay",
       "itemId": "44257183203543",
-      "updatedAt": 1794532125354,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533025086,
+      "timeStr": "07:23 PM"
     },
     "sv-paldea-evolved-etb": {
       "ruleId": "sv-paldea-evolved-etb",
@@ -802,14 +802,14 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU ($119 60D AVG) ⟧",
       "isElasticDip": false,
-      "url": "https://common-lands.com/products/pokemon-s-y-paldea-evolved-elite-trainer-box",
+      "url": "https://common-lands.com/cart/46412957745372:1?payment=shop_pay",
       "productUrl": "https://common-lands.com/products/pokemon-s-y-paldea-evolved-elite-trainer-box",
       "cart1xUrl": "https://common-lands.com/cart/46412957745372:1?payment=shop_pay",
       "cart2xUrl": "https://common-lands.com/cart/46412957745372:2?payment=shop_pay",
       "cart3xUrl": "https://common-lands.com/cart/46412957745372:3?payment=shop_pay",
       "itemId": "46412957745372",
-      "updatedAt": 1794532103697,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533041473,
+      "timeStr": "07:24 PM"
     },
     "sv-stellar-crown-etb": {
       "ruleId": "sv-stellar-crown-etb",
@@ -842,14 +842,14 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU ($89 60D AVG) ⟧",
       "isElasticDip": false,
-      "url": "https://oakspokebox.com/products/owners-personal-collection-stellar-crown-etb",
+      "url": "https://oakspokebox.com/cart/67695364374628:1?payment=shop_pay",
       "productUrl": "https://oakspokebox.com/products/owners-personal-collection-stellar-crown-etb",
       "cart1xUrl": "https://oakspokebox.com/cart/67695364374628:1?payment=shop_pay",
       "cart2xUrl": "https://oakspokebox.com/cart/67695364374628:2?payment=shop_pay",
       "cart3xUrl": "https://oakspokebox.com/cart/67695364374628:3?payment=shop_pay",
       "itemId": "67695364374628",
-      "updatedAt": 1794532108339,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533045827,
+      "timeStr": "07:24 PM"
     },
     "swsh-evolving-skies-etb": {
       "ruleId": "swsh-evolving-skies-etb",
@@ -882,14 +882,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-47% 14D • 19D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://kanzengames.com/products/sword-shield-evolving-skies-elite-trainer-box-glaceon-vaporeon-sylveon-espeon",
+      "url": "https://kanzengames.com/cart/42852074193111:1?payment=shop_pay",
       "productUrl": "https://kanzengames.com/products/sword-shield-evolving-skies-elite-trainer-box-glaceon-vaporeon-sylveon-espeon",
       "cart1xUrl": "https://kanzengames.com/cart/42852074193111:1?payment=shop_pay",
       "cart2xUrl": "https://kanzengames.com/cart/42852074193111:2?payment=shop_pay",
       "cart3xUrl": "https://kanzengames.com/cart/42852074193111:3?payment=shop_pay",
       "itemId": "42852074193111",
-      "updatedAt": 1794532125364,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533025092,
+      "timeStr": "07:23 PM"
     },
     "swsh-chilling-reign-booster-box": {
       "ruleId": "swsh-chilling-reign-booster-box",
@@ -922,14 +922,14 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU (-3% VS $485 MKT) ⟧",
       "isElasticDip": false,
-      "url": "https://cardshq.com/products/chilling-reign-pokemon-booster-box",
+      "url": "https://cardshq.com/cart/44035321626787:1?payment=shop_pay",
       "productUrl": "https://cardshq.com/products/chilling-reign-pokemon-booster-box",
       "cart1xUrl": "https://cardshq.com/cart/44035321626787:1?payment=shop_pay",
       "cart2xUrl": "https://cardshq.com/cart/44035321626787:2?payment=shop_pay",
       "cart3xUrl": "https://cardshq.com/cart/44035321626787:3?payment=shop_pay",
       "itemId": "44035321626787",
-      "updatedAt": 1794532101075,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533039426,
+      "timeStr": "07:23 PM"
     },
     "swsh-battle-styles-booster-box": {
       "ruleId": "swsh-battle-styles-booster-box",
@@ -962,14 +962,14 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU (-5% VS $315 MKT) ⟧",
       "isElasticDip": false,
-      "url": "https://collectorstore.com/products/pokemonswordshieldbattlestylesboosterdisplaybox36packs",
+      "url": "https://collectorstore.com/cart/49566555340968:1?payment=shop_pay",
       "productUrl": "https://collectorstore.com/products/pokemonswordshieldbattlestylesboosterdisplaybox36packs",
       "cart1xUrl": "https://collectorstore.com/cart/49566555340968:1?payment=shop_pay",
       "cart2xUrl": "https://collectorstore.com/cart/49566555340968:2?payment=shop_pay",
       "cart3xUrl": "https://collectorstore.com/cart/49566555340968:3?payment=shop_pay",
       "itemId": "49566555340968",
-      "updatedAt": 1794532141776,
-      "timeStr": "07:09 PM"
+      "updatedAt": 1794533010386,
+      "timeStr": "07:23 PM"
     },
     "swsh-lost-origin-booster-box": {
       "ruleId": "swsh-lost-origin-booster-box",
@@ -1002,14 +1002,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-19% 14D • 19D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://spankyscardshop.com/products/sword-shield-lost-origin-booster-box",
+      "url": "https://spankyscardshop.com/cart/39789292322896:1?payment=shop_pay",
       "productUrl": "https://spankyscardshop.com/products/sword-shield-lost-origin-booster-box",
       "cart1xUrl": "https://spankyscardshop.com/cart/39789292322896:1?payment=shop_pay",
       "cart2xUrl": "https://spankyscardshop.com/cart/39789292322896:2?payment=shop_pay",
       "cart3xUrl": "https://spankyscardshop.com/cart/39789292322896:3?payment=shop_pay",
       "itemId": "39789292322896",
-      "updatedAt": 1794532093221,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533030780,
+      "timeStr": "07:23 PM"
     },
     "swsh-silver-tempest-booster-box": {
       "ruleId": "swsh-silver-tempest-booster-box",
@@ -1042,14 +1042,14 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU (-4% VS $515 MKT) ⟧",
       "isElasticDip": false,
-      "url": "https://cardshq.com/products/silver-tempest-pokemon-booster-box",
+      "url": "https://cardshq.com/cart/43922757124259:1?payment=shop_pay",
       "productUrl": "https://cardshq.com/products/silver-tempest-pokemon-booster-box",
       "cart1xUrl": "https://cardshq.com/cart/43922757124259:1?payment=shop_pay",
       "cart2xUrl": "https://cardshq.com/cart/43922757124259:2?payment=shop_pay",
       "cart3xUrl": "https://cardshq.com/cart/43922757124259:3?payment=shop_pay",
       "itemId": "43922757124259",
-      "updatedAt": 1794532101029,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533039390,
+      "timeStr": "07:23 PM"
     },
     "swsh-silver-tempest-etb": {
       "ruleId": "swsh-silver-tempest-etb",
@@ -1082,14 +1082,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-67% 14D • 19D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://pkmncolosseum.com/products/copy-of-sealed-silver-tempest-booster-box",
+      "url": "https://pkmncolosseum.com/cart/40435227459638:1?payment=shop_pay",
       "productUrl": "https://pkmncolosseum.com/products/copy-of-sealed-silver-tempest-booster-box",
       "cart1xUrl": "https://pkmncolosseum.com/cart/40435227459638:1?payment=shop_pay",
       "cart2xUrl": "https://pkmncolosseum.com/cart/40435227459638:2?payment=shop_pay",
       "cart3xUrl": "https://pkmncolosseum.com/cart/40435227459638:3?payment=shop_pay",
       "itemId": "40435227459638",
-      "updatedAt": 1794532143429,
-      "timeStr": "07:09 PM"
+      "updatedAt": 1794533012487,
+      "timeStr": "07:23 PM"
     },
     "sv-journey-together-booster-case": {
       "ruleId": "sv-journey-together-booster-case",
@@ -1122,12 +1122,12 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU (-3% VS $1550 MKT) ⟧",
       "isElasticDip": false,
-      "url": "https://blackwolfcollectibles.com/products/journey-together-booster-box-case-coming-soon",
+      "url": "https://blackwolfcollectibles.com/cart/51106781364498:1?payment=shop_pay",
       "productUrl": "https://blackwolfcollectibles.com/products/journey-together-booster-box-case-coming-soon",
       "cart1xUrl": "https://blackwolfcollectibles.com/cart/51106781364498:1?payment=shop_pay",
       "itemId": "51106781364498",
-      "updatedAt": 1794532115325,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533051568,
+      "timeStr": "07:24 PM"
     },
     "swsh-silver-tempest-booster-case": {
       "ruleId": "swsh-silver-tempest-booster-case",
@@ -1200,12 +1200,12 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU ($1136 60D AVG) ⟧",
       "isElasticDip": false,
-      "url": "https://blackwolfcollectibles.com/products/pitch-black-booster-box-case-pre-order",
+      "url": "https://blackwolfcollectibles.com/cart/52510943740178:1?payment=shop_pay",
       "productUrl": "https://blackwolfcollectibles.com/products/pitch-black-booster-box-case-pre-order",
       "cart1xUrl": "https://blackwolfcollectibles.com/cart/52510943740178:1?payment=shop_pay",
       "itemId": "52510943740178",
-      "updatedAt": 1794532115566,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533051691,
+      "timeStr": "07:24 PM"
     },
     "swsh-fusion-strike-etb": {
       "ruleId": "swsh-fusion-strike-etb",
@@ -1238,14 +1238,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-74% 14D • 19D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://pkmncolosseum.com/products/sealed-fusion-strike-elite-trainer-box-limit-2",
+      "url": "https://pkmncolosseum.com/cart/39771500216374:1?payment=shop_pay",
       "productUrl": "https://pkmncolosseum.com/products/sealed-fusion-strike-elite-trainer-box-limit-2",
       "cart1xUrl": "https://pkmncolosseum.com/cart/39771500216374:1?payment=shop_pay",
       "cart2xUrl": "https://pkmncolosseum.com/cart/39771500216374:2?payment=shop_pay",
       "cart3xUrl": "https://pkmncolosseum.com/cart/39771500216374:3?payment=shop_pay",
       "itemId": "39771500216374",
-      "updatedAt": 1794532143400,
-      "timeStr": "07:09 PM"
+      "updatedAt": 1794533012475,
+      "timeStr": "07:23 PM"
     },
     "me-chaos-rising-etb-case": {
       "ruleId": "me-chaos-rising-etb-case",
@@ -1278,12 +1278,12 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-34% 14D • 19D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://blackwolfcollectibles.com/products/chaos-rising-elite-trainer-box-case-pre-order",
+      "url": "https://blackwolfcollectibles.com/cart/52211985154322:1?payment=shop_pay",
       "productUrl": "https://blackwolfcollectibles.com/products/chaos-rising-elite-trainer-box-case-pre-order",
       "cart1xUrl": "https://blackwolfcollectibles.com/cart/52211985154322:1?payment=shop_pay",
       "itemId": "52211985154322",
-      "updatedAt": 1794532115149,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533051477,
+      "timeStr": "07:24 PM"
     },
     "me-perfect-order-etb-case": {
       "ruleId": "me-perfect-order-etb-case",
@@ -1316,12 +1316,12 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-16% 14D • 19D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://blackwolfcollectibles.com/products/perfect-order-elite-trainer-box-case-pre-order",
+      "url": "https://blackwolfcollectibles.com/cart/52128346800402:1?payment=shop_pay",
       "productUrl": "https://blackwolfcollectibles.com/products/perfect-order-elite-trainer-box-case-pre-order",
       "cart1xUrl": "https://blackwolfcollectibles.com/cart/52128346800402:1?payment=shop_pay",
       "itemId": "52128346800402",
-      "updatedAt": 1794532115472,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533051639,
+      "timeStr": "07:24 PM"
     },
     "swsh-celebrations-etb": {
       "ruleId": "swsh-celebrations-etb",
@@ -1336,7 +1336,7 @@
       "freeShipNote": "+FREE Shipping",
       "triggerPrice": 70,
       "msrp": 49.99,
-      "marketValue": 345.4,
+      "marketValue": 324.99,
       "gapDollars": 239.99,
       "gapPct": 342.8,
       "rawGapDollars": 239.99,
@@ -1354,14 +1354,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-13% 14D • 19D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://cardshq.com/products/celebrations-pokemon-elite-trainer-box",
+      "url": "https://cardshq.com/cart/43940036640931:1?payment=shop_pay",
       "productUrl": "https://cardshq.com/products/celebrations-pokemon-elite-trainer-box",
       "cart1xUrl": "https://cardshq.com/cart/43940036640931:1?payment=shop_pay",
       "cart2xUrl": "https://cardshq.com/cart/43940036640931:2?payment=shop_pay",
       "cart3xUrl": "https://cardshq.com/cart/43940036640931:3?payment=shop_pay",
       "itemId": "43940036640931",
-      "updatedAt": 1794532100693,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533039225,
+      "timeStr": "07:23 PM"
     },
     "sv-shrouded-fable-bundle": {
       "ruleId": "sv-shrouded-fable-bundle",
@@ -1394,14 +1394,14 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU ($57 60D AVG) ⟧",
       "isElasticDip": false,
-      "url": "https://deriumandwifey.com/products/shrouded-fable-booster-bundle",
+      "url": "https://deriumandwifey.com/cart/51451802943797:1?payment=shop_pay",
       "productUrl": "https://deriumandwifey.com/products/shrouded-fable-booster-bundle",
       "cart1xUrl": "https://deriumandwifey.com/cart/51451802943797:1?payment=shop_pay",
       "cart2xUrl": "https://deriumandwifey.com/cart/51451802943797:2?payment=shop_pay",
       "cart3xUrl": "https://deriumandwifey.com/cart/51451802943797:3?payment=shop_pay",
       "itemId": "51451802943797",
-      "updatedAt": 1794532108010,
-      "timeStr": "07:09 PM"
+      "updatedAt": 1794533045277,
+      "timeStr": "07:24 PM"
     },
     "sv-journey-together-etb": {
       "ruleId": "sv-journey-together-etb",
@@ -1434,14 +1434,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-19% 14D • 15D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://oakspokebox.com/products/journey-together-elite-trainer-box",
+      "url": "https://oakspokebox.com/cart/45665599848548:1?payment=shop_pay",
       "productUrl": "https://oakspokebox.com/products/journey-together-elite-trainer-box",
       "cart1xUrl": "https://oakspokebox.com/cart/45665599848548:1?payment=shop_pay",
       "cart2xUrl": "https://oakspokebox.com/cart/45665599848548:2?payment=shop_pay",
       "cart3xUrl": "https://oakspokebox.com/cart/45665599848548:3?payment=shop_pay",
       "itemId": "45665599848548",
-      "updatedAt": 1794532108376,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533045841,
+      "timeStr": "07:24 PM"
     },
     "swsh-evolving-skies-booster-box": {
       "ruleId": "swsh-evolving-skies-booster-box",
@@ -1474,14 +1474,14 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU ($1837 60D AVG) ⟧",
       "isElasticDip": false,
-      "url": "https://pkmncolosseum.com/products/evolving-skies-booster-box-preorder-ships-8-27-2021",
+      "url": "https://pkmncolosseum.com/cart/39570981814326:1?payment=shop_pay",
       "productUrl": "https://pkmncolosseum.com/products/evolving-skies-booster-box-preorder-ships-8-27-2021",
       "cart1xUrl": "https://pkmncolosseum.com/cart/39570981814326:1?payment=shop_pay",
       "cart2xUrl": "https://pkmncolosseum.com/cart/39570981814326:2?payment=shop_pay",
       "cart3xUrl": "https://pkmncolosseum.com/cart/39570981814326:3?payment=shop_pay",
       "itemId": "39570981814326",
-      "updatedAt": 1794532143335,
-      "timeStr": "07:09 PM"
+      "updatedAt": 1794533012450,
+      "timeStr": "07:23 PM"
     },
     "sv-twilight-masquerade-booster-box": {
       "ruleId": "sv-twilight-masquerade-booster-box",
@@ -1514,14 +1514,14 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU (-1% VS $338 MKT) ⟧",
       "isElasticDip": false,
-      "url": "https://pkmncolosseum.com/products/sealed-twilight-masquerade-booster-box",
+      "url": "https://pkmncolosseum.com/cart/42569338060854:1?payment=shop_pay",
       "productUrl": "https://pkmncolosseum.com/products/sealed-twilight-masquerade-booster-box",
       "cart1xUrl": "https://pkmncolosseum.com/cart/42569338060854:1?payment=shop_pay",
       "cart2xUrl": "https://pkmncolosseum.com/cart/42569338060854:2?payment=shop_pay",
       "cart3xUrl": "https://pkmncolosseum.com/cart/42569338060854:3?payment=shop_pay",
       "itemId": "42569338060854",
-      "updatedAt": 1794532143443,
-      "timeStr": "07:09 PM"
+      "updatedAt": 1794533012495,
+      "timeStr": "07:23 PM"
     },
     "swsh-brilliant-stars-booster-box": {
       "ruleId": "swsh-brilliant-stars-booster-box",
@@ -1554,14 +1554,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-15% 14D • 19D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://deriumandwifey.com/products/brilliant-stars-booster-box",
+      "url": "https://deriumandwifey.com/cart/51451749237045:1?payment=shop_pay",
       "productUrl": "https://deriumandwifey.com/products/brilliant-stars-booster-box",
       "cart1xUrl": "https://deriumandwifey.com/cart/51451749237045:1?payment=shop_pay",
       "cart2xUrl": "https://deriumandwifey.com/cart/51451749237045:2?payment=shop_pay",
       "cart3xUrl": "https://deriumandwifey.com/cart/51451749237045:3?payment=shop_pay",
       "itemId": "51451749237045",
-      "updatedAt": 1794532107865,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533045197,
+      "timeStr": "07:24 PM"
     },
     "swsh-brilliant-stars-etb": {
       "ruleId": "swsh-brilliant-stars-etb",
@@ -1600,8 +1600,8 @@
       "cart2xUrl": "https://1steditioncollectibles.com/cart/49414717276327:2?payment=shop_pay",
       "cart3xUrl": "https://1steditioncollectibles.com/cart/49414717276327:3?payment=shop_pay",
       "itemId": "49414717276327",
-      "updatedAt": 1794531744686,
-      "timeStr": "07:02 PM"
+      "updatedAt": 1794532829493,
+      "timeStr": "07:20 PM"
     },
     "swsh-pokemon-go-etb": {
       "ruleId": "swsh-pokemon-go-etb",
@@ -1634,14 +1634,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-69% 14D • 19D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://pkmncolosseum.com/products/pokemon-go-elite-trainer-box-preorder-ships-july-1st",
+      "url": "https://pkmncolosseum.com/cart/40144911826998:1?payment=shop_pay",
       "productUrl": "https://pkmncolosseum.com/products/pokemon-go-elite-trainer-box-preorder-ships-july-1st",
       "cart1xUrl": "https://pkmncolosseum.com/cart/40144911826998:1?payment=shop_pay",
       "cart2xUrl": "https://pkmncolosseum.com/cart/40144911826998:2?payment=shop_pay",
       "cart3xUrl": "https://pkmncolosseum.com/cart/40144911826998:3?payment=shop_pay",
       "itemId": "40144911826998",
-      "updatedAt": 1794532143406,
-      "timeStr": "07:09 PM"
+      "updatedAt": 1794533012477,
+      "timeStr": "07:23 PM"
     },
     "sv-paldea-evolved-booster-box": {
       "ruleId": "sv-paldea-evolved-booster-box",
@@ -1674,14 +1674,14 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU ($322 60D AVG) ⟧",
       "isElasticDip": false,
-      "url": "https://collectorstore.com/products/pokemon-paldea-evolved-booster-box",
+      "url": "https://collectorstore.com/cart/49809459740840:1?payment=shop_pay",
       "productUrl": "https://collectorstore.com/products/pokemon-paldea-evolved-booster-box",
       "cart1xUrl": "https://collectorstore.com/cart/49809459740840:1?payment=shop_pay",
       "cart2xUrl": "https://collectorstore.com/cart/49809459740840:2?payment=shop_pay",
       "cart3xUrl": "https://collectorstore.com/cart/49809459740840:3?payment=shop_pay",
       "itemId": "49809459740840",
-      "updatedAt": 1794532141675,
-      "timeStr": "07:09 PM"
+      "updatedAt": 1794533010314,
+      "timeStr": "07:23 PM"
     },
     "sv-twilight-masquerade-etb-case": {
       "ruleId": "sv-twilight-masquerade-etb-case",
@@ -1714,12 +1714,12 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-53% 14D • 19D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://collectorscafe.com/products/twilight-masquerade-elite-trainer-box-case-twm-544385",
+      "url": "https://collectorscafe.com/cart/47980959924355:1?payment=shop_pay",
       "productUrl": "https://collectorscafe.com/products/twilight-masquerade-elite-trainer-box-case-twm-544385",
       "cart1xUrl": "https://collectorscafe.com/cart/47980959924355:1?payment=shop_pay",
       "itemId": "47980959924355",
-      "updatedAt": 1794532098965,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533037861,
+      "timeStr": "07:23 PM"
     },
     "sv-obsidian-flames-booster-box": {
       "ruleId": "sv-obsidian-flames-booster-box",
@@ -1752,14 +1752,14 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU ($302 60D AVG) ⟧",
       "isElasticDip": false,
-      "url": "https://common-lands.com/products/pokemon-s-v-obsidian-flames-booster-box",
+      "url": "https://common-lands.com/cart/46189050724572:1?payment=shop_pay",
       "productUrl": "https://common-lands.com/products/pokemon-s-v-obsidian-flames-booster-box",
       "cart1xUrl": "https://common-lands.com/cart/46189050724572:1?payment=shop_pay",
       "cart2xUrl": "https://common-lands.com/cart/46189050724572:2?payment=shop_pay",
       "cart3xUrl": "https://common-lands.com/cart/46189050724572:3?payment=shop_pay",
       "itemId": "46189050724572",
-      "updatedAt": 1794532103713,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533041490,
+      "timeStr": "07:24 PM"
     },
     "swsh-chilling-reign-ice-etb": {
       "ruleId": "swsh-chilling-reign-ice-etb",
@@ -1792,14 +1792,14 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU ($144 60D AVG) ⟧",
       "isElasticDip": false,
-      "url": "https://pkmncolosseum.com/products/chilling-reign-ice-rider-calyrex-elite-trainer-box-preorder-ships-6-18-limit-one-of-each",
+      "url": "https://pkmncolosseum.com/cart/39491187572790:1?payment=shop_pay",
       "productUrl": "https://pkmncolosseum.com/products/chilling-reign-ice-rider-calyrex-elite-trainer-box-preorder-ships-6-18-limit-one-of-each",
       "cart1xUrl": "https://pkmncolosseum.com/cart/39491187572790:1?payment=shop_pay",
       "cart2xUrl": "https://pkmncolosseum.com/cart/39491187572790:2?payment=shop_pay",
       "cart3xUrl": "https://pkmncolosseum.com/cart/39491187572790:3?payment=shop_pay",
       "itemId": "39491187572790",
-      "updatedAt": 1794532143419,
-      "timeStr": "07:09 PM"
+      "updatedAt": 1794533012482,
+      "timeStr": "07:23 PM"
     },
     "sv-base-booster-box": {
       "ruleId": "sv-base-booster-box",
@@ -1814,7 +1814,7 @@
       "freeShipNote": "+FREE Shipping",
       "triggerPrice": 283,
       "msrp": 161.64,
-      "marketValue": 323,
+      "marketValue": 360,
       "gapDollars": 2.99,
       "gapPct": 1.1,
       "rawGapDollars": 2.99,
@@ -1832,14 +1832,14 @@
       "trendSignal": "UPTREND_LAG_DEAL",
       "trendVerdictLabel": "◈ ⟦ SUPPLY TIGHTENING (+148% 60D) // SLIDER CAPPED ⟧",
       "isElasticDip": false,
-      "url": "https://pkmncolosseum.com/products/scarlet-violet-booster-box-preorder",
+      "url": "https://pkmncolosseum.com/cart/40665634701366:1?payment=shop_pay",
       "productUrl": "https://pkmncolosseum.com/products/scarlet-violet-booster-box-preorder",
       "cart1xUrl": "https://pkmncolosseum.com/cart/40665634701366:1?payment=shop_pay",
       "cart2xUrl": "https://pkmncolosseum.com/cart/40665634701366:2?payment=shop_pay",
       "cart3xUrl": "https://pkmncolosseum.com/cart/40665634701366:3?payment=shop_pay",
       "itemId": "40665634701366",
-      "updatedAt": 1794532143362,
-      "timeStr": "07:09 PM"
+      "updatedAt": 1794533012459,
+      "timeStr": "07:23 PM"
     },
     "me-delta-reign-booster-case": {
       "ruleId": "me-delta-reign-booster-case",
@@ -1873,12 +1873,12 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ PRE-RELEASE PREMIUM — WAIT FOR POST-LAUNCH DIP ⟧",
       "isElasticDip": false,
-      "url": "https://allpoketcg.com/products/delta-reign-booster-box-case",
+      "url": "https://allpoketcg.com/cart/68975097479410:1?payment=shop_pay",
       "productUrl": "https://allpoketcg.com/products/delta-reign-booster-box-case",
       "cart1xUrl": "https://allpoketcg.com/cart/68975097479410:1?payment=shop_pay",
       "itemId": "68975097479410",
-      "updatedAt": 1794532146605,
-      "timeStr": "07:09 PM"
+      "updatedAt": 1794533013933,
+      "timeStr": "07:23 PM"
     },
     "me-delta-reign-etb-case": {
       "ruleId": "me-delta-reign-etb-case",
@@ -1912,12 +1912,12 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ PRE-RELEASE PREMIUM — WAIT FOR POST-LAUNCH DIP ⟧",
       "isElasticDip": false,
-      "url": "https://allpoketcg.com/products/delta-reign-elite-trainer-box-case",
+      "url": "https://allpoketcg.com/cart/68974612676850:1?payment=shop_pay",
       "productUrl": "https://allpoketcg.com/products/delta-reign-elite-trainer-box-case",
       "cart1xUrl": "https://allpoketcg.com/cart/68974612676850:1?payment=shop_pay",
       "itemId": "68974612676850",
-      "updatedAt": 1794532146613,
-      "timeStr": "07:09 PM"
+      "updatedAt": 1794533013938,
+      "timeStr": "07:23 PM"
     },
     "sv-destined-rivals-booster-case": {
       "ruleId": "sv-destined-rivals-booster-case",
@@ -1950,12 +1950,12 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-41% 14D • 19D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://blackwolfcollectibles.com/products/destined-rivals-booster-box-case-pre-order",
+      "url": "https://blackwolfcollectibles.com/cart/51208413643026:1?payment=shop_pay",
       "productUrl": "https://blackwolfcollectibles.com/products/destined-rivals-booster-box-case-pre-order",
       "cart1xUrl": "https://blackwolfcollectibles.com/cart/51208413643026:1?payment=shop_pay",
       "itemId": "51208413643026",
-      "updatedAt": 1794532115205,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533051508,
+      "timeStr": "07:24 PM"
     },
     "sv-destined-rivals-etb-case": {
       "ruleId": "sv-destined-rivals-etb-case",
@@ -1988,14 +1988,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-25% 14D • 20D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://blackwolfcollectibles.com/products/untitled-may16_15-09",
+      "url": "https://blackwolfcollectibles.com/cart/51289540460818:1?payment=shop_pay",
       "productUrl": "https://blackwolfcollectibles.com/products/untitled-may16_15-09",
       "cart1xUrl": "https://blackwolfcollectibles.com/cart/51289540460818:1?payment=shop_pay",
       "cart2xUrl": "https://blackwolfcollectibles.com/cart/51289540460818:2?payment=shop_pay",
       "cart3xUrl": "https://blackwolfcollectibles.com/cart/51289540460818:3?payment=shop_pay",
       "itemId": "51289540460818",
-      "updatedAt": 1794532115214,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533051512,
+      "timeStr": "07:24 PM"
     },
     "sv-journey-together-etb-case": {
       "ruleId": "sv-journey-together-etb-case",
@@ -2028,12 +2028,12 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-61% 14D • 19D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://blackwolfcollectibles.com/products/journey-together-elite-trainer-box-case",
+      "url": "https://blackwolfcollectibles.com/cart/51289578930450:1?payment=shop_pay",
       "productUrl": "https://blackwolfcollectibles.com/products/journey-together-elite-trainer-box-case",
       "cart1xUrl": "https://blackwolfcollectibles.com/cart/51289578930450:1?payment=shop_pay",
       "itemId": "51289578930450",
-      "updatedAt": 1794532115340,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533051572,
+      "timeStr": "07:24 PM"
     },
     "me-phantasmal-flames-etb-case": {
       "ruleId": "me-phantasmal-flames-etb-case",
@@ -2066,12 +2066,12 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-37% 14D • 19D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://blackwolfcollectibles.com/products/phantasmal-flames-elite-trainer-box-case-pre-order",
+      "url": "https://blackwolfcollectibles.com/cart/51665085104402:1?payment=shop_pay",
       "productUrl": "https://blackwolfcollectibles.com/products/phantasmal-flames-elite-trainer-box-case-pre-order",
       "cart1xUrl": "https://blackwolfcollectibles.com/cart/51665085104402:1?payment=shop_pay",
       "itemId": "51665085104402",
-      "updatedAt": 1794532115479,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533051643,
+      "timeStr": "07:24 PM"
     },
     "me-pitch-black-etb-case": {
       "ruleId": "me-pitch-black-etb-case",
@@ -2104,12 +2104,12 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU ($770 60D AVG) ⟧",
       "isElasticDip": false,
-      "url": "https://blackwolfcollectibles.com/products/pitch-black-elite-trainer-box-case-pre-order",
+      "url": "https://blackwolfcollectibles.com/cart/52510942626066:1?payment=shop_pay",
       "productUrl": "https://blackwolfcollectibles.com/products/pitch-black-elite-trainer-box-case-pre-order",
       "cart1xUrl": "https://blackwolfcollectibles.com/cart/52510942626066:1?payment=shop_pay",
       "itemId": "52510942626066",
-      "updatedAt": 1794532115486,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533051647,
+      "timeStr": "07:24 PM"
     },
     "sv-prismatic-evolutions-etb-case": {
       "ruleId": "sv-prismatic-evolutions-etb-case",
@@ -2124,7 +2124,7 @@
       "freeShipNote": "+FREE Shipping",
       "triggerPrice": 1275,
       "msrp": 549.9,
-      "marketValue": 1288,
+      "marketValue": 1290,
       "gapDollars": 224.95,
       "gapPct": 17.6,
       "rawGapDollars": 224.95,
@@ -2142,12 +2142,12 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-11% 14D • 20D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://blackwolfcollectibles.com/products/prismatic-evolutions-elite-trainer-box-case",
+      "url": "https://blackwolfcollectibles.com/cart/51559035797778:1?payment=shop_pay",
       "productUrl": "https://blackwolfcollectibles.com/products/prismatic-evolutions-elite-trainer-box-case",
       "cart1xUrl": "https://blackwolfcollectibles.com/cart/51559035797778:1?payment=shop_pay",
       "itemId": "51559035797778",
-      "updatedAt": 1794532115501,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533051654,
+      "timeStr": "07:24 PM"
     },
     "sv-surging-sparks-etb-case": {
       "ruleId": "sv-surging-sparks-etb-case",
@@ -2180,14 +2180,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-41% 14D • 19D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://blackwolfcollectibles.com/products/surging-sparks-elite-trainer-box-new-1",
+      "url": "https://blackwolfcollectibles.com/cart/51613596582162:1?payment=shop_pay",
       "productUrl": "https://blackwolfcollectibles.com/products/surging-sparks-elite-trainer-box-new-1",
       "cart1xUrl": "https://blackwolfcollectibles.com/cart/51613596582162:1?payment=shop_pay",
       "cart2xUrl": "https://blackwolfcollectibles.com/cart/51613596582162:2?payment=shop_pay",
       "cart3xUrl": "https://blackwolfcollectibles.com/cart/51613596582162:3?payment=shop_pay",
       "itemId": "51613596582162",
-      "updatedAt": 1794532115519,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533051667,
+      "timeStr": "07:24 PM"
     },
     "swsh-lost-origin-etb": {
       "ruleId": "swsh-lost-origin-etb",
@@ -2242,7 +2242,7 @@
       "freeShipNote": "+FREE Shipping",
       "triggerPrice": 15085,
       "msrp": 860,
-      "marketValue": 17326.09,
+      "marketValue": 17747.5,
       "gapDollars": 414.99,
       "gapPct": 2.8,
       "rawGapDollars": 414.99,
@@ -2260,12 +2260,12 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU (-13% VS $17748 MKT) ⟧",
       "isElasticDip": false,
-      "url": "https://pkmncolosseum.com/products/evolving-skies-booster-box-case-sealed",
+      "url": "https://pkmncolosseum.com/cart/47993448759350:1?payment=shop_pay",
       "productUrl": "https://pkmncolosseum.com/products/evolving-skies-booster-box-case-sealed",
       "cart1xUrl": "https://pkmncolosseum.com/cart/47993448759350:1?payment=shop_pay",
       "itemId": "47993448759350",
-      "updatedAt": 1794532143566,
-      "timeStr": "07:09 PM"
+      "updatedAt": 1794533012527,
+      "timeStr": "07:23 PM"
     },
     "swsh-fusion-strike-booster-box": {
       "ruleId": "swsh-fusion-strike-booster-box",
@@ -2298,14 +2298,14 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU ($908 60D AVG) ⟧",
       "isElasticDip": false,
-      "url": "https://pkmncolosseum.com/products/sealed-fusion-strike-booster-box-preorder-ships-around-11-12-2021",
+      "url": "https://pkmncolosseum.com/cart/40392658190390:1?payment=shop_pay",
       "productUrl": "https://pkmncolosseum.com/products/sealed-fusion-strike-booster-box-preorder-ships-around-11-12-2021",
       "cart1xUrl": "https://pkmncolosseum.com/cart/40392658190390:1?payment=shop_pay",
       "cart2xUrl": "https://pkmncolosseum.com/cart/40392658190390:2?payment=shop_pay",
       "cart3xUrl": "https://pkmncolosseum.com/cart/40392658190390:3?payment=shop_pay",
       "itemId": "40392658190390",
-      "updatedAt": 1794532143354,
-      "timeStr": "07:09 PM"
+      "updatedAt": 1794533012457,
+      "timeStr": "07:23 PM"
     },
     "swsh-astral-radiance-etb": {
       "ruleId": "swsh-astral-radiance-etb",
@@ -2338,14 +2338,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-56% 14D • 19D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://pkmncolosseum.com/products/sealed-astral-radiance-elite-trainer-box-preorder",
+      "url": "https://pkmncolosseum.com/cart/40033864286262:1?payment=shop_pay",
       "productUrl": "https://pkmncolosseum.com/products/sealed-astral-radiance-elite-trainer-box-preorder",
       "cart1xUrl": "https://pkmncolosseum.com/cart/40033864286262:1?payment=shop_pay",
       "cart2xUrl": "https://pkmncolosseum.com/cart/40033864286262:2?payment=shop_pay",
       "cart3xUrl": "https://pkmncolosseum.com/cart/40033864286262:3?payment=shop_pay",
       "itemId": "40033864286262",
-      "updatedAt": 1794532143394,
-      "timeStr": "07:09 PM"
+      "updatedAt": 1794533012473,
+      "timeStr": "07:23 PM"
     },
     "swsh-chilling-reign-shadow-etb": {
       "ruleId": "swsh-chilling-reign-shadow-etb",
@@ -2418,12 +2418,12 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU ($2837 60D AVG) ⟧",
       "isElasticDip": false,
-      "url": "https://pkmncolosseum.com/products/astral-radiance-booster-box-case-sealed",
+      "url": "https://pkmncolosseum.com/cart/47993317687350:1?payment=shop_pay",
       "productUrl": "https://pkmncolosseum.com/products/astral-radiance-booster-box-case-sealed",
       "cart1xUrl": "https://pkmncolosseum.com/cart/47993317687350:1?payment=shop_pay",
       "itemId": "47993317687350",
-      "updatedAt": 1794532143570,
-      "timeStr": "07:09 PM"
+      "updatedAt": 1794533012529,
+      "timeStr": "07:23 PM"
     },
     "me-ascended-heroes-etb-case": {
       "ruleId": "me-ascended-heroes-etb-case",
@@ -2456,12 +2456,12 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-56% 14D • 18D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://blackwolfcollectibles.com/products/ascended-heroes-elite-trainer-box-case-pre-sale",
+      "url": "https://blackwolfcollectibles.com/cart/51880094269714:1?payment=shop_pay",
       "productUrl": "https://blackwolfcollectibles.com/products/ascended-heroes-elite-trainer-box-case-pre-sale",
       "cart1xUrl": "https://blackwolfcollectibles.com/cart/51880094269714:1?payment=shop_pay",
       "itemId": "51880094269714",
-      "updatedAt": 1794532115022,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533051409,
+      "timeStr": "07:24 PM"
     },
     "sv-obsidian-flames-etb": {
       "ruleId": "sv-obsidian-flames-etb",
@@ -2494,14 +2494,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-35% 14D • 19D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://common-lands.com/products/obsidian-flames-elite-trainer-box",
+      "url": "https://common-lands.com/cart/46489281659100:1?payment=shop_pay",
       "productUrl": "https://common-lands.com/products/obsidian-flames-elite-trainer-box",
       "cart1xUrl": "https://common-lands.com/cart/46489281659100:1?payment=shop_pay",
       "cart2xUrl": "https://common-lands.com/cart/46489281659100:2?payment=shop_pay",
       "cart3xUrl": "https://common-lands.com/cart/46489281659100:3?payment=shop_pay",
       "itemId": "46489281659100",
-      "updatedAt": 1794532103694,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533041470,
+      "timeStr": "07:24 PM"
     },
     "swsh-astral-radiance-booster-box": {
       "ruleId": "swsh-astral-radiance-booster-box",
@@ -2548,21 +2548,21 @@
       "ruleName": "30th Celebration ETB",
       "formFactor": "ETB",
       "era": "Mega Evolution (2025-2026)",
-      "title": "30th Celebration Elite Trainer Box Purchase",
-      "retailer": "AVA TCG",
-      "price": 107.49,
+      "title": "30th Celebration Elite Trainer Box",
+      "retailer": "Derium and Wifey",
+      "price": 108.99,
       "shippingPrice": 6.99,
-      "landedPrice": 114.48,
-      "freeShipNote": "$107.49 Shelf + $6.99 Est. Ship ($114.48 Landed)",
+      "landedPrice": 115.98,
+      "freeShipNote": "$108.99 Shelf + $6.99 Est. Ship ($115.98 Landed)",
       "triggerPrice": 70,
       "msrp": 54.99,
       "marketValue": 109.99,
-      "gapDollars": 44.48,
-      "gapPct": 63.5,
-      "rawGapDollars": 37.49,
-      "rawGapPct": 53.6,
+      "gapDollars": 45.98,
+      "gapPct": 65.7,
+      "rawGapDollars": 38.99,
+      "rawGapPct": 55.7,
       "packCount": 9,
-      "pricePerPack": 12.72,
+      "pricePerPack": 12.89,
       "isRipValueLeader": false,
       "owned": true,
       "isPreOrder": false,
@@ -2574,14 +2574,14 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU ($112 60D AVG) ⟧",
       "isElasticDip": false,
-      "url": "https://www.avatcg.com/products/30th-celebration-elite-trainer-box",
-      "productUrl": "https://www.avatcg.com/products/30th-celebration-elite-trainer-box",
-      "cart1xUrl": "https://www.avatcg.com/cart/67888300523822:1?payment=shop_pay",
-      "cart2xUrl": "https://www.avatcg.com/cart/67888300523822:2?payment=shop_pay",
-      "cart3xUrl": "https://www.avatcg.com/cart/67888300523822:3?payment=shop_pay",
-      "itemId": "67888300523822",
-      "updatedAt": 1794532104444,
-      "timeStr": "07:08 PM"
+      "url": "https://deriumandwifey.com/cart/67637471117621:1?payment=shop_pay",
+      "productUrl": "https://deriumandwifey.com/products/30th-celebration-elite-trainer-box",
+      "cart1xUrl": "https://deriumandwifey.com/cart/67637471117621:1?payment=shop_pay",
+      "cart2xUrl": "https://deriumandwifey.com/cart/67637471117621:2?payment=shop_pay",
+      "cart3xUrl": "https://deriumandwifey.com/cart/67637471117621:3?payment=shop_pay",
+      "itemId": "67637471117621",
+      "updatedAt": 1794533045190,
+      "timeStr": "07:24 PM"
     },
     "sv-temporal-forces-wake-etb": {
       "ruleId": "sv-temporal-forces-wake-etb",
@@ -2614,14 +2614,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-56% 14D • 12D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://theawesomecardshop.com/products/pokemon-scarlet-violet-temporal-forces-elite-trainer-box",
+      "url": "https://theawesomecardshop.com/cart/48668761751873:1?payment=shop_pay",
       "productUrl": "https://theawesomecardshop.com/products/pokemon-scarlet-violet-temporal-forces-elite-trainer-box",
       "cart1xUrl": "https://theawesomecardshop.com/cart/48668761751873:1?payment=shop_pay",
       "cart2xUrl": "https://theawesomecardshop.com/cart/48668761751873:2?payment=shop_pay",
       "cart3xUrl": "https://theawesomecardshop.com/cart/48668761751873:3?payment=shop_pay",
       "itemId": "48668761751873",
-      "updatedAt": 1794532095326,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533097273,
+      "timeStr": "07:24 PM"
     },
     "sv-paradox-rift-roaring-etb": {
       "ruleId": "sv-paradox-rift-roaring-etb",
@@ -2654,14 +2654,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-58% 14D • 12D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://pkmncolosseum.com/products/paradox-rift-elite-trainer-box-roaring-moon",
+      "url": "https://pkmncolosseum.com/cart/47773885628470:1?payment=shop_pay",
       "productUrl": "https://pkmncolosseum.com/products/paradox-rift-elite-trainer-box-roaring-moon",
       "cart1xUrl": "https://pkmncolosseum.com/cart/47773885628470:1?payment=shop_pay",
       "cart2xUrl": "https://pkmncolosseum.com/cart/47773885628470:2?payment=shop_pay",
       "cart3xUrl": "https://pkmncolosseum.com/cart/47773885628470:3?payment=shop_pay",
       "itemId": "47773885628470",
-      "updatedAt": 1794532143520,
-      "timeStr": "07:09 PM"
+      "updatedAt": 1794533012510,
+      "timeStr": "07:23 PM"
     },
     "sv-base-miraidon-etb": {
       "ruleId": "sv-base-miraidon-etb",
@@ -2694,14 +2694,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-55% 14D • 12D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://oakspokebox.com/products/scarlet-violet-elite-trainer-box-miraidon",
+      "url": "https://oakspokebox.com/cart/48554903011428:1?payment=shop_pay",
       "productUrl": "https://oakspokebox.com/products/scarlet-violet-elite-trainer-box-miraidon",
       "cart1xUrl": "https://oakspokebox.com/cart/48554903011428:1?payment=shop_pay",
       "cart2xUrl": "https://oakspokebox.com/cart/48554903011428:2?payment=shop_pay",
       "cart3xUrl": "https://oakspokebox.com/cart/48554903011428:3?payment=shop_pay",
       "itemId": "48554903011428",
-      "updatedAt": 1794532108393,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533045849,
+      "timeStr": "07:24 PM"
     },
     "sv-base-koraidon-etb": {
       "ruleId": "sv-base-koraidon-etb",
@@ -2734,14 +2734,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-55% 14D • 12D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://oakspokebox.com/products/scarlet-violet-elite-trainer-box-koraidon",
+      "url": "https://oakspokebox.com/cart/48554901536868:1?payment=shop_pay",
       "productUrl": "https://oakspokebox.com/products/scarlet-violet-elite-trainer-box-koraidon",
       "cart1xUrl": "https://oakspokebox.com/cart/48554901536868:1?payment=shop_pay",
       "cart2xUrl": "https://oakspokebox.com/cart/48554901536868:2?payment=shop_pay",
       "cart3xUrl": "https://oakspokebox.com/cart/48554901536868:3?payment=shop_pay",
       "itemId": "48554901536868",
-      "updatedAt": 1794532108397,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533045852,
+      "timeStr": "07:24 PM"
     },
     "sv-paradox-rift-valiant-etb": {
       "ruleId": "sv-paradox-rift-valiant-etb",
@@ -2774,14 +2774,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-58% 14D • 12D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://pkmncolosseum.com/products/paradox-rift-elite-trainer-box-iron-valiant",
+      "url": "https://pkmncolosseum.com/cart/47773878190134:1?payment=shop_pay",
       "productUrl": "https://pkmncolosseum.com/products/paradox-rift-elite-trainer-box-iron-valiant",
       "cart1xUrl": "https://pkmncolosseum.com/cart/47773878190134:1?payment=shop_pay",
       "cart2xUrl": "https://pkmncolosseum.com/cart/47773878190134:2?payment=shop_pay",
       "cart3xUrl": "https://pkmncolosseum.com/cart/47773878190134:3?payment=shop_pay",
       "itemId": "47773878190134",
-      "updatedAt": 1794532143527,
-      "timeStr": "07:09 PM"
+      "updatedAt": 1794533012512,
+      "timeStr": "07:23 PM"
     },
     "sv-temporal-forces-leaves-etb": {
       "ruleId": "sv-temporal-forces-leaves-etb",
@@ -2814,14 +2814,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-56% 14D • 12D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://collectorstore.com/products/pokemon-scarlet-violet-temporal-forces-elite-trainer-box-iron-leaves",
+      "url": "https://collectorstore.com/cart/55457467826344:1?payment=shop_pay",
       "productUrl": "https://collectorstore.com/products/pokemon-scarlet-violet-temporal-forces-elite-trainer-box-iron-leaves",
       "cart1xUrl": "https://collectorstore.com/cart/55457467826344:1?payment=shop_pay",
       "cart2xUrl": "https://collectorstore.com/cart/55457467826344:2?payment=shop_pay",
       "cart3xUrl": "https://collectorstore.com/cart/55457467826344:3?payment=shop_pay",
       "itemId": "55457467826344",
-      "updatedAt": 1794532141780,
-      "timeStr": "07:09 PM"
+      "updatedAt": 1794533010390,
+      "timeStr": "07:23 PM"
     },
     "me-30th-celebration-bundle": {
       "ruleId": "me-30th-celebration-bundle",
@@ -2854,14 +2854,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-12% 14D • 19D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://kanzengames.com/products/pokemon-30th-celebration-booster-bundle",
+      "url": "https://kanzengames.com/cart/48892450144471:1?payment=shop_pay",
       "productUrl": "https://kanzengames.com/products/pokemon-30th-celebration-booster-bundle",
       "cart1xUrl": "https://kanzengames.com/cart/48892450144471:1?payment=shop_pay",
       "cart2xUrl": "https://kanzengames.com/cart/48892450144471:2?payment=shop_pay",
       "cart3xUrl": "https://kanzengames.com/cart/48892450144471:3?payment=shop_pay",
       "itemId": "48892450144471",
-      "updatedAt": 1794532125266,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533024984,
+      "timeStr": "07:23 PM"
     },
     "sv-surging-sparks-etb": {
       "ruleId": "sv-surging-sparks-etb",
@@ -2894,14 +2894,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-26% 14D • 18D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://collectorstore.com/products/pokemon-scarlet-violet-surging-sparks-elite-trainer-box",
+      "url": "https://collectorstore.com/cart/50313323970728:1?payment=shop_pay",
       "productUrl": "https://collectorstore.com/products/pokemon-scarlet-violet-surging-sparks-elite-trainer-box",
       "cart1xUrl": "https://collectorstore.com/cart/50313323970728:1?payment=shop_pay",
       "cart2xUrl": "https://collectorstore.com/cart/50313323970728:2?payment=shop_pay",
       "cart3xUrl": "https://collectorstore.com/cart/50313323970728:3?payment=shop_pay",
       "itemId": "50313323970728",
-      "updatedAt": 1794532141702,
-      "timeStr": "07:09 PM"
+      "updatedAt": 1794533010334,
+      "timeStr": "07:23 PM"
     },
     "sv-shrouded-fable-etb": {
       "ruleId": "sv-shrouded-fable-etb",
@@ -2934,14 +2934,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-58% 14D • 19D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://cardshq.com/products/shrouded-fable-pokemon-elite-trainer-box",
+      "url": "https://cardshq.com/cart/45126065324195:1?payment=shop_pay",
       "productUrl": "https://cardshq.com/products/shrouded-fable-pokemon-elite-trainer-box",
       "cart1xUrl": "https://cardshq.com/cart/45126065324195:1?payment=shop_pay",
       "cart2xUrl": "https://cardshq.com/cart/45126065324195:2?payment=shop_pay",
       "cart3xUrl": "https://cardshq.com/cart/45126065324195:3?payment=shop_pay",
       "itemId": "45126065324195",
-      "updatedAt": 1794532100270,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533038998,
+      "timeStr": "07:23 PM"
     },
     "me-perfect-order-booster-case": {
       "ruleId": "me-perfect-order-booster-case",
@@ -2974,12 +2974,12 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU ($1253 60D AVG) ⟧",
       "isElasticDip": false,
-      "url": "https://blackwolfcollectibles.com/products/perfect-order-booster-box-case-pre-sale",
+      "url": "https://blackwolfcollectibles.com/cart/52045274022162:1?payment=shop_pay",
       "productUrl": "https://blackwolfcollectibles.com/products/perfect-order-booster-box-case-pre-sale",
       "cart1xUrl": "https://blackwolfcollectibles.com/cart/52045274022162:1?payment=shop_pay",
       "itemId": "52045274022162",
-      "updatedAt": 1794532115549,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533051682,
+      "timeStr": "07:24 PM"
     },
     "me-chaos-rising-booster-case": {
       "ruleId": "me-chaos-rising-booster-case",
@@ -3012,12 +3012,12 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-27% 14D • 19D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://blackwolfcollectibles.com/products/chaos-rising-booster-box-case-pre-order",
+      "url": "https://blackwolfcollectibles.com/cart/52211991904530:1?payment=shop_pay",
       "productUrl": "https://blackwolfcollectibles.com/products/chaos-rising-booster-box-case-pre-order",
       "cart1xUrl": "https://blackwolfcollectibles.com/cart/52211991904530:1?payment=shop_pay",
       "itemId": "52211991904530",
-      "updatedAt": 1794532115140,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533051472,
+      "timeStr": "07:24 PM"
     },
     "swsh-brilliant-stars-booster-case": {
       "ruleId": "swsh-brilliant-stars-booster-case",
@@ -3032,7 +3032,7 @@
       "freeShipNote": "+FREE Shipping",
       "triggerPrice": 978,
       "msrp": 860,
-      "marketValue": 3133.33,
+      "marketValue": 3133.23,
       "gapDollars": 2154.56,
       "gapPct": 220.3,
       "rawGapDollars": 2154.56,
@@ -3050,12 +3050,12 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU ($1811 60D AVG) ⟧",
       "isElasticDip": false,
-      "url": "https://kanzengames.com/products/sword-shield-brilliant-stars-booster-case",
+      "url": "https://kanzengames.com/cart/47012534124759:1?payment=shop_pay",
       "productUrl": "https://kanzengames.com/products/sword-shield-brilliant-stars-booster-case",
       "cart1xUrl": "https://kanzengames.com/cart/47012534124759:1?payment=shop_pay",
       "itemId": "47012534124759",
-      "updatedAt": 1794532125302,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533025053,
+      "timeStr": "07:23 PM"
     },
     "sv-prismatic-evolutions-etb": {
       "ruleId": "sv-prismatic-evolutions-etb",
@@ -3088,14 +3088,14 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-13% 14D • 22D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://collectorstore.com/products/pokemon-scarlet-violet-prismatic-evolutions-elite-trainer-box",
+      "url": "https://collectorstore.com/cart/51120892444840:1?payment=shop_pay",
       "productUrl": "https://collectorstore.com/products/pokemon-scarlet-violet-prismatic-evolutions-elite-trainer-box",
       "cart1xUrl": "https://collectorstore.com/cart/51120892444840:1?payment=shop_pay",
       "cart2xUrl": "https://collectorstore.com/cart/51120892444840:2?payment=shop_pay",
       "cart3xUrl": "https://collectorstore.com/cart/51120892444840:3?payment=shop_pay",
       "itemId": "51120892444840",
-      "updatedAt": 1794532141820,
-      "timeStr": "07:09 PM"
+      "updatedAt": 1794533010429,
+      "timeStr": "07:23 PM"
     },
     "me-phantasmal-flames-booster-box": {
       "ruleId": "me-phantasmal-flames-booster-box",
@@ -3128,14 +3128,14 @@
       "trendSignal": "STABLE_ACCUMULATE",
       "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU ($312 60D AVG) ⟧",
       "isElasticDip": false,
-      "url": "https://deriumandwifey.com/products/phantasmal-flames-booster-box",
+      "url": "https://deriumandwifey.com/cart/51501724369205:1?payment=shop_pay",
       "productUrl": "https://deriumandwifey.com/products/phantasmal-flames-booster-box",
       "cart1xUrl": "https://deriumandwifey.com/cart/51501724369205:1?payment=shop_pay",
       "cart2xUrl": "https://deriumandwifey.com/cart/51501724369205:2?payment=shop_pay",
       "cart3xUrl": "https://deriumandwifey.com/cart/51501724369205:3?payment=shop_pay",
       "itemId": "51501724369205",
-      "updatedAt": 1794532107974,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533045255,
+      "timeStr": "07:24 PM"
     },
     "me-delta-reign-etb": {
       "ruleId": "me-delta-reign-etb",
@@ -3169,14 +3169,14 @@
       "trendSignal": "BEATS_MARKET_FLOOR",
       "trendVerdictLabel": "◈ ⟦ BEATS $80 MARKET FLOOR (-6%) // SOLID PRE-LAUNCH GRAB ⟧",
       "isElasticDip": false,
-      "url": "https://elite4tcg.com/products/delta-reign-elite-trainer-box",
+      "url": "https://elite4tcg.com/cart/45797907038384:1?payment=shop_pay",
       "productUrl": "https://elite4tcg.com/products/delta-reign-elite-trainer-box",
       "cart1xUrl": "https://elite4tcg.com/cart/45797907038384:1?payment=shop_pay",
       "cart2xUrl": "https://elite4tcg.com/cart/45797907038384:2?payment=shop_pay",
       "cart3xUrl": "https://elite4tcg.com/cart/45797907038384:3?payment=shop_pay",
       "itemId": "45797907038384",
-      "updatedAt": 1794532107293,
-      "timeStr": "07:08 PM"
+      "updatedAt": 1794533044229,
+      "timeStr": "07:24 PM"
     },
     "me-delta-reign-booster-box": {
       "ruleId": "me-delta-reign-booster-box",
@@ -3210,14 +3210,14 @@
       "trendSignal": "BEATS_MARKET_FLOOR",
       "trendVerdictLabel": "◈ ⟦ BEATS $200 MARKET FLOOR (-10%) // SOLID PRE-LAUNCH GRAB ⟧",
       "isElasticDip": false,
-      "url": "https://tradingcardmarket.com/products/pokemon-mega-evolution-delta-reign-booster-box",
+      "url": "https://tradingcardmarket.com/cart/48250019348532:1?payment=shop_pay",
       "productUrl": "https://tradingcardmarket.com/products/pokemon-mega-evolution-delta-reign-booster-box",
       "cart1xUrl": "https://tradingcardmarket.com/cart/48250019348532:1?payment=shop_pay",
       "cart2xUrl": "https://tradingcardmarket.com/cart/48250019348532:2?payment=shop_pay",
       "cart3xUrl": "https://tradingcardmarket.com/cart/48250019348532:3?payment=shop_pay",
       "itemId": "48250019348532",
-      "updatedAt": 1794532075559,
-      "timeStr": "07:07 PM"
+      "updatedAt": 1794533018825,
+      "timeStr": "07:23 PM"
     },
     "me-30th-celebration-etb-case": {
       "ruleId": "me-30th-celebration-etb-case",
@@ -3250,12 +3250,12 @@
       "trendSignal": "FALLING_KNIFE_WAIT",
       "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-40% 14D • 15D REAL) // HOLD OFF ⟧",
       "isElasticDip": false,
-      "url": "https://allpoketcg.com/products/30th-celebration-elite-trainer-box-case",
+      "url": "https://allpoketcg.com/cart/68974476132594:1?payment=shop_pay",
       "productUrl": "https://allpoketcg.com/products/30th-celebration-elite-trainer-box-case",
       "cart1xUrl": "https://allpoketcg.com/cart/68974476132594:1?payment=shop_pay",
       "itemId": "68974476132594",
-      "updatedAt": 1794532146617,
-      "timeStr": "07:09 PM"
+      "updatedAt": 1794533013940,
+      "timeStr": "07:23 PM"
     }
   },
   "me-pitch-black-etb": {
@@ -3287,8 +3287,8 @@
     "cart3xUrl": "https://cardpopusa.com/cart/53898777002348:3?payment=shop_pay",
     "itemId": "53898777002348",
     "inStock": true,
-    "updatedAt": 1794532103123,
-    "timeStr": "07:08 PM"
+    "updatedAt": 1794533040583,
+    "timeStr": "07:24 PM"
   },
   "me-perfect-order-etb": {
     "ruleId": "me-perfect-order-etb",
@@ -3320,8 +3320,8 @@
     "cart3xUrl": "https://cardpopusa.com/cart/53330822725996:3?payment=shop_pay",
     "itemId": "53330822725996",
     "inStock": true,
-    "updatedAt": 1794532103061,
-    "timeStr": "07:08 PM"
+    "updatedAt": 1794533040549,
+    "timeStr": "07:24 PM"
   },
   "me-pitch-black-booster-box": {
     "ruleId": "me-pitch-black-booster-box",
@@ -3352,8 +3352,8 @@
     "cart3xUrl": "https://cardpopusa.com/cart/53898766811500:3?payment=shop_pay",
     "itemId": "53898766811500",
     "inStock": true,
-    "updatedAt": 1794532103190,
-    "timeStr": "07:08 PM"
+    "updatedAt": 1794533040631,
+    "timeStr": "07:24 PM"
   },
   "sv-prismatic-evolutions-bundle": {
     "ruleId": "sv-prismatic-evolutions-bundle",
@@ -3375,8 +3375,8 @@
     "statusTag": "⟦ CLOSE CALL (+$4.99 OVER TARGET — IN CUSHION) ⟧",
     "isCloseCall": true,
     "closeCallDelta": 4.99,
-    "trendSignal": "UPTREND_LAG_DEAL",
-    "trendVerdictLabel": "◈ ⟦ SUPPLY TIGHTENING (+44% 60D) // SLIDER CAPPED ⟧",
+    "trendSignal": "STABLE_ACCUMULATE",
+    "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU (-4% VS $80 MKT) ⟧",
     "isElasticDip": false,
     "url": "https://redraccoongames.com/cart/55100996976939:1",
     "productUrl": "https://redraccoongames.com/products/pokemon-prismatic-evolutions-booster-bundle",
@@ -3417,15 +3417,15 @@
     "cart3xUrl": "https://kanzengames.com/cart/46153985851607:3?payment=shop_pay",
     "itemId": "46153985851607",
     "inStock": true,
-    "updatedAt": 1794532161330,
-    "timeStr": "07:09 PM"
+    "updatedAt": 1794533025058,
+    "timeStr": "07:23 PM"
   },
   "me-perfect-order-booster-box": {
     "ruleId": "me-perfect-order-booster-box",
     "ruleName": "Mega Evolution: Perfect Order Booster Box (36-Pack)",
     "formFactor": "Booster Box",
-    "title": "Pokemon: Mega Evolution Perfect Order Booster Box (ME03)",
-    "retailer": "Collector Store",
+    "title": "Pokemon Perfect Order Booster Box",
+    "retailer": "Pentix Games",
     "price": 164.99,
     "landedPrice": 164.99,
     "packCount": 36,
@@ -3439,18 +3439,18 @@
     "statusTag": "⟦ CLOSE CALL (+$3.35 OVER TARGET — IN CUSHION) ⟧",
     "isCloseCall": true,
     "closeCallDelta": 3.35,
-    "trendSignal": "STABLE_ACCUMULATE",
-    "trendVerdictLabel": "◈ ⟦ STABLE 60D PLATEAU ($172 60D AVG) ⟧",
+    "trendSignal": "FALLING_KNIFE_WAIT",
+    "trendVerdictLabel": "◈ ⟦ BLEEDING DOWN (-4% 14D • 19D REAL) // HOLD OFF ⟧",
     "isElasticDip": false,
-    "url": "https://collectorstore.com/cart/55323653210280:1?payment=shop_pay",
-    "productUrl": "https://collectorstore.com/products/pokemon-perfect-order-booster-box",
-    "cart1xUrl": "https://collectorstore.com/cart/55323653210280:1?payment=shop_pay",
-    "cart2xUrl": "https://collectorstore.com/cart/55323653210280:2?payment=shop_pay",
-    "cart3xUrl": "https://collectorstore.com/cart/55323653210280:3?payment=shop_pay",
-    "itemId": "55323653210280",
+    "url": "https://pentixgames.com/cart/47959105437954:1?payment=shop_pay",
+    "productUrl": "https://pentixgames.com/products/pokemon-perfect-order-booster-box",
+    "cart1xUrl": "https://pentixgames.com/cart/47959105437954:1?payment=shop_pay",
+    "cart2xUrl": "https://pentixgames.com/cart/47959105437954:2?payment=shop_pay",
+    "cart3xUrl": "https://pentixgames.com/cart/47959105437954:3?payment=shop_pay",
+    "itemId": "47959105437954",
     "inStock": true,
-    "updatedAt": 1794532141856,
-    "timeStr": "07:09 PM"
+    "updatedAt": 1794533048713,
+    "timeStr": "07:24 PM"
   },
   "sv-twilight-masquerade-etb": {
     "ruleId": "sv-twilight-masquerade-etb",
@@ -3481,8 +3481,8 @@
     "cart3xUrl": "https://collectorstore.com/cart/49566532468904:3?payment=shop_pay",
     "itemId": "49566532468904",
     "inStock": true,
-    "updatedAt": 1794532141797,
-    "timeStr": "07:09 PM"
+    "updatedAt": 1794533010405,
+    "timeStr": "07:23 PM"
   },
   "sv-shrouded-fable-bundle": {
     "ruleId": "sv-shrouded-fable-bundle",
@@ -3546,8 +3546,8 @@
     "cart3xUrl": "https://jbemporium.com/cart/46198650863713:3?payment=shop_pay",
     "itemId": "46198650863713",
     "inStock": true,
-    "updatedAt": 1794532108068,
-    "timeStr": "07:08 PM"
+    "updatedAt": 1794533044770,
+    "timeStr": "07:24 PM"
   },
   "sv-journey-together-booster-box": {
     "ruleId": "sv-journey-together-booster-box",
@@ -3578,8 +3578,8 @@
     "cart3xUrl": "https://kanzengames.com/cart/45904061825239:3?payment=shop_pay",
     "itemId": "45904061825239",
     "inStock": true,
-    "updatedAt": 1794532161343,
-    "timeStr": "07:09 PM"
+    "updatedAt": 1794533025067,
+    "timeStr": "07:23 PM"
   },
   "sv-prismatic-evolutions-etb-case": {
     "ruleId": "sv-prismatic-evolutions-etb-case",
@@ -3641,8 +3641,8 @@
     "cart3xUrl": "https://kanzengames.com/cart/48261786730711:3?payment=shop_pay",
     "itemId": "48261786730711",
     "inStock": true,
-    "updatedAt": 1794532161282,
-    "timeStr": "07:09 PM"
+    "updatedAt": 1794533025020,
+    "timeStr": "07:23 PM"
   },
   "me-delta-reign-booster-case": {
     "ruleId": "me-delta-reign-booster-case",
@@ -3769,8 +3769,8 @@
     "cart3xUrl": "https://kanzengames.com/cart/42852074193111:3?payment=shop_pay",
     "itemId": "42852074193111",
     "inStock": true,
-    "updatedAt": 1794532161385,
-    "timeStr": "07:09 PM"
+    "updatedAt": 1794533025092,
+    "timeStr": "07:23 PM"
   },
   "sv-journey-together-etb": {
     "ruleId": "sv-journey-together-etb",
@@ -3801,8 +3801,8 @@
     "cart3xUrl": "https://oakspokebox.com/cart/45665599848548:3?payment=shop_pay",
     "itemId": "45665599848548",
     "inStock": true,
-    "updatedAt": 1794532108376,
-    "timeStr": "07:08 PM"
+    "updatedAt": 1794533045841,
+    "timeStr": "07:24 PM"
   },
   "sv-base-booster-box": {
     "ruleId": "sv-base-booster-box",
@@ -3833,8 +3833,8 @@
     "cart3xUrl": "https://pkmncolosseum.com/cart/40665634701366:3?payment=shop_pay",
     "itemId": "40665634701366",
     "inStock": true,
-    "updatedAt": 1794532143362,
-    "timeStr": "07:09 PM"
+    "updatedAt": 1794533012459,
+    "timeStr": "07:23 PM"
   },
   "swsh-brilliant-stars-booster-box": {
     "ruleId": "swsh-brilliant-stars-booster-box",
@@ -3864,8 +3864,8 @@
     "cart3xUrl": "https://deriumandwifey.com/cart/51451749237045:3?payment=shop_pay",
     "itemId": "51451749237045",
     "inStock": true,
-    "updatedAt": 1794532107865,
-    "timeStr": "07:08 PM"
+    "updatedAt": 1794533045197,
+    "timeStr": "07:24 PM"
   },
   "sv-shrouded-fable-etb": {
     "ruleId": "sv-shrouded-fable-etb",
@@ -3896,8 +3896,8 @@
     "cart3xUrl": "https://cardshq.com/cart/45126065324195:3?payment=shop_pay",
     "itemId": "45126065324195",
     "inStock": true,
-    "updatedAt": 1794532100270,
-    "timeStr": "07:08 PM"
+    "updatedAt": 1794533038998,
+    "timeStr": "07:23 PM"
   },
   "sv-paradox-rift-roaring-etb": {
     "ruleId": "sv-paradox-rift-roaring-etb",
@@ -3960,8 +3960,8 @@
     "cart3xUrl": "https://collectorstore.com/cart/50313323970728:3?payment=shop_pay",
     "itemId": "50313323970728",
     "inStock": true,
-    "updatedAt": 1794532141702,
-    "timeStr": "07:09 PM"
+    "updatedAt": 1794533010334,
+    "timeStr": "07:23 PM"
   },
   "me-phantasmal-flames-etb": {
     "ruleId": "me-phantasmal-flames-etb",
@@ -3993,8 +3993,8 @@
     "cart3xUrl": "https://www.avatcg.com/cart/67888311894318:3?payment=shop_pay",
     "itemId": "67888311894318",
     "inStock": true,
-    "updatedAt": 1794532104391,
-    "timeStr": "07:08 PM"
+    "updatedAt": 1794533042289,
+    "timeStr": "07:24 PM"
   },
   "sv-prismatic-evolutions-etb": {
     "ruleId": "sv-prismatic-evolutions-etb",
@@ -4026,8 +4026,8 @@
     "cart3xUrl": "https://common-lands.com/cart/46189035290844:3?payment=shop_pay",
     "itemId": "46189035290844",
     "inStock": true,
-    "updatedAt": 1794532103655,
-    "timeStr": "07:08 PM"
+    "updatedAt": 1794533041440,
+    "timeStr": "07:24 PM"
   },
   "me-delta-reign-etb": {
     "ruleId": "me-delta-reign-etb",
@@ -4061,8 +4061,8 @@
     "cart3xUrl": "https://elite4tcg.com/cart/45797907038384:3?payment=shop_pay",
     "itemId": "45797907038384",
     "inStock": true,
-    "updatedAt": 1794532107293,
-    "timeStr": "07:08 PM"
+    "updatedAt": 1794533044229,
+    "timeStr": "07:24 PM"
   },
   "me-delta-reign-booster-box": {
     "ruleId": "me-delta-reign-booster-box",
@@ -4094,8 +4094,8 @@
     "cart3xUrl": "https://tradingcardmarket.com/cart/48250019348532:3?payment=shop_pay",
     "itemId": "48250019348532",
     "inStock": true,
-    "updatedAt": 1794532075559,
-    "timeStr": "07:07 PM"
+    "updatedAt": 1794533018825,
+    "timeStr": "07:23 PM"
   },
   "me-30th-celebration-etb-case": {
     "ruleId": "me-30th-celebration-etb-case",
@@ -4124,7 +4124,7 @@
     "cart1xUrl": "https://allpoketcg.com/cart/68974476132594:1?payment=shop_pay",
     "itemId": "68974476132594",
     "inStock": true,
-    "updatedAt": 1794532146617,
-    "timeStr": "07:09 PM"
+    "updatedAt": 1794533013940,
+    "timeStr": "07:23 PM"
   }
 }

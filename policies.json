@@ -3160,7 +3160,7 @@
     "minStock": 1,
     "msrpCeiling": 860,
     "maxMarketBuyPrice": 978,
-    "estimatedMarketValue": 3133.36,
+    "estimatedMarketValue": 3133.2,
     "priority": "GRAIL",
     "cooldownMins": 60,
     "active": true,

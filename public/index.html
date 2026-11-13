@@ -1106,7 +1106,7 @@
           </div>
           <div>
             <label class="block text-[10px] font-bold uppercase text-slate-300 mb-1">Store / Seller</label>
-            <input id="claimStore" type="text" placeholder="e.g. Cooperstown Cards" class="w-full bg-[#0B0914] border border-white/15 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-cyan-400" />
+            <input id="claimStore" type="text" placeholder="e.g. Target 1P / Safari Zone" class="w-full bg-[#0B0914] border border-white/15 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-cyan-400" />
           </div>
         </div>
         <div class="grid grid-cols-3 gap-3">
@@ -1618,6 +1618,20 @@
           </div>
         </div>
 
+        <!-- GLOBAL INSTANT FUZZY SEARCH BAR (131 SKUs / 38 Wall Sets / 90 LGS Stores) -->
+        <div id="globalFuzzySearchWrap" class="mb-5 glass-card machined-card rounded-2xl px-4 py-2.5 border border-cyan-400/35 flex flex-wrap items-center justify-between gap-3" style="position: relative; z-index: 15;">
+          <div class="flex items-center gap-2.5 flex-1 min-w-[240px]">
+            <svg class="w-4 h-4 text-cyan-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="11" cy="11" r="7"/><line x1="20" y1="20" x2="16.2" y2="16.2"/></svg>
+            <input id="globalFuzzySearchInput" type="text" placeholder="Instant Fuzzy Search across all 131 SKUs &amp; 38 Wall Sets (try: paldean, 151, destined, 30th, delta, booster box)..."
+                   oninput="setGlobalFuzzyQuery(this.value, 'GLOBAL')"
+                   class="bg-transparent text-xs sm:text-sm text-white placeholder-slate-400 w-full focus:outline-none font-medium" />
+            <button id="globalFuzzyClearBtn" onclick="clearGlobalFuzzyQuery()" class="hidden px-2 py-0.5 rounded-md bg-white/10 hover:bg-rose-500/30 text-slate-200 hover:text-rose-200 text-xs font-mono-num font-bold shrink-0 transition" title="Clear global search">&times; Clear</button>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <span id="globalFuzzyMatchBadge" class="pokedex-badge px-2.5 py-0.5 rounded-full text-[10px] font-mono-num font-extrabold bg-cyan-500/15 text-cyan-200 border border-cyan-400/35">131 SKUs • 38 Wall Sets Indexed</span>
+          </div>
+        </div>
+
         <!-- =================================================================== -->
         <!-- VIEW 1: LIVE COMMAND (CLEAN, FOCUSED HOME VIEW)                     -->
         <!-- =================================================================== -->
@@ -1680,9 +1694,9 @@
                   </span>
                   <span id="kpiStoreSweepHealth" class="font-mono-num text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-200 border border-cyan-400/40 whitespace-nowrap shrink-0">51/51 LGS + 9 Big-Box</span>
                 </div>
-                <div onclick="jumpToUnderTriggerDeals()" title="Click to filter Live Deal Feed to Targets Under Buy Trigger and scroll down" class="flex items-baseline gap-2.5 mb-2 cursor-pointer group">
+                <div onclick="jumpToUnderTriggerDeals()" title="Click to focus actionable Pinned + Cautious Watch deals and scroll down" class="flex items-baseline gap-2.5 mb-2 cursor-pointer group">
                   <div id="kpiInStockCount" class="hero-kpi-value font-pokedex font-black text-emerald-400 group-hover:text-cyan-300 transition">0</div>
-                  <div class="text-xs text-slate-200 group-hover:text-cyan-200 font-bold whitespace-nowrap transition underline-offset-4 group-hover:underline">Targets Under Buy Trigger &darr;</div>
+                  <div class="text-xs text-slate-200 group-hover:text-cyan-200 font-bold whitespace-nowrap transition underline-offset-4 group-hover:underline">Actionable Deals (Pinned + Watch) &darr;</div>
                 </div>
                 <!-- Scannable Compact Telemetry Mini-Table (3 Clickable Rows with Discount %) -->
                 <div id="kpiActiveRadarPills" class="space-y-1.5 mt-1"></div>
@@ -1701,26 +1715,26 @@
                     <span class="w-1.5 h-1.5 rounded-full bg-cyan-300 shadow-[0_0_8px_#00F0FF]"></span>
                     <span>Unicorn MSRP Trophy Counter</span>
                   </span>
-                  <span class="pokedex-badge font-mono-num text-[10px] font-black px-2 py-0.5 rounded bg-cyan-400/25 text-cyan-100 border border-cyan-300/50 whitespace-nowrap shrink-0">DEFCON-1 OVERRIDE</span>
+                  <span class="pokedex-badge font-mono-num text-[10px] font-black px-2 py-0.5 rounded bg-cyan-400/25 text-cyan-100 border border-cyan-300/50 whitespace-nowrap shrink-0">1P BIG-BOX ONLY</span>
                 </div>
                 <div class="flex items-baseline gap-3 my-1">
-                  <div id="kpiMsrpHitCount" class="hero-kpi-value font-pokedex font-black text-cyan-300">1</div>
-                  <div class="text-xs font-bold text-white whitespace-nowrap">True Retail MSRP Catches</div>
+                  <div id="kpiMsrpHitCount" class="hero-kpi-value font-pokedex font-black text-cyan-300">0</div>
+                  <div class="text-xs font-bold text-white whitespace-nowrap">True 1P Retail MSRP Catches</div>
                 </div>
                 <div id="kpiLatestMsrpCatchBox" class="mt-2 p-2.5 rounded-xl bg-black/45 border border-cyan-400/35 text-xs">
                   <div class="flex items-center justify-between gap-2">
-                    <span class="set-title-pokedex font-extrabold text-white truncate">Mega Evolution: Chaos Rising ETB</span>
-                    <span class="font-mono-num font-black text-emerald-400 shrink-0">$51.00</span>
+                    <span class="set-title-pokedex font-extrabold text-cyan-100 truncate">0 Catches Logged • Sensors Armed</span>
+                    <span class="font-mono-num font-black text-emerald-400 shrink-0">&le; MSRP</span>
                   </div>
-                  <div class="text-[11px] text-cyan-100 mt-1 flex items-center justify-between gap-2">
-                    <span class="truncate">Cooperstown Cards • 7% Below $54.99 MSRP</span>
-                    <button onclick="switchMainView('CONQUERED_VAULT')" class="text-amber-300 font-bold hover:underline whitespace-nowrap shrink-0">Trophy #2</button>
+                  <div class="text-[11px] text-slate-300 mt-1 flex items-center justify-between gap-2">
+                    <span class="truncate">9 Big-Box 1P Channels + Public Restock Wire Armed</span>
+                    <button onclick="switchMainView('ENGINE_ROOM')" class="text-cyan-300 font-bold hover:underline whitespace-nowrap shrink-0">Sensors &rarr;</button>
                   </div>
                 </div>
               </div>
               <div class="pt-2.5 mt-2.5 border-t border-cyan-400/25 flex items-center justify-between gap-2 text-[11px] text-cyan-100 whitespace-nowrap">
-                <span class="truncate">Bypasses Vault Lock on &le; MSRP</span>
-                <span class="font-mono-num font-bold text-amber-300 shrink-0">Order #B108C090-96CCFE-CA0AF</span>
+                <span class="truncate">Bypasses Vault Lock on 1P &le; MSRP</span>
+                <span id="kpiMsrpFooterRight" class="font-mono-num font-bold text-cyan-300 shrink-0">Strict 1P Retail Gate Active</span>
               </div>
             </div>
           </div>
@@ -1735,7 +1749,7 @@
                     ◈ ⟦ CAPITAL ADVISOR // NEXT BEST BUY &amp; AUTO-PILOT DIP BRAIN ⟧
                   </h2>
                   <span id="advisorFamilySummaryBadge" class="pokedex-badge px-2.5 py-0.5 rounded-full text-[10px] font-mono-num font-extrabold bg-purple-500/20 text-purple-200 border border-purple-400/40">
-                    RULE OF 3: 8 WALL • 0 DAD RIP • 0 LOGAN RIP
+                    ETB WALL SLOTS: 8 LOGAN WALL • 0 OFFICE SEALED • 0 DAD RIP
                   </span>
                 </div>
                 <p class="text-[11px] text-slate-300 mt-0.5">
@@ -1778,9 +1792,12 @@
                 <p id="liveDealFeedSubtitle" class="text-[11px] text-slate-300 mt-0.5">Real-time in-stock hits across 51 Shopify LGS stores &amp; 9 Big-Box retailers</p>
               </div>
               <div class="flex items-center gap-1.5 flex-wrap">
-                <button onclick="setDealFeedFilter('ALL')" id="dfPill_ALL" class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-cyan-500 text-slate-950 whitespace-nowrap transition">All In-Stock</button>
+                <input id="liveCommandSearchInput" type="text" placeholder="Quick-filter feed or 131 SKUs..."
+                       oninput="setGlobalFuzzyQuery(this.value, 'LIVE_COMMAND')"
+                       class="bg-[#0B0914]/90 border border-white/15 focus:border-cyan-400 rounded-lg px-2.5 py-1 text-[11px] text-white placeholder-slate-400 w-48 focus:outline-none" />
+                <button onclick="setDealFeedFilter('ALL')" id="dfPill_ALL" class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-cyan-500 text-slate-950 whitespace-nowrap transition">Actionable Board</button>
                 <button onclick="setDealFeedFilter('UNDER_TRIGGER')" id="dfPill_UNDER_TRIGGER" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#161329]/80 text-slate-200 border border-white/10 hover:text-white whitespace-nowrap transition">Under Trigger</button>
-                <button onclick="setDealFeedFilter('NEAR_MISSES')" id="dfPill_NEAR_MISSES" class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-[#161329]/80 text-orange-300 border border-orange-500/40 hover:bg-orange-500/20 whitespace-nowrap transition inline-flex items-center gap-1.5" title="In-stock items across all 91 stores that are within +1% to +12% of your buy trigger">
+                <button onclick="setDealFeedFilter('NEAR_MISSES')" id="dfPill_NEAR_MISSES" class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-[#161329]/80 text-orange-300 border border-orange-500/40 hover:bg-orange-500/20 whitespace-nowrap transition inline-flex items-center gap-1.5" title="In-stock items across all 90 stores that are within +1% to +12% of your buy trigger">
                   <svg class="w-3 h-3 text-orange-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>
                   <span id="dfPillNearMissesText">⟦ NEAR MISSES (+1% TO +12%) ⟧</span>
                 </button>
@@ -1831,6 +1848,15 @@
             </div>
 
             <div id="liveDealFeedGrid" class="live-deal-grid"></div>
+
+            <!-- Collapsed Muted / Hold-Off Shelf Drawer (HOLD OFF, > TCGPlayer, > Slider, 3/3 Stacked) -->
+            <div id="mutedHoldOffDrawerWrap" class="hidden pt-3 border-t border-white/10 space-y-3">
+              <button type="button" id="mutedHoldOffToggleBtn" onclick="toggleMutedDealDrawer()" class="w-full py-2.5 px-4 rounded-xl bg-black/50 hover:bg-white/[0.06] border border-white/15 hover:border-slate-400/40 flex items-center justify-between gap-3 text-xs font-pokedex font-extrabold text-slate-300 hover:text-white transition">
+                <span id="mutedHoldOffToggleLabel">[+ Show Muted / Hold-Off Shelf (0)]</span>
+                <span class="text-[10px] font-mono-num text-slate-400">Auto-hidden: &gt; TCGPlayer Comp • &gt; Slider • Falling Knife Hold-Off • 3/3 Stacked</span>
+              </button>
+              <div id="mutedHoldOffDrawerGrid" class="hidden live-deal-grid opacity-90"></div>
+            </div>
           </div>
 
           <!-- Collapsible Quiet Singles & Favorites Offload Radar (Gyarados Watchlist — 100% Isolated from Sealed Alerts) -->
@@ -1912,7 +1938,8 @@
           <div class="flex flex-col lg:flex-row items-stretch lg:items-center gap-2.5">
             <select id="bountySkuSelect" onchange="runBountyRecon(this.value, false)" class="lg:w-80 bg-[#0B0914]/90 border border-white/15 rounded-xl px-3 py-2 text-xs text-white font-semibold focus:outline-none focus:border-cyan-400"></select>
             <div class="flex-1 flex items-center bg-[#0B0914]/90 border border-white/15 rounded-xl overflow-hidden focus-within:border-cyan-400">
-              <input id="bountyQueryInput" type="text" placeholder="Compare any set across all stores (e.g. Chaos Rising, Prismatic, 151, Evolving Skies)..."
+              <input id="bountyQueryInput" type="text" placeholder="Fuzzy compare any of 131 sets across all stores (e.g. paldean, 151, destined, 30th, delta, booster box)..."
+                     oninput="onBountyFuzzyInput(this.value)"
                      onkeydown="if(event.key==='Enter') runBountyRecon('', false)"
                      class="bg-transparent px-3 py-2 text-xs text-white w-full focus:outline-none" />
               <button onclick="runBountyRecon('', false)" title="Instant search across cached store &amp; market prices" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-extrabold shrink-0 transition">Instant Search</button>
@@ -2051,7 +2078,7 @@
                 <span id="vaultRankHeaderBadge" class="pokedex-badge px-3 py-0.5 rounded-full text-xs font-mono-num font-extrabold bg-amber-500/20 text-amber-300 border border-amber-500/40">Case Commander</span>
                 <span id="vaultWallProgressBadge" class="pokedex-badge px-3 py-0.5 rounded-full text-xs font-mono-num font-black bg-cyan-500/20 text-cyan-200 border border-cyan-400/45">8 / 38 ETB Sets Conquered (21%)</span>
               </div>
-              <p class="text-xs text-slate-300 mt-1">Verified floor snipes, sealed 10-ETB cases, and Rule-of-3 family progress (<strong class="text-cyan-300">[WALL]</strong>, <strong class="text-purple-300">[DAD RIP]</strong>, <strong class="text-amber-300">[LOGAN RIP]</strong>).</p>
+              <p class="text-xs text-slate-300 mt-1">Verified floor snipes, sealed 10-ETB cases, and ETB-only family progress (<strong class="text-cyan-300">[LOGAN WALL]</strong> • <strong class="text-amber-300">[OFFICE SEALED]</strong> • <strong class="text-purple-300">[DAD RIP]</strong>).</p>
             </div>
             <div class="flex items-center gap-3 flex-wrap">
               <!-- Visual Progress Bar Box -->
@@ -2089,12 +2116,17 @@
 
         <!-- SECTION 2: 38-SET ETB MASTER WALL DISPLAY CHECKLIST -->
         <div class="glass-card machined-card rounded-2xl p-5 space-y-5 border border-cyan-400/35">
-          <div class="flex items-center justify-between gap-2 pb-3 border-b border-white/10">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-white/10">
             <div class="flex items-center gap-2.5">
               <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_10px_#00F0FF]"></span>
-              <h2 class="text-base font-black uppercase tracking-wider text-white">38-Set ETB Master Wall Checklist &amp; Rule-of-3 Slots</h2>
+              <h2 class="text-base font-black uppercase tracking-wider text-white">38-Set ETB Master Wall Checklist &amp; Slots</h2>
             </div>
-            <span class="text-[11px] font-mono-num text-slate-300">Toggle <strong class="text-cyan-300">[WALL]</strong>, <strong class="text-purple-300">[DAD RIP]</strong>, or <strong class="text-amber-300">[LOGAN RIP]</strong> directly on any card</span>
+            <div class="flex items-center gap-2.5 flex-wrap">
+              <input id="vaultSearchInput" type="text" placeholder="Filter 38 Wall ETBs (e.g. paldean, 151, evolving)..."
+                     oninput="setGlobalFuzzyQuery(this.value, 'CONQUERED_VAULT')"
+                     class="bg-[#0B0914]/90 border border-white/15 focus:border-cyan-400 rounded-xl px-3 py-1 text-xs text-white placeholder-slate-400 w-56 focus:outline-none" />
+              <span class="text-[11px] font-mono-num text-slate-300">Toggle <strong class="text-cyan-300">[LOGAN WALL]</strong> • <strong class="text-amber-300">[OFFICE SEALED]</strong> • <strong class="text-purple-300">[DAD RIP]</strong></span>
+            </div>
           </div>
           <!-- Era-Grouped 38-Set ETB Collector Cards Container -->
           <div id="wallChecklistGrid" class="space-y-6"></div>
@@ -2189,7 +2221,7 @@
               <option value="VALUE_DESC">Sort: Highest Market Value ($)</option>
               <option value="VALUE_ASC">Sort: Lowest Market Value ($)</option>
             </select>
-            <input type="text" id="searchInput" placeholder="Filter 131 targets..." oninput="renderMatrixCatalog()" class="bg-[#120F22]/90 border border-white/15 text-xs text-white px-3 py-1.5 rounded-xl focus:outline-none w-48" />
+            <input type="text" id="searchInput" placeholder="Fuzzy filter 131 targets..." oninput="setGlobalFuzzyQuery(this.value, 'TARGET_MATRIX')" class="bg-[#120F22]/90 border border-white/15 focus:border-cyan-400 text-xs text-white px-3 py-1.5 rounded-xl focus:outline-none w-52" />
           </div>
         </div>
 
@@ -2323,8 +2355,8 @@
     let telemetry = {};
     let liveStock = {};
     let recentDrops = [];
-    let msrpTrophies = { totalMsrpHits: 1, catches: [] };
-    let conqueredVault = { totalConquered: 2, collectorRank: { level: 3, title: 'Case Commander', score: 200 }, ruleOf3Progress: {}, trophies: [] };
+    let msrpTrophies = { totalMsrpHits: 0, catches: [] };
+    let conqueredVault = { totalConquered: 2, collectorRank: { level: 3, title: 'Case Commander', score: 200 }, ruleOf3Progress: {}, trophies: [], bestBuyActionsBySku: {} };
     let marketTape = { targets: {}, honeyHoleStores: [], recentSalesTape: [], weeklyCheckpoints: {} };
     let activeMainView = 'LIVE_COMMAND';
     let activeFilter = 'ALL';
@@ -2337,7 +2369,98 @@
     let sidebarCollapsed = false;
     let saveTimeout = null;
     let seenAutoLaunchKeys = new Set();
+    let mutedDealDrawerOpen = false;
+    let globalFuzzyQuery = '';
+    let bountyFuzzyTimer = null;
     const cacheBuster = Date.now();
+
+    function normalizeFuzzyText(str) {
+      if (!str) return '';
+      return String(str)
+        .toLowerCase()
+        .replace(/['’`]/g, '')
+        .replace(/[^a-z0-9\s]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function matchesFuzzyQuery(queryStr, ...fields) {
+      const qNorm = normalizeFuzzyText(queryStr);
+      if (!qNorm) return true;
+      const tokens = qNorm.split(' ').filter(Boolean);
+      if (tokens.length === 0) return true;
+      const rawJoined = fields.map(f => String(f || '')).join(' ');
+      let expanded = rawJoined;
+      if (/\betb\b/i.test(rawJoined)) expanded += ' elite trainer box wall';
+      if (/booster box/i.test(rawJoined)) expanded += ' bb 36 pack display box';
+      if (/bundle/i.test(rawJoined)) expanded += ' 6 pack booster bundle';
+      if (/case/i.test(rawJoined)) expanded += ' sealed master case 10 etb 6 box';
+      const hay = normalizeFuzzyText(expanded);
+      return tokens.every(tok => hay.includes(tok));
+    }
+
+    function syncFuzzyInputsDom(val, sourceView) {
+      const ids = [
+        { id: 'globalFuzzySearchInput', view: 'GLOBAL' },
+        { id: 'liveCommandSearchInput', view: 'LIVE_COMMAND' },
+        { id: 'vaultSearchInput', view: 'CONQUERED_VAULT' },
+        { id: 'searchInput', view: 'TARGET_MATRIX' },
+        { id: 'bountyQueryInput', view: 'BOUNTY_HUNTER' }
+      ];
+      ids.forEach(({ id, view }) => {
+        if (view === sourceView) return;
+        const el = document.getElementById(id);
+        if (el && el.value !== val) el.value = val;
+      });
+      const clr = document.getElementById('globalFuzzyClearBtn');
+      if (clr) clr.classList.toggle('hidden', !val);
+      const badge = document.getElementById('globalFuzzyMatchBadge');
+      if (badge) {
+        if (!val) {
+          const wallCnt = policies.filter(p => isWallFormatItem(p.id, p)).length || 38;
+          badge.textContent = (policies.length || 131) + ' SKUs • ' + wallCnt + ' Wall Sets Indexed';
+        } else {
+          const matchedPols = policies.filter(p => matchesFuzzyQuery(val, p.name, p.id, p.era, p.formFactor));
+          badge.textContent = matchedPols.length + ' / ' + (policies.length || 131) + ' SKUs Matched';
+        }
+      }
+    }
+
+    function setGlobalFuzzyQuery(val, sourceView) {
+      globalFuzzyQuery = String(val || '');
+      syncFuzzyInputsDom(globalFuzzyQuery, sourceView || 'GLOBAL');
+      if (activeMainView === 'LIVE_COMMAND') renderLiveCommandView();
+      else if (activeMainView === 'CONQUERED_VAULT') renderWallChecklistGrid();
+      else if (activeMainView === 'TARGET_MATRIX') renderMatrixCatalog();
+      else if (activeMainView === 'BOUNTY_HUNTER') onBountyFuzzyInput(globalFuzzyQuery, true);
+      else if (activeMainView === 'ENGINE_ROOM') {
+        const erInp = document.getElementById('erSearchInput');
+        if (erInp) erInp.value = globalFuzzyQuery;
+        renderEngineRoomView(true);
+      }
+    }
+
+    function clearGlobalFuzzyQuery() {
+      setGlobalFuzzyQuery('', 'CLEAR_ALL');
+    }
+
+    function onBountyFuzzyInput(val, fromGlobal) {
+      globalFuzzyQuery = String(val || '');
+      if (!fromGlobal) syncFuzzyInputsDom(globalFuzzyQuery, 'BOUNTY_HUNTER');
+      const sel = document.getElementById('bountySkuSelect');
+      if (sel && globalFuzzyQuery.trim()) sel.value = '';
+      if (bountyFuzzyTimer) clearTimeout(bountyFuzzyTimer);
+      bountyFuzzyTimer = setTimeout(() => {
+        runBountyRecon('', false);
+      }, 150);
+    }
+
+    function toggleMutedDealDrawer(forceState) {
+      mutedDealDrawerOpen = typeof forceState === 'boolean' ? forceState : !mutedDealDrawerOpen;
+      const grid = document.getElementById('mutedHoldOffDrawerGrid');
+      if (grid) grid.classList.toggle('hidden', !mutedDealDrawerOpen);
+      renderLiveCommandView();
+    }
 
     function stripEmojiClutter(str) {
       if (!str) return '';
@@ -2460,12 +2583,8 @@
       nearMissesCount: 0,
       underMarketCount: 0,
       atRetailMsrpCount: 0,
-      offers: {
-        UNDER_TRIGGER: [],
-        NEAR_MISSES: [],
-        UNDER_MARKET: [],
-        AT_RETAIL_MSRP: []
-      }
+      bucketSummary: { buyNowPinned: 0, cautiousWatch: 0, mutedDrawer: 0, total: 0 },
+      offers: []
     };
 
     let latestStatusData = null;
@@ -2575,6 +2694,7 @@
         }
 
         populateSelectDropdowns();
+        syncFuzzyInputsDom(globalFuzzyQuery, 'INIT');
         updateMuteVaultUI();
         updateWallHunterUI();
         renderAllActiveViews();
@@ -2632,28 +2752,57 @@
       if (activeMainView === 'ENGINE_ROOM') renderEngineRoomView();
     }
 
+    function isCaseFormatItem(skuId, fallbackObj) {
+      if (fallbackObj && typeof fallbackObj.isCaseSku === 'boolean') return fallbackObj.isCaseSku;
+      const pol = policies.find(p => p.id === skuId);
+      if (pol && typeof pol.isCaseSku === 'boolean') return pol.isCaseSku;
+      const combined = String((fallbackObj && fallbackObj.formFactor) || (pol && pol.formFactor) || '') + ' ' + String(skuId || '');
+      return /\bcase\b/i.test(combined);
+    }
+
+    function isWallFormatItem(skuId, fallbackObj) {
+      if (isCaseFormatItem(skuId, fallbackObj)) return false;
+      if (fallbackObj && typeof fallbackObj.isWallFormat === 'boolean') return fallbackObj.isWallFormat;
+      const pol = policies.find(p => p.id === skuId);
+      if (pol && typeof pol.isWallFormat === 'boolean') return pol.isWallFormat;
+      const ff = String((fallbackObj && fallbackObj.formFactor) || (pol && pol.formFactor) || '').toLowerCase().trim();
+      return ff === 'etb' || ff === 'pc_etb' || ff === 'pc etb';
+    }
+
     function getSkuFamilyState(skuId, fallbackObj) {
       const pol = policies.find(p => p.id === skuId) || fallbackObj || {};
+      const isWallFormat = isWallFormatItem(skuId, fallbackObj || pol);
+      const isCaseSku = isCaseFormatItem(skuId, fallbackObj || pol);
       const wallOwned = pol.wallOwned !== undefined ? Boolean(pol.wallOwned) : Boolean(pol.owned);
       const dadRipOwned = Boolean(pol.dadRipOwned);
       const loganRipOwned = Boolean(pol.loganRipOwned);
-      const completionCount = (wallOwned ? 1 : 0) + (dadRipOwned ? 1 : 0) + (loganRipOwned ? 1 : 0);
-      const fullyConquered = completionCount === 3;
+      const completionCount = isWallFormat ? ((wallOwned ? 1 : 0) + (dadRipOwned ? 1 : 0) + (loganRipOwned ? 1 : 0)) : 0;
+      const fullyConquered = isWallFormat && completionCount === 3;
       const autoPilotEnabled = pol.autoPilotEnabled !== false;
       const autoPilotCeiling = Number(pol.autoPilotCeiling || pol.effectiveTargetCeiling || pol.maxMarketBuyPrice || pol.msrpCeiling || 54.99);
       let statusLabel = '0/3 (NEED WALL)';
       let statusCls = 'bg-amber-500/20 text-amber-300 border-amber-400/45';
       let cardGlowCls = '';
-      if (fullyConquered) {
+
+      if (!isWallFormat) {
+        const packCnt = Number((fallbackObj && fallbackObj.packCount) || pol.packCount || (String(pol.formFactor || '').toLowerCase().includes('box') ? 36 : 6));
+        statusLabel = isCaseSku ? 'SEALED CASE' : (packCnt + '-PK RIP');
+        statusCls = isCaseSku
+          ? 'bg-purple-500/20 text-purple-200 border-purple-400/45'
+          : 'bg-slate-500/20 text-slate-200 border-white/15';
+        cardGlowCls = '';
+      } else if (fullyConquered) {
         statusLabel = '3/3 (COMPLETE)';
         statusCls = 'bg-emerald-500/25 text-emerald-200 border-emerald-400/60 shadow-[0_0_10px_rgba(16,185,129,0.3)]';
         cardGlowCls = 'ring-1 ring-emerald-400/60 shadow-[0_0_18px_rgba(16,185,129,0.22)]';
       } else if (completionCount >= 1) {
-        statusLabel = completionCount + '/3 (' + (wallOwned ? 'WALL LOCKED // NEED RIP' : 'NEED WALL') + ')';
+        statusLabel = completionCount + '/3 (' + (wallOwned ? 'LOGAN WALL ✓ // NEED RIP' : 'NEED LOGAN WALL') + ')';
         statusCls = 'bg-cyan-500/20 text-cyan-200 border-cyan-400/50 shadow-[0_0_8px_rgba(0,240,255,0.22)]';
         cardGlowCls = 'ring-1 ring-cyan-400/45 shadow-[0_0_14px_rgba(0,240,255,0.16)]';
       }
       return {
+        isWallFormat,
+        isCaseSku,
         wallOwned,
         dadRipOwned,
         loganRipOwned,
@@ -2667,7 +2816,34 @@
       };
     }
 
+    function renderNonWallFormatInfoHtml(skuId, fallbackObj) {
+      const pol = policies.find(p => p.id === skuId) || fallbackObj || {};
+      const isCase = isCaseFormatItem(skuId, fallbackObj || pol);
+      const landed = Number((fallbackObj && (fallbackObj.landedPrice || fallbackObj.price)) || pol.estimatedMarketValue || pol.msrpCeiling || 0);
+      const ff = String((fallbackObj && fallbackObj.formFactor) || pol.formFactor || '').toLowerCase();
+      const packCnt = Number((fallbackObj && fallbackObj.packCount) || pol.packCount || (ff.includes('box') ? 36 : 6));
+      const ppp = Number((fallbackObj && fallbackObj.pricePerPack) || pol.pricePerPack || (packCnt > 0 && landed > 0 ? landed / packCnt : 0));
+      const pm = (fallbackObj && fallbackObj.purchaseMemory) || pol.purchaseMemory || null;
+      const lastPaidText = pm && pm.formattedComparison ? String(pm.formattedComparison) : '';
+
+      let fmtPill = '';
+      if (isCase) {
+        const boxCnt = ff.includes('master') || /booster-box-case/i.test(String(skuId)) ? 6 : 10;
+        const perBox = landed > 0 ? Math.round(landed / boxCnt) : 0;
+        fmtPill = '<span class="pokedex-badge px-2 py-0.5 rounded bg-purple-500/20 text-purple-200 border border-purple-400/45 text-[9px] font-mono-num font-extrabold">SEALED CASE' + (perBox > 0 ? (' • ~$' + perBox + '/BOX') : '') + '</span>';
+      } else {
+        fmtPill = '<span class="pokedex-badge px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-200 border border-cyan-400/35 text-[9px] font-mono-num font-extrabold">' + packCnt + '-PK RIP' + (ppp > 0 ? (' • $' + ppp.toFixed(2) + '/PK') : '') + '</span>';
+      }
+      const memPill = lastPaidText
+        ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-amber-500/15 text-amber-200 border border-amber-400/35 text-[9px] font-mono-num font-bold">' + lastPaidText + '</span>'
+        : '';
+      return '<div class="inline-flex items-center gap-1.5 flex-wrap">' + fmtPill + memPill + '</div>';
+    }
+
     function renderFamilySlotsPillsInnerHtml(skuId, fallbackObj, compact) {
+      if (!isWallFormatItem(skuId, fallbackObj)) {
+        return renderNonWallFormatInfoHtml(skuId, fallbackObj);
+      }
       const st = getSkuFamilyState(skuId, fallbackObj);
       const safeId = String(skuId).replace(/'/g, "\\'");
       const padCls = compact ? 'px-1.5 py-0.5 text-[9px]' : 'px-2 py-0.5 text-[10px]';
@@ -2675,21 +2851,24 @@
         const cls = active
           ? activeStyle
           : 'bg-black/45 text-slate-400 border-white/15 hover:text-white hover:border-white/30';
-        return '<button type="button" onclick="toggleSkuFamilySlot(\'' + safeId + '\', \'' + slotKey + '\', ' + (!active) + ', event)" title="Toggle ' + label + ' slot for Rule of 3 Family Completion" class="font-pokedex font-extrabold rounded border transition whitespace-nowrap ' + padCls + ' ' + cls + '">[' + label + (active ? ' ✓' : '') + ']</button>';
+        return '<button type="button" onclick="toggleSkuFamilySlot(\'' + safeId + '\', \'' + slotKey + '\', ' + (!active) + ', event)" title="Toggle ' + label + ' slot for ETB Wall &amp; Family Completion" class="font-pokedex font-extrabold rounded border transition whitespace-nowrap ' + padCls + ' ' + cls + '">[' + label + (active ? ' ✓' : '') + ']</button>';
       };
       const allBtnCls = st.fullyConquered
         ? 'bg-emerald-500 text-slate-950 border-emerald-300 shadow-[0_0_8px_rgba(16,185,129,0.4)]'
         : 'bg-white/5 text-slate-300 border-white/15 hover:bg-emerald-500/25 hover:text-emerald-200';
       return (
-        mkBtn('wallOwned', 'WALL', st.wallOwned, 'bg-cyan-500/25 text-cyan-200 border-cyan-400/60 shadow-[0_0_8px_rgba(34,211,238,0.3)]') +
+        mkBtn('wallOwned', 'LOGAN WALL', st.wallOwned, 'bg-cyan-500/25 text-cyan-200 border-cyan-400/60 shadow-[0_0_8px_rgba(34,211,238,0.3)]') +
+        mkBtn('loganRipOwned', 'OFFICE SEALED', st.loganRipOwned, 'bg-amber-500/25 text-amber-200 border-amber-400/60 shadow-[0_0_8px_rgba(245,158,11,0.3)]') +
         mkBtn('dadRipOwned', 'DAD RIP', st.dadRipOwned, 'bg-purple-500/25 text-purple-200 border-purple-400/60 shadow-[0_0_8px_rgba(168,85,247,0.3)]') +
-        mkBtn('loganRipOwned', 'LOGAN RIP', st.loganRipOwned, 'bg-amber-500/25 text-amber-200 border-amber-400/60 shadow-[0_0_8px_rgba(245,158,11,0.3)]') +
-        '<button type="button" onclick="toggleSkuFamilySlot(\'' + safeId + '\', \'ALL\', ' + (!st.fullyConquered) + ', event)" title="Toggle all 3 Family Slots (3/3 Complete)" class="font-mono-num font-black rounded border transition whitespace-nowrap ' + padCls + ' ' + allBtnCls + '">[' + st.completionCount + '/3 ALL]</button>'
+        '<button type="button" onclick="toggleSkuFamilySlot(\'' + safeId + '\', \'ALL\', ' + (!st.fullyConquered) + ', event)" title="Toggle all 3 ETB Slots (3/3 Complete)" class="font-mono-num font-black rounded border transition whitespace-nowrap ' + padCls + ' ' + allBtnCls + '">[' + st.completionCount + '/3 ALL]</button>'
       );
     }
 
     function renderFamilySlotsPillsHtml(skuId, fallbackObj, compact) {
       if (!skuId) return '';
+      if (!isWallFormatItem(skuId, fallbackObj)) {
+        return renderNonWallFormatInfoHtml(skuId, fallbackObj);
+      }
       const safeAttr = String(skuId).replace(/"/g, '&quot;');
       return (
         '<div data-family-slots-sku="' + safeAttr + '" data-family-slots-compact="' + (compact ? '1' : '0') + '" class="inline-flex items-center gap-1 flex-wrap" onclick="event.stopPropagation()">' +
@@ -2701,9 +2880,10 @@
     function syncSingleSkuDomInPlace(skuId) {
       if (!skuId) return;
       const pol = policies.find(p => p.id === skuId);
+      if (!isWallFormatItem(skuId, pol)) return;
       const st = getSkuFamilyState(skuId, pol);
 
-      // 1. Update all [WALL] [DAD RIP] [LOGAN RIP] [X/3 ALL] pill groups for this SKU across the entire DOM
+      // 1. Update all [LOGAN WALL] [OFFICE SEALED] [DAD RIP] [X/3 ALL] pill groups for this ETB SKU across the entire DOM
       document.querySelectorAll('[data-family-slots-sku]').forEach(el => {
         if (el.getAttribute('data-family-slots-sku') === skuId) {
           const isCompact = el.getAttribute('data-family-slots-compact') === '1';
@@ -2800,23 +2980,36 @@
       }
     }
 
-    function renderDirectCartButtonsHtml(item, primaryLabel) {
+    function renderDirectCartButtonsHtml(item, primaryLabel, ctaTone) {
+      const isCase = isCaseFormatItem(item && item.skuId, item);
+      const tone = ctaTone || ((item && item.actionTier === 'CAUTIOUS_WATCH') ? 'AMBER' : ((item && item.actionTier === 'MUTED_DRAWER') ? 'MUTED' : 'EMERALD'));
       const c1Raw = item.cart1xUrl || (item.url && String(item.url).includes('/cart/') ? item.url : null);
       const c1 = c1Raw && String(c1Raw).includes('/cart/') && !String(c1Raw).includes('payment=shop_pay')
         ? String(c1Raw) + (String(c1Raw).includes('?') ? '&payment=shop_pay' : '?payment=shop_pay')
         : c1Raw;
-      const c2 = item.cart2xUrl || (c1 ? String(c1).replace(/:1(?=\?|$)/, ':2') : null);
-      const c3 = item.cart3xUrl || (c1 ? String(c1).replace(/:1(?=\?|$)/, ':3') : null);
+      const c2 = isCase ? null : (item.cart2xUrl || (c1 ? String(c1).replace(/:1(?=\?|$)/, ':2') : null));
+      const c3 = isCase ? null : (item.cart3xUrl || (c1 ? String(c1).replace(/:1(?=\?|$)/, ':3') : null));
+      const wrapBorderCls = tone === 'AMBER'
+        ? 'border-amber-400/65 bg-[#1B1409]'
+        : (tone === 'MUTED' ? 'border-white/20 bg-black/50' : 'border-emerald-500/45 bg-[#0D1518]');
+      const mainBtnCls = tone === 'AMBER'
+        ? 'bg-amber-500/20 hover:bg-amber-500 hover:text-slate-950 text-amber-200'
+        : (tone === 'MUTED' ? 'bg-white/10 hover:bg-white/20 text-slate-200' : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950');
       if (c1) {
         return (
-          '<div class="inline-flex items-center rounded-lg overflow-hidden border border-emerald-500/45 bg-[#0D1518] shrink-0" onclick="event.stopPropagation()">' +
-            '<a href="' + c1 + '" target="_blank" class="px-2 py-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono-num text-[10px] font-black transition whitespace-nowrap">[⚡ SHOP PAY 1X]</a>' +
+          '<div class="inline-flex items-center rounded-lg overflow-hidden border ' + wrapBorderCls + ' shrink-0" onclick="event.stopPropagation()">' +
+            '<a href="' + c1 + '" target="_blank" class="px-2 py-1 ' + mainBtnCls + ' font-mono-num text-[10px] font-black transition whitespace-nowrap">[⚡ SHOP PAY 1X]</a>' +
             (c2 ? '<a href="' + c2 + '" target="_blank" class="px-2 py-1 hover:bg-cyan-500/25 text-cyan-200 border-l border-white/10 font-mono-num text-[10px] font-extrabold transition whitespace-nowrap">[2X]</a>' : '') +
             (c3 ? '<a href="' + c3 + '" target="_blank" class="px-2 py-1 hover:bg-amber-500/25 text-amber-300 border-l border-white/10 font-mono-num text-[10px] font-extrabold transition whitespace-nowrap">[3X]</a>' : '') +
           '</div>'
         );
       }
-      return '<a href="' + (item.url || item.productUrl || '#') + '" target="_blank" onclick="event.stopPropagation()" class="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-extrabold whitespace-nowrap shrink-0">' + (primaryLabel || 'Buy Now ↗') + '</a>';
+      const singleLinkCls = tone === 'AMBER'
+        ? 'px-3 py-1 rounded-lg bg-amber-500/15 hover:bg-amber-500 hover:text-slate-950 text-amber-200 border border-amber-400/65 text-xs font-extrabold whitespace-nowrap shrink-0 transition'
+        : (tone === 'MUTED'
+            ? 'px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 border border-white/20 text-xs font-bold whitespace-nowrap shrink-0 transition'
+            : 'px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-extrabold whitespace-nowrap shrink-0 transition');
+      return '<a href="' + (item.url || item.productUrl || '#') + '" target="_blank" onclick="event.stopPropagation()" class="' + singleLinkCls + '">' + (primaryLabel || 'Buy Now ↗') + '</a>';
     }
 
     async function toggleSkuFamilySlot(skuId, slotKey, newVal, ev) {
@@ -2903,12 +3096,13 @@
       const bleedGrid = document.getElementById('advisorBleedingList');
       const famBadge = document.getElementById('advisorFamilySummaryBadge');
 
-      const wallCnt = policies.filter(p => (p.wallOwned !== undefined ? p.wallOwned : p.owned)).length;
-      const dadCnt = policies.filter(p => p.dadRipOwned).length;
-      const loganCnt = policies.filter(p => p.loganRipOwned).length;
-      const fullCnt = policies.filter(p => p.fullyConquered || ((p.wallOwned || p.owned) && p.dadRipOwned && p.loganRipOwned)).length;
+      const etbOnlyPols = policies.filter(p => isWallFormatItem(p.id, p));
+      const wallCnt = etbOnlyPols.filter(p => (p.wallOwned !== undefined ? p.wallOwned : p.owned)).length;
+      const officeCnt = etbOnlyPols.filter(p => p.loganRipOwned).length;
+      const dadCnt = etbOnlyPols.filter(p => p.dadRipOwned).length;
+      const fullCnt = etbOnlyPols.filter(p => p.fullyConquered || ((p.wallOwned || p.owned) && p.dadRipOwned && p.loganRipOwned)).length;
       if (famBadge) {
-        famBadge.textContent = 'RULE OF 3: ' + wallCnt + ' WALL • ' + dadCnt + ' DAD RIP • ' + loganCnt + ' LOGAN RIP (' + fullCnt + ' 3/3 COMPLETE)';
+        famBadge.textContent = 'ETB WALL SLOTS: ' + wallCnt + ' LOGAN WALL • ' + officeCnt + ' OFFICE SEALED • ' + dadCnt + ' DAD RIP (' + fullCnt + ' 3/3 COMPLETE)';
       }
 
       if (!topGrid) return;
@@ -3240,166 +3434,132 @@
       return '<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-slate-500/20 text-slate-200 border border-white/15 text-[10px] font-mono-num font-bold">' + label + '</span>';
     }
 
-    // Shared Canonical Deal Feed Builder (Used by BOTH KPI Card #2 and Live Deal Feed so counts NEVER diverge!)
+    function getActionTierSortRank(tier) {
+      if (tier === 'BUY_NOW_PINNED') return 0;
+      if (tier === 'CAUTIOUS_WATCH') return 1;
+      return 2;
+    }
+
+    // Shared Canonical Deal Feed Builder (Powered by Phase 3A Cost x Need x Trend dealRanker API!)
     function buildUnifiedDealFeedItems() {
       const items = [];
       const seenRuleStores = new Set();
+      const seenMutedSkus = new Set();
+      const spreadOffers = Array.isArray(shelfSpreadData && shelfSpreadData.offers)
+        ? shelfSpreadData.offers
+        : [];
 
+      const pushNormalizedOffer = (o, fallbackTimeStr) => {
+        if (!o || !o.skuId) return;
+        const pol = policies.find(p => p.id === o.skuId) || {};
+        const storeName = o.retailer || o.store || o.storeName || 'Verified LGS';
+        const key = o.skuId + '__' + storeName;
+        if (seenRuleStores.has(key)) return;
+
+        const landedVal = Number(o.landedPrice || o.price || 0);
+        if (landedVal <= 0) return;
+        const mktVal = Number(o.marketPrice || o.marketValue || getEffectiveMarketValue(pol, landedVal));
+        const trigVal = Number(o.triggerPrice || pol.maxMarketBuyPrice || pol.msrpCeiling || mktVal);
+        const msrpVal = Number(o.msrp || pol.msrpCeiling || 54.99);
+        const ff = o.formFactor || pol.formFactor || 'ETB';
+        const isWall = isWallFormatItem(o.skuId, o);
+        const isCase = isCaseFormatItem(o.skuId, o);
+        const packCnt = Number(o.packCount || pol.packCount || (String(ff).toLowerCase().includes('box') ? 36 : 9));
+        const ppp = Number(o.pricePerPack || (packCnt > 0 ? Math.round((landedVal / packCnt) * 100) / 100 : 0));
+        const famSt = getSkuFamilyState(o.skuId, pol);
+
+        let actionTier = o.actionTier || '';
+        if (!actionTier) {
+          const is1pMsrp = Boolean(o.isMsrpUnicorn || (landedVal <= msrpVal * 1.03 && !/tcgplayer|ebay/i.test(storeName) && /target|walmart|best buy|pokemon center|pokémon center|costco|sam's club|barnes|gamestop|amazon/i.test(storeName)));
+          if (famSt.fullyConquered && !is1pMsrp) {
+            actionTier = 'MUTED_DRAWER';
+          } else if (mktVal > 0 && landedVal > mktVal * 1.005 && !is1pMsrp) {
+            actionTier = 'MUTED_DRAWER';
+          } else if (landedVal > trigVal + 0.01 && !is1pMsrp) {
+            actionTier = 'MUTED_DRAWER';
+          } else if (String(o.trendSignal || pol.trendSignal || '').includes('FALLING_KNIFE') || /BLEEDING|SLIDING/i.test(String(o.verdictLabel || o.trendVerdictLabel || ''))) {
+            const discVsComp = mktVal > 0 ? ((mktVal - landedVal) / mktVal) * 100 : 0;
+            actionTier = discVsComp >= 8 ? 'CAUTIOUS_WATCH' : 'MUTED_DRAWER';
+          } else if (is1pMsrp || (isWall && !famSt.wallOwned) || (mktVal > 0 && landedVal <= mktVal * 0.88)) {
+            actionTier = 'BUY_NOW_PINNED';
+          } else {
+            actionTier = 'CAUTIOUS_WATCH';
+          }
+        }
+
+        // Deduplicate MUTED_DRAWER to lowest-landed live offer per SKU so drawer stays fast & scannable
+        if (actionTier === 'MUTED_DRAWER') {
+          if (seenMutedSkus.has(o.skuId)) return;
+          seenMutedSkus.add(o.skuId);
+        }
+        seenRuleStores.add(key);
+
+        const discPct = Number(o.discountPct ?? (mktVal > landedVal ? Math.max(0, Math.round(((mktVal - landedVal) / mktVal) * 100)) : 0));
+        const prioScore = Number(o.priorityScore ?? (actionTier === 'BUY_NOW_PINNED' ? (70 + discPct) : (actionTier === 'CAUTIOUS_WATCH' ? (45 + discPct) : Math.max(5, discPct))));
+        const verdictLbl = o.verdictLabel || o.trendVerdictLabel || (
+          actionTier === 'BUY_NOW_PINNED'
+            ? (isWall && !famSt.wallOwned ? 'PRIORITY WALL BUY' : 'SUGGESTED BUY')
+            : (actionTier === 'CAUTIOUS_WATCH' ? 'CAUTIOUS DIP — WATCH' : (mktVal > 0 && landedVal > mktVal ? 'HOLD OFF — ABOVE TCGPLAYER' : 'HOLD OFF — ABOVE SLIDER'))
+        );
+
+        items.push({
+          isLiveNow: o.inStock !== false && !o.soldOut,
+          soldOut: Boolean(o.soldOut),
+          skuId: o.skuId,
+          title: o.title || o.productName || pol.name || o.skuId,
+          formFactor: ff,
+          isWallFormat: isWall,
+          isCaseSku: isCase,
+          actionTier,
+          priorityScore: prioScore,
+          verdictLabel: verdictLbl,
+          earnedWatermarks: o.earnedWatermarks || pol.earnedWatermarks || null,
+          purchaseMemory: o.purchaseMemory || pol.purchaseMemory || null,
+          owned: Boolean(pol.wallOwned ?? pol.owned ?? o.owned),
+          retailer: storeName,
+          price: Number(o.price || landedVal),
+          itemPrice: o.itemPrice !== undefined ? Number(o.itemPrice) : undefined,
+          shippingPrice: o.shippingPrice !== undefined ? Number(o.shippingPrice) : undefined,
+          freeShipNote: o.freeShipNote || o.shippingNote,
+          landedPrice: landedVal,
+          marketValue: mktVal,
+          triggerPrice: trigVal,
+          msrp: msrpVal,
+          packCount: packCnt,
+          pricePerPack: ppp,
+          isRipValueLeader: Boolean(o.isRipValueLeader || pol.isRipValueLeader || (ppp > 0 && ppp <= 4.25)),
+          isPreRelease: Boolean(o.isPreRelease || pol.isPreRelease),
+          preReleaseStatusTag: o.preReleaseStatusTag || pol.preReleaseStatusTag,
+          trendSignal: o.trendSignal || pol.trendSignal,
+          trendVerdictLabel: verdictLbl,
+          isElasticDip: Boolean(o.isElasticDip || pol.isElasticDip),
+          statusTier: o.statusTier,
+          statusTag: o.statusTag,
+          isCloseCall: o.isCloseCall,
+          closeCallDelta: o.closeCallDelta,
+          url: o.productUrl || o.url || o.buyUrl,
+          cart1xUrl: o.cart1xUrl,
+          cart2xUrl: isCase ? undefined : o.cart2xUrl,
+          cart3xUrl: isCase ? undefined : o.cart3xUrl,
+          timeStr: o.timeStr || fallbackTimeStr || 'LIVE SHELF',
+          discountPct: discPct
+        });
+      };
+
+      // 1. Primary authoritative ranked store offers from server.js dealRanker
+      spreadOffers.forEach(o => pushNormalizedOffer(o, 'LIVE SHELF'));
+
+      // 2. Fallback/supplement from liveStock if server spread array hasn't hydrated yet
       Object.entries(liveStock || {}).forEach(([ruleId, ls]) => {
         if (ruleId.startsWith('__') || !ls || !ls.inStock) return;
-        const pol = policies.find(p => p.id === ruleId);
-        if (!pol) return;
-        const key = ruleId + '__' + ls.retailer;
-        seenRuleStores.add(key);
-        const mktVal = getEffectiveMarketValue(pol, 60);
-        const landedVal = Number(ls.landedPrice || ls.price || 0);
-        const packCnt = Number(ls.packCount || pol.packCount || (pol.formFactor === 'Booster Box' ? 36 : 9));
-        const ppp = Number(ls.pricePerPack || pol.pricePerPack || (packCnt > 0 ? landedVal / packCnt : 0));
-        items.push({
-          isLiveNow: true,
-          soldOut: false,
-          skuId: pol.id,
-          title: pol.name,
-          formFactor: pol.formFactor,
-          owned: Boolean(pol.owned),
-          retailer: ls.retailer || 'Verified Store',
-          price: Number(ls.price),
-          itemPrice: ls.itemPrice !== undefined ? Number(ls.itemPrice) : undefined,
-          shippingPrice: ls.shippingPrice !== undefined ? Number(ls.shippingPrice) : undefined,
-          freeShipNote: ls.freeShipNote,
-          landedPrice: landedVal,
-          marketValue: mktVal,
-          triggerPrice: Number(pol.maxMarketBuyPrice || pol.msrpCeiling || mktVal),
-          msrp: Number(pol.msrpCeiling || 54.99),
-          packCount: packCnt,
-          pricePerPack: ppp,
-          isRipValueLeader: ls.isRipValueLeader || pol.isRipValueLeader || (ppp > 0 && ppp <= 4.25),
-          isPreRelease: ls.isPreRelease || pol.isPreRelease,
-          preReleaseStatusTag: ls.trendVerdictLabel || ls.preReleaseStatusTag || pol.trendVerdictLabel || pol.preReleaseStatusTag,
-          trendSignal: ls.trendSignal || pol.trendSignal,
-          trendVerdictLabel: ls.trendVerdictLabel || ls.preReleaseStatusTag || pol.trendVerdictLabel || pol.preReleaseStatusTag,
-          isElasticDip: Boolean(ls.isElasticDip || pol.isElasticDip),
-          statusTier: ls.statusTier,
-          statusTag: ls.statusTag,
-          isCloseCall: ls.isCloseCall,
-          closeCallDelta: ls.closeCallDelta,
-          url: ls.productUrl || ls.url,
-          cart1xUrl: ls.cart1xUrl,
-          cart2xUrl: ls.cart2xUrl,
-          cart3xUrl: ls.cart3xUrl,
-          timeStr: ls.timeStr || 'LIVE NOW',
-          discountPct: mktVal > 0 ? Math.max(0, Math.round(((mktVal - landedVal) / mktVal) * 100)) : 0
-        });
+        pushNormalizedOffer({ ...ls, skuId: ruleId }, ls.timeStr || 'LIVE NOW');
       });
 
-      (recentDrops || []).slice(0, 12).forEach(d => {
-        const pol = policies.find(p => p.id === d.ruleId);
-        const key = (d.ruleId || d.title) + '__' + d.retailer;
-        if (seenRuleStores.has(key)) return;
-        seenRuleStores.add(key);
-        const landedVal = Number(d.landedPrice || d.price || 0);
-        const mktVal = getEffectiveMarketValue(pol, d.marketValue || 60);
-        const ff = d.formFactor || (pol ? pol.formFactor : 'ETB');
-        const packCnt = Number(d.packCount || (pol ? pol.packCount : (String(ff).includes('Box') ? 36 : 9)));
-        const ppp = Number(d.pricePerPack || (pol ? pol.pricePerPack : (packCnt > 0 ? landedVal / packCnt : 5.67)));
-        const computedDisc = mktVal > 0 ? Math.max(0, Math.round(((mktVal - landedVal) / mktVal) * 100)) : Number(d.discountPct || 0);
-        items.push({
-          isLiveNow: !d.soldOut && !d.isPreDropStaging && d.alertType !== 'PRE_DROP_STAGING',
-          soldOut: Boolean(d.soldOut),
-          isPreDropStaging: Boolean(d.isPreDropStaging || d.alertType === 'PRE_DROP_STAGING'),
-          alertType: d.alertType,
-          skuId: d.ruleId || (pol ? pol.id : 'me-chaos-rising-etb'),
-          title: pol ? pol.name : (d.title || 'Pokemon Sealed Drop'),
-          formFactor: ff,
-          owned: pol ? Boolean(pol.owned) : false,
-          retailer: d.retailer || 'Verified Store',
-          price: Number(d.price || 0),
-          itemPrice: d.itemPrice !== undefined ? Number(d.itemPrice) : undefined,
-          shippingPrice: d.shippingPrice !== undefined ? Number(d.shippingPrice) : undefined,
-          freeShipNote: d.freeShipNote,
-          landedPrice: landedVal,
-          marketValue: mktVal,
-          triggerPrice: Number(pol ? (pol.maxMarketBuyPrice || pol.msrpCeiling) : (d.msrp || 54.99)),
-          msrp: Number(d.msrp || (pol ? pol.msrpCeiling : 54.99)),
-          packCount: packCnt,
-          pricePerPack: ppp,
-          isRipValueLeader: d.isRipValueLeader || (ppp > 0 && ppp <= 4.25),
-          isPreRelease: pol ? pol.isPreRelease : false,
-          preReleaseStatusTag: d.trendVerdictLabel || (pol ? (pol.trendVerdictLabel || pol.preReleaseStatusTag) : undefined),
-          trendSignal: d.trendSignal || (pol ? pol.trendSignal : undefined),
-          trendVerdictLabel: d.trendVerdictLabel || (pol ? (pol.trendVerdictLabel || pol.preReleaseStatusTag) : undefined),
-          isElasticDip: Boolean(d.isElasticDip || (pol && pol.isElasticDip)),
-          statusTier: d.statusTier,
-          statusTag: d.statusTag,
-          isCloseCall: d.isCloseCall,
-          closeCallDelta: d.closeCallDelta,
-          url: d.productUrl || d.url,
-          cart1xUrl: d.cart1xUrl,
-          cart2xUrl: d.cart2xUrl,
-          cart3xUrl: d.cart3xUrl,
-          timeStr: d.timeStr || 'Recent Hit',
-          discountPct: computedDisc
-        });
+      items.sort((a, b) => {
+        const tDiff = getActionTierSortRank(a.actionTier) - getActionTierSortRank(b.actionTier);
+        if (tDiff !== 0) return tDiff;
+        return Number(b.priorityScore || 0) - Number(a.priorityScore || 0);
       });
-
-      // Also include any policy that is in-stock via telemetry under trigger if not already in items
-      policies.filter(p => isPolicyInStockNow(p)).forEach(pol => {
-        if (items.some(x => x.skuId === pol.id)) return;
-        const offer = getBestLiveOfferForPolicy(pol);
-        const mktVal = getEffectiveMarketValue(pol, 60);
-        const landedVal = Number(offer.price || pol.maxMarketBuyPrice || 54.99);
-        const packCnt = Number(pol.packCount || (pol.formFactor === 'Booster Box' ? 36 : 9));
-        const ppp = Number(pol.pricePerPack || (packCnt > 0 ? landedVal / packCnt : 0));
-        items.push({
-          isLiveNow: true,
-          soldOut: false,
-          skuId: pol.id,
-          title: pol.name,
-          formFactor: pol.formFactor,
-          owned: Boolean(pol.owned),
-          retailer: offer.store || 'Verified LGS',
-          price: landedVal,
-          landedPrice: landedVal,
-          marketValue: mktVal,
-          triggerPrice: Number(pol.maxMarketBuyPrice || pol.msrpCeiling || mktVal),
-          msrp: Number(pol.msrpCeiling || 54.99),
-          packCount: packCnt,
-          pricePerPack: ppp,
-          isRipValueLeader: pol.isRipValueLeader || (ppp > 0 && ppp <= 4.25),
-          isPreRelease: Boolean(pol.isPreRelease),
-          preReleaseStatusTag: offer.trendVerdictLabel || pol.trendVerdictLabel || pol.preReleaseStatusTag,
-          trendSignal: offer.trendSignal || pol.trendSignal,
-          trendVerdictLabel: offer.trendVerdictLabel || pol.trendVerdictLabel || pol.preReleaseStatusTag,
-          isElasticDip: Boolean(offer.isElasticDip || pol.isElasticDip),
-          url: offer.url,
-          timeStr: 'IN STOCK NOW',
-          discountPct: mktVal > landedVal ? Math.max(0, Math.round(((mktVal - landedVal) / mktVal) * 100)) : 0
-        });
-      });
-
-      if (items.length === 0) {
-        items.push({
-          isLiveNow: false,
-          soldOut: false,
-          skuId: 'me-chaos-rising-etb',
-          title: 'Mega Evolution: Chaos Rising Elite Trainer Box',
-          formFactor: 'ETB',
-          owned: true,
-          retailer: 'Cooperstown Cards (TCGPlayer Verified Seller)',
-          price: 51.00,
-          landedPrice: 51.00,
-          marketValue: 60.00,
-          triggerPrice: 54.99,
-          msrp: 54.99,
-          packCount: 9,
-          pricePerPack: 5.67,
-          isRipValueLeader: false,
-          isPreRelease: false,
-          url: 'https://www.tcgplayer.com/product/684450?Language=English',
-          timeStr: '10:53 PM Defcon-1 Catch',
-          discountPct: 15
-        });
-      }
 
       return items;
     }
@@ -3408,7 +3568,7 @@
       if (activeMainView !== 'LIVE_COMMAND') {
         switchMainView('LIVE_COMMAND');
       }
-      setDealFeedFilter('UNDER_TRIGGER');
+      setDealFeedFilter('ALL');
       const card = document.getElementById('liveDealFeedCard');
       if (card) {
         card.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -3572,17 +3732,19 @@
       const vhRank = document.getElementById('vaultRankHeaderBadge');
       if (vhRank) vhRank.innerText = rankTitle + ' • Score ' + (conqueredVault.collectorRank?.score || 200);
 
-      // Card 2: Active Sniper Radar — Derived from the EXACT SAME canonical array as Under Trigger (X) pill!
+      // Card 2: Active Sniper Radar — Synced strictly to actionable (BUY_NOW_PINNED + CAUTIOUS_WATCH) hits!
       const allDealItems = buildUnifiedDealFeedItems();
-      const underTriggerItems = allDealItems.filter(it => {
-        const st = computeClientShelfStatus(it);
-        if (!st.isUnderTarget && !st.isCloseCall) return false;
+      const actionableItems = allDealItems.filter(it => {
+        if (it.actionTier !== 'BUY_NOW_PINNED' && it.actionTier !== 'CAUTIOUS_WATCH') return false;
         if (botSettings && botSettings.wallHunterMode) {
-          return String(it.formFactor || '').toLowerCase() === 'etb' && !it.owned;
+          return isWallFormatItem(it.skuId, it) && !it.owned;
         }
         return true;
       });
-      const underTriggerCount = underTriggerItems.length;
+      const pinnedCount = actionableItems.filter(it => it.actionTier === 'BUY_NOW_PINNED').length;
+      const watchCount = actionableItems.filter(it => it.actionTier === 'CAUTIOUS_WATCH').length;
+      const underTriggerCount = actionableItems.length;
+      const mutedCount = allDealItems.filter(it => it.actionTier === 'MUTED_DRAWER').length;
       const dynamicNearMisses = computeDynamicNearMissItems();
 
       const navEngBadge = document.getElementById('navEngineRoomBadge');
@@ -3600,19 +3762,19 @@
       if (matrixPill) matrixPill.innerText = 'In-Stock Now (' + underTriggerCount + ')';
 
       const dfAllBtn = document.getElementById('dfPill_ALL');
-      if (dfAllBtn) dfAllBtn.innerText = 'All In-Stock (' + allDealItems.length + ')';
+      if (dfAllBtn) dfAllBtn.innerText = 'Actionable Board (' + underTriggerCount + ' Active • ' + mutedCount + ' Muted)';
       const dfUnderBtn = document.getElementById('dfPill_UNDER_TRIGGER');
-      if (dfUnderBtn) dfUnderBtn.innerText = (botSettings && botSettings.wallHunterMode ? '⟦ WALL HUNTER ⟧ Under Trigger (' : 'Under Trigger (') + underTriggerCount + ')';
+      if (dfUnderBtn) dfUnderBtn.innerText = (botSettings && botSettings.wallHunterMode ? '⟦ WALL HUNTER ⟧ Pinned (' : 'Pinned Buys (') + pinnedCount + ')';
       const dfNearMissText = document.getElementById('dfPillNearMissesText');
       if (dfNearMissText) dfNearMissText.innerText = '⟦ NEAR MISSES (' + dynamicNearMisses.length + ') ⟧';
       const dfNeededWallBtn = document.getElementById('dfPill_NEEDED_WALL_ETBS');
       if (dfNeededWallBtn) dfNeededWallBtn.innerText = 'Needed Wall ETBs (' + neededEtbs.length + ')';
 
-      // Update Live Market Spread Distribution Quick-Bar Counts (91 Stores)
-      const spreadUnderTrigCnt = Math.max(underTriggerCount, Number(shelfSpreadData?.underTriggerCount || 0));
+      // Update Live Market Spread Distribution Quick-Bar Counts
+      const spreadUnderTrigCnt = underTriggerCount;
       const spreadNearMissCnt = Math.max(dynamicNearMisses.length, Number(shelfSpreadData?.nearMissesCount || 0));
-      const spreadUnderMktCnt = Number(shelfSpreadData?.underMarketCount || 0) || allDealItems.filter(it => Number(it.discountPct || 0) >= 5 && Number(it.discountPct || 0) <= 20).length;
-      const spreadAtMsrpCnt = Number(shelfSpreadData?.atRetailMsrpCount || 0) || allDealItems.filter(it => Number(it.landedPrice || 0) <= Number(it.msrp || 54.99) * 1.03).length;
+      const spreadUnderMktCnt = Number(shelfSpreadData?.underMarketCount || 0) || actionableItems.filter(it => Number(it.discountPct || 0) >= 5).length;
+      const spreadAtMsrpCnt = Number(shelfSpreadData?.atRetailMsrpCount || 0) || actionableItems.filter(it => Number(it.landedPrice || 0) <= Number(it.msrp || 54.99) * 1.03).length;
 
       const spEl1 = document.getElementById('spreadCnt_UNDER_TRIGGER');
       if (spEl1) spEl1.innerText = String(spreadUnderTrigCnt);
@@ -3625,65 +3787,71 @@
 
       const radarPills = document.getElementById('kpiActiveRadarPills');
       if (radarPills) {
-        const rows = [];
-        underTriggerItems.slice(0, 3).forEach(it => {
-          rows.push({
-            skuId: it.skuId,
-            name: it.title,
-            price: Number(it.landedPrice || it.price || 0),
-            disc: Number(it.discountPct || 0),
-            live: Boolean(it.isLiveNow)
-          });
-        });
+        const rows = actionableItems.slice(0, 3).map(it => ({
+          skuId: it.skuId,
+          name: it.title,
+          price: Number(it.landedPrice || it.price || 0),
+          disc: Number(it.discountPct || 0),
+          tier: it.actionTier
+        }));
 
-        if (rows.length < 3) {
-          allDealItems.forEach(it => {
-            if (rows.length >= 3) return;
-            if (rows.some(r => r.name === it.title)) return;
-            rows.push({
-              skuId: it.skuId,
-              name: it.title,
-              price: Number(it.landedPrice || it.price || 0),
-              disc: Number(it.discountPct || 0),
-              live: Boolean(it.isLiveNow)
-            });
-          });
+        if (rows.length === 0) {
+          radarPills.innerHTML =
+            '<div class="py-2 px-3 rounded-lg bg-black/40 border border-white/10 text-[11px] text-slate-300">' +
+              '0 Pinned/Watch hits right now • <strong class="text-slate-200">' + mutedCount + '</strong> overpriced/sliding shelves auto-muted.' +
+            '</div>';
+        } else {
+          radarPills.innerHTML = rows.map(r => {
+            const pillCls = r.tier === 'BUY_NOW_PINNED'
+              ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/45'
+              : 'bg-amber-500/20 text-amber-200 border-amber-400/45';
+            const discBadge = r.disc > 0
+              ? '<span class="font-mono-num text-[10px] font-extrabold ' + (r.tier === 'BUY_NOW_PINNED' ? 'text-emerald-400' : 'text-amber-300') + ' shrink-0">-' + r.disc + '%</span>'
+              : '';
+            return (
+              '<div onclick="switchMainView(\'BOUNTY_HUNTER\'); quickBountyPick(\'' + (r.skuId || '') + '\');" class="flex items-center justify-between gap-2 py-1 px-2.5 rounded-lg bg-black/40 hover:bg-white/10 border border-white/10 hover:border-cyan-400/40 cursor-pointer transition" title="Click to compare all store prices for ' + r.name.replace(/"/g, '') + ' in Bounty Hunter">' +
+                '<span class="text-xs font-bold text-slate-100" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + r.name + '</span>' +
+                '<div class="flex items-center gap-1.5 shrink-0">' +
+                  discBadge +
+                  '<span class="font-mono-num text-[11px] font-extrabold px-2 py-0.5 rounded border shrink-0 ' + pillCls + '">$' + r.price.toFixed(2) + '</span>' +
+                '</div>' +
+              '</div>'
+            );
+          }).join('');
         }
-
-        radarPills.innerHTML = rows.slice(0, 3).map(r => {
-          const pillCls = r.live
-            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-            : 'bg-cyan-500/15 text-cyan-200 border-cyan-500/30';
-          const discBadge = r.disc > 0
-            ? '<span class="font-mono-num text-[10px] font-extrabold text-emerald-400 shrink-0">-' + r.disc + '%</span>'
-            : '';
-          return (
-            '<div onclick="switchMainView(\'BOUNTY_HUNTER\'); quickBountyPick(\'' + (r.skuId || '') + '\');" class="flex items-center justify-between gap-2 py-1 px-2.5 rounded-lg bg-black/40 hover:bg-white/10 border border-white/10 hover:border-cyan-400/40 cursor-pointer transition" title="Click to compare all store prices for ' + r.name.replace(/"/g, '') + ' in Bounty Hunter">' +
-              '<span class="text-xs font-bold text-slate-100" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + r.name + '</span>' +
-              '<div class="flex items-center gap-1.5 shrink-0">' +
-                discBadge +
-                '<span class="font-mono-num text-[11px] font-extrabold px-2 py-0.5 rounded border shrink-0 ' + pillCls + '">$' + r.price.toFixed(2) + '</span>' +
-              '</div>' +
-            '</div>'
-          );
-        }).join('');
       }
 
-      // Card 3: Unicorn MSRP Trophy Counter
+      // Card 3: Unicorn MSRP Trophy Counter (Honest 0-catch armed state when totalMsrpHits === 0)
+      const trueMsrpTotal = Number(msrpTrophies?.totalMsrpHits ?? latestStatusData?.totalMsrpHits ?? 0);
       const msrpCountEl = document.getElementById('kpiMsrpHitCount');
-      if (msrpCountEl) msrpCountEl.innerText = String(msrpTrophies?.totalMsrpHits ?? 1);
-      const latestCatch = (msrpTrophies?.catches && msrpTrophies.catches[0]) || null;
+      if (msrpCountEl) msrpCountEl.innerText = String(trueMsrpTotal);
+      const latestCatch = (trueMsrpTotal > 0 && Array.isArray(msrpTrophies?.catches) && msrpTrophies.catches[0]) ? msrpTrophies.catches[0] : null;
       const catchBox = document.getElementById('kpiLatestMsrpCatchBox');
-      if (catchBox && latestCatch) {
-        catchBox.innerHTML =
-          '<div class="flex items-center justify-between gap-2">' +
-            '<span class="set-title-pokedex font-extrabold text-white truncate">' + latestCatch.productName + '</span>' +
-            '<span class="font-mono-num font-black text-emerald-400 shrink-0">$' + Number(latestCatch.price || 51).toFixed(2) + '</span>' +
-          '</div>' +
-          '<div class="text-[11px] text-cyan-200 mt-1 flex items-center justify-between">' +
-            '<span class="truncate">' + (latestCatch.store || 'Cooperstown Cards') + ' • Below $' + Number(latestCatch.msrp || 54.99).toFixed(2) + ' MSRP</span>' +
-            '<button onclick="switchMainView(\'CONQUERED_VAULT\')" class="text-amber-300 font-bold hover:underline shrink-0 ml-2">Trophy #2</button>' +
-          '</div>';
+      const footerRight = document.getElementById('kpiMsrpFooterRight');
+      if (catchBox) {
+        if (latestCatch) {
+          catchBox.innerHTML =
+            '<div class="flex items-center justify-between gap-2">' +
+              '<span class="set-title-pokedex font-extrabold text-white truncate">' + latestCatch.productName + '</span>' +
+              '<span class="font-mono-num font-black text-emerald-400 shrink-0">$' + Number(latestCatch.price || 54.99).toFixed(2) + '</span>' +
+            '</div>' +
+            '<div class="text-[11px] text-cyan-200 mt-1 flex items-center justify-between">' +
+              '<span class="truncate">' + (latestCatch.store || '1P Retail') + ' • &le; $' + Number(latestCatch.msrp || 54.99).toFixed(2) + ' MSRP</span>' +
+              '<button onclick="switchMainView(\'CONQUERED_VAULT\')" class="text-amber-300 font-bold hover:underline shrink-0 ml-2">Vault &rarr;</button>' +
+            '</div>';
+          if (footerRight) footerRight.innerText = latestCatch.capturedAt ? new Date(latestCatch.capturedAt).toLocaleDateString() : '1P Retail Verified';
+        } else {
+          catchBox.innerHTML =
+            '<div class="flex items-center justify-between gap-2">' +
+              '<span class="set-title-pokedex font-extrabold text-cyan-100 truncate">0 Catches • 9 Big-Box 1P Channels Armed</span>' +
+              '<span class="font-mono-num font-black text-emerald-400 shrink-0">&le; MSRP</span>' +
+            '</div>' +
+            '<div class="text-[11px] text-slate-300 mt-1 flex items-center justify-between gap-2">' +
+              '<span class="truncate">Target • Walmart • Best Buy • Pokémon Center • Costco</span>' +
+              '<button onclick="switchMainView(\'ENGINE_ROOM\')" class="text-cyan-300 font-bold hover:underline whitespace-nowrap shrink-0">Sensors &rarr;</button>' +
+            '</div>';
+          if (footerRight) footerRight.innerText = 'Strict 1P Retail Gate Active';
+        }
       }
     }
 
@@ -3783,232 +3951,290 @@
       });
     }
 
+    function renderLiveDealCardHtml(item) {
+      const pol = policies.find(p => p.id === item.skuId) || {};
+      const imgPath = '/art/' + item.skuId + '.jpg?v=' + cacheBuster;
+      const landed = Number(item.landedPrice || item.price || 0);
+      const mktVal = Number(item.marketValue || getEffectiveMarketValue(pol, landed || 60));
+      const msrpVal = Number(item.msrp || pol.msrpCeiling || 54.99);
+      const trigVal = Number(item.triggerPrice || pol.maxMarketBuyPrice || msrpVal);
+      const saveDollars = Math.max(0, mktVal - landed);
+      const discPct = mktVal > landed ? Math.max(1, Math.round(((mktVal - landed) / mktVal) * 100)) : 0;
+      const isNearMiss = Boolean(item.isNearMiss);
+      const tier = item.actionTier || 'MUTED_DRAWER';
+      const isPinned = tier === 'BUY_NOW_PINNED' && !isNearMiss;
+      const isWatch = tier === 'CAUTIOUS_WATCH' && !isNearMiss;
+      const isWall = isWallFormatItem(item.skuId, item);
+      const isCase = isCaseFormatItem(item.skuId, item);
+      const packCnt = Number(item.packCount || pol.packCount || (String(item.formFactor || '').toLowerCase().includes('box') ? 36 : 9));
+      const ppp = Number(item.pricePerPack || (packCnt > 0 ? landed / packCnt : 0));
+      const formatTag = formatShortTag(item.formFactor);
+      const famSt = getSkuFamilyState(item.skuId, item);
+      const safeSkuAttr = String(item.skuId || '').replace(/"/g, '&quot;');
+
+      // Card Border & Tier Accent
+      let cardBorderCls = 'border border-white/12 bg-[#0B0A14]/75';
+      let storeHeaderCls = 'text-slate-300';
+      let tierCornerBadge = '<span class="pokedex-badge px-2 py-0.5 rounded bg-slate-500/20 text-slate-300 border border-white/15 text-[9px] font-mono-num font-bold shrink-0">MUTED / HOLD</span>';
+      let verdictCls = 'bg-slate-500/20 text-slate-200 border-white/15';
+      let ctaTone = 'MUTED';
+
+      if (isNearMiss) {
+        cardBorderCls = 'border border-orange-400/55 bg-[#120D0A]/80';
+        storeHeaderCls = 'text-orange-200';
+        tierCornerBadge = '<span class="pokedex-badge px-2 py-0.5 rounded bg-orange-500/25 text-orange-200 border border-orange-400/50 text-[10px] font-extrabold shrink-0">+' + Number(item.gapPct || 0).toFixed(1) + '% OVER SLIDER</span>';
+        verdictCls = 'bg-orange-500/20 text-orange-200 border-orange-400/45';
+        ctaTone = 'AMBER';
+      } else if (isPinned) {
+        cardBorderCls = 'border-2 border-emerald-400/80 shadow-[0_0_20px_rgba(16,185,129,0.20)]';
+        storeHeaderCls = 'text-emerald-300';
+        tierCornerBadge = '<span class="pokedex-badge px-2 py-0.5 rounded bg-emerald-500/25 text-emerald-200 border border-emerald-400/60 text-[10px] font-mono-num font-black shrink-0">PINNED BUY • ' + Math.round(Number(item.priorityScore || 85)) + ' PTS</span>';
+        verdictCls = 'bg-emerald-500/25 text-emerald-200 border-emerald-400/60';
+        ctaTone = 'EMERALD';
+      } else if (isWatch) {
+        cardBorderCls = 'border-2 border-amber-400/75 shadow-[0_0_16px_rgba(245,158,11,0.16)]';
+        storeHeaderCls = 'text-amber-200';
+        tierCornerBadge = '<span class="pokedex-badge px-2 py-0.5 rounded bg-amber-500/25 text-amber-200 border border-amber-400/60 text-[10px] font-mono-num font-extrabold shrink-0">CAUTIOUS WATCH</span>';
+        verdictCls = 'bg-amber-500/20 text-amber-200 border-amber-400/55';
+        ctaTone = 'AMBER';
+      }
+
+      const rawVerdict = stripEmojiClutter(item.verdictLabel || item.trendVerdictLabel || (isPinned ? 'SUGGESTED BUY' : (isWatch ? 'CAUTIOUS DIP — STILL SLIDING' : 'HOLD OFF')));
+      const verdictPillHtml = '<span class="inline-flex items-center px-2 py-0.5 rounded-md border text-[10px] font-mono-num font-extrabold ' + verdictCls + '">' + rawVerdict + '</span>';
+
+      // Comp & $/pk line
+      const compText = mktVal > 0
+        ? (discPct > 0
+            ? ('TCGP $' + mktVal.toFixed(0) + ' (-' + discPct + '% / -$' + saveDollars.toFixed(0) + ')')
+            : (landed > mktVal * 1.01
+                ? ('TCGP $' + mktVal.toFixed(0) + ' (+$' + (landed - mktVal).toFixed(0) + ' Over Comp)')
+                : ('TCGP $' + mktVal.toFixed(0))))
+        : ('Slider $' + trigVal.toFixed(0));
+      const pppText = ppp > 0 ? (' • $' + ppp.toFixed(2) + '/pk') : '';
+
+      // Earned Watermarks strip (7d / 15d -> 30d / 60d / 90d)
+      const ew = item.earnedWatermarks || pol.earnedWatermarks || null;
+      const watermarkText = (ew && ew.watermarkStrip) ? String(ew.watermarkStrip) : '';
+      const watermarkHtml = watermarkText
+        ? '<div class="mt-1.5 text-[10px] font-mono-num text-slate-300 leading-snug"><strong class="text-cyan-300">Floor:</strong> ' + watermarkText + '</div>'
+        : '';
+
+      // Purchase Memory (Last Paid delta — rendered here on ETBs; on non-ETBs renderFamilySlotsPillsHtml already displays it or we show cleanly)
+      const pm = item.purchaseMemory || pol.purchaseMemory || null;
+      const lastPaidLine = (pm && pm.formattedComparison && isWall)
+        ? '<div class="mt-1 text-[10px] font-mono-num text-amber-200 leading-snug"><strong class="text-amber-300">Ledger:</strong> ' + pm.formattedComparison + '</div>'
+        : '';
+
+      const ownedOrFormatBadge = isWall
+        ? '<span data-sku-status-badge="' + safeSkuAttr + '" class="pokedex-badge text-[9px] font-mono-num font-extrabold px-2 py-0.5 rounded border transition ' + famSt.statusCls + '">' + famSt.statusLabel + '</span>'
+        : '';
+
+      const c1 = item.cart1xUrl || (item.url && String(item.url).includes('/cart/') ? item.url : null);
+      const c2 = isCase ? null : (item.cart2xUrl || (c1 ? String(c1).replace(/:1(?=\?|$)/, ':2') : null));
+      const c3 = isCase ? null : (item.cart3xUrl || (c1 ? String(c1).replace(/:1(?=\?|$)/, ':3') : null));
+      const safeBuyTargetUrl = String(c1 || item.url || '#').replace(/'/g, "\\'");
+      const bumpVal = Math.ceil(landed);
+
+      const checkoutBtns = isNearMiss
+        ? '<button onclick="bumpTriggerAndBuy(\'' + item.skuId + '\', ' + bumpVal + ', \'' + safeBuyTargetUrl + '\')" class="px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-400 text-slate-950 font-mono-num text-[11px] font-black whitespace-nowrap shrink-0 transition shadow-[0_0_12px_rgba(249,115,22,0.35)]">⟦ BUMP TRIGGER ($' + bumpVal + ') &amp; BUY ↗ ⟧</button>'
+        : renderDirectCartButtonsHtml({
+            skuId: item.skuId,
+            formFactor: item.formFactor,
+            isCaseSku: isCase,
+            actionTier: tier,
+            cart1xUrl: c1,
+            cart2xUrl: c2,
+            cart3xUrl: c3,
+            url: item.url
+          }, isWatch ? 'Dip Watch ↗' : (tier === 'MUTED_DRAWER' ? 'Inspect ↗' : 'Buy Now ↗'), ctaTone);
+
+      const encodedItem = encodeURIComponent(JSON.stringify({
+        skuId: item.skuId,
+        productName: item.title,
+        formFactor: item.formFactor,
+        store: item.retailer,
+        landedPrice: landed,
+        marketValueAtCapture: mktVal,
+        discountPct: discPct
+      }));
+
+      const priceColorCls = isPinned
+        ? 'text-emerald-400'
+        : (isWatch ? 'text-amber-300' : (isNearMiss ? 'text-orange-300' : 'text-slate-200'));
+
+      return (
+        '<div data-sku-card="' + safeSkuAttr + '" class="deal-card glass-card rounded-2xl p-4 ' + cardBorderCls + '" style="display:flex;flex-direction:column;justify-content:space-between;min-height:224px;">' +
+          '<div>' +
+            '<div class="flex items-center justify-between gap-2 mb-2.5 pb-1.5 border-b border-white/10">' +
+              '<span class="font-pokedex text-xs font-black uppercase tracking-wide ' + storeHeaderCls + ' truncate">' + item.retailer + '</span>' +
+              tierCornerBadge +
+            '</div>' +
+            '<div style="display:grid;grid-template-columns:86px 1fr;gap:12px;align-items:start;">' +
+              '<div onclick="openPriceHistoryModal(\'' + item.skuId + '\')" title="Click to open TCGPlayer Price History Chart &amp; Comps" class="art-pedestal rounded-xl p-1.5 flex flex-col items-center justify-between relative overflow-hidden cursor-pointer group" style="width:86px;height:86px;">' +
+                '<img src="' + imgPath + '" class="w-[74px] h-[60px] object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)] group-hover:scale-110 transition-transform" alt="Art" />' +
+                '<span class="pokedex-badge text-[8px] font-mono-num font-extrabold uppercase tracking-wider px-1.5 py-0.2 rounded bg-black/75 text-slate-200 border border-white/10 leading-tight">' + formatTag + '</span>' +
+              '</div>' +
+              '<div class="min-w-0">' +
+                '<div onclick="openPriceHistoryModal(\'' + item.skuId + '\')" title="Click to open TCGPlayer Price History Chart &amp; Comps" class="set-title-pokedex text-sm font-extrabold text-white hover:text-cyan-300 cursor-pointer transition leading-snug line-clamp-2">' + item.title + '</div>' +
+                '<div class="mt-1 flex items-center gap-1.5 flex-wrap">' +
+                  verdictPillHtml +
+                  ownedOrFormatBadge +
+                '</div>' +
+                '<div class="flex items-baseline gap-2 mt-1.5 flex-wrap font-mono-num">' +
+                  '<span class="text-[22px] leading-none font-black ' + priceColorCls + '">$' + landed.toFixed(2) + '</span>' +
+                  '<span class="text-[11px] text-slate-300 font-semibold">' + compText + pppText + '</span>' +
+                '</div>' +
+                watermarkHtml +
+                lastPaidLine +
+                '<div class="mt-2">' +
+                  renderFamilySlotsPillsHtml(item.skuId, item, true) +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding-top:10px;margin-top:10px;border-top:1px solid rgba(255,255,255,0.08);flex-wrap:nowrap;">' +
+            checkoutBtns +
+            '<div class="flex items-center gap-1.5 shrink-0">' +
+              '<button onclick="openPriceHistoryModal(\'' + item.skuId + '\')" class="px-2 py-1 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/35 text-[11px] font-pokedex font-extrabold whitespace-nowrap shrink-0 transition" title="Open Price Chart &amp; Store Comps">⟦ CHART ⟧</button>' +
+              '<button onclick="openClaimModalFromDeal(\'' + encodedItem + '\')" class="px-2 py-1 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 border border-amber-500/35 text-[11px] font-extrabold whitespace-nowrap shrink-0 transition">Claim</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }
+
     function renderLiveCommandView() {
       const feedGrid = document.getElementById('liveDealFeedGrid');
+      const drawerWrap = document.getElementById('mutedHoldOffDrawerWrap');
+      const drawerGrid = document.getElementById('mutedHoldOffDrawerGrid');
+      const drawerLbl = document.getElementById('mutedHoldOffToggleLabel');
       if (!feedGrid) return;
 
       const items = buildUnifiedDealFeedItems();
+      const q = (globalFuzzyQuery || '').trim();
+      const matchesItem = (it) => !q || matchesFuzzyQuery(q, it.title, it.skuId, it.retailer, it.formFactor, it.verdictLabel);
 
-      let filteredItems = [];
+      // Special explicit filter modes
       if (activeDealFeedFilter === 'NEAR_MISSES') {
-        const dynNear = computeDynamicNearMissItems();
-        const cacheNear = mapShelfSpreadOffersToFeedItems(shelfSpreadData?.offers?.NEAR_MISSES, 'NEAR MISS');
-        const seen = new Set(dynNear.map(x => x.skuId + '__' + x.retailer));
-        cacheNear.forEach(c => {
-          const k = c.skuId + '__' + c.retailer;
-          if (!seen.has(k)) {
-            seen.add(k);
-            dynNear.push(c);
-          }
-        });
-        filteredItems = dynNear;
-      } else if (activeDealFeedFilter === 'UNDER_MARKET') {
-        const cacheUnderMkt = mapShelfSpreadOffersToFeedItems(shelfSpreadData?.offers?.UNDER_MARKET, 'UNDER MARKET');
-        if (cacheUnderMkt.length > 0) {
-          filteredItems = cacheUnderMkt;
-        } else {
-          filteredItems = items.filter(it => Number(it.discountPct || 0) >= 5 && Number(it.discountPct || 0) <= 20);
-        }
-      } else if (activeDealFeedFilter === 'AT_RETAIL_MSRP') {
-        const cacheAtMsrp = mapShelfSpreadOffersToFeedItems(shelfSpreadData?.offers?.AT_RETAIL_MSRP, 'AT RETAIL MSRP');
-        if (cacheAtMsrp.length > 0) {
-          filteredItems = cacheAtMsrp;
-        } else {
-          filteredItems = items.filter(it => Number(it.landedPrice || 0) <= Number(it.msrp || 54.99) * 1.03);
-        }
-      } else {
-        filteredItems = items.filter(it => {
-          if (activeDealFeedFilter === 'UNDER_TRIGGER') {
-            const st = computeClientShelfStatus(it);
-            if (!st.isUnderTarget && !st.isCloseCall) return false;
-            if (botSettings && botSettings.wallHunterMode) {
-              return String(it.formFactor || '').toLowerCase() === 'etb' && !it.owned;
-            }
-            return true;
-          }
-          if (activeDealFeedFilter === 'NEEDED_WALL_ETBS') {
-            const pol = policies.find(p => p.id === it.skuId);
-            const isEtb = String(it.formFactor || '').toLowerCase() === 'etb';
-            const isOwned = pol ? Boolean(pol.owned) : Boolean(it.owned);
-            return isEtb && !isOwned;
-          }
-          if (activeDealFeedFilter === 'CASES') {
-            const f = String(it.formFactor || '').toLowerCase();
-            return f.includes('case');
-          }
-          return true;
-        });
+        const dynNear = computeDynamicNearMissItems().filter(matchesItem);
+        if (drawerWrap) drawerWrap.classList.add('hidden');
+        feedGrid.innerHTML = dynNear.length > 0
+          ? dynNear.map(renderLiveDealCardHtml).join('')
+          : '<div class="col-span-full p-6 text-center rounded-2xl bg-black/35 border border-white/10 text-slate-300 text-xs">No in-stock items currently sit within +1% to +12% over your buy triggers.</div>';
+        return;
       }
 
-      // If user clicked "Needed Wall ETBs", surface all missing Wall ETBs with live best offers
-      if (activeDealFeedFilter === 'NEEDED_WALL_ETBS') {
-        const missingWallEtbs = policies.filter(p => isEtbPolicy(p) && !p.owned);
-        missingWallEtbs.forEach(pol => {
-          if (filteredItems.some(x => x.skuId === pol.id)) return;
-          const offer = getBestLiveOfferForPolicy(pol);
-          const mktVal = getEffectiveMarketValue(pol, offer.price || 60);
-          const packCnt = Number(pol.packCount || 9);
-          const ppp = packCnt > 0 ? (offer.price / packCnt) : 6.0;
-          filteredItems.push({
-            isLiveNow: offer.isLiveShelf,
+      let pool = items.filter(it => {
+        if (!matchesItem(it)) return false;
+        if (botSettings && botSettings.wallHunterMode && activeDealFeedFilter === 'UNDER_TRIGGER') {
+          return isWallFormatItem(it.skuId, it) && !it.owned;
+        }
+        if (activeDealFeedFilter === 'NEEDED_WALL_ETBS') {
+          return isWallFormatItem(it.skuId, it) && !it.owned;
+        }
+        if (activeDealFeedFilter === 'CASES') {
+          return isCaseFormatItem(it.skuId, it);
+        }
+        if (activeDealFeedFilter === 'UNDER_MARKET') {
+          return Number(it.discountPct || 0) >= 5;
+        }
+        if (activeDealFeedFilter === 'AT_RETAIL_MSRP') {
+          return Number(it.landedPrice || 0) <= Number(it.msrp || 54.99) * 1.03;
+        }
+        return true;
+      });
+
+      // When fuzzy searching across all 131 SKUs (or viewing Needed Wall ETBs), include matching catalog SKUs without live LGS stock so search never misses any of the 131 SKUs!
+      if (q || activeDealFeedFilter === 'NEEDED_WALL_ETBS') {
+        const candidatePols = q
+          ? policies.filter(p => matchesFuzzyQuery(q, p.name, p.id, p.era, p.formFactor))
+          : policies.filter(p => isWallFormatItem(p.id, p) && !p.owned);
+        candidatePols.forEach(pol => {
+          if (pool.some(x => x.skuId === pol.id)) return;
+          const bo = pol.bestLiveOffer || {};
+          const mktVal = getEffectiveMarketValue(pol, 60);
+          const landedVal = Number((bo.inStock && bo.landedPrice > 0) ? bo.landedPrice : mktVal);
+          const packCnt = Number(pol.packCount || (String(pol.formFactor || '').toLowerCase().includes('box') ? 36 : 9));
+          const tcgUrl = bo.tcgplayerUrl || ('https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=' + encodeURIComponent(pol.name) + '&view=grid');
+          pool.push({
+            isLiveNow: Boolean(bo.inStock),
             skuId: pol.id,
             title: pol.name,
-            formFactor: 'ETB',
-            owned: false,
-            retailer: offer.store,
-            price: offer.price,
-            landedPrice: offer.price,
+            formFactor: pol.formFactor,
+            isWallFormat: isWallFormatItem(pol.id, pol),
+            isCaseSku: isCaseFormatItem(pol.id, pol),
+            actionTier: pol.actionTier || (bo.inStock ? 'CAUTIOUS_WATCH' : 'MUTED_DRAWER'),
+            priorityScore: Number(pol.priorityScore || 15),
+            verdictLabel: bo.inStock ? (pol.verdictLabel || 'LIVE SHELF') : 'NO LGS <= COMP • TCGPLAYER FLOOR',
+            earnedWatermarks: pol.earnedWatermarks || null,
+            purchaseMemory: pol.purchaseMemory || null,
+            owned: Boolean(pol.wallOwned ?? pol.owned),
+            retailer: bo.inStock ? (bo.storeName || 'Verified LGS') : 'TCGPlayer Market Comp',
+            price: landedVal,
+            landedPrice: landedVal,
             marketValue: mktVal,
             triggerPrice: Number(pol.maxMarketBuyPrice || pol.msrpCeiling || mktVal),
             msrp: Number(pol.msrpCeiling || 54.99),
             packCount: packCnt,
-            pricePerPack: ppp,
-            isRipValueLeader: ppp > 0 && ppp <= 4.5,
-            isPreRelease: Boolean(pol.isPreRelease),
-            url: offer.url,
-            timeStr: 'NEEDED FOR WALL',
-            discountPct: mktVal > offer.price ? Math.round(((mktVal - offer.price) / mktVal) * 100) : 0
+            pricePerPack: packCnt > 0 ? (landedVal / packCnt) : 0,
+            url: bo.inStock ? (bo.buyUrl || tcgUrl) : tcgUrl,
+            timeStr: bo.inStock ? 'LIVE SHELF' : 'CATALOG TARGET',
+            discountPct: mktVal > landedVal ? Math.round(((mktVal - landedVal) / mktVal) * 100) : 0
           });
         });
       }
 
       if (activeDealFeedFilter === 'BEST_PACK') {
-        filteredItems = [...filteredItems].sort((a, b) => Number(a.pricePerPack || 99) - Number(b.pricePerPack || 99));
+        pool = [...pool].sort((a, b) => Number(a.pricePerPack || 99) - Number(b.pricePerPack || 99));
       }
 
-      if (filteredItems.length === 0 && activeDealFeedFilter !== 'NEAR_MISSES') {
-        filteredItems = items;
-      }
+      let activeTierItems = [];
+      let mutedTierItems = [];
 
-      // Never truncate UNDER_TRIGGER, NEAR_MISSES, or ALL so the rendered card count 100% matches KPI Card #2 and the pill count!
-      const displayItems = activeDealFeedFilter === 'NEEDED_WALL_ETBS' ? filteredItems.slice(0, 12) : filteredItems;
-
-      if (displayItems.length === 0) {
-        feedGrid.innerHTML = '<div class="col-span-full p-6 text-center rounded-2xl bg-black/35 border border-white/10 text-slate-300 text-xs">No in-stock items currently sit within +1% to +12% over your buy triggers.</div>';
-        return;
-      }
-
-      feedGrid.innerHTML = displayItems.map((item) => {
-        const imgPath = '/art/' + item.skuId + '.jpg?v=' + cacheBuster;
-        const landed = Number(item.landedPrice || item.price || 0);
-        const mktVal = Number(item.marketValue || landed || 60);
-        const msrpVal = Number(item.msrp || 54.99);
-        const trigVal = Number(item.triggerPrice || msrpVal);
-        const saveDollars = Math.max(0, mktVal - landed);
-        const discPct = mktVal > landed ? Math.max(1, Math.round(((mktVal - landed) / mktVal) * 100)) : 0;
-        const isMsrpDefcon = landed > 0 && landed <= msrpVal;
-        const isNearMiss = Boolean(item.isNearMiss);
-        const packPill = getPackBadgeHtml(item.pricePerPack, item.packCount, item.isRipValueLeader);
-        const formatTag = formatShortTag(item.formFactor);
-        const preBleedBadge = renderTrendVerdictPillHtml(item);
-        const statusPill = renderShelfStatusPillHtml(item);
-        const primaryVerdictBadge = preBleedBadge || statusPill;
-
-        const spreadPill = discPct > 0
-          ? '<span class="font-mono-num text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/35">-' + discPct + '% Under Mkt (Save $' + saveDollars.toFixed(0) + ')</span>'
-          : '<span class="font-mono-num text-[10px] font-bold px-2 py-0.5 rounded-md bg-white/10 text-slate-300 border border-white/15">At Mkt ($' + mktVal.toFixed(0) + ')</span>';
-
-        const triggerPill = isNearMiss
-          ? '<span class="font-mono-num text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-200 border border-orange-400/40">Target: $' + trigVal.toFixed(0) + ' (+$' + Number(item.gapDollars || (landed - trigVal)).toFixed(2) + ')</span>'
-          : '<span class="font-mono-num text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-200 border border-purple-400/30">Target: $' + trigVal.toFixed(0) + '</span>';
-
-        const isPreDropStaging = Boolean(item.isPreDropStaging || item.alertType === 'PRE_DROP_STAGING');
-        const statusBadge = isNearMiss
-          ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-orange-500/25 text-orange-200 border border-orange-400/50 text-[10px] font-extrabold shrink-0">◈ ⟦ +' + Number(item.gapPct || 0).toFixed(1) + '% OVER ⟧</span>'
-          : (isPreDropStaging
-              ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-amber-500/25 text-amber-200 border border-amber-400/50 text-[10px] font-extrabold shrink-0">✦ ⟦ PRE-DROP STAGING ⟧</span>'
-              : (item.soldOut
-                  ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 text-[10px] font-extrabold shrink-0">SOLD OUT</span>'
-                  : (isMsrpDefcon
-                      ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-cyan-500/25 text-cyan-200 border border-cyan-400/50 text-[10px] font-extrabold shrink-0">✦ ⟦ MSRP DEFCON-1 ⟧</span>'
-                      : (item.isLiveNow
-                          ? '<span class="pokedex-badge px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-extrabold shrink-0">IN STOCK</span>'
-                          : '<span class="pokedex-badge px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[10px] font-bold shrink-0">BEST OFFER</span>'))));
-
-        const isMarketplaceSeller = /tcgplayer|ebay/i.test(String(item.retailer || ''));
-        const effItemPrice = item.itemPrice !== undefined && item.itemPrice > 0 ? Number(item.itemPrice) : landed;
-        let resolvedShipText = item.freeShipNote || '';
-        if (!resolvedShipText && isMarketplaceSeller) {
-          if (item.shippingPrice !== undefined && Number(item.shippingPrice) > 0) {
-            resolvedShipText = effItemPrice < 35
-              ? ('$' + effItemPrice.toFixed(2) + ' + $' + Number(item.shippingPrice).toFixed(2) + ' Ship ($' + landed.toFixed(2) + ' Landed — Under $35 Threshold)')
-              : ('$' + effItemPrice.toFixed(2) + ' + $' + Number(item.shippingPrice).toFixed(2) + ' Ship ($' + landed.toFixed(2) + ' Landed)');
-          } else if (item.shippingPrice === 0) {
-            resolvedShipText = '+FREE Shipping (Confirmed $0.00 Ship)';
-          } else if (effItemPrice < 35) {
-            resolvedShipText = '+Est. Ship / Check Cart — Under $35 Threshold';
-          } else {
-            resolvedShipText = '+FREE Shipping (Over $35 Threshold)';
-          }
+      if (activeDealFeedFilter === 'UNDER_TRIGGER') {
+        activeTierItems = pool.filter(it => it.actionTier === 'BUY_NOW_PINNED');
+        mutedTierItems = pool.filter(it => it.actionTier !== 'BUY_NOW_PINNED');
+      } else if (activeDealFeedFilter === 'CASES' || activeDealFeedFilter === 'BEST_PACK' || activeDealFeedFilter === 'NEEDED_WALL_ETBS') {
+        activeTierItems = pool.filter(it => it.actionTier !== 'MUTED_DRAWER');
+        mutedTierItems = pool.filter(it => it.actionTier === 'MUTED_DRAWER');
+        // If user explicitly clicked Cases / Needed Wall ETBs and 0 are pinned/watch, surface top 12 directly while keeping rest in drawer
+        if (activeTierItems.length === 0 && mutedTierItems.length > 0) {
+          activeTierItems = mutedTierItems.slice(0, 12);
+          mutedTierItems = mutedTierItems.slice(12);
         }
-        const extraDrawerHtml =
-          '<div class="flex items-center gap-1.5 flex-wrap pt-1">' + spreadPill + packPill + '</div>' +
-          (resolvedShipText ? '<div class="text-[9px] text-cyan-200/90 truncate">' + resolvedShipText + '</div>' : '');
+      } else {
+        activeTierItems = pool.filter(it => it.actionTier === 'BUY_NOW_PINNED' || it.actionTier === 'CAUTIOUS_WATCH');
+        mutedTierItems = pool.filter(it => it.actionTier === 'MUTED_DRAWER');
+      }
 
-        const c1 = item.cart1xUrl || (item.url && item.url.includes('/cart/') ? item.url : null);
-        const c2 = item.cart2xUrl || (c1 ? c1.replace(/:1$/, ':2') : null);
-        const c3 = item.cart3xUrl || (c1 ? c1.replace(/:1$/, ':3') : null);
-        const safeBuyTargetUrl = String(c1 || item.url || '#').replace(/'/g, "\\'");
-        const bumpVal = Math.ceil(landed);
+      // If user typed a specific fuzzy search query and all matches sit in Muted/Catalog tier, surface them directly so search is instant!
+      if (q && activeTierItems.length === 0 && mutedTierItems.length > 0) {
+        activeTierItems = mutedTierItems.slice(0, 24);
+        mutedTierItems = mutedTierItems.slice(24);
+      }
 
-        const checkoutBtns = isNearMiss
-          ? '<button onclick="bumpTriggerAndBuy(\'' + item.skuId + '\', ' + bumpVal + ', \'' + safeBuyTargetUrl + '\')" class="px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-400 text-slate-950 font-mono-num text-[11px] font-black whitespace-nowrap shrink-0 transition shadow-[0_0_12px_rgba(249,115,22,0.35)]">⟦ BUMP TRIGGER ($' + bumpVal + ') &amp; BUY ↗ ⟧</button>'
-          : renderDirectCartButtonsHtml({ cart1xUrl: c1, cart2xUrl: c2, cart3xUrl: c3, url: item.url }, 'Buy Now ↗');
+      if (activeTierItems.length === 0) {
+        feedGrid.innerHTML =
+          '<div class="col-span-full p-6 text-center rounded-2xl bg-black/35 border border-white/10 text-slate-300 text-xs">' +
+            (q
+              ? ('No SKUs matched fuzzy query "' + q.replace(/</g, '&lt;') + '" across our 131 tracked targets.')
+              : ('0 Pinned Buy or Cautious Watch deals right now. ' + (mutedTierItems.length > 0 ? (mutedTierItems.length + ' overpriced/sliding items are tucked cleanly in the Muted Shelf below.') : 'Sensors scanning live shelves...'))) +
+          '</div>';
+      } else {
+        feedGrid.innerHTML = activeTierItems.map(renderLiveDealCardHtml).join('');
+      }
 
-        const encodedItem = encodeURIComponent(JSON.stringify({
-          skuId: item.skuId,
-          productName: item.title,
-          formFactor: item.formFactor,
-          store: item.retailer,
-          landedPrice: landed,
-          marketValueAtCapture: mktVal,
-          discountPct: discPct
-        }));
-
-        const priceColorCls = isNearMiss ? 'text-orange-300' : (isMsrpDefcon ? 'text-[#00F0FF]' : 'text-[#10B981]');
-        const famSt = getSkuFamilyState(item.skuId, item);
-        const safeSkuAttr = String(item.skuId || '').replace(/"/g, '&quot;');
-        const ownedBadge = '<span data-sku-status-badge="' + safeSkuAttr + '" class="pokedex-badge text-[9px] font-mono-num font-extrabold px-2 py-0.5 rounded border transition ' + famSt.statusCls + '">' + famSt.statusLabel + '</span>';
-
-        return (
-          '<div data-sku-card="' + safeSkuAttr + '" class="deal-card glass-card rounded-2xl p-4 ' + (famSt.cardGlowCls || '') + '" style="display:flex;flex-direction:column;justify-content:space-between;min-height:220px;">' +
-            '<div>' +
-              '<div class="flex items-center justify-between gap-2 mb-2.5">' +
-                '<span class="text-[11px] font-bold text-slate-300 truncate">' + item.retailer + ' • <span class="text-slate-400 font-mono-num">' + item.timeStr + '</span></span>' +
-                statusBadge +
-              '</div>' +
-              '<div style="display:grid;grid-template-columns:88px 1fr;gap:12px;align-items:center;">' +
-                '<div onclick="openPriceHistoryModal(\'' + item.skuId + '\')" title="Click to open TCGPlayer Price History Chart &amp; Comps" class="art-pedestal rounded-xl p-1.5 flex flex-col items-center justify-between relative overflow-hidden cursor-pointer group" style="width:88px;height:88px;">' +
-                  '<img src="' + imgPath + '" class="w-[76px] h-[62px] object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)] group-hover:scale-110 transition-transform" alt="Art" />' +
-                  '<span class="pokedex-badge text-[8px] font-mono-num font-extrabold uppercase tracking-wider px-1.5 py-0.2 rounded bg-black/75 text-slate-200 border border-white/10 leading-tight">' + formatTag + '</span>' +
-                '</div>' +
-                '<div class="min-w-0">' +
-                  '<div onclick="openPriceHistoryModal(\'' + item.skuId + '\')" title="Click to open TCGPlayer Price History Chart &amp; Comps" class="set-title-pokedex text-sm font-extrabold text-white hover:text-cyan-300 cursor-pointer transition leading-snug line-clamp-2">' + item.title + '</div>' +
-                  '<div class="flex items-baseline gap-2 mt-1 flex-wrap">' +
-                    '<span class="text-[22px] leading-none font-black font-mono-num ' + priceColorCls + '">$' + landed.toFixed(2) + '</span>' +
-                    triggerPill +
-                    ownedBadge +
-                  '</div>' +
-                  '<div class="mt-1.5 flex items-center gap-1.5 flex-wrap">' +
-                    primaryVerdictBadge +
-                  '</div>' +
-                  '<div class="mt-1.5">' +
-                    renderFamilySlotsPillsHtml(item.skuId, item, true) +
-                  '</div>' +
-                '</div>' +
-              '</div>' +
-              renderCardMetricsDrawerHtml(item.skuId, item, extraDrawerHtml) +
-            '</div>' +
-            '<div style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding-top:10px;margin-top:10px;border-top:1px solid rgba(255,255,255,0.08);flex-wrap:nowrap;">' +
-              checkoutBtns +
-              '<div class="flex items-center gap-1.5 shrink-0">' +
-                '<button onclick="openPriceHistoryModal(\'' + item.skuId + '\')" class="px-2 py-1 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/35 text-[11px] font-pokedex font-extrabold whitespace-nowrap shrink-0 transition" title="Open 24H/7D/30D/90D Price Chart &amp; Store Comps">⟦ CHART ⟧</button>' +
-                '<button onclick="openClaimModalFromDeal(\'' + encodedItem + '\')" class="px-2 py-1 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 border border-amber-500/35 text-[11px] font-extrabold whitespace-nowrap shrink-0 transition">Claim</button>' +
-              '</div>' +
-            '</div>' +
-          '</div>'
-        );
-      }).join('');
+      if (drawerWrap && drawerGrid && drawerLbl) {
+        if (mutedTierItems.length > 0) {
+          drawerWrap.classList.remove('hidden');
+          drawerLbl.textContent = (mutedDealDrawerOpen ? '[- Hide Muted / Hold-Off Shelf (' : '[+ Show Muted / Hold-Off Shelf (') + mutedTierItems.length + ')]';
+          drawerGrid.classList.toggle('hidden', !mutedDealDrawerOpen);
+          drawerGrid.innerHTML = mutedDealDrawerOpen ? mutedTierItems.map(renderLiveDealCardHtml).join('') : '';
+        } else {
+          drawerWrap.classList.add('hidden');
+          drawerGrid.innerHTML = '';
+        }
+      }
     }
 
     function renderMarketIntelligenceBento() {
@@ -4162,8 +4388,17 @@
 
     async function runBountyRecon(explicitSkuId, liveProbe) {
       renderMarketIntelligenceBento();
-      const skuId = explicitSkuId !== '' ? explicitSkuId : (document.getElementById('bountySkuSelect')?.value || '');
-      const query = (document.getElementById('bountyQueryInput')?.value || '').trim();
+      let skuId = explicitSkuId !== '' ? explicitSkuId : (document.getElementById('bountySkuSelect')?.value || '');
+      const rawQuery = (document.getElementById('bountyQueryInput')?.value || globalFuzzyQuery || '').trim();
+      let effectiveQuery = normalizeFuzzyText(rawQuery);
+      if (!skuId && rawQuery) {
+        const fuzzyPolMatches = policies.filter(p => matchesFuzzyQuery(rawQuery, p.name, p.id, p.era, p.formFactor));
+        if (fuzzyPolMatches.length === 1) {
+          skuId = fuzzyPolMatches[0].id;
+          effectiveQuery = '';
+        }
+      }
+      const query = effectiveQuery;
       if (skuId || query) {
         activeBountyStoreFilter = '';
       }
@@ -4333,7 +4568,9 @@
                     '<div class="min-w-0 space-y-1">' +
                       '<div class="flex items-center gap-2">' +
                         '<div onclick="openPriceHistoryModal(\'' + opt.skuId + '\')" class="text-[15px] font-extrabold text-white hover:text-cyan-300 cursor-pointer transition truncate">' + opt.productName + '</div>' +
-                        '<span data-sku-status-badge="' + safeSkuAttr + '" class="pokedex-badge text-[9px] font-mono-num font-extrabold px-2 py-0.5 rounded border transition shrink-0 ' + famSt.statusCls + '">' + famSt.statusLabel + '</span>' +
+                        (isWallFormatItem(opt.skuId, pol || opt)
+                          ? '<span data-sku-status-badge="' + safeSkuAttr + '" class="pokedex-badge text-[9px] font-mono-num font-extrabold px-2 py-0.5 rounded border transition shrink-0 ' + famSt.statusCls + '">' + famSt.statusLabel + '</span>'
+                          : '') +
                       '</div>' +
                       '<div class="flex items-center gap-2 flex-wrap">' +
                         '<span class="px-2 py-0.5 rounded bg-purple-500/20 border border-purple-400/30 text-[10px] font-pokedex font-bold text-purple-200 uppercase">' + eraLabel + '</span>' +
@@ -4522,9 +4759,11 @@
       const grid = document.getElementById('wallChecklistGrid');
       if (!grid) return;
 
-      // Strictly filter to ONLY the 38 ETBs (formFactor === 'etb')
-      const allEtbs = policies.filter(p => isEtbPolicy(p));
+      // Strictly filter to ONLY the 38 ETBs (isWallFormatItem) + apply instant fuzzy search!
+      const allEtbs = policies.filter(p => isWallFormatItem(p.id, p));
+      const vQuery = (document.getElementById('vaultSearchInput')?.value || globalFuzzyQuery || '').trim();
       const filtered = allEtbs.filter(p => {
+        if (vQuery && !matchesFuzzyQuery(vQuery, p.name, p.id, p.era, p.formFactor)) return false;
         const eraStr = String(p.era || p.name || '');
         const famSt = getSkuFamilyState(p.id, p);
         if (vaultChecklistFilter === 'NEEDED') return !famSt.wallOwned;
@@ -4568,26 +4807,48 @@
         const isOwned = Boolean(famSt.wallOwned);
         const mVal = getEffectiveMarketValue(p, 56);
         const targetBuy = Number(p.maxMarketBuyPrice || p.msrpCeiling || 54.99);
-        const bestOffer = getBestLiveOfferForPolicy(p);
+        const buyAct = (conqueredVault && conqueredVault.bestBuyActionsBySku && conqueredVault.bestBuyActionsBySku[p.id]) || p.bestBuyAction || null;
+        const liveBo = p.bestLiveOffer || null;
+        const hasCompetitiveLgs = Boolean((buyAct && buyAct.isDirectLgsBuy && Number(buyAct.lowestLanded) > 0) || (liveBo && liveBo.inStock && Number(liveBo.landedPrice) > 0));
+        const lgsPrice = Number((buyAct && buyAct.lowestLanded) || (liveBo && liveBo.landedPrice) || 0);
+        const lgsStore = String((buyAct && buyAct.storeName) || (liveBo && liveBo.storeName) || 'Verified LGS');
+        const lgsBuyUrl = String((buyAct && buyAct.buyUrl) || (liveBo && liveBo.buyUrl) || '#');
+        const mktCompVal = Number((buyAct && buyAct.marketPrice) || mVal || 54.99);
+        const tcgUrl = String((buyAct && buyAct.tcgplayerUrl) || (liveBo && liveBo.tcgplayerUrl) || ('https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=' + encodeURIComponent(p.name) + '&view=grid'));
         const safeSkuAttr = String(p.id || '').replace(/"/g, '&quot;');
 
         const cardStateCls = (isOwned ? 'vault-card-owned ' : 'vault-card-needed ') + (famSt.cardGlowCls || '');
         const statusBadge = '<span data-sku-status-badge="' + safeSkuAttr + '" class="pokedex-badge text-[9px] font-mono-num font-extrabold px-2 py-0.5 rounded border transition ' + famSt.statusCls + '">' + famSt.statusLabel + '</span>';
 
-        const bodyDetailsHtml =
-          '<div class="space-y-1 mt-1">' +
-            '<div class="flex items-baseline justify-between gap-2 text-xs font-mono-num">' +
-              '<a href="' + bestOffer.url + '" target="_blank" class="font-black text-cyan-300 hover:text-cyan-200 hover:underline truncate">$' + bestOffer.price.toFixed(2) + ' @ ' + bestOffer.store + ' ↗</a>' +
-              '<span class="text-[10px] text-purple-200 shrink-0">Target: $' + targetBuy.toFixed(0) + '</span>' +
-            '</div>' +
-          '</div>';
+        const bodyDetailsHtml = hasCompetitiveLgs
+          ? '<div class="space-y-1 mt-1">' +
+              '<div class="flex items-baseline justify-between gap-2 text-xs font-mono-num">' +
+                '<a href="' + lgsBuyUrl + '" target="_blank" class="font-black text-emerald-400 hover:text-emerald-300 hover:underline truncate">Best Live: $' + lgsPrice.toFixed(2) + ' @ ' + lgsStore + '</a>' +
+                '<span class="text-[10px] text-purple-200 shrink-0">Slider: $' + targetBuy.toFixed(0) + '</span>' +
+              '</div>' +
+            '</div>'
+          : '<div class="space-y-1 mt-1">' +
+              '<div class="flex items-baseline justify-between gap-2 text-xs font-mono-num">' +
+                '<span class="font-bold text-amber-300 truncate">Market: $' + mktCompVal.toFixed(2) + '</span>' +
+                '<span class="text-[10px] text-purple-200 shrink-0">Slider: $' + targetBuy.toFixed(0) + '</span>' +
+              '</div>' +
+            '</div>';
+
+        const buyActionBtnsHtml = famSt.fullyConquered
+          ? '<a href="' + tcgUrl + '" target="_blank" class="px-2.5 py-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/30 text-emerald-200 border border-emerald-400/40 text-[11px] font-extrabold transition">3/3 Complete • TCGPlayer ↗</a>'
+          : (hasCompetitiveLgs
+              ? '<div class="flex items-center gap-1.5 flex-wrap">' +
+                  renderDirectCartButtonsHtml({ skuId: p.id, formFactor: 'etb', url: lgsBuyUrl }, '⚡ Buy @ ' + lgsStore + ' ↗', 'EMERALD') +
+                  '<a href="' + tcgUrl + '" target="_blank" onclick="event.stopPropagation()" class="px-2 py-1 rounded-lg bg-white/10 hover:bg-cyan-500 hover:text-slate-950 text-cyan-200 border border-white/15 text-[10px] font-mono-num font-bold transition whitespace-nowrap">TCGPlayer ↗</a>' +
+                '</div>'
+              : '<a href="' + tcgUrl + '" target="_blank" onclick="event.stopPropagation()" class="px-3 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-200 border border-cyan-400/45 text-xs font-extrabold transition whitespace-nowrap">Shop TCGPlayer ↗</a>');
 
         const footerHtml =
           '<div class="pt-2.5 mt-2 border-t border-white/10 space-y-2">' +
             renderFamilySlotsPillsHtml(p.id, p, false) +
             '<div class="flex items-center justify-between gap-2">' +
-              renderDirectCartButtonsHtml({ url: bestOffer.url }, 'Buy Best Offer ↗') +
-              '<button onclick="openPriceHistoryModal(\'' + p.id + '\')" class="px-2 py-1 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/35 text-[10px] font-pokedex font-extrabold transition">⟦ CHART ⟧</button>' +
+              buyActionBtnsHtml +
+              '<button onclick="openPriceHistoryModal(\'' + p.id + '\')" class="px-2 py-1 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/35 text-[10px] font-pokedex font-extrabold shrink-0 transition">⟦ CHART ⟧</button>' +
             '</div>' +
           '</div>';
 
@@ -4607,7 +4868,7 @@
                   bodyDetailsHtml +
                 '</div>' +
               '</div>' +
-              renderCardMetricsDrawerHtml(p.id, { landedPrice: bestOffer.price, marketValue: mVal, msrp: p.msrpCeiling, store: bestOffer.store }) +
+              renderCardMetricsDrawerHtml(p.id, { landedPrice: hasCompetitiveLgs ? lgsPrice : mktCompVal, marketValue: mktCompVal, msrp: p.msrpCeiling, store: hasCompetitiveLgs ? lgsStore : 'TCGPlayer Market' }) +
             '</div>' +
             footerHtml +
           '</div>'
@@ -4844,19 +5105,20 @@
     }
 
     function getFilteredPolicies() {
-      const query = (document.getElementById('searchInput')?.value || '').toLowerCase();
+      const query = (document.getElementById('searchInput')?.value || globalFuzzyQuery || '').trim();
       const selectedEra = document.getElementById('eraFilter')?.value || 'ALL_ERAS';
       return policies.filter(p => {
         let matchesType = true;
         const famSt = getSkuFamilyState(p.id, p);
-        if (activeFilter === 'INSTOCK') matchesType = isPolicyInStockNow(p);
-        else if (activeFilter === 'NEED_VAULT') matchesType = (p.formFactor === 'ETB' && !famSt.wallOwned);
-        else if (activeFilter === 'NEED_RIP_PAIR') matchesType = (famSt.completionCount >= 1 && famSt.completionCount <= 2);
-        else if (activeFilter === 'TROPHY_ON_WALL') matchesType = Boolean(famSt.wallOwned);
-        else if (activeFilter === 'COMPLETE_3OF3') matchesType = Boolean(famSt.fullyConquered);
-        else if (activeFilter !== 'ALL') matchesType = (p.formFactor === activeFilter);
+        const isWall = isWallFormatItem(p.id, p);
+        if (activeFilter === 'INSTOCK') matchesType = Boolean(p.bestLiveOffer && p.bestLiveOffer.inStock) || isPolicyInStockNow(p);
+        else if (activeFilter === 'NEED_VAULT') matchesType = (isWall && !famSt.wallOwned);
+        else if (activeFilter === 'NEED_RIP_PAIR') matchesType = (isWall && famSt.completionCount >= 1 && famSt.completionCount <= 2);
+        else if (activeFilter === 'TROPHY_ON_WALL') matchesType = (isWall && Boolean(famSt.wallOwned));
+        else if (activeFilter === 'COMPLETE_3OF3') matchesType = (isWall && Boolean(famSt.fullyConquered));
+        else if (activeFilter !== 'ALL') matchesType = (String(p.formFactor || '').toLowerCase() === String(activeFilter || '').toLowerCase());
         const matchesEra = (selectedEra === 'ALL_ERAS') || ((p.era || 'General Releases') === selectedEra);
-        const matchesQuery = p.name.toLowerCase().includes(query) || (p.era && p.era.toLowerCase().includes(query));
+        const matchesQuery = !query || matchesFuzzyQuery(query, p.name, p.id, p.era, p.formFactor);
         return matchesType && matchesEra && matchesQuery;
       });
     }
@@ -4975,20 +5237,42 @@
       const sliderMin = Math.floor((msrpVal || 20) * 0.75);
       const disabledAttr = spectatorLocked ? 'disabled' : '';
 
-      const offer = getBestLiveOfferForPolicy(p);
-      const bestOfferPrice = Number(offer.price || marketVal);
-      const bestOfferStore = offer.store || 'TCGPlayer Verified';
-      const bestOfferUrl = offer.url || '#';
-      const isUnderTrigger = offer.isLiveShelf && bestOfferPrice <= Math.max(buyVal, msrpVal);
-      const isNearTrigger = offer.isLiveShelf && !isUnderTrigger && bestOfferPrice <= Math.max(buyVal, msrpVal) * 1.125;
+      const liveBo = p.bestLiveOffer || null;
+      const hasCompetitiveLgs = Boolean(liveBo && liveBo.inStock && Number(liveBo.landedPrice) > 0);
+      const bestOfferPrice = hasCompetitiveLgs ? Number(liveBo.landedPrice) : marketVal;
+      const bestOfferStore = hasCompetitiveLgs ? String(liveBo.storeName || 'Verified LGS') : 'No LGS <= Comp';
+      const tcgCompUrl = (liveBo && liveBo.tcgplayerUrl) || ('https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=' + encodeURIComponent(p.name) + '&view=grid');
+      const bestOfferUrl = hasCompetitiveLgs ? String(liveBo.buyUrl || tcgCompUrl) : tcgCompUrl;
+      const isUnderTrigger = hasCompetitiveLgs && bestOfferPrice <= Math.max(buyVal, msrpVal);
+      const isNearTrigger = hasCompetitiveLgs && !isUnderTrigger && bestOfferPrice <= Math.max(buyVal, msrpVal) * 1.125;
 
       const offerColorCls = isUnderTrigger
         ? 'text-emerald-400'
-        : (isNearTrigger ? 'text-orange-300' : 'text-slate-200');
+        : (isNearTrigger ? 'text-orange-300' : 'text-cyan-300');
 
       const rowOpacityCls = p.active === false ? 'opacity-50' : '';
       const famSt = getSkuFamilyState(p.id, p);
+      const isWall = isWallFormatItem(p.id, p);
       const safeSkuAttr = String(p.id || '').replace(/"/g, '&quot;');
+      const leftSlotBadge = isWall
+        ? '<span data-sku-status-badge="' + safeSkuAttr + '" class="pokedex-badge text-[8px] font-mono-num font-extrabold px-1.5 py-0.5 rounded border transition ' + famSt.statusCls + '">' + famSt.completionCount + '/3</span>'
+        : '<span class="pokedex-badge text-[8px] font-mono-num font-bold px-1.5 py-0.5 rounded border border-white/15 bg-white/5 text-slate-300">' + (famSt.isCaseSku ? 'CASE' : ((p.packCount || 36) + 'P')) + '</span>';
+
+      const liveOfferColHtml = hasCompetitiveLgs
+        ? '<div class="min-w-0 flex items-center justify-between gap-1.5 bg-black/35 border border-emerald-500/30 rounded-lg px-2.5 py-1">' +
+            '<div class="min-w-0">' +
+              '<a href="' + bestOfferUrl + '" target="_blank" class="font-mono-num text-xs font-black ' + offerColorCls + ' hover:underline leading-tight block truncate">$' + bestOfferPrice.toFixed(2) + ' @ ' + bestOfferStore + '</a>' +
+              '<a href="' + tcgCompUrl + '" target="_blank" class="text-[9px] font-mono-num text-slate-400 hover:text-cyan-300 block truncate">TCGPlayer $' + marketVal.toFixed(0) + ' ↗</a>' +
+            '</div>' +
+            '<a href="' + bestOfferUrl + '" target="_blank" class="px-1.5 py-0.5 rounded bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-300 text-[10px] font-extrabold shrink-0 transition">↗</a>' +
+          '</div>'
+        : '<div class="min-w-0 flex items-center justify-between gap-1.5 bg-black/35 border border-white/10 rounded-lg px-2.5 py-1">' +
+            '<div class="min-w-0">' +
+              '<div class="text-[10px] font-mono-num font-semibold text-slate-400 leading-tight truncate">No LGS &le; Comp</div>' +
+              '<a href="' + tcgCompUrl + '" target="_blank" class="text-[10px] font-mono-num font-bold text-cyan-300 hover:underline block truncate">TCGPlayer $' + marketVal.toFixed(0) + ' ↗</a>' +
+            '</div>' +
+            '<a href="' + tcgCompUrl + '" target="_blank" class="px-1.5 py-0.5 rounded bg-white/10 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 text-[10px] font-extrabold shrink-0 transition">↗</a>' +
+          '</div>';
 
       return (
         '<div id="matrixRowWrap_' + index + '" data-sku-card="' + safeSkuAttr + '" class="px-3.5 py-2 bg-[#0D0B18]/65 hover:bg-white/[0.04] transition grid grid-cols-1 lg:grid-cols-[96px_44px_minmax(220px,1.5fr)_78px_82px_minmax(175px,1.1fr)_minmax(290px,1.6fr)] items-center gap-2.5 min-h-[52px] ' + rowOpacityCls + '">' +
@@ -4998,7 +5282,7 @@
               '<input type="checkbox" id="activeCheckbox_' + index + '" ' + (p.active !== false ? 'checked' : '') + ' onchange="toggleActive(' + index + ', this.checked)" ' + disabledAttr + ' class="sr-only peer">' +
               '<div class="w-7 h-4 bg-slate-800 rounded-full peer peer-checked:after:translate-x-3 after:content-[\'\'] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-emerald-500"></div>' +
             '</label>' +
-            '<span data-sku-status-badge="' + safeSkuAttr + '" class="pokedex-badge text-[8px] font-mono-num font-extrabold px-1.5 py-0.5 rounded border transition ' + famSt.statusCls + '">' + famSt.completionCount + '/3</span>' +
+            leftSlotBadge +
           '</div>' +
 
           '<!-- Col 2: 40px Art Thumb -->' +
@@ -5016,8 +5300,8 @@
               '<span class="text-[9px] font-mono-num text-slate-400">' + p.formFactor + ' (' + (p.packCount || 9) + 'p)</span>' +
               '<button onclick="openPriceHistoryModal(\'' + p.id + '\')" class="text-[9px] font-pokedex font-bold px-1.5 py-0.2 rounded bg-cyan-500/15 text-cyan-300 hover:bg-cyan-500 hover:text-slate-950 transition">⟦ CHART &amp; COMPS ⟧</button>' +
               renderTrendVerdictPillHtml({
-                trendSignal: offer.trendSignal || p.trendSignal,
-                trendVerdictLabel: offer.trendVerdictLabel || p.trendVerdictLabel || p.preReleaseStatusTag
+                trendSignal: p.trendSignal,
+                trendVerdictLabel: p.verdictLabel || p.trendVerdictLabel || p.preReleaseStatusTag
               }) +
             '</div>' +
             '<div class="mt-1">' +
@@ -5032,13 +5316,7 @@
           '<div class="text-right font-mono-num text-xs font-extrabold text-amber-300">$' + marketVal.toFixed(2) + '</div>' +
 
           '<!-- Col 6: Best Live Offer + Store ↗ -->' +
-          '<div class="min-w-0 flex items-center justify-between gap-1.5 bg-black/35 border border-white/10 rounded-lg px-2.5 py-1">' +
-            '<div class="min-w-0">' +
-              '<div class="font-mono-num text-xs font-black ' + offerColorCls + ' leading-tight">$' + bestOfferPrice.toFixed(2) + '</div>' +
-              '<div class="text-[10px] text-slate-400 truncate" title="' + bestOfferStore.replace(/"/g, '') + '">' + bestOfferStore + '</div>' +
-            '</div>' +
-            '<a href="' + bestOfferUrl + '" target="_blank" class="px-1.5 py-0.5 rounded bg-white/10 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 text-[10px] font-extrabold shrink-0 transition">↗</a>' +
-          '</div>' +
+          liveOfferColHtml +
 
           '<!-- Col 7: Inline Trigger Slider + $ Input + Preset Pills -->' +
           '<div class="flex items-center gap-2">' +
@@ -5073,16 +5351,38 @@
       const sliderMax = Math.ceil(Math.max(marketVal * 1.5, buyVal * 1.2, 100));
       const disabledAttr = spectatorLocked ? 'disabled' : '';
 
-      const offer = getBestLiveOfferForPolicy(p);
+      const liveBo = p.bestLiveOffer || null;
+      const hasCompetitiveLgs = Boolean(liveBo && liveBo.inStock && Number(liveBo.landedPrice) > 0);
+      const tcgCompUrl = (liveBo && liveBo.tcgplayerUrl) || ('https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=' + encodeURIComponent(p.name) + '&view=grid');
       const preBleedBadge = renderTrendVerdictPillHtml({
-        trendSignal: offer.trendSignal || p.trendSignal,
-        trendVerdictLabel: offer.trendVerdictLabel || p.trendVerdictLabel || p.preReleaseStatusTag
+        trendSignal: p.trendSignal,
+        trendVerdictLabel: p.verdictLabel || p.trendVerdictLabel || p.preReleaseStatusTag
       });
-      const bestOfferPrice = Number(offer.price || marketVal);
-      const bestOfferStore = offer.store || 'TCGPlayer Verified';
-      const bestOfferUrl = offer.url || '#';
+      const bestOfferPrice = hasCompetitiveLgs ? Number(liveBo.landedPrice) : marketVal;
+      const bestOfferStore = hasCompetitiveLgs ? String(liveBo.storeName || 'Verified LGS') : 'TCGPlayer Market';
+      const bestOfferUrl = hasCompetitiveLgs ? String(liveBo.buyUrl || tcgCompUrl) : tcgCompUrl;
       const famSt = getSkuFamilyState(p.id, p);
+      const isWall = isWallFormatItem(p.id, p);
       const safeSkuAttr = String(p.id || '').replace(/"/g, '&quot;');
+      const cardStatusBadgeHtml = isWall
+        ? '<span data-sku-status-badge="' + safeSkuAttr + '" class="pokedex-badge text-[9px] font-mono-num font-extrabold px-2 py-0.5 rounded border transition ' + famSt.statusCls + '">' + famSt.statusLabel + '</span>'
+        : '';
+
+      const matrixCardOfferStripHtml = hasCompetitiveLgs
+        ? '<div class="mb-2.5 px-3 py-2 bg-black/40 border border-emerald-500/35 rounded-xl flex items-center justify-between gap-2 text-xs">' +
+            '<div class="min-w-0">' +
+              '<div class="text-[9px] font-bold uppercase text-emerald-300">Best Live LGS Offer</div>' +
+              '<div class="font-mono-num font-extrabold text-emerald-400 truncate">$' + bestOfferPrice.toFixed(2) + ' <span class="text-slate-300 font-sans font-normal text-[10px]">@ ' + bestOfferStore + '</span></div>' +
+            '</div>' +
+            renderDirectCartButtonsHtml({ skuId: p.id, formFactor: p.formFactor, url: bestOfferUrl }, 'Buy @ Store ↗', 'EMERALD') +
+          '</div>'
+        : '<div class="mb-2.5 px-3 py-2 bg-black/40 border border-white/10 rounded-xl flex items-center justify-between gap-2 text-xs">' +
+            '<div class="min-w-0">' +
+              '<div class="text-[9px] font-bold uppercase text-slate-400">No LGS &le; Comp</div>' +
+              '<div class="font-mono-num font-bold text-amber-300 truncate">TCGPlayer $' + marketVal.toFixed(2) + '</div>' +
+            '</div>' +
+            '<a href="' + tcgCompUrl + '" target="_blank" class="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-200 border border-cyan-400/40 text-[11px] font-extrabold shrink-0 transition">TCGPlayer ↗</a>' +
+          '</div>';
 
       return (
         '<div id="matrixRowWrap_' + index + '" data-sku-card="' + safeSkuAttr + '" class="matrix-card glass-card rounded-2xl p-4 flex flex-col justify-between ' + (famSt.cardGlowCls || '') + ' ' + (p.active === false ? 'opacity-50' : '') + '">' +
@@ -5090,7 +5390,7 @@
             '<div class="flex justify-between items-center mb-2.5 gap-2">' +
               '<div class="flex items-center gap-1.5 flex-wrap">' +
                 '<span class="text-[10px] font-mono-num font-bold uppercase px-2 py-0.5 rounded bg-white/5 text-cyan-300 border border-white/10">' + p.formFactor + '</span>' +
-                '<span data-sku-status-badge="' + safeSkuAttr + '" class="pokedex-badge text-[9px] font-mono-num font-extrabold px-2 py-0.5 rounded border transition ' + famSt.statusCls + '">' + famSt.statusLabel + '</span>' +
+                cardStatusBadgeHtml +
               '</div>' +
               '<div class="flex items-center gap-2">' +
                 '<button onclick="inspectLiveComps(' + index + ')" class="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500 hover:text-white">⟦ CHART ⟧</button>' +
@@ -5114,13 +5414,7 @@
               '</div>' +
             '</div>' +
 
-            '<div class="mb-2.5 px-3 py-2 bg-black/40 border border-white/10 rounded-xl flex items-center justify-between gap-2 text-xs">' +
-              '<div class="min-w-0">' +
-                '<div class="text-[9px] font-bold uppercase text-slate-400">Best Landed Offer</div>' +
-                '<div class="font-mono-num font-extrabold text-emerald-400 truncate">$' + bestOfferPrice.toFixed(2) + ' <span class="text-slate-400 font-sans font-normal text-[10px]">@ ' + bestOfferStore + '</span></div>' +
-              '</div>' +
-              renderDirectCartButtonsHtml({ url: bestOfferUrl }, 'Best Offer ↗') +
-            '</div>' +
+            matrixCardOfferStripHtml +
 
             '<div class="mb-2">' +
               '<div class="flex items-center justify-between text-xs mb-1 gap-2">' +
@@ -5891,10 +6185,17 @@
       if (fmtBadge) fmtBadge.innerText = '⟦ ' + (pol.formFactor || 'ETB').toUpperCase() + ' • ' + (pol.packCount || 9) + 'P ⟧';
       const ownedBadge = document.getElementById('phModalOwnedBadge');
       if (ownedBadge) {
-        ownedBadge.innerText = pol.owned ? '⟦ ON THE WALL ✓ ⟧' : '⟦ STILL NEEDED ⟧';
-        ownedBadge.className = pol.owned
-          ? 'pokedex-badge px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold uppercase'
-          : 'pokedex-badge px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-bold uppercase';
+        if (isWallFormatItem(skuId, pol)) {
+          const famSt = getSkuFamilyState(skuId, pol);
+          ownedBadge.innerText = '⟦ ' + famSt.statusLabel + ' ⟧';
+          ownedBadge.className = 'pokedex-badge px-2 py-0.5 rounded border text-[10px] font-bold uppercase ' + famSt.statusCls;
+        } else if (isCaseFormatItem(skuId, pol)) {
+          ownedBadge.innerText = '⟦ SEALED CASE FORMAT ⟧';
+          ownedBadge.className = 'pokedex-badge px-2 py-0.5 rounded bg-purple-500/20 text-purple-200 border border-purple-400/45 text-[10px] font-bold uppercase';
+        } else {
+          ownedBadge.innerText = '⟦ ' + (pol.packCount || 36) + '-PACK RIP FORMAT ⟧';
+          ownedBadge.className = 'pokedex-badge px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-200 border border-cyan-400/45 text-[10px] font-bold uppercase';
+        }
       }
 
       const trigInput = document.getElementById('phModalTriggerInput');
@@ -5961,11 +6262,12 @@
               const freshBadge = o.isFreshRestock
                 ? '<span class="font-pokedex text-[9px] font-black px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-200 border border-cyan-400/50">⟦ FRESH MOVER ⟧</span>'
                 : '';
+              const isModalCase = isCaseFormatItem(skuId, pol);
               const cartBtns = o.cart1xUrl
                 ? '<div class="inline-flex items-center rounded-lg overflow-hidden border border-emerald-500/40 bg-[#0D1518] shrink-0">' +
                     '<a href="' + o.cart1xUrl + '" target="_blank" class="px-2 py-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono-num text-[10px] font-black transition">1x</a>' +
-                    (o.cart2xUrl ? '<a href="' + o.cart2xUrl + '" target="_blank" class="px-1.5 py-1 hover:bg-cyan-500/25 text-cyan-200 border-l border-white/10 font-mono-num text-[10px] font-extrabold transition">2x</a>' : '') +
-                    (o.cart3xUrl ? '<a href="' + o.cart3xUrl + '" target="_blank" class="px-1.5 py-1 hover:bg-amber-500/25 text-amber-300 border-l border-white/10 font-mono-num text-[10px] font-extrabold transition">3x</a>' : '') +
+                    (!isModalCase && o.cart2xUrl ? '<a href="' + o.cart2xUrl + '" target="_blank" class="px-1.5 py-1 hover:bg-cyan-500/25 text-cyan-200 border-l border-white/10 font-mono-num text-[10px] font-extrabold transition">2x</a>' : '') +
+                    (!isModalCase && o.cart3xUrl ? '<a href="' + o.cart3xUrl + '" target="_blank" class="px-1.5 py-1 hover:bg-amber-500/25 text-amber-300 border-l border-white/10 font-mono-num text-[10px] font-extrabold transition">3x</a>' : '') +
                   '</div>'
                 : '<a href="' + (o.url || '#') + '" target="_blank" class="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 border border-cyan-500/40 text-[11px] font-extrabold shrink-0 transition">Open ↗</a>';
 
@@ -6306,7 +6608,8 @@
               const k = ruleId + '_' + entry.price + '_' + entry.retailer;
               if (!seenAutoLaunchKeys.has(k)) {
                 seenAutoLaunchKeys.add(k);
-                const targetUrl = entry.cart3xUrl || entry.cart1xUrl || entry.url;
+                const isCaseAuto = isCaseFormatItem(ruleId, entry);
+                const targetUrl = (!isCaseAuto && entry.cart3xUrl) || entry.cart1xUrl || entry.url;
                 if (targetUrl) window.open(targetUrl, '_blank');
               }
             });

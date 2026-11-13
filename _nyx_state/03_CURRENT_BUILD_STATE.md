@@ -5,10 +5,10 @@
 ---
 
 ## 1. Live System Snapshot
-- **Current Phase:** **V6 Phase 2 Complete (Clean 5-Line Discord Embed Overhaul w/ Preserved Box-Art Thumbnails, Earned `7d/15d -> 30d/60d/90d` Watermark History `watermarkHistory.ts` `< 300L` + `95d` `marketTape.ts` Retention, Strict ETB-Only Wall Rule, Commander Cost-Basis `purchaseMemory.ts` `< 200L` w/ `$1,529` 30th Case Ledger, TCGPlayer Comp Gate, & 1P-Only `@here` / `Math.max(5, 4%)` Step-Down Quality Gates)**.
-- **Last Checkpoint Timestamp:** `2026-11-12 15:35 CST`
+- **Current Phase:** **V6 Phase 3 Complete (Cache Poison Scrub & Sanity Floors `cacheScrubber.ts` `< 350L`, Dynamic `Cost × Need × Trend` `dealRanker.ts` `< 300L`, 3-Tier Live Command Board `BUY_NOW_PINNED` / `CAUTIOUS_WATCH` / Collapsed `MUTED_DRAWER`, Single-Qty Case Guard, ETB-Only `[LOGAN WALL] • [OFFICE SEALED] • [DAD RIP]` Controls, Honest `0`-Catch MSRP KPI, Conquered Vault `< 3/3` Buy Links, and Global Instant Fuzzy Search)**.
+- **Last Checkpoint Timestamp:** `2026-11-12 19:26 CST`
 - **Git Branch:** `main`
-- **Parent Baseline Commit:** `c25b13a` (`V6 Phase 2: Clean Discord embed with box art, earned 7d/15d->90d watermarks, ETB-only wall logic, TCGPlayer comp gate, and purchase cost memory`)
+- **Parent Baseline Commit:** `4569eae` (`V6 Phase 3 Complete: Dynamic Cost x Need x Trend UI, muted hold-off drawer, ETB-only wall pills, Vault buy links, and fuzzy search`)
 - **PM2 Process Status:**
   - `pokemon-drop-bot` (id `0`, `index.js`): **ONLINE** (`0` orphaned `node -e` processes, `0` visible browser windows, **`90 / 90` Shopify LGS stores `HEALTHY` (`17 / 25` `HTTP 304` Tier-1 fast-delta hits)** + Bluesky Jetstream WebSocket `OPEN` (`2` DIDs) + `4` Direct `200 OK` Big-Box sensors + `5` `WIRE_ARMED_IP_SHIELD` sensors)
   - `drop-bot-dashboard` (id `1`, `server.js` on `http://localhost:3000`): **ONLINE** (`0` crashes, `127.5 MB` RSS, `GET /api/engine-room` reporting **`healthySensors: 99` / `totalSensors: 99`** (`healthyLgsSensors: 90`, `healthyBigBoxSensors: 4` direct `200 OK`: `GameStop` `6` in-stock cached offers, `Best Buy`, `Amazon 1P` proxy-first, `Barnes & Noble`; `wireShieldedBigBoxSensors: 5` `WIRE_ARMED_IP_SHIELD`: `Pokémon Center`, `Target`, `Walmart`, `Costco`, `Sam's Club`; `blockedCount: 0`))
@@ -29,7 +29,9 @@
 | `src/engine/trendAdvisor.ts` | 329 | **ACTIVE (V6 Phase 2, `< 350`)** | Honest rolling metrics (`0` `Math.sin`), re-exports `watermarkHistory.ts`, advisory-only `BLEEDING DOWN`, & Hard Ceiling Rule |
 | `src/engine/watermarkHistory.ts` | 236 | **ACTIVE (V6 Phase 2, `< 300`)** | Real `realDaysTracked` age + earned-only `7d/15d/30d/60d/90d` shelf watermarks + optional TCGPlayer `infinite-api` quarter comp note |
 | `src/engine/purchaseMemory.ts` | 176 | **ACTIVE (V6 Phase 2, `< 200`)** | Mirrors `conqueredVault.json` -> `data/purchaseLedger.json` (`$1,529.45` 30th Case), `Last Paid` delta math, & strict ETB-only `0/3`–`3/3` Wall rule |
-| `src/notifications/discordEmbedBuilder.ts` | 263 | **ACTIVE (V6 Phase 2, `< 340`)** | Clean 5-line Discord embed builder, 1P-only `@here` theme (`0` `@everyone`), `0` `"At Target"`, & 7-layer box-art thumbnail preservation |
+| `src/engine/dealRanker.ts` | 261 | **ACTIVE (V6 Phase 3, `< 300`)** | Unified `Cost × Need × Trend` ranker classifying offers into `BUY_NOW_PINNED`, `CAUTIOUS_WATCH`, & `MUTED_DRAWER` w/ `priorityScore` |
+| `src/engine/cacheScrubber.ts` | 303 | **ACTIVE (V6 Phase 3, `< 350`)** | Boot + runtime scrubber purging `< sanityFloor`, variant/accessory leaks, `[FORMAT PREVIEW]` ticks, & stale `msrpTrophies` |
+| `src/notifications/discordEmbedBuilder.ts` | 299 | **ACTIVE (V6 Phase 2B, `< 340`)** | Clean 5-line Discord embed builder, falling-knife Amber `CAUTIOUS DIP`, single-qty case lock, & 7-layer box-art preservation |
 | `src/engine/singlesSniper.ts` | 336 | **ACTIVE (V6 Slice 1, `< 350`)** | Quiet Singles & Gyarados Offload Radar (`singlesCache.json`) with 500-key LRU cap (`pruneCompBenchmarksLru`) & 100% silent alert rule |
 | `src/pollers/wafBrowserBridge.ts` | 317 | **ACTIVE (V6 Pass 3, `< 350`)** | Invisible System Chrome worker + 2-strike `6h` Home-IP WAF Shield (`HOME_IP_SHIELD_DOMAINS` -> `WIRE_ARMED_IP_SHIELD` in `data/wafSessionCookies.json`) |
 | `src/pollers/bigBoxAdapters.ts` | 315 | **ACTIVE (V6 Pass 3, `< 350`)** | Verified 1P JSON/hybrid parsers + `allowAboveMsrpSliderFallthrough` + 30m `claimBigBoxCrossChannelSignal()` deduplicator |
