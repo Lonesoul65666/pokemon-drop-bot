@@ -794,9 +794,16 @@ async function pollSingleStore(store) {
                     }
                     if (priceNum < 18)
                         continue;
+                    if ((0, policies_1.isPoisonedVariantOrAccessory)(variant.title, prod.title, priceNum))
+                        continue;
                     if (!(0, policies_1.hasMandatorySealedContainerKeyword)(fullTitle))
                         continue;
-                    if (!(0, policies_1.isValidSkuForFormFactor)(fullTitle, undefined, priceNum, { handle: `${prod.handle || ''} ${tagsStr}` }))
+                    if (!(0, policies_1.isValidSkuForFormFactor)(fullTitle, undefined, priceNum, {
+                        handle: `${prod.handle || ''} ${tagsStr}`,
+                        retailer: store.name,
+                        sourceUrl: productUrl,
+                        variantTitle: variant.title
+                    }))
                         continue;
                     activeVariantIds.add(String(variant.id));
                     const prev = exports.variantStateMap.get(variant.id);
@@ -852,7 +859,9 @@ async function pollSingleStore(store) {
                     if (isNewStagingUpload || isOosPriceSlashed) {
                         const fullTitle = `${prod.title} ${variant.title !== 'Default Title' ? variant.title : ''}`.trim();
                         const tagsStr = Array.isArray(prod.tags) ? prod.tags.join(' ') : String(prod.tags || '');
-                        if ((0, policies_1.isSingleCardOrNonSealed)(fullTitle, prod.product_type, `${prod.handle || ''} ${tagsStr}`) || !(0, policies_1.hasMandatorySealedContainerKeyword)(fullTitle)) {
+                        if ((0, policies_1.isPoisonedVariantOrAccessory)(variant.title, prod.title, priceNum) ||
+                            (0, policies_1.isSingleCardOrNonSealed)(fullTitle, prod.product_type, `${prod.handle || ''} ${tagsStr}`) ||
+                            !(0, policies_1.hasMandatorySealedContainerKeyword)(fullTitle)) {
                             continue;
                         }
                         const matchedRule = (0, evaluator_1.matchTargetRuleForStaging)(fullTitle, priceNum, store.name, `${prod.handle || ''} ${tagsStr}`);

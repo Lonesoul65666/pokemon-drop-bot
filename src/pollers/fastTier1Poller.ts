@@ -11,6 +11,7 @@ import {
 } from '../../lgsPoller';
 import {
   isValidSkuForFormFactor,
+  isPoisonedVariantOrAccessory,
   isSingleOrNonSealedShopifyProduct,
   isSingleCardOrNonSealed,
   isCollectibleSingleCardOrSlab,
@@ -147,8 +148,13 @@ async function pollSingleTier1StoreFast(store: StoreRegistryEntry): Promise<{
         }
         continue;
       }
-      if (priceNum < 18 || !hasMandatorySealedContainerKeyword(fullTitle)) continue;
-      if (!isValidSkuForFormFactor(fullTitle, undefined, priceNum, { handle: `${prod.handle || ''} ${tagsStr}` })) {
+      if (priceNum < 18 || isPoisonedVariantOrAccessory(variant.title, prod.title, priceNum) || !hasMandatorySealedContainerKeyword(fullTitle)) continue;
+      if (!isValidSkuForFormFactor(fullTitle, undefined, priceNum, {
+        handle: `${prod.handle || ''} ${tagsStr}`,
+        retailer: store.name,
+        sourceUrl: productUrl,
+        variantTitle: variant.title
+      })) {
         continue;
       }
 

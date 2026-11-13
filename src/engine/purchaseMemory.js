@@ -14,6 +14,7 @@ const CONQUERED_VAULT_PATH = path_1.default.resolve(process.cwd(), 'conqueredVau
 const PURCHASE_LEDGER_PATH = path_1.default.resolve(process.cwd(), 'data', 'purchaseLedger.json');
 let cachedVaultMtime = 0;
 let cachedLedgerMtime = 0;
+let lastFsCheckTs = 0;
 let cachedRecords = [];
 function normalizeFormatKey(formFactor, skuId, productName) {
     const combined = `${formFactor || ''} ${skuId || ''} ${productName || ''}`.toLowerCase();
@@ -64,6 +65,10 @@ function ingestList(list, fallbackStore, out) {
     }
 }
 function loadPurchaseRecords() {
+    const now = Date.now();
+    if (cachedRecords.length > 0 && now - lastFsCheckTs < 15000)
+        return cachedRecords;
+    lastFsCheckTs = now;
     const vStat = fs_1.default.existsSync(CONQUERED_VAULT_PATH) ? fs_1.default.statSync(CONQUERED_VAULT_PATH).mtimeMs : 0;
     const lStat = fs_1.default.existsSync(PURCHASE_LEDGER_PATH) ? fs_1.default.statSync(PURCHASE_LEDGER_PATH).mtimeMs : 0;
     if (cachedRecords.length > 0 && vStat === cachedVaultMtime && lStat === cachedLedgerMtime)

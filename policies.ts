@@ -191,7 +191,7 @@ export const GLOBAL_JUNK_EXCLUSIONS: RegExp[] = [
   /\bslab(s|bed)?\b/i,
   /\bgraded\b/i,
   /japanese/i,
-  /\bjp\s/i,
+  /\bjp\b/i,
   /\bjpn\b/i,
   /korean/i,
   /chinese/i,
@@ -200,11 +200,45 @@ export const GLOBAL_JUNK_EXCLUSIONS: RegExp[] = [
   /spanish/i,
   /french/i,
   /german/i,
+  /\bacrylic\b/i,
+  /\bprotector\b/i,
+  /\bcase\s*only\b/i,
+  /\bdamaged\b/i,
+  /\bart\s*set\b/i,
   // Partial-ETB / promo-from-ETB / accessory-for-ETB / plush-bundle traps even when container word appears:
   /\bsquishmallows?\b|\bplush(?:ie|ies)?\b/i,
   /\b(etb|elite\s*trainer\s*box|upc|spc|booster\s*box|booster\s*bundle)\s+(sealed\s+|foil\s+|holo\s+|stamped\s+)*(promo|sleeves|playmat|deck\s*box|dice|dividers?|code\s*cards?|booster\s*pack)\b/i,
   /\b(promo|sleeves|playmat|deck\s*box|dice|booster\s*pack)\s+from\s+(an?\s+)?(etb|elite\s*trainer|upc|spc|booster\s*box)\b/i,
 ];
+
+const CHILD_VARIANT_POISON_REGEX = /\b(acrylic|protector|display\s*case|case\s*only|box\s*only|empty|no\s*packs|damaged|dented|heavily\s*played|korean|japanese|jp|jpn|chinese|s-chinese|t-chinese|spanish|french|german|single\s*pack|1\s*pack|loose\s*packs?|booster\s*pack(?!s)|sleeved|art\s*set|code|code\s*cards?|sleeves|dice|dividers?|playmat|promo\s*only|card\s*only)\b/i;
+
+export function isPoisonedVariantOrAccessory(
+  variantTitle?: string,
+  productTitle?: string,
+  price?: number,
+  formFactor?: string
+): boolean {
+  const vClean = String(variantTitle || '').trim();
+  const pClean = String(productTitle || '').trim();
+  const combined = `${pClean} ${vClean !== 'Default Title' ? vClean : ''}`.trim();
+
+  if (vClean && !/^default\s*title$/i.test(vClean) && CHILD_VARIANT_POISON_REGEX.test(vClean)) {
+    return true;
+  }
+  if (/\b(acrylic|protector|case\s*only|box\s*only|empty\s*(box|etb|case)|damaged|korean|japanese|\bjp\b|jpn|chinese|s-chinese|t-chinese|spanish|single\s*pack|1\s*pack|sleeved\s*booster|art\s*set)\b/i.test(combined)) {
+    return true;
+  }
+  if (price !== undefined && Number.isFinite(price) && price > 0) {
+    // Distinguish cheap < $65 "acrylic display case" accessories from real $450+ sealed booster/ETB cases
+    if (price < 65 && /\b(case|display\s*case|acrylic|protector)\b/i.test(combined)) {
+      return true;
+    }
+    if (formFactor === 'ETB Case' && price < 450) return true;
+    if (formFactor === 'Master Case' && price < 550) return true;
+  }
+  return false;
+}
 
 // Context-sensitive descriptors: block unconditionally when NO valid sealed container is in title,
 // but allow on genuine sealed containers (e.g. "6-Pack Booster Bundle", "ETB (Includes Full-Art Foil Promo Card)", "Battle Styles Single Strike ETB", "Booster Box - Single Box")
@@ -486,6 +520,35 @@ export function getMinPlausiblePriceFloor(formFactor?: string): number {
   return MIN_PLAUSIBLE_PRICE_FLOORS[formFactor] ?? 18;
 }
 
+export function computeSanityPriceFloor(params: {
+  formFactor?: string;
+  msrp?: number;
+  verifiedMarket?: number;
+  is1PBigBox?: boolean;
+  title?: string;
+}): number {
+  const base = getMinPlausiblePriceFloor(params.formFactor);
+  const titleStr = String(params.title || '');
+  let caseFloor = 0;
+  if (params.formFactor === 'ETB Case' || /\b(etb\s*case|10[- ]*etb|case\s*of\s*10)\b/i.test(titleStr)) {
+    caseFloor = 450;
+  } else if (params.formFactor === 'Master Case' || /\b(master\s*case|booster\s*(box\s*)?case|case\s*of\s*6)\b/i.test(titleStr)) {
+    caseFloor = 550;
+  } else if (/\bcase\b/i.test(titleStr)) {
+    caseFloor = 65;
+  }
+  const msrp = Number(params.msrp || 0);
+  const mkt = Number(params.verifiedMarket || 0);
+  if (params.is1PBigBox) {
+    const retailFloor = msrp > 0 ? Math.round(msrp * 0.45 * 100) / 100 : 0;
+    return Math.max(base, caseFloor, retailFloor);
+  }
+  // Hard Sanity Price Floor (Non-1P LGS): >= msrp * 0.62 AND >= verifiedMarket * 0.38 when verifiedMarket >= 90
+  const msrpFloor = msrp > 0 ? Math.round(msrp * 0.62 * 100) / 100 : 0;
+  const marketFloor = mkt >= 90 ? Math.round(mkt * 0.38 * 100) / 100 : 0;
+  return Math.max(base, caseFloor, msrpFloor, marketFloor);
+}
+
 export function getMaxPlausiblePriceCeiling(
   formFactor?: string,
   ruleId?: string,
@@ -543,11 +606,18 @@ export function isValidSkuForFormFactor(
     handle?: string;
     retailer?: string;
     sourceUrl?: string;
+    variantTitle?: string;
+    verifiedMarket?: number;
+    is1PBigBox?: boolean;
     allowPcRetailUnlock?: boolean;
   }
 ): boolean {
   const combinedLower = ` ${title} ${options?.handle || ''} `.toLowerCase();
   const targetLower = `${options?.targetName || ''} ${options?.ruleId || ''}`.toLowerCase();
+
+  if (isPoisonedVariantOrAccessory(options?.variantTitle, title, price, formFactor)) {
+    return false;
+  }
 
   // Layer 2: Single-Card / Slab / Loose-Pack / Accessory Hard Blacklist
   if (isSingleCardOrNonSealed(title, undefined, options?.handle || options?.sourceUrl)) {
@@ -607,12 +677,26 @@ export function isValidSkuForFormFactor(
   }
 
   if (price !== undefined && Number.isFinite(price)) {
-    const minFloor = getMinPlausiblePriceFloor(formFactor);
+    const matchedPolicy = Array.isArray(WATCH_POLICIES)
+      ? WATCH_POLICIES.find(p => (options?.ruleId && p.id === options.ruleId) || (options?.targetName && p.name === options.targetName))
+      : undefined;
+    const inferred1P = Boolean(options?.is1PBigBox) || (
+      /\b(target|walmart|best\s*buy|pokemon\s*center|pokemoncenter|costco|sam'?s\s*club|barnes|gamestop|amazon)\b/i.test(
+        `${options?.retailer || ''} ${options?.sourceUrl || ''} ${options?.handle || ''}`
+      ) && !/\b3p|marketplace\b/i.test(`${options?.retailer || ''}`)
+    );
+    const minFloor = computeSanityPriceFloor({
+      formFactor,
+      msrp: matchedPolicy?.msrpCeiling,
+      verifiedMarket: Math.max(Number(matchedPolicy?.estimatedMarketValue || 0), Number(options?.verifiedMarket || 0)),
+      is1PBigBox: inferred1P,
+      title
+    });
     if (price < minFloor) {
       return false;
     }
     if (formFactor) {
-      const maxCeiling = getMaxPlausiblePriceCeiling(formFactor, options?.ruleId, options?.targetName || title);
+      const maxCeiling = getMaxPlausiblePriceCeiling(formFactor, options?.ruleId, options?.targetName || title, matchedPolicy);
       if (price > maxCeiling) {
         return false;
       }
@@ -674,12 +758,19 @@ export function matchProductToSku(
     handle?: string;
     retailer?: string;
     sourceUrl?: string;
+    variantTitle?: string;
+    verifiedMarket?: number;
+    is1PBigBox?: boolean;
     allowPcRetailUnlock?: boolean;
     includeInactive?: boolean;
   }
 ): PolicyRule | null {
   const cleanTitle = String(title || '').trim();
   if (!cleanTitle) return null;
+
+  if (isPoisonedVariantOrAccessory(options?.variantTitle, cleanTitle, price)) {
+    return null;
+  }
 
   // Layer 2: Reject single cards, graded slabs, loose packs, blisters, and accessories immediately
   if (isSingleCardOrNonSealed(cleanTitle, undefined, options?.handle || options?.sourceUrl)) {
@@ -708,6 +799,9 @@ export function matchProductToSku(
         handle: options?.handle,
         retailer: options?.retailer,
         sourceUrl: options?.sourceUrl,
+        variantTitle: options?.variantTitle,
+        verifiedMarket: options?.verifiedMarket,
+        is1PBigBox: options?.is1PBigBox,
         allowPcRetailUnlock: options?.allowPcRetailUnlock ?? false
       })
     ) {

@@ -847,8 +847,15 @@ function getMsrpTrophies() {
     try {
         if (fs_1.default.existsSync(exports.MSRP_TROPHIES_PATH)) {
             const parsed = JSON.parse(fs_1.default.readFileSync(exports.MSRP_TROPHIES_PATH, 'utf-8'));
-            if (parsed && typeof parsed.totalMsrpHits === 'number' && Array.isArray(parsed.catches)) {
-                return parsed;
+            if (parsed && Array.isArray(parsed.catches)) {
+                const valid1P = parsed.catches.filter((c) => {
+                    const landed = Number(c?.landedPrice || c?.price || 0);
+                    const msrp = Number(c?.msrp || 54.99);
+                    return isVerified1PBigBoxOrPc(String(c?.store || ''), String(c?.url || ''), false) &&
+                        landed > 0 &&
+                        landed <= Math.round(msrp * 1.08 * 100) / 100;
+                });
+                return { totalMsrpHits: valid1P.length, catches: valid1P };
             }
         }
     }
@@ -857,16 +864,21 @@ function getMsrpTrophies() {
 }
 function recordMsrpTrophyCatch(entry) {
     try {
+        const landed = Number(entry.landedPrice || entry.price || 0);
+        const msrp = Number(entry.msrp || 0);
+        if (!isVerified1PBigBoxOrPc(entry.store, entry.url, false) || landed <= 0 || (msrp > 0 && landed > Math.round(msrp * 1.08 * 100) / 100)) {
+            return getMsrpTrophies();
+        }
         const dir = path_1.default.dirname(exports.MSRP_TROPHIES_PATH);
         if (!fs_1.default.existsSync(dir)) {
             fs_1.default.mkdirSync(dir, { recursive: true });
         }
         const state = getMsrpTrophies();
-        state.totalMsrpHits = (state.totalMsrpHits || 0) + 1;
         state.catches.unshift(entry);
         if (state.catches.length > 20) {
             state.catches = state.catches.slice(0, 20);
         }
+        state.totalMsrpHits = (state.totalMsrpHits || 0) + 1;
         (0, policies_1.atomicWriteJson)(exports.MSRP_TROPHIES_PATH, state);
         return state;
     }
@@ -924,19 +936,29 @@ function upsertBestCurrentOffer(entry) {
 }
 function matchTargetRuleForStaging(title, price, retailer, handleAndUrl) {
     const cleanTitle = (title || '').trim();
-    if ((0, policies_1.isSingleCardOrNonSealed)(cleanTitle, handleAndUrl) || !(0, policies_1.hasMandatorySealedContainerKeyword)(cleanTitle)) {
+    if ((0, policies_1.isPoisonedVariantOrAccessory)(undefined, cleanTitle, price) ||
+        (0, policies_1.isSingleCardOrNonSealed)(cleanTitle, handleAndUrl) ||
+        !(0, policies_1.hasMandatorySealedContainerKeyword)(cleanTitle)) {
         return null;
     }
+    const is1P = isVerified1PBigBoxOrPc(retailer, handleAndUrl, false);
     const matched = (0, policies_1.matchProductToSku)(cleanTitle, price, {
         handle: handleAndUrl,
         retailer,
         sourceUrl: handleAndUrl,
+        is1PBigBox: is1P,
         allowPcRetailUnlock: false
     });
     if (!matched)
         return null;
-    const minFloor = (0, policies_1.getMinPlausiblePriceFloor)(matched.formFactor);
-    const maxCeiling = (0, policies_1.getMaxPlausiblePriceCeiling)(matched.formFactor, matched.id, matched.name);
+    const minFloor = (0, policies_1.computeSanityPriceFloor)({
+        formFactor: matched.formFactor,
+        msrp: matched.msrpCeiling,
+        verifiedMarket: matched.estimatedMarketValue,
+        is1PBigBox: is1P,
+        title: cleanTitle
+    });
+    const maxCeiling = (0, policies_1.getMaxPlausiblePriceCeiling)(matched.formFactor, matched.id, matched.name, matched);
     if (price < minFloor || price > maxCeiling)
         return null;
     return matched;
@@ -1105,7 +1127,18 @@ function evaluateItem(item) {
         })) {
             continue;
         }
-        const minFloor = Math.max((0, policies_1.getMinPlausiblePriceFloor)(rule.formFactor), Math.round((rule.msrpCeiling || 0) * 0.40 * 100) / 100);
+        const liveTelPre = (0, marketTelemetry_1.getTelemetry)()[rule.id];
+        const is1PPre = isVerified1PBigBoxOrPc(item.retailer, handleAndUrl, false);
+        const preVerifiedMkt = Math.max(Number(rule.estimatedMarketValue || 0), Number(liveTelPre?.rollingAverage || 0) <= (Number(rule.estimatedMarketValue || 9999) * 1.6)
+            ? Number(liveTelPre?.rollingAverage || 0)
+            : 0);
+        const minFloor = (0, policies_1.computeSanityPriceFloor)({
+            formFactor: rule.formFactor,
+            msrp: rule.msrpCeiling,
+            verifiedMarket: preVerifiedMkt,
+            is1PBigBox: is1PPre,
+            title: cleanTitle
+        });
         const maxCeiling = (0, policies_1.getMaxPlausiblePriceCeiling)(rule.formFactor, rule.id, rule.name, rule);
         if (item.price !== undefined && (item.price < minFloor || item.price > maxCeiling)) {
             continue;
@@ -1113,7 +1146,6 @@ function evaluateItem(item) {
         // Identify Pokemon Center Exclusive Retail Unlock (strictly pokemoncenter.com 1P retail drop)
         const isEtbRule = rule.formFactor === 'ETB' || rule.formFactor === 'ETB Case';
         const isPcExclusiveRetailDrop = isEtbRule && isPcSource && (item.price === undefined || item.price <= 75);
-        const liveTelPre = (0, marketTelemetry_1.getTelemetry)()[rule.id];
         const maxMedianPlausible = rule.estimatedMarketValue > 0
             ? Math.min(maxCeiling, Math.round(rule.estimatedMarketValue * 1.35 * 100) / 100)
             : maxCeiling;

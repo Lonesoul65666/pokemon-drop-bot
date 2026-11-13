@@ -193,7 +193,7 @@
     "timestamp": 1794231569734,
     "timeStr": "07:39 AM",
     "alertCount": 3,
-    "wasOutOfStockSinceLastAlert": false,
+    "wasOutOfStockSinceLastAlert": true,
     "itemId": "47982304788532"
   },
   "Game Grid Lehi::me-delta-reign-etb": {
@@ -844,8 +844,8 @@
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "39491186130998"
   },
-  "__lastDigestSentAt": 1794495615295,
-  "__lastDigestHash": "swsh-evolving-skies-etb:Kanzen Games:381.78|sv-base-booster-box:PKMN Colosseum:285.99|sv-journey-together-etb:Oaks Poke Box:120.00|sv-shrouded-fable-etb:CardsHQ:114.99|sv-surging-sparks-etb:Collector Store:114.99|swsh-evolving-skies-etb:Kanzen Games:381.78|sv-base-booster-box:PKMN Colosseum:285.99|sv-destined-rivals-booster-box:Derium and Wifey:364.99",
+  "__lastDigestSentAt": 1794528044979,
+  "__lastDigestHash": "swsh-evolving-skies-etb:Kanzen Games:381.29|sv-base-booster-box:PKMN Colosseum:285.99|sv-journey-together-etb:Oaks Poke Box:120.00|sv-shrouded-fable-etb:CardsHQ:114.99|sv-surging-sparks-etb:Collector Store:114.99|swsh-evolving-skies-etb:Kanzen Games:381.29|sv-base-booster-box:PKMN Colosseum:285.99|sv-paradox-rift-booster-box:Elite4 TCG:267.75",
   "PKMN Colosseum::swsh-chilling-reign-ice-etb": {
     "lastPrice": 139.99,
     "lowestAlertedPrice": 139.99,
@@ -1239,7 +1239,7 @@
     "timestamp": 1794454814385,
     "timeStr": "09:40 PM",
     "alertCount": 1,
-    "wasOutOfStockSinceLastAlert": false,
+    "wasOutOfStockSinceLastAlert": true,
     "itemId": "45846674112675"
   },
   "Lvl Up Games::sv-prismatic-evolutions-etb": {
@@ -1403,5 +1403,16 @@
     "alertCount": 1,
     "wasOutOfStockSinceLastAlert": false,
     "itemId": "67888311894318"
+  },
+  "Smoke & Mirrors::me-delta-reign-booster-box": {
+    "lastPrice": 164.99,
+    "lastLandedPrice": 164.99,
+    "lowestAlertedPrice": 164.99,
+    "lowestAlertedLandedPrice": 164.99,
+    "timestamp": 1794523644265,
+    "timeStr": "04:47 PM",
+    "alertCount": 1,
+    "wasOutOfStockSinceLastAlert": true,
+    "itemId": "68187396112583"
   }
 }

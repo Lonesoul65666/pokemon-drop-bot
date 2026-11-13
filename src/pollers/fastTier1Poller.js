@@ -114,9 +114,14 @@ async function pollSingleTier1StoreFast(store) {
                 }
                 continue;
             }
-            if (priceNum < 18 || !(0, policies_1.hasMandatorySealedContainerKeyword)(fullTitle))
+            if (priceNum < 18 || (0, policies_1.isPoisonedVariantOrAccessory)(variant.title, prod.title, priceNum) || !(0, policies_1.hasMandatorySealedContainerKeyword)(fullTitle))
                 continue;
-            if (!(0, policies_1.isValidSkuForFormFactor)(fullTitle, undefined, priceNum, { handle: `${prod.handle || ''} ${tagsStr}` })) {
+            if (!(0, policies_1.isValidSkuForFormFactor)(fullTitle, undefined, priceNum, {
+                handle: `${prod.handle || ''} ${tagsStr}`,
+                retailer: store.name,
+                sourceUrl: productUrl,
+                variantTitle: variant.title
+            })) {
                 continue;
             }
             const prevGlobal = lgsPoller_1.variantStateMap.get(variantId);

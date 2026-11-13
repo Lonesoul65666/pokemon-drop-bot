@@ -43,13 +43,23 @@ const {
 } = require('./src/engine/trendAdvisor');
 const {
   isSingleCardOrNonSealed,
+  isPoisonedVariantOrAccessory,
+  computeSanityPriceFloor,
+  getMaxPlausiblePriceCeiling,
   hasMandatorySealedContainerKeyword,
   reloadWatchPolicies,
   getPackCountForSku: tsGetPackCount
 } = require('./policies');
 const {
-  buildShopifyDirectCartLinks
+  buildShopifyDirectCartLinks,
+  isVerified1PBigBoxOrPc
 } = require('./evaluator');
+const {
+  rankAndEnrichDealOffer,
+  sortDealsByTierAndPriority,
+  summarizeDealBuckets,
+  buildBestLiveOfferAndBuyAction
+} = require('./src/engine/dealRanker');
 const {
   querySinglesCache,
   updateSinglesWatchlist
@@ -190,41 +200,30 @@ function computeRipMetrics(landedPrice, skuId, formFactor, name, explicitPackCou
   return { packCount, pricePerPack, isRipValueLeader };
 }
 
-const DEFAULT_MSRP_CATCH = {
-  productName: 'Mega Evolution: Chaos Rising Elite Trainer Box',
-  ruleId: 'me-chaos-rising-etb',
-  store: 'Cooperstown Cards (TCGPlayer Verified Seller)',
-  price: 51.00,
-  landedPrice: 51.00,
-  landedPriceNote: '$51.00 MSRP Drop ($67.11 after tax/ship)',
-  msrp: 54.99,
-  marketValue: 60.00,
-  discountPct: 15,
-  orderRef: 'B108C090-96CCFE-CA0AF',
-  url: 'https://www.tcgplayer.com/product/684450?Language=English',
-  timestamp: 1792295593850,
-  timeStr: '2026-10-18T03:53:00.000Z'
-};
-
 function loadMsrpTrophies() {
   try {
     if (fs.existsSync(MSRP_TROPHIES_PATH)) {
       const parsed = JSON.parse(fs.readFileSync(MSRP_TROPHIES_PATH, 'utf-8'));
-      if (parsed && typeof parsed.totalMsrpHits === 'number' && Array.isArray(parsed.catches)) {
-        if (parsed.totalMsrpHits < 1 || parsed.catches.length === 0) {
-          parsed.totalMsrpHits = Math.max(1, parsed.totalMsrpHits);
-          parsed.catches = [DEFAULT_MSRP_CATCH];
-          try { atomicWriteJson(MSRP_TROPHIES_PATH, parsed); } catch (e) {}
+      if (parsed && Array.isArray(parsed.catches)) {
+        const valid1P = parsed.catches.filter((c) => {
+          const store = String(c?.store || '');
+          const url = String(c?.url || '');
+          const msrp = Number(c?.msrp || 54.99);
+          const landed = Number(c?.landedPrice || c?.price || 0);
+          return isVerified1PBigBoxOrPc(store, url, false) &&
+            landed > 0 &&
+            landed <= Math.round(msrp * 1.08 * 100) / 100;
+        });
+        if (valid1P.length !== parsed.catches.length || parsed.totalMsrpHits !== valid1P.length) {
+          const cleaned = { totalMsrpHits: valid1P.length, catches: valid1P };
+          try { atomicWriteJson(MSRP_TROPHIES_PATH, cleaned); } catch (e) {}
+          return cleaned;
         }
-        return parsed;
+        return { totalMsrpHits: valid1P.length, catches: valid1P };
       }
     }
   } catch (e) {}
-  const initial = { totalMsrpHits: 1, catches: [DEFAULT_MSRP_CATCH] };
-  try {
-    atomicWriteJson(MSRP_TROPHIES_PATH, initial);
-  } catch (e) {}
-  return initial;
+  return { totalMsrpHits: 0, catches: [] };
 }
 
 const DEFAULT_SEED_TROPHIES = [
@@ -361,12 +360,62 @@ function loadConqueredVault() {
 
   const collectorRank = computeCollectorRank(ownedEtbs.length, enrichedPlaques.length);
 
+  let mergedOffers = {};
+  try { mergedOffers = loadMergedStoreOffersBySku(); } catch (e) { mergedOffers = {}; }
+  const telemetry = readJsonCached(TELEMETRY_PATH, {});
+
+  const bestBuyActionsBySku = {};
+  const etbWallChecklist = etbPolicies.map(p => {
+    const wallOwned = Boolean(p.wallOwned ?? p.owned ?? p.inVault);
+    const dadRipOwned = Boolean(p.dadRipOwned);
+    const loganRipOwned = Boolean(p.loganRipOwned);
+    const completionCount = (wallOwned ? 1 : 0) + (dadRipOwned ? 1 : 0) + (loganRipOwned ? 1 : 0);
+    const skuOffers = Object.values(mergedOffers[p.id] || {});
+    const tcgOffer = skuOffers.find(o => /tcgplayer/i.test(String(o.store || '')));
+    const tel = telemetry[p.id] || {};
+    const mkt = Number(p.estimatedMarketValue || p.msrpCeiling || 54.99);
+    const tcgComp = tcgOffer ? Number(tcgOffer.landedPrice) : (tel.lowestPrice > 0 && /tcgplayer/i.test(String(tel.lowestStore || '')) ? Number(tel.lowestPrice) : mkt);
+    const tcgUrl = (tcgOffer && /tcgplayer\.com/i.test(String(tcgOffer.url || '')) ? tcgOffer.url : null) ||
+      (/tcgplayer\.com/i.test(String(tel.lowestUrl || '')) ? tel.lowestUrl : null) ||
+      `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(p.name)}&view=grid&ProductTypeName=Sealed+Products`;
+    const { bestLiveOffer, bestBuyAction } = buildBestLiveOfferAndBuyAction({
+      skuId: p.id,
+      policy: p,
+      offers: skuOffers,
+      tcgComp,
+      marketPrice: mkt,
+      tcgplayerUrl: tcgUrl
+    });
+    if (completionCount < 3) {
+      bestBuyActionsBySku[p.id] = bestBuyAction;
+    }
+    return {
+      skuId: p.id,
+      name: p.name,
+      era: p.era || 'Pokemon TCG',
+      formFactor: 'ETB',
+      isWallFormat: true,
+      wallOwned,
+      dadRipOwned,
+      loganRipOwned,
+      completionCount,
+      fullyConquered: completionCount >= 3,
+      msrp: Number(p.msrpCeiling || 54.99),
+      marketPrice: mkt,
+      bestLiveOffer,
+      bestBuyAction: completionCount < 3 ? bestBuyAction : null
+    };
+  });
+
   return {
     totalConquered: enrichedPlaques.length,
     collectorRank,
     ruleOf3Progress,
     trophies: enrichedPlaques,
-    plaques: enrichedPlaques
+    plaques: enrichedPlaques,
+    etbWallChecklist,
+    unconqueredEtbs: etbWallChecklist.filter(e => !e.fullyConquered),
+    bestBuyActionsBySku
   };
 }
 
@@ -597,8 +646,31 @@ async function handleBountyRecon(req, res) {
 
     const muteVaultedSetting = Boolean(loadGlobalSettings()?.muteVaulted);
 
+    const mergedOffersBySku = loadMergedStoreOffersBySku();
+
     const pushCandidate = (cand, polRef) => {
       if (!cand || !cand.landedPrice || cand.landedPrice <= 0) return;
+      const candTitle = String(cand.listingTitle || cand.productName || (polRef && polRef.name) || '');
+      const candStore = String(cand.store || '');
+      const candUrl = String(cand.url || '');
+      const is1P = isVerified1PBigBoxOrPc(candStore, candUrl, false);
+      const sanityFloor = computeSanityPriceFloor({
+        formFactor: cand.formFactor || (polRef && polRef.formFactor),
+        msrp: Number((polRef && polRef.msrpCeiling) || cand.msrp || 0),
+        verifiedMarket: Number((polRef && polRef.estimatedMarketValue) || cand.marketValue || 0),
+        is1PBigBox: is1P,
+        title: candTitle
+      });
+      const maxCeil = getMaxPlausiblePriceCeiling(cand.formFactor || (polRef && polRef.formFactor), cand.skuId, candTitle, polRef);
+      const rawCheckPrice = Number(cand.price || cand.landedPrice);
+      if (
+        rawCheckPrice < sanityFloor ||
+        cand.landedPrice < sanityFloor ||
+        rawCheckPrice > maxCeil ||
+        isPoisonedVariantOrAccessory(undefined, candTitle, rawCheckPrice, cand.formFactor || (polRef && polRef.formFactor))
+      ) {
+        return;
+      }
       if (storeFilter) {
         const sf = storeFilter.toLowerCase();
         const st = String(cand.store || '').toLowerCase();
@@ -614,6 +686,8 @@ async function handleBountyRecon(req, res) {
       const shipDiff = Math.max(0, Math.round((cand.landedPrice - (cand.price || cand.landedPrice)) * 100) / 100);
       const shippingNote = cand.shippingNote || (shipDiff > 0.05 ? `+ $${shipDiff.toFixed(2)} Ship` : '+ FREE Ship');
       const triggerPrice = computeTriggerPrice(polRef, cand.marketValue);
+      const wallOwned = Boolean(polRef && (polRef.wallOwned ?? polRef.owned ?? polRef.inVault));
+      const completionCount = (wallOwned ? 1 : 0) + (polRef?.dadRipOwned ? 1 : 0) + (polRef?.loganRipOwned ? 1 : 0);
       const shelfStatus = computeShelfStatusForOffer({
         dropPrice: Number(cand.price || cand.landedPrice),
         landedPrice: Number(cand.landedPrice),
@@ -622,7 +696,7 @@ async function handleBountyRecon(req, res) {
         msrpCeiling: Number((polRef && polRef.msrpCeiling) || cand.msrp || 0),
         marketValue: Number(cand.marketValue || 0),
         formFactor: cand.formFactor || (polRef && polRef.formFactor),
-        owned: Boolean(polRef && (polRef.owned || polRef.inVault)),
+        owned: wallOwned,
         muteVaulted: muteVaultedSetting,
         storeName: cand.store
       });
@@ -636,11 +710,11 @@ async function handleBountyRecon(req, res) {
         msrpCeiling: Number((polRef && polRef.msrpCeiling) || cand.msrp || 0),
         marketBaseline: Number(cand.marketValue || 0),
         releaseDate: polRef && polRef.releaseDate,
-        owned: Boolean(polRef && (polRef.owned || polRef.inVault)),
+        owned: wallOwned,
         isCloseCall: shelfStatus.isCloseCall,
         isMarketplace3P: /tcgplayer|ebay|3p|marketplace/i.test(String(cand.store || ''))
       });
-      candidates.push({
+      const baseCand = {
         ...cand,
         era: cand.era || (polRef && polRef.era) || 'Modern Era',
         triggerPrice,
@@ -660,20 +734,47 @@ async function handleBountyRecon(req, res) {
         isElasticDip: trendEval.isElasticDip,
         isPreRelease: trendEval.isPreRelease,
         preReleaseStatusTag: trendEval.preReleaseStatusTag
-      });
+      };
+      candidates.push(rankAndEnrichDealOffer(baseCand, polRef, { wallQty: completionCount, tcgComp: cand.marketValue }));
     };
 
     for (const pol of matchedPolicies) {
       const tel = cache[pol.id];
-      const marketVal = (tel && tel.rollingAverage > 0) ? tel.rollingAverage : (pol.estimatedMarketValue || pol.msrpCeiling || 0);
+      const marketVal = Number(pol.estimatedMarketValue || ((tel && tel.rollingAverage > 0 && tel.rollingAverage <= (pol.msrpCeiling || 60) * 3) ? tel.rollingAverage : pol.msrpCeiling || 0));
 
-      // 1. Live Stock Hit
+      // 1. Verified Live In-Stock Store Offers ONLY (never raw unvalidated RECENT_ALERT / OOS staging ghosts)
+      const verifiedOffers = Object.values(mergedOffersBySku[pol.id] || {});
+      for (const vo of verifiedOffers) {
+        if (!vo || !vo.inStock || !(vo.landedPrice > 0)) continue;
+        pushCandidate({
+          sourceType: 'LIVE_SHELF',
+          skuId: pol.id,
+          productName: pol.name,
+          listingTitle: vo.listingTitle || pol.name,
+          formFactor: pol.formFactor || 'Sealed',
+          store: vo.store || 'Verified Store',
+          price: Number(vo.price || vo.landedPrice),
+          landedPrice: Number(vo.landedPrice),
+          shippingNote: vo.shippingNote,
+          marketValue: marketVal,
+          msrp: pol.msrpCeiling,
+          url: vo.url,
+          cart1xUrl: vo.cart1xUrl,
+          cart2xUrl: vo.cart2xUrl,
+          cart3xUrl: vo.cart3xUrl,
+          inStock: true,
+          observedAt: vo.updatedAt || Date.now()
+        }, pol);
+      }
+
+      // 2. Live Stock direct hit (if not already in mergedOffersBySku)
       const live = liveMap[pol.id];
       if (live && live.inStock && live.price > 0) {
         pushCandidate({
           sourceType: 'LIVE_SHELF',
           skuId: pol.id,
           productName: pol.name,
+          listingTitle: live.title || pol.name,
           formFactor: pol.formFactor || 'Sealed',
           store: live.retailer || 'Verified Store',
           price: Number(live.price),
@@ -689,68 +790,8 @@ async function handleBountyRecon(req, res) {
         }, pol);
       }
 
-      // 2. Recent Discord Alert Hits (include up to 8 stores when comparing a specific SKU or store)
-      const matchingDrops = drops.filter(d => d.ruleId === pol.id);
-      for (const d of matchingDrops.slice(0, (exactPrimaryPolicy || storeFilter) ? 10 : 3)) {
-        const p = Number(d.price || 0);
-        if (p > 0) {
-          pushCandidate({
-            sourceType: d.soldOut ? 'RECENT_FLOOR' : 'RECENT_ALERT',
-            skuId: pol.id,
-            productName: pol.name,
-            formFactor: pol.formFactor || d.formFactor || 'Sealed',
-            store: d.retailer || 'Recent Alert Store',
-            price: p,
-            landedPrice: Number(d.landedPrice || p),
-            marketValue: marketVal,
-            msrp: pol.msrpCeiling,
-            url: d.productUrl || d.url,
-            cart1xUrl: d.cart1xUrl,
-            cart2xUrl: d.cart2xUrl,
-            cart3xUrl: d.cart3xUrl,
-            inStock: !d.soldOut,
-            observedAt: d.timestamp || Date.now()
-          }, pol);
-        }
-      }
-
-      // 3. Sales Tape Events (Active + Recent Store Offers when comparing a specific SKU or store)
-      const tapeEvs = salesHistory.filter(ev => ev.targetId === pol.id && (ev.status === 'ACTIVE' || exactPrimaryPolicy || storeFilter));
-      for (const ev of tapeEvs.slice(0, (exactPrimaryPolicy || storeFilter) ? 10 : 3)) {
-        pushCandidate({
-          sourceType: ev.status === 'ACTIVE' ? 'MARKET_TAPE_ACTIVE' : 'RECENT_STORE_COMP',
-          skuId: pol.id,
-          productName: pol.name,
-          formFactor: pol.formFactor || 'Sealed',
-          store: ev.store || 'Market Tape Store',
-          price: Number(ev.price),
-          landedPrice: Number(ev.landedPrice || ev.price),
-          marketValue: marketVal,
-          msrp: pol.msrpCeiling,
-          url: ev.url || `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(pol.name)}`,
-          inStock: ev.status === 'ACTIVE',
-          observedAt: ev.lastSeenAt || ev.restockedAt || Date.now()
-        }, pol);
-      }
-
-      // 4. Telemetry Cached Lowest / TCGPlayer Baseline
-      if (tel && tel.lowestPrice > 0) {
-        pushCandidate({
-          sourceType: tel.inStock ? 'LIVE_CACHE_LOW' : 'TCGPLAYER_BASELINE',
-          skuId: pol.id,
-          productName: pol.name,
-          formFactor: pol.formFactor || 'Sealed',
-          store: tel.lowestStore || 'TCGPlayer Verified Low',
-          price: Number(tel.lowestPrice),
-          landedPrice: Number(tel.lowestPrice),
-          marketValue: marketVal,
-          msrp: pol.msrpCeiling,
-          url: tel.lowestUrl || `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(pol.name)}`,
-          inStock: Boolean(tel.inStock),
-          observedAt: tel.lastSeen || Date.now()
-        }, pol);
-      }
-      if (!storeFilter && pol.estimatedMarketValue > 0 && (exactPrimaryPolicy || !tel || !tel.lowestPrice)) {
+      // 3. Reference Market Index ONLY when comparing a single exact target head-to-head
+      if (!storeFilter && exactPrimaryPolicy && pol.estimatedMarketValue > 0) {
         pushCandidate({
           sourceType: 'POLICY_BASELINE',
           skuId: pol.id,
@@ -762,24 +803,6 @@ async function handleBountyRecon(req, res) {
           marketValue: marketVal,
           msrp: pol.msrpCeiling,
           url: `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(pol.name)}`,
-          inStock: true,
-          observedAt: Date.now()
-        }, pol);
-      }
-      if (!storeFilter && exactPrimaryPolicy) {
-        // Also provide direct eBay Buy-It-Now & Retail MSRP reference lines when comparing a single product head-to-head
-        const ebayEst = Math.round((marketVal * 0.98) * 100) / 100;
-        pushCandidate({
-          sourceType: 'EBAY_MARKET_INDEX',
-          skuId: pol.id,
-          productName: pol.name,
-          formFactor: pol.formFactor || 'Sealed',
-          store: 'eBay Buy-It-Now (Free Ship Index)',
-          price: ebayEst,
-          landedPrice: ebayEst,
-          marketValue: marketVal,
-          msrp: pol.msrpCeiling,
-          url: `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(pol.name + ' sealed')}&LH_BIN=1&_sop=15`,
           inStock: true,
           observedAt: Date.now()
         }, pol);
@@ -837,8 +860,8 @@ async function handleBountyRecon(req, res) {
       } catch (e) {}
     }
 
-    // Optional live TCGPlayer + eBay comp probe for the primary target when requested or when <= 2 candidates found
-    if (!storeFilter && (fetchLive || candidates.length <= 2) && matchedPolicies.length > 0) {
+    // Optional live TCGPlayer + eBay comp probe ONLY when explicitly requested (?live=true)
+    if (!storeFilter && fetchLive && matchedPolicies.length > 0) {
       try {
         const primary = exactPrimaryPolicy || matchedPolicies[0];
         const { getDualMarketComps } = require('./marketComps');
@@ -880,8 +903,14 @@ async function handleBountyRecon(req, res) {
       } catch (e) {}
     }
 
-    // Sort strictly by lowest landedPrice so offers rank lowest-to-highest
-    candidates.sort((a, b) => a.landedPrice - b.landedPrice);
+    // Sort single-target comparisons by lowest landedPrice, and general bounty feeds by actionTier -> priorityScore DESC
+    if (exactPrimaryPolicy || skuId) {
+      candidates.sort((a, b) => a.landedPrice - b.landedPrice);
+    } else {
+      const sorted = sortDealsByTierAndPriority(candidates);
+      candidates.length = 0;
+      candidates.push(...sorted);
+    }
 
     const maxSlice = (exactPrimaryPolicy || skuId || rawQuery || storeFilter) ? 18 : 12;
     const rankedOptions = candidates.slice(0, maxSlice).map((opt, idx) => ({
@@ -1142,7 +1171,9 @@ function computeNearMissesAndBestOffers() {
       nowTs: now
     });
 
-    const enrichedOffer = {
+    const wallOwned = Boolean(pol.wallOwned ?? pol.owned ?? pol.inVault);
+    const completionCount = (wallOwned ? 1 : 0) + (pol.dadRipOwned ? 1 : 0) + (pol.loganRipOwned ? 1 : 0);
+    const enrichedOffer = rankAndEnrichDealOffer({
       ...cand,
       ruleId,
       ruleName: pol.name,
@@ -1160,14 +1191,14 @@ function computeNearMissesAndBestOffers() {
       packCount: rip.packCount,
       pricePerPack: rip.pricePerPack,
       isRipValueLeader: rip.isRipValueLeader,
-      owned: Boolean(pol.owned || pol.inVault),
+      owned: wallOwned,
       isPreRelease: trendEval.isPreRelease,
       preReleaseStatusTag: trendEval.preReleaseStatusTag,
       trendSignal: trendEval.trendSignal,
       trendVerdictLabel: trendEval.trendVerdictLabel,
       isElasticDip: trendEval.isElasticDip,
       ...shelfStatus
-    };
+    }, pol, { wallQty: completionCount, tcgComp: marketValue, nowTs: now });
 
     bestCurrentOffers[ruleId] = enrichedOffer;
 
@@ -1307,14 +1338,16 @@ function computeShelfSpreadDistribution() {
       });
     }
   }
-  allOffers.sort((a, b) => (b.discountPct - a.discountPct) || (a.landedPrice - b.landedPrice));
+  const sortedOffers = sortDealsByTierAndPriority(allOffers);
+  const bucketSummary = summarizeDealBuckets(sortedOffers);
   return {
-    totalInStockOffers: allOffers.length,
-    underTriggerCount: allOffers.filter(o => o.isUnderTrigger).length,
-    nearMissesCount: allOffers.filter(o => o.isNearMiss).length,
-    underMarketCount: allOffers.filter(o => o.isUnderMarket).length,
-    atRetailMsrpCount: allOffers.filter(o => o.isAtRetailMsrp).length,
-    offers: allOffers
+    totalInStockOffers: sortedOffers.length,
+    underTriggerCount: sortedOffers.filter(o => o.isUnderTrigger).length,
+    nearMissesCount: sortedOffers.filter(o => o.isNearMiss).length,
+    underMarketCount: sortedOffers.filter(o => o.isUnderMarket).length,
+    atRetailMsrpCount: sortedOffers.filter(o => o.isAtRetailMsrp).length,
+    bucketSummary,
+    offers: sortedOffers
   };
 }
 
@@ -1404,6 +1437,11 @@ function buildNextBestBuyAdvisorPayload(requestedBudget) {
     }
 
     if (fullyConquered || !bestOffer) continue;
+    // Disqualify high-markup Booster Bundles (pricePerPack > $7.50) and MUTED_DRAWER items from Capital Advisor SMART BUY
+    if (bestOffer.disqualifiesSmartBuy || bestOffer.actionTier === 'MUTED_DRAWER') continue;
+    if (/bundle|\b6[- ]?pack\b/i.test(`${pol.formFactor || ''} ${skuId} ${pol.name || ''}`) && Number(bestOffer.pricePerPack || 0) > 7.50) {
+      continue;
+    }
 
     const discountVsMktPct = mkt > 0 ? Math.round(((mkt - landedPrice) / mkt) * 100) : 0;
     const dipVs60dPct = rolling.avg60d > 0 ? Math.round(((rolling.avg60d - landedPrice) / rolling.avg60d) * 100) : 0;
@@ -1411,24 +1449,21 @@ function buildNextBestBuyAdvisorPayload(requestedBudget) {
     const isGrailSet = /151|prismatic|evolving-skies|paldean-fates|crown-zenith|celebrations|surging-sparks|chaos-rising|delta-reign/i.test(skuId);
     const ripPairReady = Boolean(ap.isRipHuntMode && ((bestOffer.stock === undefined || bestOffer.stock >= 2) || /booster\s*box/i.test(pol.formFactor || '')));
 
-    const score =
-      (completionCount === 0 ? 35 : 18) +
-      (String(pol.formFactor || '').toUpperCase() === 'ETB' && !wallOwned ? 22 : 0) +
+    const score = Number(bestOffer.priorityScore || 0) +
       (isUnderOrCushion ? 28 : 0) +
       (isGrailSet ? 16 : 0) +
       (ap.isSupplyTightening ? 15 : 0) +
       (ripPairReady ? 12 : 0) +
-      Math.max(-15, Math.min(35, discountVsMktPct)) +
       Math.max(-10, Math.min(25, dipVs60dPct));
 
-    let advisorBadge = bestOffer.trendVerdictLabel || `◈ ⟦ SMART ACCUMULATE // -${Math.max(1, discountVsMktPct)}% VS MKT ⟧`;
+    let advisorBadge = bestOffer.verdictLabel || bestOffer.trendVerdictLabel || `◈ ⟦ SMART ACCUMULATE // -${Math.max(1, discountVsMktPct)}% VS MKT ⟧`;
     if (ap.isSupplyTightening && ap.autoPilotBadge) advisorBadge = ap.autoPilotBadge;
-    else if (ripPairReady) advisorBadge = '◈ ⟦ RIP PAIR READY (QTY 2+) // RIP HUNT FLOOR ⟧';
+    else if (ripPairReady && bestOffer.isWallFormat) advisorBadge = '◈ ⟦ RIP PAIR READY (QTY 2+) // RIP HUNT FLOOR ⟧';
     else if (dipVs60dPct >= 8) advisorBadge = `◈ ⟦ 60D ELASTIC DIP (-${dipVs60dPct}% VS $${Math.round(rolling.avg60d)} 60D AVG) ⟧`;
 
-    const slotLabel = completionCount === 0
-      ? '0/3 NEED WALL'
-      : `${completionCount}/3 WALL LOCKED • NEED RIP`;
+    const slotLabel = bestOffer.isWallFormat
+      ? (completionCount === 0 ? '0/3 NEED WALL' : `${completionCount}/3 WALL LOCKED • NEED RIP`)
+      : (bestOffer.isCaseSku ? 'SEALED CASE' : `RIP / PACK FORMAT ($${Number(bestOffer.pricePerPack || 0).toFixed(2)}/PK)`);
 
     const cartLinks = buildShopifyDirectCartLinks({
       url: bestOffer.url,
@@ -1459,6 +1494,13 @@ function buildNextBestBuyAdvisorPayload(requestedBudget) {
       dipVs60dPct,
       packCount: bestOffer.packCount,
       pricePerPack: bestOffer.pricePerPack,
+      actionTier: bestOffer.actionTier,
+      priorityScore: bestOffer.priorityScore,
+      verdictLabel: bestOffer.verdictLabel,
+      isWallFormat: bestOffer.isWallFormat,
+      isCaseSku: bestOffer.isCaseSku,
+      earnedWatermarks: bestOffer.earnedWatermarks,
+      purchaseMemory: bestOffer.purchaseMemory,
       wallOwned,
       dadRipOwned,
       loganRipOwned,
@@ -1470,13 +1512,15 @@ function buildNextBestBuyAdvisorPayload(requestedBudget) {
       statusTag: bestOffer.statusTag,
       url: bestOffer.url,
       cart1xUrl: cartLinks.cart1xUrl,
-      cart2xUrl: cartLinks.cart2xUrl,
-      cart3xUrl: cartLinks.cart3xUrl,
+      cart2xUrl: bestOffer.isCaseSku ? undefined : cartLinks.cart2xUrl,
+      cart3xUrl: bestOffer.isCaseSku ? undefined : cartLinks.cart3xUrl,
       score
     });
   }
 
-  candidates.sort((a, b) => b.score - a.score || a.landedPrice - b.landedPrice);
+  const sortedCandidates = sortDealsByTierAndPriority(candidates);
+  candidates.length = 0;
+  candidates.push(...sortedCandidates);
 
   const pickForBudget = (cap) => {
     const within = candidates.filter(c => c.landedPrice <= cap);
@@ -1614,7 +1658,22 @@ function loadMergedStoreOffersBySku() {
     for (const [storeKey, rec] of Object.entries(storeMap)) {
       if (!rec || !rec.landedPrice || rec.landedPrice <= 0) continue;
       const candTitle = String(rec.listingTitle || rec.rawTitle || pol.name);
-      if (isSingleCardOrNonSealed(candTitle, undefined, rec.url) || !hasMandatorySealedContainerKeyword(candTitle, pol.formFactor)) {
+      const recStoreName = String(rec.storeName || storeKey);
+      const recUrl = String(rec.productUrl || rec.url || '');
+      const is1P = isVerified1PBigBoxOrPc(recStoreName, recUrl, false);
+      const sanityFloor = computeSanityPriceFloor({
+        formFactor: pol.formFactor,
+        msrp: Number(pol.msrpCeiling || 0),
+        verifiedMarket: mkt,
+        is1PBigBox: is1P,
+        title: candTitle
+      });
+      const maxCeil = getMaxPlausiblePriceCeiling(pol.formFactor, skuId, candTitle, pol);
+      if (
+        isPoisonedVariantOrAccessory(undefined, candTitle, Number(rec.price || rec.landedPrice), pol.formFactor) ||
+        isSingleCardOrNonSealed(candTitle, undefined, rec.url) ||
+        !hasMandatorySealedContainerKeyword(candTitle, pol.formFactor)
+      ) {
         continue;
       }
       const landed = Math.round(Number(rec.landedPrice) * 100) / 100;
@@ -1622,6 +1681,9 @@ function loadMergedStoreOffersBySku() {
       const rawPrice = (rawShip > 0 && Math.abs(Number(rec.price || landed) - landed) < 0.01 && landed > rawShip)
         ? Math.round((landed - rawShip) * 100) / 100
         : Math.round(Number(rec.price || landed) * 100) / 100;
+      if (rawPrice < sanityFloor || landed < sanityFloor || rawPrice > maxCeil) {
+        continue;
+      }
       if (rawShip > 35 || (/tcgplayer|ebay|3p/i.test(String(rec.storeName || storeKey)) && rawPrice > 0 && rawShip > rawPrice * 0.20)) {
         continue;
       }
@@ -1734,7 +1796,25 @@ function loadMergedStoreOffersBySku() {
     const pol = polById.get(skuId);
     if (!pol || !item) return;
     const candTitle = String(item.title || pol.name);
-    if (isSingleCardOrNonSealed(candTitle, undefined, item.url) || !hasMandatorySealedContainerKeyword(candTitle, pol.formFactor)) {
+    const cleanStorePre = String(item.retailer || 'Verified Store').replace(/^[📡🚨💎🔥⚡🎯]+\s*/, '').trim();
+    const is1POverlay = isVerified1PBigBoxOrPc(cleanStorePre, String(item.productUrl || item.url || ''), false);
+    const mktOverlay = Number(pol.estimatedMarketValue || (telemetry[skuId]?.rollingAverage > 0 ? telemetry[skuId].rollingAverage : (pol.msrpCeiling || 54.99)));
+    const sanityFloorOverlay = computeSanityPriceFloor({
+      formFactor: pol.formFactor,
+      msrp: Number(pol.msrpCeiling || 0),
+      verifiedMarket: mktOverlay,
+      is1PBigBox: is1POverlay,
+      title: candTitle
+    });
+    const maxCeilOverlay = getMaxPlausiblePriceCeiling(pol.formFactor, skuId, candTitle, pol);
+    const checkRawP = Number(item.price || item.landedPrice || 0);
+    if (
+      checkRawP < sanityFloorOverlay ||
+      checkRawP > maxCeilOverlay ||
+      isPoisonedVariantOrAccessory(undefined, candTitle, checkRawP, pol.formFactor) ||
+      isSingleCardOrNonSealed(candTitle, undefined, item.url) ||
+      !hasMandatorySealedContainerKeyword(candTitle, pol.formFactor)
+    ) {
       return;
     }
     const landed = Math.round(Number(item.landedPrice || item.price || 0) * 100) / 100;
@@ -1888,6 +1968,27 @@ function loadMergedStoreOffersBySku() {
       productUrl: tel.lowestUrl,
       updatedAt: Number(tel.lastUpdated || now)
     }, true);
+  }
+
+  // 5. Enrich every merged offer with unified Cost x Need x Trend dealRanker fields
+  for (const [skuId, skuBucket] of Object.entries(merged)) {
+    const pol = polById.get(skuId);
+    if (!pol || !skuBucket) continue;
+    const wallOwned = Boolean(pol.wallOwned ?? pol.owned ?? pol.inVault);
+    const completionCount = (wallOwned ? 1 : 0) + (pol.dadRipOwned ? 1 : 0) + (pol.loganRipOwned ? 1 : 0);
+    const tel = telemetry[skuId] || {};
+    const skuOffers = Object.values(skuBucket);
+    const tcgOffer = skuOffers.find(o => /tcgplayer/i.test(String(o.store || '')));
+    const tcgComp = tcgOffer
+      ? Number(tcgOffer.landedPrice)
+      : (tel.lowestPrice > 0 && /tcgplayer/i.test(String(tel.lowestStore || '')) ? Number(tel.lowestPrice) : Number(pol.estimatedMarketValue || 0));
+    for (const [stKey, offer] of Object.entries(skuBucket)) {
+      skuBucket[stKey] = rankAndEnrichDealOffer(offer, pol, {
+        wallQty: completionCount,
+        tcgComp,
+        nowTs: now
+      });
+    }
   }
 
   _cachedMergedOffersMem = merged;
@@ -2612,19 +2713,45 @@ app.get('/api/drops', (req, res) => {
   try {
     if (fs.existsSync(DROPS_PATH)) {
       const drops = JSON.parse(fs.readFileSync(DROPS_PATH, 'utf-8'));
+      const policies = getRuntimePolicies();
+      const polById = new Map(policies.map(p => [p.id, p]));
+      const telemetry = readJsonCached(TELEMETRY_PATH, {});
       const enriched = Array.isArray(drops)
-        ? drops.map(d => {
-            const effPrice = d.landedPrice || d.price || 0;
-            const rip = computeRipMetrics(effPrice, d.ruleId, d.formFactor, d.title, d.packCount);
-            return {
-              ...d,
-              packCount: d.packCount ?? rip.packCount,
-              pricePerPack: d.pricePerPack ?? rip.pricePerPack,
-              isRipValueLeader: d.isRipValueLeader ?? rip.isRipValueLeader
-            };
-          })
+        ? drops
+            .filter(d => {
+              if (!d) return false;
+              const pol = polById.get(d.ruleId);
+              const effP = Number(d.price || d.landedPrice || 0);
+              if (effP <= 0) return false;
+              const is1P = isVerified1PBigBoxOrPc(String(d.retailer || ''), String(d.url || ''), false);
+              const floor = computeSanityPriceFloor({
+                formFactor: pol?.formFactor || d.formFactor,
+                msrp: Number(pol?.msrpCeiling || d.msrp || 0),
+                verifiedMarket: Number(pol?.estimatedMarketValue || d.marketValue || 0),
+                is1PBigBox: is1P,
+                title: String(d.rawTitle || d.title || '')
+              });
+              return effP >= floor && !isPoisonedVariantOrAccessory(undefined, String(d.rawTitle || d.title || ''), effP, pol?.formFactor || d.formFactor);
+            })
+            .map(d => {
+              const pol = polById.get(d.ruleId);
+              const effPrice = d.landedPrice || d.price || 0;
+              const rip = computeRipMetrics(effPrice, d.ruleId, d.formFactor, d.title, d.packCount);
+              const wallOwned = Boolean(pol && (pol.wallOwned ?? pol.owned ?? pol.inVault));
+              const completionCount = pol ? ((wallOwned ? 1 : 0) + (pol.dadRipOwned ? 1 : 0) + (pol.loganRipOwned ? 1 : 0)) : 0;
+              const tel = telemetry[d.ruleId] || {};
+              const tcgComp = (tel.lowestPrice > 0 && /tcgplayer/i.test(String(tel.lowestStore || '')))
+                ? Number(tel.lowestPrice)
+                : Number(pol?.estimatedMarketValue || d.marketValue || 0);
+              return rankAndEnrichDealOffer({
+                ...d,
+                packCount: d.packCount ?? rip.packCount,
+                pricePerPack: d.pricePerPack ?? rip.pricePerPack,
+                isRipValueLeader: d.isRipValueLeader ?? rip.isRipValueLeader
+              }, pol, { wallQty: completionCount, tcgComp });
+            })
         : [];
-      return res.json(enriched);
+      return res.json(sortDealsByTierAndPriority(enriched));
     }
     res.json([]);
   } catch (e) {
@@ -2842,21 +2969,36 @@ app.post('/api/live-comp', async (req, res) => {
 app.get('/api/policies', (req, res) => {
   try {
     const parsed = getRuntimePolicies();
-    let cache = {};
-    if (fs.existsSync(TELEMETRY_PATH)) {
-      try { cache = JSON.parse(fs.readFileSync(TELEMETRY_PATH, 'utf-8')); } catch (e) {}
-    }
-    let liveMap = {};
-    if (fs.existsSync(LIVE_STOCK_PATH)) {
-      try { liveMap = JSON.parse(fs.readFileSync(LIVE_STOCK_PATH, 'utf-8')); } catch (e) {}
-    }
+    const cache = readJsonCached(TELEMETRY_PATH, {});
+    const liveMap = readJsonCached(LIVE_STOCK_PATH, {});
+    const mergedOffersBySku = loadMergedStoreOffersBySku();
     const now = Date.now();
     const enriched = parsed.map(p => {
       const liveEntry = liveMap[p.id];
       const tel = cache[p.id];
-      const refLanded = (liveEntry && liveEntry.inStock && (liveEntry.landedPrice || liveEntry.price))
-        ? Number(liveEntry.landedPrice || liveEntry.price)
-        : ((tel && tel.lowestPrice > 0) ? Number(tel.lowestPrice) : Number(p.maxMarketBuyPrice || p.estimatedMarketValue || p.msrpCeiling || 0));
+      const skuOffers = Object.values(mergedOffersBySku[p.id] || {});
+      const mktVal = Number(p.estimatedMarketValue || p.msrpCeiling || 54.99);
+      const tcgOffer = skuOffers.find(o => /tcgplayer/i.test(String(o.store || '')));
+      const cleanTelLow = (tel && tel.lowestPrice > 0 && !/baseline/i.test(String(tel.lowestStore || '')) && Number(tel.lowestPrice) <= mktVal * 1.45)
+        ? Number(tel.lowestPrice)
+        : 0;
+      const tcgComp = tcgOffer ? Number(tcgOffer.landedPrice) : (cleanTelLow > 0 && /tcgplayer/i.test(String(tel.lowestStore || '')) ? cleanTelLow : mktVal);
+      const tcgUrl = (tcgOffer && /tcgplayer\.com/i.test(String(tcgOffer.url || '')) ? tcgOffer.url : null) ||
+        (tel && /tcgplayer\.com/i.test(String(tel.lowestUrl || '')) ? tel.lowestUrl : null) ||
+        `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(p.name)}&view=grid&ProductTypeName=Sealed+Products`;
+      const { bestLiveOffer, bestBuyAction } = buildBestLiveOfferAndBuyAction({
+        skuId: p.id,
+        policy: p,
+        offers: skuOffers,
+        tcgComp,
+        marketPrice: mktVal,
+        tcgplayerUrl: tcgUrl
+      });
+      const refLanded = bestLiveOffer.inStock && bestLiveOffer.landedPrice > 0
+        ? bestLiveOffer.landedPrice
+        : ((liveEntry && liveEntry.inStock && (liveEntry.landedPrice || liveEntry.price))
+          ? Number(liveEntry.landedPrice || liveEntry.price)
+          : (cleanTelLow > 0 ? cleanTelLow : Number(p.maxMarketBuyPrice || mktVal)));
       const rip = computeRipMetrics(refLanded, p.id, p.formFactor, p.name, p.packCount);
       const wallOwned = Boolean(p.wallOwned ?? p.owned ?? p.inVault);
       const dadRipOwned = Boolean(p.dadRipOwned);
@@ -2869,7 +3011,7 @@ app.get('/api/policies', (req, res) => {
         releaseDate: p.releaseDate,
         msrpCeiling: p.msrpCeiling || 0,
         policyMaxBuy: Math.max(p.msrpCeiling || 0, p.maxMarketBuyPrice || 0),
-        marketBaseline: p.estimatedMarketValue || p.msrpCeiling || 0,
+        marketBaseline: mktVal,
         landedPrice: refLanded,
         dropPrice: refLanded,
         estimatedShipping: 0,
@@ -2882,6 +3024,20 @@ app.get('/api/policies', (req, res) => {
         autoPilotEnabled: p.autoPilotEnabled !== false,
         nowTs: now
       });
+      const rankedMeta = rankAndEnrichDealOffer({
+        skuId: p.id,
+        formFactor: p.formFactor,
+        title: p.name,
+        storeName: bestLiveOffer.storeName || 'Market Watch',
+        landedPrice: refLanded,
+        price: refLanded,
+        inStock: bestLiveOffer.inStock,
+        msrp: p.msrpCeiling,
+        triggerPrice: p.maxMarketBuyPrice,
+        marketValue: mktVal,
+        trendSignal: trendEval.trendSignal,
+        preReleaseStatusTag: trendEval.preReleaseStatusTag
+      }, p, { wallQty: completionCount, tcgComp, nowTs: now });
       return {
         ...p,
         owned: wallOwned,
@@ -2891,6 +3047,15 @@ app.get('/api/policies', (req, res) => {
         loganRipOwned,
         completionCount,
         fullyConquered,
+        isWallFormat: rankedMeta.isWallFormat,
+        isCaseSku: rankedMeta.isCaseSku,
+        actionTier: rankedMeta.actionTier,
+        priorityScore: rankedMeta.priorityScore,
+        verdictLabel: rankedMeta.verdictLabel,
+        earnedWatermarks: rankedMeta.earnedWatermarks,
+        purchaseMemory: rankedMeta.purchaseMemory,
+        bestLiveOffer,
+        bestBuyAction: (rankedMeta.isWallFormat && completionCount < 3) ? bestBuyAction : null,
         autoPilotEnabled: p.autoPilotEnabled !== false,
         autoPilotCeiling: trendEval.autoPilotCeiling,
         effectiveTargetCeiling: trendEval.effectiveTargetCeiling,

@@ -26,6 +26,7 @@ export interface PurchaseComparisonResult {
 
 let cachedVaultMtime = 0;
 let cachedLedgerMtime = 0;
+let lastFsCheckTs = 0;
 let cachedRecords: PurchaseRecord[] = [];
 
 function normalizeFormatKey(formFactor?: string, skuId?: string, productName?: string): string {
@@ -74,6 +75,9 @@ function ingestList(list: any[], fallbackStore: string, out: Map<string, Purchas
 }
 
 export function loadPurchaseRecords(): PurchaseRecord[] {
+  const now = Date.now();
+  if (cachedRecords.length > 0 && now - lastFsCheckTs < 15000) return cachedRecords;
+  lastFsCheckTs = now;
   const vStat = fs.existsSync(CONQUERED_VAULT_PATH) ? fs.statSync(CONQUERED_VAULT_PATH).mtimeMs : 0;
   const lStat = fs.existsSync(PURCHASE_LEDGER_PATH) ? fs.statSync(PURCHASE_LEDGER_PATH).mtimeMs : 0;
   if (cachedRecords.length > 0 && vStat === cachedVaultMtime && lStat === cachedLedgerMtime) return cachedRecords;

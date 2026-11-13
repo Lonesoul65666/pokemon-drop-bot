@@ -8,6 +8,7 @@ import { processIncomingDrop } from './listener';
 import { markAlertSoldOut, recordPreDropStagingEvent } from './notifier';
 import {
   isValidSkuForFormFactor,
+  isPoisonedVariantOrAccessory,
   isSingleOrNonSealedShopifyProduct,
   isSingleCardOrNonSealed,
   isCollectibleSingleCardOrSlab,
@@ -880,8 +881,14 @@ async function pollSingleStore(store: MonitoredStore): Promise<{
             continue;
           }
           if (priceNum < 18) continue;
+          if (isPoisonedVariantOrAccessory(variant.title, prod.title, priceNum)) continue;
           if (!hasMandatorySealedContainerKeyword(fullTitle)) continue;
-          if (!isValidSkuForFormFactor(fullTitle, undefined, priceNum, { handle: `${prod.handle || ''} ${tagsStr}` })) continue;
+          if (!isValidSkuForFormFactor(fullTitle, undefined, priceNum, {
+            handle: `${prod.handle || ''} ${tagsStr}`,
+            retailer: store.name,
+            sourceUrl: productUrl,
+            variantTitle: variant.title
+          })) continue;
           activeVariantIds.add(String(variant.id));
 
           const prev = variantStateMap.get(variant.id);
@@ -939,7 +946,11 @@ async function pollSingleStore(store: MonitoredStore): Promise<{
           if (isNewStagingUpload || isOosPriceSlashed) {
             const fullTitle = `${prod.title} ${variant.title !== 'Default Title' ? variant.title : ''}`.trim();
             const tagsStr = Array.isArray(prod.tags) ? prod.tags.join(' ') : String(prod.tags || '');
-            if (isSingleCardOrNonSealed(fullTitle, prod.product_type, `${prod.handle || ''} ${tagsStr}`) || !hasMandatorySealedContainerKeyword(fullTitle)) {
+            if (
+              isPoisonedVariantOrAccessory(variant.title, prod.title, priceNum) ||
+              isSingleCardOrNonSealed(fullTitle, prod.product_type, `${prod.handle || ''} ${tagsStr}`) ||
+              !hasMandatorySealedContainerKeyword(fullTitle)
+            ) {
               continue;
             }
             const matchedRule = matchTargetRuleForStaging(fullTitle, priceNum, store.name, `${prod.handle || ''} ${tagsStr}`);

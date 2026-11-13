@@ -5,10 +5,12 @@ import {
   PolicyRule,
   GLOBAL_JUNK_EXCLUSIONS,
   isValidSkuForFormFactor,
+  isPoisonedVariantOrAccessory,
   isSingleCardOrNonSealed,
   hasMandatorySealedContainerKeyword,
   matchProductToSku,
   getMinPlausiblePriceFloor,
+  computeSanityPriceFloor,
   getMaxPlausiblePriceCeiling,
   detectBigBoxRetailer,
   isPokemonCenterSource,
@@ -1135,8 +1137,15 @@ export function getMsrpTrophies(): MsrpTrophiesState {
   try {
     if (fs.existsSync(MSRP_TROPHIES_PATH)) {
       const parsed = JSON.parse(fs.readFileSync(MSRP_TROPHIES_PATH, 'utf-8'));
-      if (parsed && typeof parsed.totalMsrpHits === 'number' && Array.isArray(parsed.catches)) {
-        return parsed;
+      if (parsed && Array.isArray(parsed.catches)) {
+        const valid1P = parsed.catches.filter((c: any) => {
+          const landed = Number(c?.landedPrice || c?.price || 0);
+          const msrp = Number(c?.msrp || 54.99);
+          return isVerified1PBigBoxOrPc(String(c?.store || ''), String(c?.url || ''), false) &&
+            landed > 0 &&
+            landed <= Math.round(msrp * 1.08 * 100) / 100;
+        });
+        return { totalMsrpHits: valid1P.length, catches: valid1P };
       }
     }
   } catch (e) {}
@@ -1145,16 +1154,21 @@ export function getMsrpTrophies(): MsrpTrophiesState {
 
 export function recordMsrpTrophyCatch(entry: MsrpTrophyCatch): MsrpTrophiesState {
   try {
+    const landed = Number(entry.landedPrice || entry.price || 0);
+    const msrp = Number(entry.msrp || 0);
+    if (!isVerified1PBigBoxOrPc(entry.store, entry.url, false) || landed <= 0 || (msrp > 0 && landed > Math.round(msrp * 1.08 * 100) / 100)) {
+      return getMsrpTrophies();
+    }
     const dir = path.dirname(MSRP_TROPHIES_PATH);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
     const state = getMsrpTrophies();
-    state.totalMsrpHits = (state.totalMsrpHits || 0) + 1;
     state.catches.unshift(entry);
     if (state.catches.length > 20) {
       state.catches = state.catches.slice(0, 20);
     }
+    state.totalMsrpHits = (state.totalMsrpHits || 0) + 1;
     atomicWriteJson(MSRP_TROPHIES_PATH, state);
     return state;
   } catch (e) {
@@ -1258,18 +1272,30 @@ export function upsertBestCurrentOffer(entry: BestOfferEntry) {
 
 export function matchTargetRuleForStaging(title: string, price: number, retailer: string, handleAndUrl: string): PolicyRule | null {
   const cleanTitle = (title || '').trim();
-  if (isSingleCardOrNonSealed(cleanTitle, handleAndUrl) || !hasMandatorySealedContainerKeyword(cleanTitle)) {
+  if (
+    isPoisonedVariantOrAccessory(undefined, cleanTitle, price) ||
+    isSingleCardOrNonSealed(cleanTitle, handleAndUrl) ||
+    !hasMandatorySealedContainerKeyword(cleanTitle)
+  ) {
     return null;
   }
+  const is1P = isVerified1PBigBoxOrPc(retailer, handleAndUrl, false);
   const matched = matchProductToSku(cleanTitle, price, {
     handle: handleAndUrl,
     retailer,
     sourceUrl: handleAndUrl,
+    is1PBigBox: is1P,
     allowPcRetailUnlock: false
   });
   if (!matched) return null;
-  const minFloor = getMinPlausiblePriceFloor(matched.formFactor);
-  const maxCeiling = getMaxPlausiblePriceCeiling(matched.formFactor, matched.id, matched.name);
+  const minFloor = computeSanityPriceFloor({
+    formFactor: matched.formFactor,
+    msrp: matched.msrpCeiling,
+    verifiedMarket: matched.estimatedMarketValue,
+    is1PBigBox: is1P,
+    title: cleanTitle
+  });
+  const maxCeiling = getMaxPlausiblePriceCeiling(matched.formFactor, matched.id, matched.name, matched);
   if (price < minFloor || price > maxCeiling) return null;
   return matched;
 }
@@ -1438,10 +1464,21 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
       continue;
     }
 
-    const minFloor = Math.max(
-      getMinPlausiblePriceFloor(rule.formFactor),
-      Math.round((rule.msrpCeiling || 0) * 0.40 * 100) / 100
+    const liveTelPre = getTelemetry()[rule.id];
+    const is1PPre = isVerified1PBigBoxOrPc(item.retailer, handleAndUrl, false);
+    const preVerifiedMkt = Math.max(
+      Number(rule.estimatedMarketValue || 0),
+      Number(liveTelPre?.rollingAverage || 0) <= (Number(rule.estimatedMarketValue || 9999) * 1.6)
+        ? Number(liveTelPre?.rollingAverage || 0)
+        : 0
     );
+    const minFloor = computeSanityPriceFloor({
+      formFactor: rule.formFactor,
+      msrp: rule.msrpCeiling,
+      verifiedMarket: preVerifiedMkt,
+      is1PBigBox: is1PPre,
+      title: cleanTitle
+    });
     const maxCeiling = getMaxPlausiblePriceCeiling(rule.formFactor, rule.id, rule.name, rule);
     if (item.price !== undefined && (item.price < minFloor || item.price > maxCeiling)) {
       continue;
@@ -1450,8 +1487,6 @@ export function evaluateItem(item: RawRestockItem): EvaluationResult {
     // Identify Pokemon Center Exclusive Retail Unlock (strictly pokemoncenter.com 1P retail drop)
     const isEtbRule = rule.formFactor === 'ETB' || rule.formFactor === 'ETB Case';
     const isPcExclusiveRetailDrop = isEtbRule && isPcSource && (item.price === undefined || item.price <= 75);
-
-    const liveTelPre = getTelemetry()[rule.id];
     const maxMedianPlausible = rule.estimatedMarketValue > 0
       ? Math.min(maxCeiling, Math.round(rule.estimatedMarketValue * 1.35 * 100) / 100)
       : maxCeiling;

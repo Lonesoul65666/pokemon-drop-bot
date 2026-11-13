@@ -1,12 +1,10 @@
 {
   "muteVaulted": true,
-  "liveDigestEnabled": true,
   "wallHunterMode": false,
+  "liveDigestEnabled": true,
   "singlesAlertsEnabled": false,
   "favoritePokemonWatchlist": [
     "Gyarados"
   ],
-  "minSinglesTrackPrice": 15,
-  "lastDigestSentAt": 1794495615295,
-  "lastDigestHash": "swsh-evolving-skies-etb:Kanzen Games:381.78|sv-base-booster-box:PKMN Colosseum:285.99|sv-journey-together-etb:Oaks Poke Box:120.00|sv-shrouded-fable-etb:CardsHQ:114.99|sv-surging-sparks-etb:Collector Store:114.99|swsh-evolving-skies-etb:Kanzen Games:381.78|sv-base-booster-box:PKMN Colosseum:285.99|sv-destined-rivals-booster-box:Derium and Wifey:364.99"
+  "minSinglesTrackPrice": 15
 }
