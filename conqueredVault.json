@@ -1,6 +1,80 @@
 {
   "trophies": [
     {
+      "id": "trophy-twilight-masquerade-etb-n5f9qqh7w",
+      "skuId": "sv-twilight-masquerade-etb",
+      "name": "Scarlet & Violet: Twilight Masquerade ETB",
+      "era": "Scarlet & Violet (2023-2025)",
+      "formFactor": "ETB",
+      "store": "MinMaxGames",
+      "orderRef": "N5F9QQH7W",
+      "quantity": 3,
+      "unitShelfPrice": 95,
+      "subtotal": 285,
+      "shipping": 4,
+      "tax": 0,
+      "totalOrderLanded": 289,
+      "landedPrice": 96.33,
+      "landedPriceNote": "Order #N5F9QQH7W • Qty 3 @ $95.00 ($285.00 + $4.00 ship + $0.00 tax = $289.00 total • $96.33/ETB)",
+      "msrpAtPurchase": 49.99,
+      "marketAtPurchase": 115,
+      "packCount": 9,
+      "totalPacks": 27,
+      "pricePerPack": 10.7,
+      "conqueredAt": "2026-11-15",
+      "ruleOf3Status": {
+        "ripped": true,
+        "onWall": true,
+        "subsidized": false,
+        "sealedCase": false
+      },
+      "fateSlots": {
+        "loganWall": true,
+        "officeSealed": true,
+        "dadRip": true
+      },
+      "discordAlertSnapshot": {
+        "headline": "🏆 3/3 FAMILY WALL COMPLETE // MINMAXGAMES FLOOR SNIPE",
+        "retailerLine": "MinMaxGames (Order #N5F9QQH7W • Qty 3)",
+        "priceLine": "$96.33 / ETB Landed ($285.00 + $4.00 Ship + $0.00 Tax = $289.00)",
+        "verdictBadge": "LOGAN WALL + OFFICE SEALED + DAD RIP (10/38 WALL)"
+      }
+    },
+    {
+      "id": "trophy-me-delta-reign-booster-box-minmax",
+      "skuId": "me-delta-reign-booster-box",
+      "name": "Mega Evolution: Delta Reign Booster Box",
+      "era": "Mega Evolution (2025-2026)",
+      "formFactor": "Booster Box",
+      "store": "MinMaxGames",
+      "quantity": 2,
+      "unitShelfPrice": 175,
+      "subtotal": 350,
+      "shipping": 4,
+      "tax": 0,
+      "totalOrderLanded": 354,
+      "landedPrice": 177,
+      "landedPriceNote": "Qty 2 / 72 packs ($350.00 + $4.00 ship + $0.00 tax = $354.00 total • $177.00/box • $4.92/pk)",
+      "msrpAtPurchase": 161.64,
+      "marketAtPurchase": 205,
+      "packCount": 36,
+      "totalPacks": 72,
+      "pricePerPack": 4.92,
+      "conqueredAt": "2026-11-15",
+      "ruleOf3Status": {
+        "ripped": true,
+        "onWall": false,
+        "subsidized": false,
+        "sealedCase": false
+      },
+      "discordAlertSnapshot": {
+        "headline": "🔥 72-PACK RIP VICTORY // MINMAXGAMES BOOSTER BOX PAIR",
+        "retailerLine": "MinMaxGames (Qty 2 • 72 Packs)",
+        "priceLine": "$177.00 / Box Landed ($350.00 + $4.00 Ship + $0.00 Tax = $354.00 • $4.92/pk)",
+        "verdictBadge": "DELTA REIGN CONQUERED & MUTED"
+      }
+    },
+    {
       "id": "trophy-me-delta-reign-etb-1794237410816",
       "skuId": "me-delta-reign-etb",
       "productName": "Mega Evolution: Delta Rayquaza (Delta Reign) ETB",

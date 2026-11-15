@@ -17,20 +17,25 @@ async function pollBestBuyOfficialProductsApi() {
         .map((p) => String(p.bestBuySku || '').trim())
         .filter((sku) => /^\d{7}$/.test(sku))
         .slice(0, 25);
-    const filter = seededSkus.length > 0
-        ? `sku in(${seededSkus.join(',')})`
-        : 'search=pokemon&search=elite&search=trainer&search=box';
-    const apiUrl = `https://api.bestbuy.com/v1/products(${filter})` +
-        `?apiKey=${encodeURIComponent(apiKey)}&format=json&pageSize=25` +
-        `&show=sku,name,salePrice,regularPrice,onlineAvailability,buttonState`;
+    const queries = seededSkus.length > 0
+        ? [`sku in(${seededSkus.join(',')})`]
+        : ['search=pokemon&search=elite&search=trainer&search=box', 'search=pokemon&search=ultra&search=premium'];
     try {
-        const res = await fetch(apiUrl, { signal: AbortSignal.timeout(8000) });
-        if (!res.ok) {
-            return { configured: true, ok: false, status: res.status, parsed: empty };
+        let totalNodesFound = 0, lastStatus = 0;
+        const mergedOffers = [];
+        for (const filter of queries) {
+            const apiUrl = `https://api.bestbuy.com/v1/products(${filter})` +
+                `?apiKey=${encodeURIComponent(apiKey)}&format=json&pageSize=25` +
+                `&show=sku,name,salePrice,regularPrice,onlineAvailability,buttonState`;
+            const res = await fetch(apiUrl, { signal: AbortSignal.timeout(8000) });
+            lastStatus = res.status;
+            if (!res.ok)
+                continue;
+            const p = (0, bigBoxAdapters_1.parseBestBuyPayload)(await res.json());
+            totalNodesFound += p.totalNodesFound;
+            mergedOffers.push(...p.inStockOffers);
         }
-        const data = await res.json();
-        const parsed = (0, bigBoxAdapters_1.parseBestBuyPayload)(data);
-        return { configured: true, ok: true, status: res.status, parsed };
+        return { configured: true, ok: lastStatus >= 200 && lastStatus < 300, status: lastStatus, parsed: { totalNodesFound, inStockOffers: mergedOffers } };
     }
     catch {
         return { configured: true, ok: false, status: 0, parsed: empty };

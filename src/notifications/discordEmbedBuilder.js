@@ -120,7 +120,8 @@ function resolveAlertPingAndTheme(params) {
         return { is1PBigBox: true, is1PMsrpDrop: true, mentionContent: '@here', embedColor: 0xDC2626, verdictHeadline: 'INVITE OR DRAW LIVE' };
     }
     const is1PBigBox = (0, evaluator_1.isVerified1PBigBoxOrPc)(params.retailer, params.productUrl || params.url, false);
-    const nearMsrp = params.msrp > 0 && params.shelfPrice > 0 && params.shelfPrice <= Math.round(params.msrp * 1.08 * 100) / 100;
+    const msrp1pCap = (0, policies_1.get1PMsrpCeilingForRule)(params.msrp, params.ruleId, params.wantedCollectorUpc);
+    const nearMsrp = msrp1pCap > 0 && params.shelfPrice > 0 && params.shelfPrice <= msrp1pCap;
     const is1PMsrpDrop = Boolean(is1PBigBox &&
         (params.bigBoxTier === 'BIG_BOX_RESTOCK_RADAR' || params.bigBoxTier === 'PC_EXCLUSIVE_MSRP' || params.bigBoxTier === 'MSRP_TIER_A' || params.isMsrpUnicorn || nearMsrp));
     if (is1PMsrpDrop) {
@@ -157,11 +158,12 @@ function detectActiveFloorSlide(params) {
 }
 function buildOneTapActionBar(params) {
     const knownStock = typeof params.stock === 'number' && params.stock > 0 ? params.stock : undefined;
-    const isCase = (0, evaluator_1.isCaseSkuFormat)(params.formFactor, params.ruleId, params.productLabel);
+    const isSingleQty = (0, evaluator_1.isCaseSkuFormat)(params.formFactor, params.ruleId, params.productLabel)
+        || (0, policies_1.isUpcOrSpcFormat)(params.formFactor, params.ruleId, params.productLabel);
     const directCart = (0, evaluator_1.buildShopifyDirectCartLinks)({
         url: params.url, productUrl: params.productUrl, cart1xUrl: params.cart1xUrl,
-        cart2xUrl: isCase ? undefined : params.cart2xUrl,
-        cart3xUrl: isCase ? undefined : params.cart3xUrl,
+        cart2xUrl: isSingleQty ? undefined : params.cart2xUrl,
+        cart3xUrl: isSingleQty ? undefined : params.cart3xUrl,
         itemId: params.itemId, stock: knownStock, retailer: params.retailer,
         formFactor: params.formFactor, ruleId: params.ruleId, productName: params.productLabel
     });
@@ -173,11 +175,11 @@ function buildOneTapActionBar(params) {
     const ebaySoldUrl = `https://www.ebay.com/sch/i.html?_nkw=${qEbaySold}&LH_Complete=1&LH_Sold=1&_sop=13`;
     const pills = [];
     let primaryFastUrl = prodPageUrl || params.url;
-    const allowMultiQty = !isCase && /\betb\b|elite\s*trainer|\bbundle\b/i.test(`${params.formFactor || ''} ${params.ruleId || ''} ${params.productLabel}`);
+    const allowMultiQty = !isSingleQty && /\betb\b|elite\s*trainer|\bbundle\b/i.test(`${params.formFactor || ''} ${params.ruleId || ''} ${params.productLabel}`);
     if (directCart.cart1xUrl && directCart.cart1xUrl.includes('/cart/')) {
         primaryFastUrl = directCart.cart1xUrl;
         pills.push(`[⚡ Shop Pay 1x ↗](${directCart.cart1xUrl})`);
-        if (!isCase && directCart.cart2xUrl)
+        if (!isSingleQty && directCart.cart2xUrl)
             pills.push(`[⚡ 2x ↗](${directCart.cart2xUrl})`);
         if (allowMultiQty && directCart.cart3xUrl)
             pills.push(`[⚡ 3x ↗](${directCart.cart3xUrl})`);
@@ -199,7 +201,8 @@ function buildCleanDiscordAlertEmbed(params) {
     const rule = params.ruleId ? policies_1.WATCH_POLICIES.find((p) => p.id === params.ruleId) : null;
     const theme = resolveAlertPingAndTheme({
         retailer: params.retailer, url: params.url, productUrl: params.productUrl,
-        shelfPrice: params.shelfPrice, msrp: params.msrp, bigBoxTier: params.bigBoxTier, isMsrpUnicorn: params.isMsrpUnicorn
+        shelfPrice: params.shelfPrice, msrp: params.msrp, ruleId: params.ruleId || rule?.id,
+        wantedCollectorUpc: Boolean(rule?.wantedCollectorUpc), bigBoxTier: params.bigBoxTier, isMsrpUnicorn: params.isMsrpUnicorn
     });
     const boxArt = resolveAlertBoxArt({
         imageUrl: params.imageUrl, ruleId: params.ruleId, rule, tcgCompUrl: params.tcgComp?.url, existingThumbnailUrl: params.existingThumbnailUrl

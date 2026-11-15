@@ -85,10 +85,11 @@ function isVerified1PBigBoxOrPc(retailer, url, isMarketplace3P = false) {
 }
 function buildShopifyDirectCartLinks(params) {
     const { url = '', productUrl = '', cart1xUrl, cart2xUrl, cart3xUrl, itemId, stock, retailer = '', formFactor, ruleId, productName } = params;
-    const isCase = isCaseSkuFormat(formFactor, ruleId, productName, `${url} ${productUrl}`);
+    const isSingleQty = isCaseSkuFormat(formFactor, ruleId, productName, `${url} ${productUrl}`)
+        || (0, policies_1.isUpcOrSpcFormat)(formFactor, ruleId, `${productName || ''} ${url} ${productUrl}`);
     const hay = `${retailer} ${url} ${productUrl}`.toLowerCase();
     if (/tcgplayer|ebay|target\.com|walmart\.com|bestbuy\.com|amazon\.com|costco\.com|samsclub\.com|gamestop\.com|barnesandnoble\.com|pokemoncenter\.com|reddit\.com/i.test(hay)) {
-        return { cart1xUrl, cart2xUrl: isCase ? undefined : cart2xUrl, cart3xUrl: isCase ? undefined : cart3xUrl };
+        return { cart1xUrl, cart2xUrl: isSingleQty ? undefined : cart2xUrl, cart3xUrl: isSingleQty ? undefined : cart3xUrl };
     }
     let baseRoot = '';
     const candidateCart = cart1xUrl || (url.includes('/cart/') ? url : '');
@@ -102,11 +103,11 @@ function buildShopifyDirectCartLinks(params) {
             baseRoot = `${m[1]}/cart/${String(itemId)}`;
     }
     if (!baseRoot)
-        return { cart1xUrl, cart2xUrl: isCase ? undefined : cart2xUrl, cart3xUrl: isCase ? undefined : cart3xUrl };
+        return { cart1xUrl, cart2xUrl: isSingleQty ? undefined : cart2xUrl, cart3xUrl: isSingleQty ? undefined : cart3xUrl };
     return {
         cart1xUrl: `${baseRoot}:1?payment=shop_pay`,
-        cart2xUrl: (!isCase && (stock === undefined || stock >= 2)) ? `${baseRoot}:2?payment=shop_pay` : undefined,
-        cart3xUrl: (!isCase && (stock === undefined || stock >= 3)) ? `${baseRoot}:3?payment=shop_pay` : undefined
+        cart2xUrl: (!isSingleQty && (stock === undefined || stock >= 2)) ? `${baseRoot}:2?payment=shop_pay` : undefined,
+        cart3xUrl: (!isSingleQty && (stock === undefined || stock >= 3)) ? `${baseRoot}:3?payment=shop_pay` : undefined
     };
 }
 function buildMobileRetailerLinks(params) {
@@ -1159,12 +1160,13 @@ function evaluateItem(item) {
             : (item.price ?? effectiveCeiling);
         const shipProfile = getStoreShippingProfile(item.retailer);
         const hasExplicitShipping = item.shippingPrice !== undefined && Number.isFinite(Number(item.shippingPrice));
-        const isBigBoxMsrp = Boolean(bigBoxName && dropPrice <= rule.msrpCeiling * 1.08);
+        const msrp1pCeiling = (0, policies_1.get1PMsrpCeilingForRule)(rule.msrpCeiling, rule.id, rule.wantedCollectorUpc);
+        const isBigBoxMsrp = Boolean(bigBoxName && dropPrice <= msrp1pCeiling);
         // Tier A (True Retail MSRP) and PC Exclusive Retail Drops force $0 shipping on Big Box
         const isFreeShip = Boolean(isPcExclusiveRetailDrop ||
             isBigBoxMsrp ||
             (hasExplicitShipping ? Number(item.shippingPrice) === 0 : item.freeShipping) ||
-            (!hasExplicitShipping && dropPrice >= shipProfile.freeShipThreshold));
+            (!hasExplicitShipping && shipProfile.freeShipThreshold > 0 && dropPrice >= shipProfile.freeShipThreshold));
         const estimatedShipping = isFreeShip
             ? 0
             : (hasExplicitShipping ? Number(item.shippingPrice) : shipProfile.flatShipping);
@@ -1195,7 +1197,7 @@ function evaluateItem(item) {
         // Phase 2 Strict 1P Gate: NEVER emit MSRP_TIER_A / MSRP OVERRIDE on an LGS store; strictly reserve for verified 1st-Party Big-Box & Pokemon Center
         const isTierAMsrp = Boolean(is1PBigBoxOrPc &&
             rule.msrpCeiling > 0 &&
-            dropPrice <= Math.round(rule.msrpCeiling * 1.08 * 100) / 100 &&
+            dropPrice <= msrp1pCeiling &&
             estimatedShipping <= 10.00);
         if (item.isBigBoxRestockRadar) {
             bigBoxTier = 'BIG_BOX_RESTOCK_RADAR';
@@ -1212,7 +1214,7 @@ function evaluateItem(item) {
             bigBoxBadge = '🚨💎 UNICORN RETAIL MSRP HIT 💎🚨';
             priorityFront = true;
         }
-        else if (bigBoxName && dropPrice > rule.msrpCeiling * 1.08) {
+        else if (bigBoxName && dropPrice > msrp1pCeiling) {
             bigBoxTier = '3P_TIER_B';
             if (/^gamestop$/i.test(bigBoxName)) {
                 bigBoxBadge = '◈ ⟦ GAMESTOP 1P IN-STOCK (SLIDER CHECK) ⟧';
@@ -1224,7 +1226,7 @@ function evaluateItem(item) {
                 }
             }
         }
-        // Rule of 3 Family Pack Instant-Cart Links for ALL Shopify LGS drops with a variantId
+        // Rule of 3 Family Pack Instant-Cart Links for ALL Shopify LGS drops with a variantId (single-qty only on Cases & UPCs)
         const directCartLinks = buildShopifyDirectCartLinks({
             url: item.url,
             productUrl: item.productUrl,
@@ -1233,7 +1235,10 @@ function evaluateItem(item) {
             cart3xUrl: item.cart3xUrl,
             itemId: item.itemId,
             stock: item.stock,
-            retailer: item.retailer
+            retailer: item.retailer,
+            formFactor: rule.formFactor,
+            ruleId: rule.id,
+            productName: rule.name
         });
         const cart1xUrl = directCartLinks.cart1xUrl;
         const cart2xUrl = directCartLinks.cart2xUrl;
@@ -1256,7 +1261,9 @@ function evaluateItem(item) {
         }
         catch (e) { }
         const isRetailFlipBypass = Boolean(is1PBigBoxOrPc &&
-            ((dropPrice <= Math.round(rule.msrpCeiling * 1.08 * 100) / 100 && currentMarketRef >= dropPrice * 1.30) || isPcExclusiveRetailDrop || isPcSource));
+            ((dropPrice <= msrp1pCeiling && currentMarketRef >= dropPrice * 1.30) || isPcExclusiveRetailDrop || isPcSource));
+        const isUpcRule = (0, policies_1.isUpcOrSpcFormat)(rule.formFactor, rule.id, rule.name);
+        const isWantedUpc = Boolean(rule.wantedCollectorUpc);
         if (isRetailFlipBypass && (fullyConquered || (wallOwned && muteVaulted))) {
             const gainPct = dropPrice > 0 ? Math.max(30, Math.round(((currentMarketRef - dropPrice) / dropPrice) * 100)) : 30;
             bigBoxBadge = `◈ ⟦ RETAIL MSRP FLIP / TRADE BAIT // $${dropPrice.toFixed(2)} RETAIL VS $${Math.round(currentMarketRef)} MARKET (+${gainPct}%) ⟧`;
@@ -1288,7 +1295,7 @@ function evaluateItem(item) {
             nowTs: now
         });
         const { trendSignal, trendVerdictLabel, isElasticDip, qualifiesForElasticDipAlert, isPreRelease, preReleaseStatusTag, effectiveTargetCeiling, ripHuntCeiling } = trendEval;
-        if (effectiveTargetCeiling > 0 && !isPcExclusiveRetailDrop) {
+        if (effectiveTargetCeiling > 0 && !isPcExclusiveRetailDrop && !isWantedUpc) {
             effectiveCeiling = effectiveTargetCeiling;
         }
         const shelfStatus = computeOfferShelfStatus({
@@ -1405,15 +1412,28 @@ function evaluateItem(item) {
                 timeStr: nowTimeStr
             });
         }
+        // Global UPC Gate: Generic UPCs / SPCs (wantedCollectorUpc !== true) MUST NOT fire LGS alerts — restrict strictly to 1P Big-Box MSRP drops!
+        if (isUpcRule && !isWantedUpc && !isMsrpUnicorn && !item.isBigBoxRestockRadar) {
+            return {
+                action: 'IGNORE',
+                reason: `Suppressed generic UPC non-1P-MSRP offer ($${landedPrice.toFixed(2)} landed at ${item.retailer}; generic UPCs restricted to 1st-Party Big-Box MSRP <= $${msrp1pCeiling.toFixed(2)}).`,
+                rule
+            };
+        }
         // V5 Slice 3 & 3.5: Allow UNDER_TARGET, MSRP Unicorns, Close-Call Grace Cushion (+$5 ETB / +$10 Box), and verified 60D Elastic Dips to pass!
-        const qualifiesOnShelfPrice = (dropPrice <= effectiveCeiling || isMsrpUnicorn) && !isMarketplace3P && estimatedShipping <= 10.00;
+        // Note: wantedCollectorUpc enforces strict landedPrice <= policyMaxBuy ($370 Night / $350 Blind / $330 Day) with zero Close-Call or Elastic-Dip cushion above maxBuy.
+        const qualifiesOnShelfPrice = isWantedUpc
+            ? Boolean(isMsrpUnicorn && !isMarketplace3P && estimatedShipping <= 10.00)
+            : Boolean((dropPrice <= effectiveCeiling || isMsrpUnicorn) && !isMarketplace3P && estimatedShipping <= 10.00);
         const qualifiesOnLandedPrice = landedPrice <= effectiveCeiling;
-        const qualifiesByElasticDip = Boolean(!isInVault &&
+        const allowCloseCallPass = isWantedUpc ? false : isCloseCall;
+        const qualifiesByElasticDip = Boolean(!isWantedUpc &&
+            !isInVault &&
             isElasticDip &&
             qualifiesForElasticDipAlert &&
             item.sellerVerified !== false);
-        if (!qualifiesOnShelfPrice && !qualifiesOnLandedPrice && !isCloseCall && !qualifiesByElasticDip) {
-            if (dropPrice <= effectiveCeiling && landedPrice > effectiveCeiling) {
+        if (!qualifiesOnShelfPrice && !qualifiesOnLandedPrice && !allowCloseCallPass && !qualifiesByElasticDip) {
+            if (!isWantedUpc && dropPrice <= effectiveCeiling && landedPrice > effectiveCeiling && shipProfile.freeShipThreshold < 900) {
                 const qtyForFreeShip = Math.ceil(shipProfile.freeShipThreshold / dropPrice);
                 const hasEnoughStock = item.stock === undefined || item.stock >= qtyForFreeShip;
                 if (qtyForFreeShip <= 4 && hasEnoughStock && !isMarketplace3P) {
@@ -1574,8 +1594,8 @@ function evaluateItem(item) {
                 isElasticDip
             };
         }
-        // Wall Hunter Mode: strictly filter active Discord alerts to unowned Single Wall ETBs (formFactor === 'etb' && !isInVault)
-        const isNeededSingleWallEtb = String(rule.formFactor || '').toLowerCase() === 'etb' && !isInVault;
+        // Wall Hunter Mode: strictly filter active Discord alerts to unowned Single Wall ETBs (or explicitly hunted wantedCollectorUpc trophies)
+        const isNeededSingleWallEtb = (String(rule.formFactor || '').toLowerCase() === 'etb' || isWantedUpc) && !isInVault;
         if (wallHunterMode && !isNeededSingleWallEtb) {
             return {
                 action: 'IGNORE',

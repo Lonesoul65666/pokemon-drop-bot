@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { WATCH_POLICIES, PolicyRule, computeRipMetrics } from '../../policies';
+import { WATCH_POLICIES, PolicyRule, computeRipMetrics, isUpcOrSpcFormat, get1PMsrpCeilingForRule } from '../../policies';
 import { isVerified1PBigBoxOrPc, buildShopifyDirectCartLinks, buildMobileRetailerLinks, isCaseSkuFormat } from '../../evaluator';
 import { CompQuote } from '../../marketComps';
 import { buildEarnedWatermarkSummary, EarnedWatermarkSummary } from '../engine/watermarkHistory';
@@ -123,13 +123,15 @@ export interface AlertPingTheme {
 
 export function resolveAlertPingAndTheme(params: {
   retailer: string; url?: string; productUrl?: string; shelfPrice: number; msrp: number;
+  ruleId?: string; wantedCollectorUpc?: boolean;
   bigBoxTier?: string; isMsrpUnicorn?: boolean; isQueueOrDraw?: boolean;
 }): AlertPingTheme {
   if (params.isQueueOrDraw) {
     return { is1PBigBox: true, is1PMsrpDrop: true, mentionContent: '@here', embedColor: 0xDC2626, verdictHeadline: 'INVITE OR DRAW LIVE' };
   }
   const is1PBigBox = isVerified1PBigBoxOrPc(params.retailer, params.productUrl || params.url, false);
-  const nearMsrp = params.msrp > 0 && params.shelfPrice > 0 && params.shelfPrice <= Math.round(params.msrp * 1.08 * 100) / 100;
+  const msrp1pCap = get1PMsrpCeilingForRule(params.msrp, params.ruleId, params.wantedCollectorUpc);
+  const nearMsrp = msrp1pCap > 0 && params.shelfPrice > 0 && params.shelfPrice <= msrp1pCap;
   const is1PMsrpDrop = Boolean(
     is1PBigBox &&
     (params.bigBoxTier === 'BIG_BOX_RESTOCK_RADAR' || params.bigBoxTier === 'PC_EXCLUSIVE_MSRP' || params.bigBoxTier === 'MSRP_TIER_A' || params.isMsrpUnicorn || nearMsrp)
@@ -172,11 +174,12 @@ function buildOneTapActionBar(params: {
   tcgComp?: CompQuote; fallbackTcgUrl?: string;
 }): { primaryFastUrl: string; actionBarMarkdown: string } {
   const knownStock = typeof params.stock === 'number' && params.stock > 0 ? params.stock : undefined;
-  const isCase = isCaseSkuFormat(params.formFactor, params.ruleId, params.productLabel);
+  const isSingleQty = isCaseSkuFormat(params.formFactor, params.ruleId, params.productLabel)
+    || isUpcOrSpcFormat(params.formFactor, params.ruleId, params.productLabel);
   const directCart = buildShopifyDirectCartLinks({
     url: params.url, productUrl: params.productUrl, cart1xUrl: params.cart1xUrl,
-    cart2xUrl: isCase ? undefined : params.cart2xUrl,
-    cart3xUrl: isCase ? undefined : params.cart3xUrl,
+    cart2xUrl: isSingleQty ? undefined : params.cart2xUrl,
+    cart3xUrl: isSingleQty ? undefined : params.cart3xUrl,
     itemId: params.itemId, stock: knownStock, retailer: params.retailer,
     formFactor: params.formFactor, ruleId: params.ruleId, productName: params.productLabel
   });
@@ -190,11 +193,11 @@ function buildOneTapActionBar(params: {
 
   const pills: string[] = [];
   let primaryFastUrl = prodPageUrl || params.url;
-  const allowMultiQty = !isCase && /\betb\b|elite\s*trainer|\bbundle\b/i.test(`${params.formFactor || ''} ${params.ruleId || ''} ${params.productLabel}`);
+  const allowMultiQty = !isSingleQty && /\betb\b|elite\s*trainer|\bbundle\b/i.test(`${params.formFactor || ''} ${params.ruleId || ''} ${params.productLabel}`);
   if (directCart.cart1xUrl && directCart.cart1xUrl.includes('/cart/')) {
     primaryFastUrl = directCart.cart1xUrl;
     pills.push(`[⚡ Shop Pay 1x ↗](${directCart.cart1xUrl})`);
-    if (!isCase && directCart.cart2xUrl) pills.push(`[⚡ 2x ↗](${directCart.cart2xUrl})`);
+    if (!isSingleQty && directCart.cart2xUrl) pills.push(`[⚡ 2x ↗](${directCart.cart2xUrl})`);
     if (allowMultiQty && directCart.cart3xUrl) pills.push(`[⚡ 3x ↗](${directCart.cart3xUrl})`);
   } else {
     primaryFastUrl = mobileLinks.primaryCheckoutUrl || params.url;
@@ -222,7 +225,8 @@ export function buildCleanDiscordAlertEmbed(params: {
   const rule = params.ruleId ? WATCH_POLICIES.find((p) => p.id === params.ruleId) : null;
   const theme = resolveAlertPingAndTheme({
     retailer: params.retailer, url: params.url, productUrl: params.productUrl,
-    shelfPrice: params.shelfPrice, msrp: params.msrp, bigBoxTier: params.bigBoxTier, isMsrpUnicorn: params.isMsrpUnicorn
+    shelfPrice: params.shelfPrice, msrp: params.msrp, ruleId: params.ruleId || rule?.id,
+    wantedCollectorUpc: Boolean(rule?.wantedCollectorUpc), bigBoxTier: params.bigBoxTier, isMsrpUnicorn: params.isMsrpUnicorn
   });
   const boxArt = resolveAlertBoxArt({
     imageUrl: params.imageUrl, ruleId: params.ruleId, rule, tcgCompUrl: params.tcgComp?.url, existingThumbnailUrl: params.existingThumbnailUrl

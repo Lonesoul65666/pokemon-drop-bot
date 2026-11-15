@@ -9,7 +9,7 @@ import {
   isCaseSkuFormat,
   buildShopifyDirectCartLinks
 } from '../../evaluator';
-import { getPackCountForSku } from '../../policies';
+import { getPackCountForSku, isUpcOrSpcFormat, get1PMsrpCeilingForRule } from '../../policies';
 
 export type ActionTier = 'BUY_NOW_PINNED' | 'CAUTIOUS_WATCH' | 'MUTED_DRAWER';
 
@@ -95,12 +95,20 @@ export function rankAndEnrichDealOffer(
 
   const isWallFormat = isSingleEtbFormat(formFactor, skuId, title);
   const isCaseSku = isCaseSkuFormat(formFactor, skuId, title, rawUrl);
+  const isUpcFormat = isUpcOrSpcFormat(formFactor, skuId, title);
+  const isWantedCollectorUpc = Boolean(policy?.wantedCollectorUpc || /^me-30th-celebration-upc/i.test(skuId));
+  const isPolicyDisarmed = policy?.active === false;
   const isBundleFormat = !isCaseSku && (formFactor === 'Booster Bundle' || /\bbundle\b|\b6[- ]?pack\b/i.test(`${formFactor} ${skuId} ${title}`));
   const isBoosterBox36 = !isCaseSku && (formFactor === 'Booster Box' || /\bbooster[-_\s]*(box|display)\b/i.test(`${formFactor} ${skuId} ${title}`));
   const isOverpricedBundle = isBundleFormat && pricePerPack > 7.50;
 
+  const msrp = Number(policy?.msrpCeiling || offer.msrp || 0);
+  const policyMaxBuy = Math.max(msrp, Number(policy?.maxMarketBuyPrice || offer.triggerPrice || msrp || 0));
   const requestedSpendCap = Number(context?.maxSpendCeiling || DEFAULT_MAX_ITEM_SPEND_CEILING);
-  const effectiveSpendCap = Math.min(GLOBAL_HARD_SPEND_BAN, Math.max(50, requestedSpendCap));
+  const baseSpendCap = Math.min(GLOBAL_HARD_SPEND_BAN, Math.max(50, requestedSpendCap));
+  const effectiveSpendCap = isWantedCollectorUpc
+    ? Math.min(GLOBAL_HARD_SPEND_BAN, Math.max(baseSpendCap, policyMaxBuy))
+    : baseSpendCap;
   const overGlobalHardBan = landedPrice > GLOBAL_HARD_SPEND_BAN;
   const overSpendCeiling = overGlobalHardBan || landedPrice > effectiveSpendCap;
 
@@ -117,9 +125,9 @@ export function rankAndEnrichDealOffer(
         : effectiveWallQty === 2
           ? '2/3 Walls Done — Bonus Dad Rip'
           : '3/3 Stacked'
-    : null;
+    : (isWantedCollectorUpc ? 'Sealed Collector Trophy' : null);
 
-  const ruleWithCount = policy ? { ...policy, completionCount: effectiveWallQty, fullyConquered: effectiveWallQty >= 3 } : null;
+  const ruleWithCount = policy ? { ...policy, wantedCollectorUpc: isWantedCollectorUpc, completionCount: effectiveWallQty, fullyConquered: effectiveWallQty >= 3 } : null;
   const ledgerLine = formatCollectionAndCostLine({
     skuId,
     formFactor,
@@ -132,16 +140,14 @@ export function rankAndEnrichDealOffer(
   });
 
   const earnedWatermarks = getMemoizedWatermarks(skuId, shelfPrice > 0 ? shelfPrice : undefined, context?.nowTs ?? Date.now());
-  const msrp = Number(policy?.msrpCeiling || offer.msrp || 0);
-  const policyMaxBuy = Math.max(msrp, Number(policy?.maxMarketBuyPrice || offer.triggerPrice || msrp || 0));
   const tcgComp = sanitizeCompValue(offer.tcgplayerLowestShipped || context?.tcgComp, formFactor);
   const hasVerifiedTcgComp = tcgComp > 0;
-  const fallbackMkt = sanitizeCompValue(offer.marketValue || offer.marketPrice || policy?.estimatedMarketValue, formFactor);
-  const marketRef = hasVerifiedTcgComp ? tcgComp : (fallbackMkt > 0 ? fallbackMkt : msrp);
 
   const inStock = offer.inStock !== false && !offer.soldOut && !offer.isPreDropStaging && landedPrice > 0;
   const is1PBigBox = isVerified1PBigBoxOrPc(storeName, rawUrl, Boolean(offer.marketplaceWarning));
-  const is1PMsrpHit = inStock && is1PBigBox && msrp > 0 && landedPrice <= Math.round(msrp * 1.08 * 100) / 100;
+  const msrp1pCeiling = get1PMsrpCeilingForRule(msrp, skuId, isWantedCollectorUpc);
+  const is1PMsrpHit = inStock && is1PBigBox && msrp > 0 && landedPrice <= msrp1pCeiling;
+  const isGenericUpcBlocked = isUpcFormat && !isWantedCollectorUpc && !is1PMsrpHit;
 
   const withinMaxBuy = policyMaxBuy <= 0 || landedPrice <= policyMaxBuy;
   const sliderPct = policyMaxBuy > 0 && landedPrice > 0 ? Math.round(((policyMaxBuy - landedPrice) / policyMaxBuy) * 1000) / 10 : 0;
@@ -156,7 +162,7 @@ export function rankAndEnrichDealOffer(
   const beatsComp = hasVerifiedTcgComp ? landedPrice < tcgComp : withinMaxBuy;
 
   let actionTier: ActionTier = 'MUTED_DRAWER';
-  if (inStock && !isOverpricedBundle && !overSpendCeiling) {
+  if (inStock && !isOverpricedBundle && !overSpendCeiling && !isGenericUpcBlocked && (!isPolicyDisarmed || is1PMsrpHit)) {
     if (is1PMsrpHit) {
       actionTier = 'BUY_NOW_PINNED';
     } else if (!hasVerifiedTcgComp && !isStacked3of3 && withinMaxBuy) {
@@ -167,24 +173,30 @@ export function rankAndEnrichDealOffer(
       hasVerifiedTcgComp &&
       !isStacked3of3 &&
       beatsComp &&
-      ((isSliding && undercutVsTcgPct >= 8 && (policyMaxBuy <= 0 || landedPrice <= policyMaxBuy * 1.05)) ||
+      ((isSliding && undercutVsTcgPct >= 8 && (policyMaxBuy <= 0 || landedPrice <= (isWantedCollectorUpc ? policyMaxBuy : policyMaxBuy * 1.05))) ||
         (isWallFormat && effectiveWallQty === 2 && withinMaxBuy) ||
-        (!isSliding && withinMaxBuy && undercutVsTcgPct >= 5))
+        (!isSliding && withinMaxBuy && (undercutVsTcgPct >= 5 || isWantedCollectorUpc)))
     ) {
       actionTier = 'CAUTIOUS_WATCH';
     }
   }
 
-  // Wall-First Priority Scoring: Missing Wall ETBs (0/3 and 1/3) outrank Booster Boxes & Bundles!
+  const upcBoost = isWantedCollectorUpc
+    ? (Number(policy?.collectorPriorityBoost || 0) || (/night/i.test(skuId) ? 160 : /day/i.test(skuId) ? 60 : 90))
+    : 0;
+
   let priorityScore = is1PMsrpHit ? 600 : 0;
   if (isWallFormat && effectiveWallQty === 0) priorityScore += 500;
   else if (isWallFormat && effectiveWallQty === 1) priorityScore += 420;
   else if (isWallFormat && effectiveWallQty === 2) priorityScore += 180;
   else if (isStacked3of3 && !is1PMsrpHit) priorityScore -= 200;
+  if (upcBoost > 0) priorityScore += upcBoost;
   if (isBoosterBox36 && pricePerPack > 0 && pricePerPack <= 5.0) priorityScore += 120;
   else if (isBoosterBox36 && pricePerPack > 0 && pricePerPack <= 5.75) priorityScore += 75;
   priorityScore += Math.round(Math.max(-60, Math.min(150, undercutVsTcgPct * 3)));
   if (isOverpricedBundle) priorityScore -= 250;
+  if (isGenericUpcBlocked) priorityScore -= 350;
+  if (isPolicyDisarmed && !is1PMsrpHit) priorityScore -= 300;
   if (overGlobalHardBan) priorityScore -= 1200;
   else if (overSpendCeiling) priorityScore -= 450;
   if (!withinMaxBuy && !is1PMsrpHit) priorityScore -= 120;
@@ -192,11 +204,14 @@ export function rankAndEnrichDealOffer(
 
   let verdictLabel = 'HOLD OFF — MUTED';
   if (!inStock) verdictLabel = 'OUT OF STOCK';
+  else if (isGenericUpcBlocked) verdictLabel = 'MUTED — BIG-BOX 1P MSRP ONLY (UPC)';
+  else if (isPolicyDisarmed && !is1PMsrpHit) verdictLabel = 'MUTED — ALERTS DISARMED';
   else if (overGlobalHardBan) verdictLabel = 'MUTED — OVER $1,200 CASE CAP';
   else if (overSpendCeiling) verdictLabel = `MUTED — OVER $${effectiveSpendCap} SPEND CAP`;
-  else if (is1PMsrpHit) verdictLabel = '1P RETAIL MSRP HIT — BUY NOW';
+  else if (is1PMsrpHit) verdictLabel = isWantedCollectorUpc ? '1P MSRP DROP — BUY NOW' : '1P RETAIL MSRP HIT — BUY NOW';
   else if (actionTier === 'BUY_NOW_PINNED') {
-    if (hasVerifiedTcgComp && isSliding && undercutVsTcgPct >= 12) verdictLabel = `DEEP DIP BUY (-${Math.round(undercutVsTcgPct)}% vs. TCGPlayer)`;
+    if (isWantedCollectorUpc) verdictLabel = `COLLECTOR TROPHY BUY (-$${Math.max(0, policyMaxBuy - landedPrice).toFixed(2)} vs. $${Math.round(policyMaxBuy)} Max)`;
+    else if (hasVerifiedTcgComp && isSliding && undercutVsTcgPct >= 12) verdictLabel = `DEEP DIP BUY (-${Math.round(undercutVsTcgPct)}% vs. TCGPlayer)`;
     else if (isWallFormat && effectiveWallQty === 0) verdictLabel = 'PRIORITY WALL BUY (0/3 — Need Logan + Office)';
     else if (isWallFormat && effectiveWallQty === 1) verdictLabel = 'WALL COMPLETER BUY (1/3 — Need Office Sealed)';
     else if (isBoosterBox36 && pricePerPack > 0) verdictLabel = `STRONG RIP VALUE ($${pricePerPack.toFixed(2)}/pk • ${hasVerifiedTcgComp ? `-${Math.max(1, Math.round(undercutVsTcgPct))}% vs. Comp` : `-$${Math.max(0, policyMaxBuy - landedPrice).toFixed(2)} vs. Slider`})`;
@@ -213,6 +228,8 @@ export function rankAndEnrichDealOffer(
 
   return {
     ...offer,
+    cart2xUrl: (isCaseSku || isUpcFormat) ? undefined : offer.cart2xUrl,
+    cart3xUrl: (isCaseSku || isUpcFormat) ? undefined : offer.cart3xUrl,
     actionTier,
     priorityScore,
     verdictLabel,
@@ -229,7 +246,7 @@ export function rankAndEnrichDealOffer(
       wallStatusLabel
     },
     isCaseSku,
-    disqualifiesSmartBuy: isOverpricedBundle || overSpendCeiling || actionTier === 'MUTED_DRAWER',
+    disqualifiesSmartBuy: isOverpricedBundle || isGenericUpcBlocked || isPolicyDisarmed || overSpendCeiling || actionTier === 'MUTED_DRAWER',
     is1PMsrpHit,
     undercutVsCompPct,
     overSpendCeiling

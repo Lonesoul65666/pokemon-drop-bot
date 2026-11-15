@@ -205,6 +205,10 @@ function loadMergedPoliciesRaw() {
             merged.retailSearchQuery = cat.retailSearchQuery;
         if (cat.tcgProductId)
             merged.tcgProductId = cat.tcgProductId;
+        if (cat.wantedCollectorUpc !== undefined)
+            merged.wantedCollectorUpc = Boolean(cat.wantedCollectorUpc);
+        if (cat.collectorPriorityBoost !== undefined)
+            merged.collectorPriorityBoost = Number(cat.collectorPriorityBoost);
         return merged;
     });
 }

@@ -52,7 +52,7 @@ export function isSingleEtbFormat(formFactor?: string, skuId?: string, productNa
 
 function formatDollarCompact(amount: number): string {
   const abs = Math.abs(amount);
-  if (abs >= 25 || Math.abs(abs - Math.round(abs)) < 0.05) return `$${Math.round(abs).toLocaleString('en-US')}`;
+  if (Math.abs(abs - Math.round(abs)) < 0.01) return `$${Math.round(abs).toLocaleString('en-US')}`;
   return `$${abs.toFixed(2)}`;
 }
 
@@ -132,11 +132,11 @@ export function lookupPurchaseMemory(params: {
   const record = matches[0];
   const lastPaid = record.landedPrice;
   const paidStr = formatDollarCompact(lastPaid);
-  const rawDelta = Math.round(((lastPaid >= 25 ? Math.round(landedPrice) : landedPrice) - (lastPaid >= 25 ? Math.round(lastPaid) : lastPaid)) * 100) / 100;
+  const rawDelta = Math.round((landedPrice - lastPaid) * 100) / 100;
 
-  const formattedComparison = (rawDelta <= -1 || (lastPaid < 25 && rawDelta <= -0.50))
+  const formattedComparison = rawDelta <= -0.50
     ? `Last Paid: ${paidStr} (-${formatDollarCompact(Math.abs(rawDelta))} vs. your buy)`
-    : (rawDelta >= 1 || (lastPaid < 25 && rawDelta >= 0.50))
+    : rawDelta >= 0.50
       ? `Last Paid: ${paidStr} (+${formatDollarCompact(rawDelta)} above your buy)`
       : `Last Paid: ${paidStr} (Matches your buy)`;
 
@@ -167,6 +167,12 @@ export function formatCollectionAndCostLine(params: {
   } else if (fmtKey === 'etb-case' || fmtKey === 'booster-case') {
     const perBox = landedPrice > 0 ? landedPrice / (fmtKey === 'etb-case' ? 10 : 6) : 0;
     formatStatus = `Sealed Case ($${perBox.toFixed(2)} / box)`;
+  } else if (fmtKey === 'upc') {
+    const rip = computeRipMetrics(landedPrice, skuId || rule?.id, formFactor || rule?.formFactor, productName || rule?.name, params.packCount || rule?.packCount);
+    const ppp = params.pricePerPack && params.pricePerPack > 0 ? params.pricePerPack : rip.pricePerPack;
+    formatStatus = rule?.wantedCollectorUpc
+      ? `Sealed Collector Trophy ($${ppp.toFixed(2)} / pack)`
+      : `Big-Box 1P MSRP UPC ($${ppp.toFixed(2)} / pack)`;
   } else {
     const rip = computeRipMetrics(landedPrice, skuId || rule?.id, formFactor || rule?.formFactor, productName || rule?.name, params.packCount || rule?.packCount);
     const ppp = params.pricePerPack && params.pricePerPack > 0 ? params.pricePerPack : rip.pricePerPack;

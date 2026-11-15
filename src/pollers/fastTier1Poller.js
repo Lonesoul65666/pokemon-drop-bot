@@ -154,6 +154,8 @@ async function pollSingleTier1StoreDelta(store, useProxy) {
             const stockQty = typeof variant.inventory_quantity === 'number' && variant.inventory_quantity > 0
                 ? variant.inventory_quantity
                 : undefined;
+            const isSingleQty = (0, evaluator_1.isCaseSkuFormat)(matchedRule.formFactor, matchedRule.id, vTitle)
+                || (0, policies_1.isUpcOrSpcFormat)(matchedRule.formFactor, matchedRule.id, vTitle);
             hits++;
             await (0, listener_1.processIncomingDrop)({
                 title: vTitle,
@@ -166,8 +168,8 @@ async function pollSingleTier1StoreDelta(store, useProxy) {
                 url: checkoutUrl,
                 productUrl,
                 cart1xUrl: checkoutUrl,
-                cart2xUrl: `${store.baseUrl}/cart/${variant.id}:2?payment=shop_pay`,
-                cart3xUrl: `${store.baseUrl}/cart/${variant.id}:3?payment=shop_pay`,
+                cart2xUrl: isSingleQty ? undefined : `${store.baseUrl}/cart/${variant.id}:2?payment=shop_pay`,
+                cart3xUrl: isSingleQty ? undefined : `${store.baseUrl}/cart/${variant.id}:3?payment=shop_pay`,
                 stock: stockQty,
                 itemId: varIdStr,
                 sellerVerified: true

@@ -3,7 +3,7 @@ import { processIncomingDrop } from '../../listener';
 import {
   PolicyRule, WATCH_POLICIES, matchProductToSku, isSingleCardOrNonSealed,
   hasMandatorySealedContainerKeyword, isValidSkuForFormFactor,
-  getMinPlausiblePriceFloor, getMaxPlausiblePriceCeiling
+  getMinPlausiblePriceFloor, getMaxPlausiblePriceCeiling, get1PMsrpCeilingForRule
 } from '../../policies';
 import {
   parseGameStopPayload, parseAmazon1pPayload, parseBarnesAndNoblePayload,
@@ -115,7 +115,7 @@ export function resolveBigBoxPolicyMatch(params: {
     const isPc = Boolean(params.allowPcRetailUnlock);
     const baseMsrp = isPc && String(rule.formFactor || '').toUpperCase() === 'ETB'
       ? Math.max(59.99, rule.msrpCeiling || 59.99) : (rule.msrpCeiling || 54.99);
-    if (price > Math.round(baseMsrp * 1.08 * 100) / 100) return null;
+    if (price > get1PMsrpCeilingForRule(baseMsrp, rule.id, rule.wantedCollectorUpc)) return null;
   }
   if (params.tokenField && params.tokenValue) discoveredRetailIds.set(`${params.tokenField}:${params.tokenValue}`, rule.id);
   return rule;

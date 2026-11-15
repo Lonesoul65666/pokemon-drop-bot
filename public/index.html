@@ -2785,11 +2785,13 @@
       let cardGlowCls = '';
 
       if (!isWallFormat) {
-        const packCnt = Number((fallbackObj && fallbackObj.packCount) || pol.packCount || (String(pol.formFactor || '').toLowerCase().includes('box') ? 36 : 6));
-        statusLabel = isCaseSku ? 'SEALED CASE' : (packCnt + '-PK RIP');
+        const ffLower = String((fallbackObj && fallbackObj.formFactor) || pol.formFactor || '').toLowerCase().trim();
+        const isUpcFmt = Boolean(pol.wantedCollectorUpc || (fallbackObj && fallbackObj.wantedCollectorUpc) || ffLower === 'upc' || /-upc(?:-|$)/i.test(String(skuId || '')));
+        const packCnt = Number((fallbackObj && fallbackObj.packCount) || pol.packCount || (isUpcFmt ? 30 : (ffLower.includes('box') ? 36 : 6)));
+        statusLabel = isCaseSku ? 'SEALED CASE' : (isUpcFmt ? 'SEALED COLLECTOR TROPHY' : (packCnt + '-PK RIP'));
         statusCls = isCaseSku
           ? 'bg-purple-500/20 text-purple-200 border-purple-400/45'
-          : 'bg-slate-500/20 text-slate-200 border-white/15';
+          : (isUpcFmt ? 'bg-amber-500/20 text-amber-200 border-amber-400/50' : 'bg-slate-500/20 text-slate-200 border-white/15');
         cardGlowCls = '';
       } else if (fullyConquered) {
         statusLabel = '3/3 (COMPLETE)';
@@ -2820,8 +2822,9 @@
       const pol = policies.find(p => p.id === skuId) || fallbackObj || {};
       const isCase = isCaseFormatItem(skuId, fallbackObj || pol);
       const landed = Number((fallbackObj && (fallbackObj.landedPrice || fallbackObj.price)) || pol.estimatedMarketValue || pol.msrpCeiling || 0);
-      const ff = String((fallbackObj && fallbackObj.formFactor) || pol.formFactor || '').toLowerCase();
-      const packCnt = Number((fallbackObj && fallbackObj.packCount) || pol.packCount || (ff.includes('box') ? 36 : 6));
+      const ff = String((fallbackObj && fallbackObj.formFactor) || pol.formFactor || '').toLowerCase().trim();
+      const isUpcFmt = Boolean(pol.wantedCollectorUpc || (fallbackObj && fallbackObj.wantedCollectorUpc) || ff === 'upc' || /-upc(?:-|$)/i.test(String(skuId || '')));
+      const packCnt = Number((fallbackObj && fallbackObj.packCount) || pol.packCount || (isUpcFmt ? 30 : (ff.includes('box') ? 36 : 6)));
       const ppp = Number((fallbackObj && fallbackObj.pricePerPack) || pol.pricePerPack || (packCnt > 0 && landed > 0 ? landed / packCnt : 0));
       const pm = (fallbackObj && fallbackObj.purchaseMemory) || pol.purchaseMemory || null;
       const lastPaidText = pm && pm.formattedComparison ? String(pm.formattedComparison) : '';
@@ -2831,6 +2834,9 @@
         const boxCnt = ff.includes('master') || /booster-box-case/i.test(String(skuId)) ? 6 : 10;
         const perBox = landed > 0 ? Math.round(landed / boxCnt) : 0;
         fmtPill = '<span class="pokedex-badge px-2 py-0.5 rounded bg-purple-500/20 text-purple-200 border border-purple-400/45 text-[9px] font-mono-num font-extrabold">SEALED CASE' + (perBox > 0 ? (' • ~$' + perBox + '/BOX') : '') + '</span>';
+      } else if (isUpcFmt) {
+        const upcLabel = (pol.wantedCollectorUpc || (fallbackObj && fallbackObj.wantedCollectorUpc)) ? 'SEALED COLLECTOR TROPHY' : '1P MSRP UPC ONLY';
+        fmtPill = '<span class="pokedex-badge px-2 py-0.5 rounded bg-amber-500/20 text-amber-200 border border-amber-400/45 text-[9px] font-mono-num font-extrabold">' + upcLabel + ' • ' + packCnt + '-PK' + (ppp > 0 ? (' ($' + ppp.toFixed(2) + '/PK)') : '') + '</span>';
       } else {
         fmtPill = '<span class="pokedex-badge px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-200 border border-cyan-400/35 text-[9px] font-mono-num font-extrabold">' + packCnt + '-PK RIP' + (ppp > 0 ? (' • $' + ppp.toFixed(2) + '/PK') : '') + '</span>';
       }

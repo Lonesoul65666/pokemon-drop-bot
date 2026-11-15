@@ -29,6 +29,7 @@ export interface CatalogSkuDefinition {
   defaultMarketBaseline?: number; targetTcin?: string | null; walmartItemId?: string | null;
   bestBuySku?: string | null; amazonAsin?: string | null; pcSlug?: string | null;
   barnesNobleEan?: string | null; retailSearchQuery?: string | null; tcgProductId?: string | number | null;
+  wantedCollectorUpc?: boolean; collectorPriorityBoost?: number;
 }
 
 export interface StoreRegistryEntry {
@@ -190,6 +191,8 @@ export function loadMergedPoliciesRaw(): any[] {
     if (cat.barnesNobleEan) merged.barnesNobleEan = cat.barnesNobleEan;
     if (cat.retailSearchQuery) merged.retailSearchQuery = cat.retailSearchQuery;
     if (cat.tcgProductId) merged.tcgProductId = cat.tcgProductId;
+    if (cat.wantedCollectorUpc !== undefined) merged.wantedCollectorUpc = Boolean(cat.wantedCollectorUpc);
+    if (cat.collectorPriorityBoost !== undefined) merged.collectorPriorityBoost = Number(cat.collectorPriorityBoost);
     return merged;
   });
 }

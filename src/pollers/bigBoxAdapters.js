@@ -118,7 +118,7 @@ function resolveBigBoxPolicyMatch(params) {
         const isPc = Boolean(params.allowPcRetailUnlock);
         const baseMsrp = isPc && String(rule.formFactor || '').toUpperCase() === 'ETB'
             ? Math.max(59.99, rule.msrpCeiling || 59.99) : (rule.msrpCeiling || 54.99);
-        if (price > Math.round(baseMsrp * 1.08 * 100) / 100)
+        if (price > (0, policies_1.get1PMsrpCeilingForRule)(baseMsrp, rule.id, rule.wantedCollectorUpc))
             return null;
     }
     if (params.tokenField && params.tokenValue)

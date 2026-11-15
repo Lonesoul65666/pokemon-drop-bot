@@ -2,9 +2,10 @@ import axios from 'axios';
 import {
   isSingleCardOrNonSealed,
   isPoisonedVariantOrAccessory,
-  hasMandatorySealedContainerKeyword
+  hasMandatorySealedContainerKeyword,
+  isUpcOrSpcFormat
 } from '../../policies';
-import { matchTargetRuleForStaging } from '../../evaluator';
+import { matchTargetRuleForStaging, isCaseSkuFormat } from '../../evaluator';
 import { markAlertSoldOut } from '../../notifier';
 import { processIncomingDrop } from '../../listener';
 import { loadActiveLgsStores, StoreRegistryEntry } from '../config/configManager';
@@ -224,6 +225,8 @@ async function pollSingleTier1StoreDelta(
           ? variant.inventory_quantity
           : undefined;
 
+      const isSingleQty = isCaseSkuFormat(matchedRule.formFactor, matchedRule.id, vTitle)
+        || isUpcOrSpcFormat(matchedRule.formFactor, matchedRule.id, vTitle);
       hits++;
       await processIncomingDrop({
         title: vTitle,
@@ -236,8 +239,8 @@ async function pollSingleTier1StoreDelta(
         url: checkoutUrl,
         productUrl,
         cart1xUrl: checkoutUrl,
-        cart2xUrl: `${store.baseUrl}/cart/${variant.id}:2?payment=shop_pay`,
-        cart3xUrl: `${store.baseUrl}/cart/${variant.id}:3?payment=shop_pay`,
+        cart2xUrl: isSingleQty ? undefined : `${store.baseUrl}/cart/${variant.id}:2?payment=shop_pay`,
+        cart3xUrl: isSingleQty ? undefined : `${store.baseUrl}/cart/${variant.id}:3?payment=shop_pay`,
         stock: stockQty,
         itemId: varIdStr,
         sellerVerified: true

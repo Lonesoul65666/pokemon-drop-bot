@@ -228,7 +228,7 @@
       "dadRipOwned": false,
       "loganRipOwned": false,
       "autoPilotEnabled": true,
-      "active": true
+      "active": false
     },
     "me-delta-reign-booster-case": {
       "maxMarketBuyPrice": 1096,
@@ -248,7 +248,7 @@
       "dadRipOwned": false,
       "loganRipOwned": false,
       "autoPilotEnabled": true,
-      "active": true
+      "active": false
     },
     "me-delta-reign-etb-case": {
       "maxMarketBuyPrice": 802,
@@ -662,11 +662,11 @@
     },
     "sv-twilight-masquerade-etb": {
       "maxMarketBuyPrice": 97,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
-      "dadRipOwned": false,
-      "loganRipOwned": false,
+      "owned": true,
+      "inVault": true,
+      "wallOwned": true,
+      "dadRipOwned": true,
+      "loganRipOwned": true,
       "autoPilotEnabled": true,
       "active": true
     },
@@ -1328,6 +1328,46 @@
       "dadRipOwned": false,
       "loganRipOwned": false,
       "autoPilotEnabled": true,
+      "active": true
+    },
+    "me-30th-celebration-upc-night": {
+      "maxMarketBuyPrice": 370,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": false,
+      "active": true
+    },
+    "me-30th-celebration-upc": {
+      "maxMarketBuyPrice": 350,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": false,
+      "active": true
+    },
+    "me-30th-celebration-upc-day": {
+      "maxMarketBuyPrice": 330,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": false,
+      "active": true
+    },
+    "me-phantasmal-flames-upc": {
+      "maxMarketBuyPrice": 119.99,
+      "owned": false,
+      "inVault": false,
+      "wallOwned": false,
+      "dadRipOwned": false,
+      "loganRipOwned": false,
+      "autoPilotEnabled": false,
       "active": true
     }
   }

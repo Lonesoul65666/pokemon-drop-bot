@@ -1443,8 +1443,11 @@ function buildNextBestBuyAdvisorPayload(requestedBudget) {
     }
 
     if (fullyConquered || !bestOffer) continue;
-    // Phase 3C Hard Spend Ban: Globally ban > $1,200 cases from Smart Buys, and honor $300 default cap unless $500+ pill active
-    const maxAdvisorSpend = budgetCap >= 500 ? 1200 : 300;
+    // Phase 3C Hard Spend Ban: Globally ban > $1,200 cases from Smart Buys, and honor $300 default cap unless $500+ pill active or wantedCollectorUpc <= policyMaxBuy
+    const isWantedUpc = Boolean(pol.wantedCollectorUpc);
+    const maxAdvisorSpend = budgetCap >= 500
+      ? 1200
+      : (isWantedUpc ? Math.min(1200, Math.max(300, Number(pol.maxMarketBuyPrice || 370))) : 300);
     if (landedPrice > 1200 || landedPrice > maxAdvisorSpend) continue;
     // Disqualify high-markup Booster Bundles (pricePerPack > $7.50) and MUTED_DRAWER items from Capital Advisor SMART BUY
     if (bestOffer.disqualifiesSmartBuy && !(budgetCap >= 500 && bestOffer.overSpendCeiling && landedPrice <= 1200)) continue;
@@ -1471,9 +1474,12 @@ function buildNextBestBuyAdvisorPayload(requestedBudget) {
     else if (ripPairReady && bestOffer.isWallFormat) advisorBadge = '◈ ⟦ RIP PAIR READY (QTY 2+) // RIP HUNT FLOOR ⟧';
     else if (dipVs60dPct >= 8) advisorBadge = `◈ ⟦ 60D ELASTIC DIP (-${dipVs60dPct}% VS $${Math.round(rolling.avg60d)} 60D AVG) ⟧`;
 
-    const slotLabel = bestOffer.isWallFormat
-      ? (completionCount === 0 ? '0/3 NEED WALL' : `${completionCount}/3 WALL LOCKED • NEED RIP`)
-      : (bestOffer.isCaseSku ? 'SEALED CASE' : `RIP / PACK FORMAT ($${Number(bestOffer.pricePerPack || 0).toFixed(2)}/PK)`);
+    const isSingleQtySku = Boolean(bestOffer.isCaseSku || isWantedUpc || /^upc$/i.test(pol.formFactor || ''));
+    const slotLabel = isWantedUpc
+      ? 'SEALED COLLECTOR TROPHY'
+      : (bestOffer.isWallFormat
+          ? (completionCount === 0 ? '0/3 NEED WALL' : `${completionCount}/3 WALL LOCKED • NEED RIP`)
+          : (bestOffer.isCaseSku ? 'SEALED CASE' : `RIP / PACK FORMAT ($${Number(bestOffer.pricePerPack || 0).toFixed(2)}/PK)`));
 
     const cartLinks = buildShopifyDirectCartLinks({
       url: bestOffer.url,
@@ -1483,7 +1489,10 @@ function buildNextBestBuyAdvisorPayload(requestedBudget) {
       cart3xUrl: bestOffer.cart3xUrl,
       itemId: bestOffer.itemId,
       stock: bestOffer.stock,
-      retailer: bestOffer.store
+      retailer: bestOffer.store,
+      formFactor: pol.formFactor,
+      ruleId: skuId,
+      productName: pol.name
     });
 
     candidates.push({
@@ -1497,7 +1506,8 @@ function buildNextBestBuyAdvisorPayload(requestedBudget) {
       landedPrice: bestOffer.landedPrice,
       marketValue: mkt,
       msrp,
-      triggerPrice: ap.effectiveTargetCeiling,
+      triggerPrice: isWantedUpc ? Number(pol.maxMarketBuyPrice || ap.effectiveTargetCeiling) : ap.effectiveTargetCeiling,
+      wantedCollectorUpc: isWantedUpc,
       autoPilotCeiling: ap.autoPilotCeiling,
       autoPilotModeLabel: ap.autoPilotModeLabel,
       discountPct: discountVsMktPct,
@@ -1522,8 +1532,8 @@ function buildNextBestBuyAdvisorPayload(requestedBudget) {
       statusTag: bestOffer.statusTag,
       url: bestOffer.url,
       cart1xUrl: cartLinks.cart1xUrl,
-      cart2xUrl: bestOffer.isCaseSku ? undefined : cartLinks.cart2xUrl,
-      cart3xUrl: bestOffer.isCaseSku ? undefined : cartLinks.cart3xUrl,
+      cart2xUrl: isSingleQtySku ? undefined : cartLinks.cart2xUrl,
+      cart3xUrl: isSingleQtySku ? undefined : cartLinks.cart3xUrl,
       score
     });
   }
@@ -1534,7 +1544,9 @@ function buildNextBestBuyAdvisorPayload(requestedBudget) {
 
   const pickForBudget = (cap) => {
     const hardCap = cap >= 500 ? 1200 : Math.min(300, cap);
-    return candidates.filter(c => c.landedPrice <= hardCap).slice(0, 3);
+    return candidates
+      .filter(c => c.landedPrice <= hardCap || (cap >= 300 && c.wantedCollectorUpc && c.landedPrice <= c.triggerPrice))
+      .slice(0, 3);
   };
 
   const budgets = {
@@ -1739,7 +1751,10 @@ function loadMergedStoreOffersBySku() {
         cart3xUrl: rec.cart3xUrl,
         itemId: rec.itemId,
         stock: rec.stock,
-        retailer: rec.storeName || storeKey
+        retailer: rec.storeName || storeKey,
+        formFactor: pol.formFactor,
+        ruleId: skuId,
+        productName: pol.name
       });
       const wallOwned = Boolean(pol.wallOwned ?? pol.owned ?? pol.inVault);
       const dadRipOwned = Boolean(pol.dadRipOwned);

@@ -1,15 +1,33 @@
+const fs = require('fs');
 const path = require('path');
-const dotenv = require('dotenv');
 
-dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
+function readEnvTopicFromDisk() {
+  try {
+    const envPath = path.resolve(__dirname, '..', '.env');
+    if (fs.existsSync(envPath)) {
+      const raw = fs.readFileSync(envPath, 'utf8');
+      for (const line of raw.split(/\r?\n/)) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith('#')) continue;
+        const m = trimmed.match(/^NTFY_TOPIC\s*=\s*(.*)$/);
+        if (m) {
+          const val = m[1].trim().replace(/^['"]|['"]$/g, '');
+          if (val) return val;
+        }
+      }
+    }
+  } catch {}
+  return String(process.env.NTFY_TOPIC || '').trim();
+}
 
-setTimeout(() => {
+const hardGuard = setTimeout(() => {
   process.exit(0);
-}, 4500).unref();
+}, 5500);
+if (hardGuard.unref) hardGuard.unref();
 
 (async () => {
   try {
-    const topic = String(process.env.NTFY_TOPIC || '').trim();
+    const topic = readEnvTopicFromDisk();
     if (!topic) {
       console.warn('[ntfy-done] NTFY_TOPIC not set in .env — skipping ping.');
       return;
@@ -22,13 +40,13 @@ setTimeout(() => {
         Tags: 'robot'
       },
       body: summary,
-      signal: AbortSignal.timeout(4000)
+      signal: AbortSignal.timeout(5000)
     });
-    await res.body?.cancel().catch(() => {});
-    console.log(`[ntfy-done] Dispatched completion ping (HTTP ${res.status}).`);
+    await res.text().catch(() => '');
+    console.log(`[ntfy-done] Dispatched completion ping to ${topic} (HTTP ${res.status}).`);
   } catch (err) {
     console.warn(`[ntfy-done] Ping warning: ${err && err.message ? err.message : err}`);
   } finally {
-    process.exit(0);
+    setTimeout(() => process.exit(0), 60);
   }
 })();

@@ -716,6 +716,84 @@
     "retailSearchQuery": null
   },
   {
+    "id": "me-30th-celebration-upc-night",
+    "name": "30th Celebration Ultra-Premium Collection — Night Edition (Umbreon ex)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "UPC",
+    "packCount": 30,
+    "msrpCeiling": 179.99,
+    "wantedCollectorUpc": true,
+    "collectorPriorityBoost": 160,
+    "defaultMarketBaseline": 395,
+    "priority": "GRAIL",
+    "minStock": 1,
+    "cooldownMins": 30,
+    "matchers": [
+      "30th.*(?:ultra[- ]*premium|upc).*(?:\\bnight\\b|umbreon)",
+      "(?:\\bnight\\b|umbreon).*30th.*(?:ultra[- ]*premium|upc)",
+      "30th.*(?:celebrations?|anniversary).*(?:\\bnight\\b|umbreon).*(?:collection|upc)"
+    ],
+    "retailSearchQuery": "Pokemon 30th Celebration Ultra Premium Collection Night Umbreon"
+  },
+  {
+    "id": "me-30th-celebration-upc-day",
+    "name": "30th Celebration Ultra-Premium Collection — Day Edition (Espeon ex)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "UPC",
+    "packCount": 30,
+    "msrpCeiling": 179.99,
+    "wantedCollectorUpc": true,
+    "collectorPriorityBoost": 60,
+    "defaultMarketBaseline": 345,
+    "priority": "GRAIL",
+    "minStock": 1,
+    "cooldownMins": 30,
+    "matchers": [
+      "30th.*(?:ultra[- ]*premium|upc).*(?:(?<!knight\\s*(?:&|and)\\s*)\\bday\\b|espeon)",
+      "(?:(?<!knight\\s*(?:&|and)\\s*)\\bday\\b|espeon).*30th.*(?:ultra[- ]*premium|upc)",
+      "30th.*(?:celebrations?|anniversary).*(?:\\bday\\s+(?:edition|version)|espeon).*(?:collection|upc)"
+    ],
+    "retailSearchQuery": "Pokemon 30th Celebration Ultra Premium Collection Day Espeon"
+  },
+  {
+    "id": "me-30th-celebration-upc",
+    "name": "30th Celebration Ultra-Premium Collection (Blind / Random Assortment)",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "UPC",
+    "packCount": 30,
+    "msrpCeiling": 179.99,
+    "wantedCollectorUpc": true,
+    "collectorPriorityBoost": 90,
+    "defaultMarketBaseline": 365,
+    "priority": "GRAIL",
+    "minStock": 1,
+    "cooldownMins": 30,
+    "matchers": [
+      "30th.*(?:ultra[- ]*premium|upc)",
+      "(?:ultra[- ]*premium|upc).*30th",
+      "30th.*(?:celebrations?|anniversary).*ultra[- ]*premium"
+    ],
+    "retailSearchQuery": "Pokemon 30th Celebration Ultra Premium Collection"
+  },
+  {
+    "id": "me-phantasmal-flames-upc",
+    "name": "Mega Evolution: Phantasmal Flames Ultra-Premium Collection",
+    "era": "Mega Evolution (2025-2026)",
+    "formFactor": "UPC",
+    "packCount": 16,
+    "msrpCeiling": 119.99,
+    "wantedCollectorUpc": false,
+    "defaultMarketBaseline": 135,
+    "priority": "STANDARD",
+    "minStock": 1,
+    "cooldownMins": 45,
+    "matchers": [
+      "phantasmal flames.*(?:ultra[- ]*premium|upc)",
+      "(?:ultra[- ]*premium|upc).*phantasmal flames"
+    ],
+    "retailSearchQuery": "Pokemon Phantasmal Flames Ultra Premium Collection"
+  },
+  {
     "id": "me-30th-celebration-etb-case",
     "name": "30th Celebration ETB Sealed Case (10 ETBs)",
     "era": "Mega Evolution (2025-2026)",

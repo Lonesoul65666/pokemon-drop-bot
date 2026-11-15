@@ -19,10 +19,13 @@ export const BIG_BOX_STORES = [
 ];
 
 const TARGET_SEARCH_TERMS = [
-  'pokemon elite trainer box', 'pokemon booster bundle', 'pokemon prismatic evolutions',
-  'pokemon destined rivals', 'pokemon scarlet violet 151', 'pokemon surging sparks'
+  'pokemon elite trainer box', 'pokemon 30th celebration ultra premium collection', 'pokemon booster bundle',
+  'pokemon prismatic evolutions', 'pokemon destined rivals', 'pokemon scarlet violet 151', 'pokemon surging sparks'
 ];
-const AMAZON_SEARCH_QUERIES = ['pokemon+elite+trainer+box', 'pokemon+booster+bundle'];
+const AMAZON_SEARCH_QUERIES = ['pokemon+elite+trainer+box', 'pokemon+30th+ultra+premium+collection', 'pokemon+booster+bundle'];
+const WALMART_SEARCH_QUERIES = ['pokemon+elite+trainer+box', 'pokemon+30th+ultra+premium+collection'];
+const GAMESTOP_SEARCH_QUERIES = ['pokemon+elite+trainer+box', 'pokemon+30th+ultra+premium+collection'];
+let walmartCursor = 0, gamestopCursor = 0, bestBuyCursor = 0;
 const POKEMON_CENTER_URLS = [
   'https://www.pokemoncenter.com/en-us/category/elite-trainer-box',
   'https://www.pokemoncenter.com/en-us/category/booster-packs',
@@ -205,7 +208,8 @@ async function sweepBestBuyHybrid(force = false): Promise<BigBoxSweepRow | null>
     return { key: 'bestBuy', retailer: 'Best Buy', transport: 'BestBuy REST API', httpStatus: apiRes.status, totalNodesFound: apiRes.parsed.totalNodesFound, inStockMatches: apiRes.parsed.inStockOffers.length, engineRoomStatus: node.status };
   }
 
-  const bbUrl = 'https://www.bestbuy.com/site/searchpage.jsp?st=pokemon+elite+trainer+box';
+  const bbQuery = ['pokemon+elite+trainer+box', 'pokemon+30th+ultra+premium+collection'][bestBuyCursor++ % 2];
+  const bbUrl = `https://www.bestbuy.com/site/searchpage.jsp?st=${bbQuery}`;
   const sw = await sweepWafProtectedTarget('bestbuy', bbUrl, { force, waitForSelector: 'li.product-list-item, .sku-item', waitAfterLoadMs: 1800, timeoutMs: 16000 });
   if (!force && sw.fromSessionCache) return null;
   const waf = sw.isWafChallenged ? (sw.wafType || 'AKAMAI') : undefined;
@@ -228,10 +232,10 @@ export async function pollSecondaryBigBoxSensors(force = false): Promise<BigBoxS
     url: string; waitSel?: string; waitMs: number; captureRe?: RegExp; defaultWaf: WafBlockType;
     parse: (html: string, jsons: any[]) => BigBoxAdapterResult;
   }> = [
-    { domain: 'walmart', key: 'walmart', statusKey: 'walmartStatus', name: 'Walmart (1P MSRP)', cadence: '95s System Chrome 1P Sweep', method: 'System Chrome #__NEXT_DATA__ F55CDC31 + /pac', filter: 'Sold & Shipped by Walmart.com Only', url: 'https://www.walmart.com/search?q=pokemon+elite+trainer+box&facet=retailer_type%3AWalmart', waitMs: 1500, defaultWaf: 'PX', parse: (h, j) => parseWalmartPayload(h, j) },
+    { domain: 'walmart', key: 'walmart', statusKey: 'walmartStatus', name: 'Walmart (1P MSRP)', cadence: '95s System Chrome 1P Sweep', method: 'System Chrome #__NEXT_DATA__ F55CDC31 + /pac', filter: 'Sold & Shipped by Walmart.com Only', url: `https://www.walmart.com/search?q=${WALMART_SEARCH_QUERIES[walmartCursor++ % WALMART_SEARCH_QUERIES.length]}&facet=retailer_type%3AWalmart`, waitMs: 1500, defaultWaf: 'PX', parse: (h, j) => parseWalmartPayload(h, j) },
     { domain: 'costco', key: 'costco', statusKey: 'costcoStatus', name: 'Costco Wholesale', cadence: '105s System Chrome + Search XHR', method: 'Passive Search API + ProductTile Hydration', filter: '1P Member Sealed Multi-Packs & ETBs', url: 'https://www.costco.com/s?keyword=pokemon+cards', waitSel: '[data-testid="ProductTile"], .product-tile-set', waitMs: 2800, captureRe: /gdx-api\.costco\.com\/catalog\/search/i, defaultWaf: 'KASADA', parse: (h, j) => parseCostcoPayload(h, j) },
     { domain: 'samsclub', key: 'samsClub', statusKey: 'samsClubStatus', name: "Sam's Club", cadence: '105s System Chrome Club Sweep', method: 'System Chrome #__NEXT_DATA__ Club Inventory', filter: '1P Member Sealed Multi-Packs & ETBs', url: 'https://www.samsclub.com/s/pokemon%20cards', waitMs: 2000, defaultWaf: 'PX', parse: (h, j) => parseSamsClubPayload(h, j) },
-    { domain: 'gamestop', key: 'gamestop', statusKey: 'gamestopStatus', name: 'GameStop', cadence: '150s System Chrome WAF Bridge', method: 'System Chrome data-gtmdata + Slider Fallthrough', filter: '1P MSRP + Sub-Slider Sealed Boxes & ETBs', url: 'https://www.gamestop.com/search/?q=pokemon+elite+trainer+box&type=Primary&sort=BestMatch_Desc&p=1', waitMs: 1400, defaultWaf: 'CF', parse: (h) => parseGameStopPayload(h) },
+    { domain: 'gamestop', key: 'gamestop', statusKey: 'gamestopStatus', name: 'GameStop', cadence: '150s System Chrome WAF Bridge', method: 'System Chrome data-gtmdata + Slider Fallthrough', filter: '1P MSRP + Sub-Slider Sealed Boxes & ETBs', url: `https://www.gamestop.com/search/?q=${GAMESTOP_SEARCH_QUERIES[gamestopCursor++ % GAMESTOP_SEARCH_QUERIES.length]}&type=Primary&sort=BestMatch_Desc&p=1`, waitMs: 1400, defaultWaf: 'CF', parse: (h) => parseGameStopPayload(h) },
     { domain: 'barnesandnoble', key: 'barnesNoble', statusKey: 'barnesNobleStatus', name: 'Barnes & Noble', cadence: '150s System Chrome Hydrogen', method: 'System Chrome Hydrogen /w/?ean= Cards', filter: '1P Retail MSRP ETBs & Booster Bundles', url: 'https://www.barnesandnoble.com/search?q=pokemon+trading+card+game', waitSel: 'a[href*="/w/"]', waitMs: 1800, defaultWaf: 'CF', parse: (h) => parseBarnesAndNoblePayload(h) }
   ];
 

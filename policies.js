@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WATCH_POLICIES = exports.MIN_PLAUSIBLE_PRICE_FLOORS = exports.BIG_BOX_RETAILER_PATTERNS = exports.PC_EXCLUSIVE_EXCLUSION_TERMS = exports.BOOSTER_BOX_EXCLUSION_TERMS = exports.GLOBAL_JUNK_EXCLUSIONS = void 0;
+exports.isUpcOrSpcFormat = isUpcOrSpcFormat;
+exports.get1PMsrpCeilingForRule = get1PMsrpCeilingForRule;
 exports.getPackCountForSku = getPackCountForSku;
 exports.computeRipMetrics = computeRipMetrics;
 exports.isPoisonedVariantOrAccessory = isPoisonedVariantOrAccessory;
@@ -21,11 +23,32 @@ exports.reloadWatchPolicies = reloadWatchPolicies;
 exports.matchProductToSku = matchProductToSku;
 const fs = require('fs');
 const path = require('path');
+function isUpcOrSpcFormat(formFactor, skuId, text) {
+    const combined = `${formFactor || ''} ${skuId || ''} ${text || ''}`;
+    return /^(?:upc|spc)$/i.test(String(formFactor || '').trim()) ||
+        /\b(ultra[- ]*premium\s*collection|super[- ]*premium\s*collection|\bupc\b|\bspc\b)\b/i.test(combined);
+}
+function get1PMsrpCeilingForRule(msrpCeiling, ruleId, wantedCollectorUpc) {
+    const msrp = Number(msrpCeiling || 0);
+    if (msrp <= 0)
+        return 0;
+    const std = Math.round(msrp * 1.08 * 100) / 100;
+    if (/^me-30th-celebration-upc/i.test(String(ruleId || '')) || (wantedCollectorUpc && msrp >= 175 && msrp <= 185)) {
+        return Math.max(195, std);
+    }
+    return std;
+}
 function getPackCountForSku(skuId, formFactor, name) {
     const idLower = (skuId || '').toLowerCase();
     const ffLower = (formFactor || '').toLowerCase();
     const nameLower = (name || '').toLowerCase();
     const combined = `${idLower} ${ffLower} ${nameLower}`;
+    if (idLower.startsWith('me-30th-celebration-upc') || (/\b30th\b/i.test(combined) && isUpcOrSpcFormat(formFactor, skuId, name))) {
+        return 30;
+    }
+    if (isUpcOrSpcFormat(formFactor, skuId, name)) {
+        return 16;
+    }
     if (ffLower === 'master case' ||
         ffLower === 'booster-case' ||
         ffLower === 'booster case' ||
@@ -78,6 +101,11 @@ function computeRipMetrics(landedPrice, skuId, formFactor, name, explicitPackCou
 exports.GLOBAL_JUNK_EXCLUSIONS = [
     /empty/i,
     /no\s*packs/i,
+    /without\s*packs/i,
+    /no\s*promos?/i,
+    /without\s*promos?/i,
+    /\baccessories\s*only\b/i,
+    /\bplaymat\s*only\b/i,
     /\bbox\s*only\b/i,
     /\bcase\s*only\b/i,
     /\bcard\s*only\b/i,
@@ -167,7 +195,7 @@ exports.GLOBAL_JUNK_EXCLUSIONS = [
     /\b(etb|elite\s*trainer\s*box|upc|spc|booster\s*box|booster\s*bundle)\s+(sealed\s+|foil\s+|holo\s+|stamped\s+)*(promo|sleeves|playmat|deck\s*box|dice|dividers?|code\s*cards?|booster\s*pack)\b/i,
     /\b(promo|sleeves|playmat|deck\s*box|dice|booster\s*pack)\s+from\s+(an?\s+)?(etb|elite\s*trainer|upc|spc|booster\s*box)\b/i,
 ];
-const CHILD_VARIANT_POISON_REGEX = /\b(acrylic|protector|display\s*case|case\s*only|box\s*only|empty|no\s*packs|damaged|dented|heavily\s*played|korean|japanese|jp|jpn|chinese|s-chinese|t-chinese|spanish|french|german|single\s*pack|1\s*pack|loose\s*packs?|booster\s*pack(?!s)|sleeved|art\s*set|code|code\s*cards?|sleeves|dice|dividers?|playmat|promo\s*only|card\s*only)\b/i;
+const CHILD_VARIANT_POISON_REGEX = /\b(acrylic|protector|display\s*case|case\s*only|box\s*only|empty|no\s*packs?|without\s*packs?|no\s*promos?|without\s*promos?|accessories\s*only|playmat\s*only|opened|unsealed|damaged|dented|heavily\s*played|korean|japanese|jp|jpn|chinese|s-chinese|t-chinese|spanish|french|german|single\s*pack|1\s*pack|loose\s*packs?|booster\s*pack(?!s)|sleeved|art\s*set|code|code\s*cards?|sleeves|dice|dividers?|playmat|promo\s*only|card\s*only)\b/i;
 function isPoisonedVariantOrAccessory(variantTitle, productTitle, price, formFactor) {
     const vClean = String(variantTitle || '').trim();
     const pClean = String(productTitle || '').trim();
@@ -175,12 +203,15 @@ function isPoisonedVariantOrAccessory(variantTitle, productTitle, price, formFac
     if (vClean && !/^default\s*title$/i.test(vClean) && CHILD_VARIANT_POISON_REGEX.test(vClean)) {
         return true;
     }
-    if (/\b(acrylic|protector|case\s*only|box\s*only|empty\s*(box|etb|case)|damaged|korean|japanese|\bjp\b|jpn|chinese|s-chinese|t-chinese|spanish|single\s*pack|1\s*pack|sleeved\s*booster|art\s*set)\b/i.test(combined)) {
+    if (/\b(acrylic|protector|case\s*only|box\s*only|empty\s*(box|etb|case|upc|spc)?|no\s*packs?|without\s*packs?|no\s*promos?|without\s*promos?|accessories\s*only|playmat\s*only|opened|unsealed|damaged|korean|japanese|\bjp\b|jpn|chinese|s-chinese|t-chinese|spanish|single\s*pack|1\s*pack|sleeved\s*booster|art\s*set)\b/i.test(combined)) {
         return true;
     }
     if (price !== undefined && Number.isFinite(price) && price > 0) {
-        // Distinguish cheap < $65 "acrylic display case" accessories from real $450+ sealed booster/ETB cases
+        // Distinguish cheap < $65 "acrylic display case" accessories or < $75 gutted UPC shells from real sealed products
         if (price < 65 && /\b(case|display\s*case|acrylic|protector)\b/i.test(combined)) {
+            return true;
+        }
+        if ((/^upc$|^spc$/i.test(String(formFactor || '')) || /\b(ultra[- ]*premium|super[- ]*premium|\bupc\b|\bspc\b)\b/i.test(combined)) && price < 75) {
             return true;
         }
         if (formFactor === 'ETB Case' && price < 450)
@@ -427,12 +458,15 @@ exports.MIN_PLAUSIBLE_PRICE_FLOORS = {
     'Booster Box': 95,
     'ETB': 32,
     'Booster Bundle': 18,
+    'UPC': 75,
     'ETB Case': 450,
     'Master Case': 550
 };
 function getMinPlausiblePriceFloor(formFactor) {
     if (!formFactor)
         return 18;
+    if (isUpcOrSpcFormat(formFactor))
+        return 75;
     return exports.MIN_PLAUSIBLE_PRICE_FLOORS[formFactor] ?? 18;
 }
 function computeSanityPriceFloor(params) {
@@ -490,6 +524,9 @@ function getMaxPlausiblePriceCeiling(formFactor, ruleId, targetName, policyOverr
     else if (formFactor === 'Booster Bundle') {
         baseCeiling = 98;
     }
+    else if (isUpcOrSpcFormat(formFactor, ruleId, targetName)) {
+        baseCeiling = 650;
+    }
     else if (formFactor === 'ETB Case') {
         baseCeiling = 2500;
     }
@@ -546,8 +583,20 @@ function isValidSkuForFormFactor(title, formFactor, price, options) {
             }
         }
     }
-    if ((formFactor === 'ETB' || formFactor === 'Booster Box' || formFactor === 'Booster Bundle') && /\b(case|cases|master case|sealed case|set of [2-9]|pair of|both styles|x2|2x|x4|4x|x6|6x|x10|10x)\b/i.test(title)) {
+    if ((formFactor === 'ETB' || formFactor === 'Booster Box' || formFactor === 'Booster Bundle' || isUpcOrSpcFormat(formFactor)) && /\b(case|cases|master case|sealed case|set of [2-9]|pair of|both (?:styles|versions|editions)|day\s*(?:&|and)\s*night|night\s*(?:&|and)\s*day|x2|2x|x4|4x|x6|6x|x10|10x)\b/i.test(title)) {
         return false;
+    }
+    // 30th Celebration UPC Edition Disambiguation (Night/Umbreon vs Day/Espeon vs Blind/Random Assortment)
+    if (options?.ruleId === 'me-30th-celebration-upc-night' || options?.ruleId === 'me-30th-celebration-upc-day') {
+        const isBlindAssortment = /\b(random|assort(?:ed|ment)?|blind|mystery|styles?\s*may\s*vary|one\s*at\s*random|day\s+or\s+night|night\s+or\s+day|umbreon\s+(?:ex\s+)?or\s+espeon|espeon\s+(?:ex\s+)?or\s+umbreon)\b/i.test(combinedLower);
+        if (isBlindAssortment)
+            return false;
+        if (options.ruleId === 'me-30th-celebration-upc-night' && /\bespeon\b/i.test(combinedLower) && !/\bumbreon\b/i.test(combinedLower)) {
+            return false;
+        }
+        if (options.ruleId === 'me-30th-celebration-upc-day' && /\b(umbreon|\bnight\b)\b/i.test(combinedLower)) {
+            return false;
+        }
     }
     if (formFactor === 'Master Case' && /\b(bundle|etb|elite trainer|blister|tin|collection|figure)\b/i.test(title)) {
         return false;

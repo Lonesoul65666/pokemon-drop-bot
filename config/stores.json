@@ -70,11 +70,16 @@
     "storeType": "SHOPIFY_LGS",
     "baseUrl": "https://minmaxgames.com",
     "resolvedPath": "/collections/pokemon/products.json?limit=250",
-    "flatShipping": 6.99,
-    "freeShipThreshold": 150,
+    "flatShipping": 4,
+    "freeShipThreshold": 99999,
     "currency": "USD",
     "tier": "TIER1_FAST",
-    "enabled": true
+    "enabled": true,
+    "aliases": [
+      "MinMaxGames",
+      "MinMax Games",
+      "Min Max Games"
+    ]
   },
   {
     "id": "card-shop-live",
