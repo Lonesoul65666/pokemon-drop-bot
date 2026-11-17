@@ -1,4 +1,16 @@
 {
-  "totalMsrpHits": 0,
-  "catches": []
+  "totalMsrpHits": 1,
+  "catches": [
+    {
+      "productName": "Mega Evolution: Pitch Black Booster Box (36-Pack)",
+      "ruleId": "me-pitch-black-booster-box",
+      "store": "Amazon",
+      "price": 172.31,
+      "landedPrice": 172.31,
+      "msrp": 161.64,
+      "url": "https://www.amazon.com/dp/B0GZ9S9KDR?smid=ATVPDKIKX0DER",
+      "timestamp": 1794762101225,
+      "timeStr": "2026-11-15T17:01:41.225Z"
+    }
+  ]
 }

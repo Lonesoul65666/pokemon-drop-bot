@@ -1,6 +1,26 @@
 {
-  "updatedAt": "2026-11-12T21:27:25.390Z",
+  "updatedAt": "2026-11-17T04:21:50.982Z",
   "purchases": [
+    {
+      "id": "ledger-me-30th-celebration-upc-night-mystic",
+      "skuId": "me-30th-celebration-upc-night",
+      "name": "30th Celebration Ultra-Premium Collection — Night Edition (Umbreon ex)",
+      "productName": "30th Celebration Ultra-Premium Collection — Night Edition (Umbreon ex)",
+      "formFactor": "UPC",
+      "store": "Mystic TCG",
+      "quantity": 1,
+      "subtotal": 359.99,
+      "shipping": 0,
+      "tax": 0,
+      "totalOrderLanded": 359.99,
+      "landedPrice": 359.99,
+      "packCount": 30,
+      "totalPacks": 30,
+      "pricePerPack": 12,
+      "outcome": "VICTORY",
+      "purchasedAt": "2026-11-16",
+      "notes": "50th Birthday Sealed Collector Trophy: Qty 1 @ $359.99 + Free ship + $0.00 TX tax = $359.99 total landed from Mystic TCG. Secondary 30th UPC LGS alerts switched off; 1P Big-Box MSRP (<= $194.39) armed."
+    },
     {
       "id": "ledger-twilight-masquerade-etb-n5f9qqh7w",
       "skuId": "sv-twilight-masquerade-etb",

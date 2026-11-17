@@ -28,12 +28,12 @@ function isUpcOrSpcFormat(formFactor, skuId, text) {
     return /^(?:upc|spc)$/i.test(String(formFactor || '').trim()) ||
         /\b(ultra[- ]*premium\s*collection|super[- ]*premium\s*collection|\bupc\b|\bspc\b)\b/i.test(combined);
 }
-function get1PMsrpCeilingForRule(msrpCeiling, ruleId, wantedCollectorUpc) {
+function get1PMsrpCeilingForRule(msrpCeiling, _ruleId, wantedCollectorUpc) {
     const msrp = Number(msrpCeiling || 0);
     if (msrp <= 0)
         return 0;
     const std = Math.round(msrp * 1.08 * 100) / 100;
-    if (/^me-30th-celebration-upc/i.test(String(ruleId || '')) || (wantedCollectorUpc && msrp >= 175 && msrp <= 185)) {
+    if (wantedCollectorUpc && msrp >= 175 && msrp <= 185) {
         return Math.max(195, std);
     }
     return std;

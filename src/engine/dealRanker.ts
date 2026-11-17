@@ -96,7 +96,7 @@ export function rankAndEnrichDealOffer(
   const isWallFormat = isSingleEtbFormat(formFactor, skuId, title);
   const isCaseSku = isCaseSkuFormat(formFactor, skuId, title, rawUrl);
   const isUpcFormat = isUpcOrSpcFormat(formFactor, skuId, title);
-  const isWantedCollectorUpc = Boolean(policy?.wantedCollectorUpc || /^me-30th-celebration-upc/i.test(skuId));
+  const isWantedCollectorUpc = Boolean(policy?.wantedCollectorUpc);
   const isPolicyDisarmed = policy?.active === false;
   const isBundleFormat = !isCaseSku && (formFactor === 'Booster Bundle' || /\bbundle\b|\b6[- ]?pack\b/i.test(`${formFactor} ${skuId} ${title}`));
   const isBoosterBox36 = !isCaseSku && (formFactor === 'Booster Box' || /\bbooster[-_\s]*(box|display)\b/i.test(`${formFactor} ${skuId} ${title}`));
@@ -125,7 +125,7 @@ export function rankAndEnrichDealOffer(
         : effectiveWallQty === 2
           ? '2/3 Walls Done — Bonus Dad Rip'
           : '3/3 Stacked'
-    : (isWantedCollectorUpc ? 'Sealed Collector Trophy' : null);
+    : (isWantedCollectorUpc ? 'Sealed Collector Trophy' : (isUpcFormat ? 'Big-Box 1P MSRP Only' : null));
 
   const ruleWithCount = policy ? { ...policy, wantedCollectorUpc: isWantedCollectorUpc, completionCount: effectiveWallQty, fullyConquered: effectiveWallQty >= 3 } : null;
   const ledgerLine = formatCollectionAndCostLine({
@@ -208,7 +208,7 @@ export function rankAndEnrichDealOffer(
   else if (isPolicyDisarmed && !is1PMsrpHit) verdictLabel = 'MUTED — ALERTS DISARMED';
   else if (overGlobalHardBan) verdictLabel = 'MUTED — OVER $1,200 CASE CAP';
   else if (overSpendCeiling) verdictLabel = `MUTED — OVER $${effectiveSpendCap} SPEND CAP`;
-  else if (is1PMsrpHit) verdictLabel = isWantedCollectorUpc ? '1P MSRP DROP — BUY NOW' : '1P RETAIL MSRP HIT — BUY NOW';
+  else if (is1PMsrpHit) verdictLabel = '1P MSRP DROP — BUY NOW';
   else if (actionTier === 'BUY_NOW_PINNED') {
     if (isWantedCollectorUpc) verdictLabel = `COLLECTOR TROPHY BUY (-$${Math.max(0, policyMaxBuy - landedPrice).toFixed(2)} vs. $${Math.round(policyMaxBuy)} Max)`;
     else if (hasVerifiedTcgComp && isSliding && undercutVsTcgPct >= 12) verdictLabel = `DEEP DIP BUY (-${Math.round(undercutVsTcgPct)}% vs. TCGPlayer)`;

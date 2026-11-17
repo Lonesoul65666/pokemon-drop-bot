@@ -41,3 +41,4 @@
 - `2026-11-12 15:35 CST` | **SAVE** (from `c25b13a`) | V6 Phase 2: Clean Discord embed with box art, earned 7d/15d->90d watermarks, ETB-only wall logic, TCGPlayer comp gate, and purchase cost memory
 - `2026-11-12 19:26 CST` | **SAVE** (from `4569eae`) | V6 Phase 3 Complete: Dynamic Cost x Need x Trend UI, muted hold-off drawer, ETB-only wall pills, Vault buy links, and fuzzy search
 - `2026-11-15 10:55 CST` | **SAVE** (from `a93a6c2`) | 10/38 Wall sync, Delta mute, 30th UPC Umbreon-weighted sniper + Big-Box UPC gate, MinMax  ship, and ntfy fix
+- `2026-11-16 22:22 CST` | **SAVE** (from `2b5ff11`) | Lock $359.99 Mystic TCG 30th Night UPC win and switch UPCs to 1P MSRP only

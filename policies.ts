@@ -48,11 +48,11 @@ export function isUpcOrSpcFormat(formFactor?: string, skuId?: string, text?: str
     /\b(ultra[- ]*premium\s*collection|super[- ]*premium\s*collection|\bupc\b|\bspc\b)\b/i.test(combined);
 }
 
-export function get1PMsrpCeilingForRule(msrpCeiling?: number, ruleId?: string, wantedCollectorUpc?: boolean): number {
+export function get1PMsrpCeilingForRule(msrpCeiling?: number, _ruleId?: string, wantedCollectorUpc?: boolean): number {
   const msrp = Number(msrpCeiling || 0);
   if (msrp <= 0) return 0;
   const std = Math.round(msrp * 1.08 * 100) / 100;
-  if (/^me-30th-celebration-upc/i.test(String(ruleId || '')) || (wantedCollectorUpc && msrp >= 175 && msrp <= 185)) {
+  if (wantedCollectorUpc && msrp >= 175 && msrp <= 185) {
     return Math.max(195, std);
   }
   return std;

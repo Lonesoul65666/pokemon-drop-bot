@@ -1,6 +1,6 @@
 {
   "schemaVersion": "5.0.0",
-  "updatedAt": "2026-11-09T16:43:20.123Z",
+  "updatedAt": "2026-11-17T04:21:50.992Z",
   "muteVaulted": true,
   "wallHunterMode": false,
   "liveDigestEnabled": true,
@@ -1331,17 +1331,17 @@
       "active": true
     },
     "me-30th-celebration-upc-night": {
-      "maxMarketBuyPrice": 370,
-      "owned": false,
-      "inVault": false,
-      "wallOwned": false,
+      "maxMarketBuyPrice": 179.99,
+      "owned": true,
+      "inVault": true,
+      "wallOwned": true,
       "dadRipOwned": false,
       "loganRipOwned": false,
       "autoPilotEnabled": false,
       "active": true
     },
     "me-30th-celebration-upc": {
-      "maxMarketBuyPrice": 350,
+      "maxMarketBuyPrice": 179.99,
       "owned": false,
       "inVault": false,
       "wallOwned": false,
@@ -1351,7 +1351,7 @@
       "active": true
     },
     "me-30th-celebration-upc-day": {
-      "maxMarketBuyPrice": 330,
+      "maxMarketBuyPrice": 179.99,
       "owned": false,
       "inVault": false,
       "wallOwned": false,

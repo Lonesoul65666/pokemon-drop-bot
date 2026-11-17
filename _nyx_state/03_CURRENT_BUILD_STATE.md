@@ -6,9 +6,9 @@
 
 ## 1. Live System Snapshot
 - **Current Phase:** **V6 Phase 3 Complete (Cache Poison Scrub & Sanity Floors `cacheScrubber.ts` `< 350L`, Dynamic `Cost × Need × Trend` `dealRanker.ts` `< 300L`, 3-Tier Live Command Board `BUY_NOW_PINNED` / `CAUTIOUS_WATCH` / Collapsed `MUTED_DRAWER`, Single-Qty Case Guard, ETB-Only `[LOGAN WALL] • [OFFICE SEALED] • [DAD RIP]` Controls, Honest `0`-Catch MSRP KPI, Conquered Vault `< 3/3` Buy Links, and Global Instant Fuzzy Search)**.
-- **Last Checkpoint Timestamp:** `2026-11-15 10:55 CST`
+- **Last Checkpoint Timestamp:** `2026-11-16 22:22 CST`
 - **Git Branch:** `main`
-- **Parent Baseline Commit:** `a93a6c2` (`10/38 Wall sync, Delta mute, 30th UPC Umbreon-weighted sniper + Big-Box UPC gate, MinMax  ship, and ntfy fix`)
+- **Parent Baseline Commit:** `2b5ff11` (`Lock $359.99 Mystic TCG 30th Night UPC win and switch UPCs to 1P MSRP only`)
 - **PM2 Process Status:**
   - `pokemon-drop-bot` (id `0`, `index.js`): **ONLINE** (`0` orphaned `node -e` processes, `0` visible browser windows, **`90 / 90` Shopify LGS stores `HEALTHY` (`17 / 25` `HTTP 304` Tier-1 fast-delta hits)** + Bluesky Jetstream WebSocket `OPEN` (`2` DIDs) + `4` Direct `200 OK` Big-Box sensors + `5` `WIRE_ARMED_IP_SHIELD` sensors)
   - `drop-bot-dashboard` (id `1`, `server.js` on `http://localhost:3000`): **ONLINE** (`0` crashes, `127.5 MB` RSS, `GET /api/engine-room` reporting **`healthySensors: 99` / `totalSensors: 99`** (`healthyLgsSensors: 90`, `healthyBigBoxSensors: 4` direct `200 OK`: `GameStop` `6` in-stock cached offers, `Best Buy`, `Amazon 1P` proxy-first, `Barnes & Noble`; `wireShieldedBigBoxSensors: 5` `WIRE_ARMED_IP_SHIELD`: `Pokémon Center`, `Target`, `Walmart`, `Costco`, `Sam's Club`; `blockedCount: 0`))
